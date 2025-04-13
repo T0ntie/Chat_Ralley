@@ -13,8 +13,6 @@ class Resources{
         return Icons.fmd_bad;
       case NPCIcon.friendlyIcon:
         return Icons.thumb_up;
-      default:
-        return Icons.help;
     }
   }
 

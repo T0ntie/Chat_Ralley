@@ -12,7 +12,7 @@ class CompassService {
     if (_compassStream == null) {
       final rawStream = FlutterCompass.events;
       if (rawStream != null) {
-        _compassStream = rawStream.map((event) => event?.heading ?? 0.0);
+        _compassStream = rawStream.map((event) => event.heading ?? 0.0);
       } else {
         _compassStream =
         const Stream.empty(); // Fallback für Geräte ohne Sensor

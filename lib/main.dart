@@ -8,7 +8,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
-import 'dart:math';
 
 void main() {
   runApp(const MyApp());
@@ -260,11 +259,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
       child: FloatingActionButton(
         onPressed: () {
-          if (_location != null) {
-            setState(() {
-              _switchMapOrientationMode();
-            });
-          }
+          setState(() {
+            _switchMapOrientationMode();
+          });
         },
         backgroundColor:
         Colors.transparent, // Macht den Hintergrund transparent
@@ -281,12 +278,10 @@ class _MyHomePageState extends State<MyHomePage> {
   FloatingActionButton buildFloatingActionButton() {
     return (FloatingActionButton(
       onPressed: () {
-        if (_location != null) {
-          setState(() {
-            // Wenn der Button gedrückt wird, zentrieren wir die Karte auf den aktuellen Standort
-            _centerMapOnCurrentLocation();
-          });
-        }
+        setState(() {
+          // Wenn der Button gedrückt wird, zentrieren wir die Karte auf den aktuellen Standort
+          _centerMapOnCurrentLocation();
+        });
       },
       child: Icon(
         Icons.my_location,
@@ -319,5 +314,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: buildFloatingActionButton(),
     );
+  }
+  @override
+  void dispose() {
+    _mapControllerSubscription.cancel();
+    _compassSubscription.cancel();
+    _positionSubscription.cancel();
+    super.dispose();
   }
 }

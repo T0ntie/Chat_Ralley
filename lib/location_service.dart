@@ -1,6 +1,5 @@
 // lib/location_service.dart
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart';
 
 
 class LocationService {
@@ -49,13 +48,4 @@ class LocationService {
     }
     return _locationStream ?? const Stream.empty();
   }
-
-  /*
-  static Future<LatLng> getCurrentLocation() async {
-    LatLng resultPosition = LatLng(51.5074, -0.1278); // Beispiel für London
-
-    Position position = await Geolocator.getCurrentPosition();
-    resultPosition = LatLng(position.latitude, position.longitude);
-    return resultPosition;
-  }*/
 }
