@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'location_service.dart';
 import 'compass_service.dart';
 import 'backend.dart';
+import 'chat_page.dart';
 import 'npc.dart';
 import 'resources.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -258,6 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
       right: 20, // Abstand vom rechten Rand
 
       child: FloatingActionButton(
+        heroTag: "MapOrientation_fab",
         onPressed: () {
           setState(() {
             _switchMapOrientationMode();
@@ -277,6 +279,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   FloatingActionButton buildFloatingActionButton() {
     return (FloatingActionButton(
+      heroTag: "CenterLocation_fab",
       onPressed: () {
         setState(() {
           // Wenn der Button gedrückt wird, zentrieren wir die Karte auf den aktuellen Standort
@@ -300,6 +303,10 @@ class _MyHomePageState extends State<MyHomePage> {
             tooltip: "Chat",
             onPressed: () {
               print("chat pressed");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChatPage(npc: _nPCs[0],)),
+              );
             },
           ),
         ],
