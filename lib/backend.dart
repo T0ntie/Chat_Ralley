@@ -19,6 +19,13 @@ class Backend {
         icon: NPCIcon.unknownIcon,
         iconColor: Colors.grey,
       ),
+      NPC(
+        name: "Pezi",
+        prompt: "Mechtlers Wille geschehe",
+        position: LatLng(48.248951, 16.369782),
+        icon: NPCIcon.unknownIcon,
+        iconColor: Colors.grey,
+      ),
     ];
   }
 }

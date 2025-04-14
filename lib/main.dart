@@ -168,10 +168,31 @@ class _MyHomePageState extends State<MyHomePage> {
                 'Distance: ${npc.currentDistance} meters',
               ),
               SizedBox(height: 10),
-              Text('Come closer to start interacting'),
+              if (!npc.canCommunicate())
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    "Komm näher, um mit ${npc.displayName} zu kommunizieren.",
+                    style: TextStyle(color: Colors.grey[600]),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
             ],
           ),
           actions: <Widget>[
+        Tooltip(
+        message: "Du musst näher kommen, um mit ${npc.displayName} kommunizieren zu können.",
+            child: TextButton(
+              child: Text('Chat starten'),
+              onPressed: npc.canCommunicate() ?() {
+                Navigator.of(context).pop(); // Erst den Dialog schließen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatPage(npc: npc)),
+                );
+              } : null,
+            ),
+        ),
             TextButton(
               child: Text('OK'),
               onPressed: () {
@@ -217,7 +238,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: Resources.getNPCIcon(npc.icon, npc.iconColor),
               ),
-              if (npc.currentDistance < 10)
+              if (npc.canCommunicate())
                 Positioned(
                   top: 5,
                   right: 40, // Verschieben der Sprechblase nach oben

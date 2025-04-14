@@ -12,10 +12,11 @@ class NPC {
   LatLng position;
   NPCIcon icon;
   Color iconColor;
-  String displayName;
+  late String displayName;
   double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
+  final double conversationDistance = 15.0; //how close you need to be to communicate
 
   NPC({
     required this.name,
@@ -23,10 +24,15 @@ class NPC {
     required this.position,
     required this.icon,
     required this.iconColor,
-    this.displayName = "uknown",
     Conversation? currentConversation,
   }) {
     this.currentConversation = Conversation(this);
+    this.displayName = name;
+  }
+
+  bool canCommunicate()
+  {
+    return (currentDistance < conversationDistance);
   }
 
   void updatePlayerPosition(LatLng playerPosition) {
