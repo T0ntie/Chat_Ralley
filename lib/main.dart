@@ -9,8 +9,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async{
+  await dotenv.load(fileName: ".env");  // lädt die .env-Datei
+  print("API-KEY: ${dotenv.env['OPENAI_API_KEY']}");
   runApp(const MyApp());
 }
 

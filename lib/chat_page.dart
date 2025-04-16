@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'npc.dart';
 import 'conversation.dart';
+import 'chat_service.dart';
 
 class ChatPage extends StatefulWidget {
   ChatPage({super.key, required this.npc});
@@ -14,7 +15,6 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
 
   late  Conversation _conversation;
-  late List<ChatMessage> _messages = [];
 
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -23,16 +23,25 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     _conversation = widget.npc.currentConversation;
-    _messages = _conversation.getMessages();
+    //_messages = _conversation.getMessages();
 
   }
 
-  void _sendMessage(String text) {
+  bool _isSending = false;
+
+  void _sendMessage(String text) async {
     if (text.trim().isEmpty) return;
 
     setState(() {
-      _messages.add(ChatMessage(text: text, fromUser: true));
-      _messages.add(ChatMessage(text: "Antwort von NPC: $text", fromUser: false));
+      _conversation.addUserMessage(text);
+      _isSending = true;
+    });
+
+    String response = await _conversation.ask();
+
+    setState(() {
+      _conversation.addAssistantMessage(response);
+      _isSending = false;
     });
 
     _controller.clear();
@@ -71,6 +80,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final messages = _conversation.getVisibleMessages();
     return Scaffold(
       appBar: AppBar(
         title: Text("Chat mit NPC ${widget.npc.name}"),
@@ -81,10 +91,10 @@ class _ChatPageState extends State<ChatPage> {
             child: ListView.builder(
               reverse: true,
               padding: EdgeInsets.all(8),
-              itemCount: _messages.length,
+              itemCount: messages.length,
               itemBuilder: (context, index) {
-                final reversedIndex = _messages.length - 1 - index;
-                return _buildMessageBubble(_messages[reversedIndex]);
+                final reversedIndex = messages.length - 1 - index;
+                return _buildMessageBubble(messages[reversedIndex]);
               },
             ),
           ),
@@ -144,7 +154,7 @@ class _ChatPageState extends State<ChatPage> {
                     IconButton(
                       icon: Icon(Icons.send),
                       color: Colors.green,
-                      onPressed: () => _sendMessage(_controller.text),
+                      onPressed: _isSending ?null : () => _sendMessage(_controller.text),
                     ),
                   ],
                 ),
