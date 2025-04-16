@@ -16,7 +16,7 @@ class NPC {
   double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
-  final double conversationDistance = 15.0; //how close you need to be to communicate
+  final double conversationDistance = 20.0; //how close you need to be to communicate
 
   NPC({
     required this.name,

@@ -29,27 +29,5 @@ class ChatService {
     }
   }
 
-  /*static Future<String> sendMessage(String message) async {
-    final response = await http.post(
-      Uri.parse(_url),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $_apiKey',
-      },
-      body: jsonEncode({
-        'model': 'gpt-4.1',
-        'messages': [
-          {'role': 'user', 'content': message}
-        ]
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      final decoded = jsonDecode(utf8.decode(response.bodyBytes));
-      return decoded['choices'][0]['message']['content'];
-    } else {
-      throw Exception('Fehler: ${response.statusCode} - ${response.body}');
-    }
-  }*/
 }
 

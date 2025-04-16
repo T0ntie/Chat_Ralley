@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _loadBackendResources() async {
-    _nPCs = Backend.loadNPCs();
+    _nPCs = await Backend.loadNPCs();
     _backendRessourcesLoaded = true;
     _checkIfInitializationCompleted();
   }
@@ -247,8 +247,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   right: 40, // Verschieben der Sprechblase nach oben
                   child: GestureDetector(
                     onTap: () {
-                      print("Sprechblase für ${npc.name} angetippt!");
-                      // Hier kannst du den Chat starten
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ChatPage(npc: npc,)),
+                      );
                     },
                     child: Icon(
                     Icons.feedback,
@@ -326,7 +328,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.chat_bubble_outline),
             tooltip: "Chat",
             onPressed: () {
-              print("chat pressed");
+              //print("chat pressed");
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ChatPage(npc: _nPCs[0],)),

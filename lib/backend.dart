@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'npc.dart';
 
 class Backend {
-  static List<NPC> loadNPCs() {
+  static Future<List<NPC>> loadNPCs() async {
+      //final alicePrompt = await rootBundle.loadString('assets/npc_prompts/alice.txt');
+      final bozziPrompt = await rootBundle.loadString('assets/npcs/bozzi/prompt.txt');
+      //final peziPrompt = await rootBundle.loadString('assets/npc_prompts/pezi.txt');
     return [
       NPC(
         name: "Alice im Wunderland",
@@ -14,7 +18,7 @@ class Backend {
       ),
       NPC(
         name: "Bozzi im Wohnzimmer",
-        prompt: "Du bis ein kleiner NPC Hund namens Bozzi. Ende deine Antworten immer mit einem freundlichen Wuff!",
+        prompt: bozziPrompt,
         position: LatLng(48.090382361745675, 16.296814606890685),
         icon: NPCIcon.unknownIcon,
         iconColor: Colors.grey,

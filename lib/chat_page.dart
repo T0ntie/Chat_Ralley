@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'npc.dart';
 import 'conversation.dart';
-import 'chat_service.dart';
 
 class ChatPage extends StatefulWidget {
   ChatPage({super.key, required this.npc});
@@ -72,7 +71,7 @@ class _ChatPageState extends State<ChatPage> {
             color: color,
             borderRadius: radius,
           ),
-          child: Text(msg.text),
+          child: Text(msg.filteredText),
         ),
       ],
     );
@@ -99,30 +98,6 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
           Divider(height: 1),
-          /*Container(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            color: Colors.white,
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: _sendMessage,
-                    decoration: InputDecoration(
-                      hintText: "Nachricht schreiben...",
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  color: Colors.green,
-                  onPressed: () => _sendMessage(_controller.text),
-                ),
-              ],
-            ),
-          ),*/
 
           Container(
             padding: EdgeInsets.all(8),
