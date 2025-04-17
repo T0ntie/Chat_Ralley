@@ -3,7 +3,7 @@ import 'npc.dart';
 import 'dart:convert';
 
 class Conversation {
-  final NPC npc; // Der NPC, mit dem der User chattet
+  final Npc npc; // Der NPC, mit dem der User chattet
   final List<ChatMessage> _messages = []; // Liste von Nachrichten
 
   Conversation(this.npc) {
@@ -63,7 +63,7 @@ final Map<String, dynamic>? signal; // das extrahierte JSON Signal
 final ChatRole chatRole;
 ChatMessage({required this.rawText, required this.chatRole}): filteredText = _filterMessage(rawText),
   signal = _extractSignal(rawText) {
-  if (signal != null) {
+  if (chatRole == ChatRole.assistant && signal != null) {
     print("✅ Signal gefunden: $signal");
   }
 }

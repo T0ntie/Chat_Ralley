@@ -1,31 +1,46 @@
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import 'conversation.dart';
 
 enum NPCIcon { unknown, identified, alert }
 
-class NPC {
+class Npc {
   final String name;
   final String prompt;
   LatLng position;
-  NPCIcon icon;
+  late NPCIcon icon;
   late String displayName;
   double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
   final double conversationDistance = 20.0; //how close you need to be to communicate
 
-  NPC({
+  Npc({
     required this.name,
     required this.prompt,
     required this.position,
-    required this.icon,
     Conversation? currentConversation,
   }) {
     this.currentConversation = Conversation(this);
     this.displayName = name;
+    this.icon = NPCIcon.unknown;
+  }
+
+  static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
+    final promptFile = json['prompt'] as String;
+    final promptText = await rootBundle.loadString('assets/story/${promptFile}');
+
+    return Npc(
+      name: json['name'],
+      position: LatLng(
+          (json['position']['lat'] as num).toDouble(),
+          (json['position']['lng'] as num).toDouble()
+      ),
+      prompt: promptText,
+    );
   }
 
   bool canCommunicate()

@@ -4,7 +4,7 @@ import 'conversation.dart';
 
 class ChatPage extends StatefulWidget {
   ChatPage({super.key, required this.npc});
-  final NPC npc;
+  final Npc npc;
 
 
   @override

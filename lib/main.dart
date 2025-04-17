@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'location_service.dart';
 import 'compass_service.dart';
-import 'backend.dart';
 import 'chat_page.dart';
 import 'npc.dart';
+import 'story_line.dart';
 import 'resources.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -55,8 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
   late final StreamSubscription<MapEvent> _mapControllerSubscription;
   late final StreamSubscription<double> _compassSubscription;
   late final StreamSubscription<Position> _positionSubscription;
-
-  List<NPC> _nPCs = [];
+  late final StoryLine _storyLine;
+  List<Npc> _nPCs = [];
 
   bool _isMapHeadingBasedOrientation = false;
 
@@ -75,9 +75,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _loadBackendResources() async {
-    _nPCs = await Backend.loadNPCs();
-    _backendRessourcesLoaded = true;
-    _checkIfInitializationCompleted();
+    try {
+      _storyLine = await StoryLine.loadStoryLine();
+      _nPCs = _storyLine.npcs;
+      _backendRessourcesLoaded = true;
+      _checkIfInitializationCompleted();
+    } catch (e) {
+      print('Exception occoured: ${e}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Story konnte nicht geladen werden")),
+      );
+    }
   }
 
   void _checkIfInitializationCompleted() {
@@ -150,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // Dialog anzeigen, wenn der Marker angetippt wird
-  void _showNPCInfo(BuildContext context, NPC npc) {
+  void _showNPCInfo(BuildContext context, Npc npc) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

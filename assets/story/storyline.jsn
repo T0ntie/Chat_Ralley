@@ -3,13 +3,13 @@
   "title": "Der Fall der verschwundenen Fossilie",
   "npcs": [ {
     "name": "Bozzi",
-    "position" : { "lat": 48.090382361745675, "lng": 16.296814606890685 },
+    "position" : { "lat": 47.4141605, "lng": 13.6381008 },
     "prompt": "prompts/bozzi-prompt.txt"
   },
   {
     "name": "Alice",
     "position" : { "lat": 48.08418, "lng": 16.29050 },
-    "prompt": "prompts/alice-prompt.txt"
+    "prompt": "prompts/bozzi-prompt.txt"
   }
   ]
 }
