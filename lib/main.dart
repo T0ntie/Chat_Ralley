@@ -13,7 +13,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env"); // lädt die .env-Datei
-  print("API-KEY: ${dotenv.env['OPENAI_API_KEY']}");
   runApp(const MyApp());
 }
 
@@ -59,19 +58,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<NPC> _nPCs = [];
 
-  bool _mapDynamicOrientation = false;
+  bool _isMapHeadingBasedOrientation = false;
 
   void _centerMapOnCurrentLocation() {
     _mapController.move(_location, 16.0);
   }
 
   void _switchMapOrientationMode() {
-    _mapDynamicOrientation = !_mapDynamicOrientation;
+    _isMapHeadingBasedOrientation = !_isMapHeadingBasedOrientation;
     print(
       "switching map orientation to dyniamic orientation: " +
-          _mapDynamicOrientation.toString(),
+          _isMapHeadingBasedOrientation.toString(),
     );
-    _mapController.rotate(_mapDynamicOrientation ? _currentHeading : 0);
+    _mapController.rotate(_isMapHeadingBasedOrientation ? _currentHeading : 0);
     _currentMapRotation = 0;
   }
 
@@ -130,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if ((heading - _currentHeading).abs() >= 5 ||
           currentTime.difference(_lastHeadingUpdateTime).inSeconds >= 1) {
         //print("now updating compass heading to " + heading.toString());
-        if (_mapDynamicOrientation) {
+        if (_isMapHeadingBasedOrientation) {
           _mapController.rotate(-heading);
         }
         setState(() {
@@ -221,13 +220,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // Die Position des Markers ist der aktuelle Standort
       child: Transform.rotate(
         angle:
-            (_mapDynamicOrientation ? _currentHeading : _currentHeading) *
+            (_isMapHeadingBasedOrientation ? _currentHeading : _currentHeading) *
             (pi / 180),
-        child: Icon(
-          Icons.navigation,
-          color: Colors.blue, // Die Farbe des Pins
-          size: 30.0, // Die Größe des Markers
-        ),
+        child: Resources.playerPositionIcon(),
       ),
     ));
   }
@@ -240,7 +235,7 @@ class _MyHomePageState extends State<MyHomePage> {
         height: 100.0,
         child: Transform.rotate(
           angle:
-              (_mapDynamicOrientation
+              (_isMapHeadingBasedOrientation
                   ? _currentHeading
                   : -_currentMapRotation) *
               (pi / 180),
@@ -316,11 +311,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Macht den Hintergrund transparent
         elevation: 0,
         // Entfernt den Schatten
-        child: Icon(
-          Icons.explore,
-          size: 40,
-          color: _mapDynamicOrientation ? Colors.deepOrange : Colors.black,
-        ), // Zeigt ein Symbol für den "Navigation"-Button
+        child:  Resources.getMapHeadingIcon(_isMapHeadingBasedOrientation),
       ),
     ));
   }
@@ -334,9 +325,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _centerMapOnCurrentLocation();
         });
       },
-      child: Icon(
-        Icons.my_location,
-      ), // Zeigt ein Symbol für den "Mein Standort"-Button
+      child: Resources.centerLocationIcon(),// Zeigt ein Symbol für den "Mein Standort"-Button
     ));
   }
 

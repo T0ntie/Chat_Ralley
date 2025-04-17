@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 import 'npc.dart';
 
 class Backend {
+
+  static Future<Map<String, dynamic>> loadStoryLineJson(String path) async {
+    final jsonString = await rootBundle.loadString(path);
+    final jsonData = json.decode(jsonString);
+    return jsonData;
+  }
+
   static Future<List<NPC>> loadNPCs() async {
       //final alicePrompt = await rootBundle.loadString('assets/npc_prompts/alice.txt');
-      final bozziPrompt = await rootBundle.loadString('assets/npcs/bozzi/prompt.txt');
+      final bozziPrompt = await rootBundle.loadString('assets/story/prompts/bozzi-prompt.txt');
+      final storyLine = await loadStoryLineJson('assets/story/storyline.jsn');
+      print ("the following story was loaded: ${storyLine['title']}");
+
       //final peziPrompt = await rootBundle.loadString('assets/npc_prompts/pezi.txt');
     return [
       NPC(

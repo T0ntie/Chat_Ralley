@@ -18,6 +18,7 @@ class ChatService {
         body: jsonEncode({
         'model': 'gpt-4.1',
         'messages': messages,
+        'n' : 1,
         }),
     );
 

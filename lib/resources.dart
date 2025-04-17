@@ -5,17 +5,6 @@ import 'package:flutter/material.dart';
 
 class Resources{
 
-  static  IconData _getIconFromNPCIcon(NPCIcon iconType) {
-    switch (iconType) {
-      case NPCIcon.unknown:
-        return Icons.not_listed_location;
-      case NPCIcon.identified:
-        return Icons.fmd_bad;
-      case NPCIcon.alert:
-        return Icons.thumb_up;
-    }
-  }
-
   static Icon createIconforNPC(NPCIcon iconType) {
     switch(iconType) {
       case NPCIcon.unknown:
@@ -29,15 +18,7 @@ class Resources{
   }
 
   static Icon getNPCIcon(NPCIcon iconType){
-/*
-    return Icon(
-          _getIconFromNPCIcon(iconType),
-          color: iconColor, // Die Farbe des Pins
-          size: 40.0, // Die Größe des Markers
-);
-*/
     return createIconforNPC(iconType);
-
   }
 
   static Icon getChatBubbleIcon()
@@ -48,5 +29,24 @@ class Resources{
       size: 40.0, // Die Größe der Sprechblase
     );
   }
+  static Icon getMapHeadingIcon(bool isMapHeadingBasedOrientation) {
+    return Icon(
+      Icons.explore,
+      size: 40,
+      color: isMapHeadingBasedOrientation ? Colors.deepOrange : Colors.black,
+    );
+  }
+  static Icon centerLocationIcon()
+  {
+    return Icon(Icons.my_location);
+  }
 
+  static Icon playerPositionIcon()
+  {
+    return Icon(
+      Icons.navigation,
+      color: Colors.blue, // Die Farbe des Pins
+      size: 30.0, // Die Größe des Markers
+    );
+  }
 }
