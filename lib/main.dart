@@ -11,8 +11,8 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() async{
-  await dotenv.load(fileName: ".env");  // lädt die .env-Datei
+void main() async {
+  await dotenv.load(fileName: ".env"); // lädt die .env-Datei
   print("API-KEY: ${dotenv.env['OPENAI_API_KEY']}");
   runApp(const MyApp());
 }
@@ -91,24 +91,23 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-
-
   Future<void> _initializeLocationStream() async {
     await LocationService.initialize(); // Warten bis der Stream bereit ist
-    _positionSubscription =
-        LocationService.getPositionStream().listen((Position position,) {
-          //print("now updating the position" + position.toString());
+    _positionSubscription = LocationService.getPositionStream().listen((
+      Position position,
+    ) {
+      //print("now updating the position" + position.toString());
 
-          // Verwende setState, um den Zustand zu ändern und die UI zu aktualisieren
-          _location = LatLng(position.latitude, position.longitude);
+      // Verwende setState, um den Zustand zu ändern und die UI zu aktualisieren
+      _location = LatLng(position.latitude, position.longitude);
 
-          for (final npc in _nPCs) {
-            npc.updatePlayerPosition(_location);
-          }
-          print("all npcs should be updated");
-          _isLocationLoaded = true;
-          _checkIfInitializationCompleted();
-        });
+      for (final npc in _nPCs) {
+        npc.updatePlayerPosition(_location);
+      }
+      //print("all npcs should be updated");
+      _isLocationLoaded = true;
+      _checkIfInitializationCompleted();
+    });
   }
 
   void initializeMapController() {
@@ -163,8 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Text('Name: ${npc.displayName}'),
               Text(
-                'Position:${npc.position.latitude.toStringAsFixed(3)}, ${npc
-                    .position.longitude.toStringAsFixed(3)}',
+                'Position:${npc.position.latitude.toStringAsFixed(3)}, ${npc.position.longitude.toStringAsFixed(3)}',
               ),
               Text(
                 //'Distance: ${Distance().as(LengthUnit.Meter, _location, npc.position).toStringAsFixed(1)} meters',
@@ -183,19 +181,27 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
           actions: <Widget>[
-        Tooltip(
-        message: "Du musst näher kommen, um mit ${npc.displayName} kommunizieren zu können.",
-            child: TextButton(
-              child: Text('Chat starten'),
-              onPressed: npc.canCommunicate() ?() {
-                Navigator.of(context).pop(); // Erst den Dialog schließen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChatPage(npc: npc)),
-                );
-              } : null,
+            Tooltip(
+              message:
+                  "Du musst näher kommen, um mit ${npc.displayName} kommunizieren zu können.",
+              child: TextButton(
+                child: Text('Chat starten'),
+                onPressed:
+                    npc.canCommunicate()
+                        ? () {
+                          Navigator.of(
+                            context,
+                          ).pop(); // Erst den Dialog schließen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatPage(npc: npc),
+                            ),
+                          );
+                        }
+                        : null,
+              ),
             ),
-        ),
             TextButton(
               child: Text('OK'),
               onPressed: () {
@@ -214,7 +220,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // Die Position des Markers ist der aktuelle Standort
       child: Transform.rotate(
-        angle: (_mapDynamicOrientation ? _currentHeading : _currentHeading)* (pi / 180),
+        angle:
+            (_mapDynamicOrientation ? _currentHeading : _currentHeading) *
+            (pi / 180),
         child: Icon(
           Icons.navigation,
           color: Colors.blue, // Die Farbe des Pins
@@ -231,7 +239,11 @@ class _MyHomePageState extends State<MyHomePage> {
         width: 170.0,
         height: 100.0,
         child: Transform.rotate(
-          angle: (_mapDynamicOrientation ? _currentHeading : -_currentMapRotation) * (pi / 180),
+          angle:
+              (_mapDynamicOrientation
+                  ? _currentHeading
+                  : -_currentMapRotation) *
+              (pi / 180),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -239,7 +251,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   _showNPCInfo(context, npc);
                 },
-                child: Resources.getNPCIcon(npc.icon, npc.iconColor),
+                child: Resources.getNPCIcon(npc.icon),
               ),
               if (npc.canCommunicate())
                 Positioned(
@@ -249,16 +261,25 @@ class _MyHomePageState extends State<MyHomePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ChatPage(npc: npc,)),
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(npc: npc),
+                        ),
                       );
                     },
-                    child: Icon(
-                    Icons.feedback,
-                    color: Colors.blueAccent, // Die Farbe der Sprechblase
-                    size: 40.0, // Die Größe der Sprechblase
-                    ),
+                    child: Resources.getChatBubbleIcon(),
                   ),
                 ),
+              Positioned(
+                bottom: 15, // Position unter dem Marker
+                child: Text(
+                  npc.displayName, // Der Name des NPCs
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -291,9 +312,10 @@ class _MyHomePageState extends State<MyHomePage> {
             _switchMapOrientationMode();
           });
         },
-        backgroundColor:
-        Colors.transparent, // Macht den Hintergrund transparent
-        elevation: 0, // Entfernt den Schatten
+        backgroundColor: Colors.transparent,
+        // Macht den Hintergrund transparent
+        elevation: 0,
+        // Entfernt den Schatten
         child: Icon(
           Icons.explore,
           size: 40,
@@ -331,23 +353,26 @@ class _MyHomePageState extends State<MyHomePage> {
               //print("chat pressed");
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ChatPage(npc: _nPCs[0],)),
+                MaterialPageRoute(
+                  builder: (context) => ChatPage(npc: _nPCs[0]),
+                ),
               );
             },
           ),
         ],
       ),
       body:
-      !_isLocationLoaded
-          ? Center(
-        child: CircularProgressIndicator(),
-      ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist
-          : Stack(
-        children: [buildFlutterMap(), buildMapOrientationModeButton()],
-      ),
+          !_isLocationLoaded
+              ? Center(
+                child: CircularProgressIndicator(),
+              ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist
+              : Stack(
+                children: [buildFlutterMap(), buildMapOrientationModeButton()],
+              ),
       floatingActionButton: buildFloatingActionButton(),
     );
   }
+
   @override
   void dispose() {
     _mapControllerSubscription.cancel();

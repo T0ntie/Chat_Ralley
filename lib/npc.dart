@@ -4,14 +4,13 @@ import 'package:latlong2/latlong.dart';
 
 import 'conversation.dart';
 
-enum NPCIcon { unknownIcon, friendlyIcon, dangerIcon }
+enum NPCIcon { unknown, identified, alert }
 
 class NPC {
   final String name;
   final String prompt;
   LatLng position;
   NPCIcon icon;
-  Color iconColor;
   late String displayName;
   double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
@@ -23,7 +22,6 @@ class NPC {
     required this.prompt,
     required this.position,
     required this.icon,
-    required this.iconColor,
     Conversation? currentConversation,
   }) {
     this.currentConversation = Conversation(this);
