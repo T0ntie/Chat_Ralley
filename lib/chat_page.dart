@@ -22,8 +22,6 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     _conversation = widget.npc.currentConversation;
-    //_messages = _conversation.getMessages();
-
   }
 
   bool _isSending = false;
@@ -35,15 +33,23 @@ class _ChatPageState extends State<ChatPage> {
       _conversation.addUserMessage(text);
       _isSending = true;
     });
+    try {
+      String response = await _conversation.ask();
 
-    String response = await _conversation.ask();
-
-    setState(() {
-      _conversation.addAssistantMessage(response);
-      _isSending = false;
-    });
-
-    _controller.clear();
+      setState(() {
+        _conversation.addAssistantMessage(response);
+      });
+    } catch (e) {
+      print('❌ Kommunikation mit Chat GPT fehlgeschlagen.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('❌ Kommunikation mit Chat GPT fehlgeschlagen.')),
+      );
+    } finally {
+      setState(() {
+        _isSending = false;
+      });
+      _controller.clear();
+    }
   }
 
   Widget _buildMessageBubble(ChatMessage msg) {
@@ -82,7 +88,7 @@ class _ChatPageState extends State<ChatPage> {
     final messages = _conversation.getVisibleMessages();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chat mit NPC ${widget.npc.name}"),
+        title: Text("Kommuniziere mit ${widget.npc.name}"),
       ),
       body: Column(
         children: [
@@ -149,5 +155,3 @@ class _ChatPageState extends State<ChatPage> {
   }
 
 }
-
-

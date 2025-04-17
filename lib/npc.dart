@@ -1,5 +1,3 @@
-import 'dart:ui';
-import 'package:flutter/rendering.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -30,17 +28,23 @@ class Npc {
   }
 
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
-    final promptFile = json['prompt'] as String;
-    final promptText = await rootBundle.loadString('assets/story/${promptFile}');
+    try {
+      final promptFile = json['prompt'] as String;
+      final promptText = await rootBundle.loadString(
+          'assets/story/${promptFile}');
 
-    return Npc(
-      name: json['name'],
-      position: LatLng(
-          (json['position']['lat'] as num).toDouble(),
-          (json['position']['lng'] as num).toDouble()
-      ),
-      prompt: promptText,
-    );
+      return Npc(
+        name: json['name'],
+        position: LatLng(
+            (json['position']['lat'] as num).toDouble(),
+            (json['position']['lng'] as num).toDouble()
+        ),
+        prompt: promptText,
+      );
+    }catch (e, stack) {
+      print('❌ Fehler im Json der Npcs:\n$e\n$stack');
+      rethrow;
+    }
   }
 
   bool canCommunicate()

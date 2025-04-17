@@ -81,9 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
       _backendRessourcesLoaded = true;
       _checkIfInitializationCompleted();
     } catch (e) {
-      print('Exception occoured: ${e}');
+      print('❌ Laden der Story fehlgeschlagen.');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Story konnte nicht geladen werden")),
+        SnackBar(content: Text('❌ Laden der Story fehlgeschlagen.')),
       );
     }
   }
@@ -99,7 +99,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _initializeLocationStream() async {
-    await LocationService.initialize(); // Warten bis der Stream bereit ist
+    try {
+      await LocationService.initialize();
+    } catch (e) {
+      print('❌ Initialisieren der Standortbestimmung fehlgeschlagen.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '❌ Initialisieren der Standortbestimmung fehlgeschlagen.',
+          ),
+        ),
+      );
+    } // Warten bis der Stream bereit ist
     _positionSubscription = LocationService.getPositionStream().listen((
       Position position,
     ) {
@@ -118,18 +129,34 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void initializeMapController() {
-    _mapControllerSubscription = _mapController.mapEventStream.listen((event) {
-      if (event is MapEventRotate) {
-        setState(() {
-          // Aktualisiere den Rotationswinkel
-          _currentMapRotation = event.camera.rotation;
-        });
-      }
-    });
+    try {
+      _mapControllerSubscription = _mapController.mapEventStream.listen((
+        event,
+      ) {
+        if (event is MapEventRotate) {
+          setState(() {
+            // Aktualisiere den Rotationswinkel
+            _currentMapRotation = event.camera.rotation;
+          });
+        }
+      });
+    } catch (e) {
+      print('❌ Initialisieren des Karte fehlgeschlagen.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('❌ Initialisieren des Karte fehlgeschlagen.')),
+      );
+    } //
   }
 
   Future<void> _initializeCompassStream() async {
-    CompassService.initialize();
+    try {
+      CompassService.initialize();
+    } catch (e) {
+      print('❌ Initialisieren des Kompass fehlgeschlagen.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('❌ Initialisieren des Kompass fehlgeschlagen.')),
+      );
+    } //
     _compassSubscription = CompassService.getCompassDirection().listen((
       heading,
     ) {
@@ -228,7 +255,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // Die Position des Markers ist der aktuelle Standort
       child: Transform.rotate(
         angle:
-            (_isMapHeadingBasedOrientation ? _currentHeading : _currentHeading) *
+            (_isMapHeadingBasedOrientation
+                ? _currentHeading
+                : _currentHeading) *
             (pi / 180),
         child: Resources.playerPositionIcon(),
       ),
@@ -319,7 +348,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Macht den Hintergrund transparent
         elevation: 0,
         // Entfernt den Schatten
-        child:  Resources.getMapHeadingIcon(_isMapHeadingBasedOrientation),
+        child: Resources.getMapHeadingIcon(_isMapHeadingBasedOrientation),
       ),
     ));
   }
@@ -333,7 +362,8 @@ class _MyHomePageState extends State<MyHomePage> {
           _centerMapOnCurrentLocation();
         });
       },
-      child: Resources.centerLocationIcon(),// Zeigt ein Symbol für den "Mein Standort"-Button
+      child:
+          Resources.centerLocationIcon(), // Zeigt ein Symbol für den "Mein Standort"-Button
     ));
   }
 
