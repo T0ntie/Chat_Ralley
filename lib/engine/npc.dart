@@ -3,7 +3,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
 import '../actions/action.dart';
 
-enum NPCIcon { unknown, identified, nearby }
+enum NPCIcon { unknown, identified, nearby, unknown_nearby }
 
 class Npc {
   final String name;
@@ -81,11 +81,11 @@ class Npc {
       if (isRevealed) {
         if (canCommunicate()) {
           return NPCIcon.nearby;
-        } else {
-          return NPCIcon.identified;
-        }
+        } else return NPCIcon.identified;
       } else {
-        return NPCIcon.unknown;
+        if (canCommunicate()) {
+          return NPCIcon.unknown_nearby;
+        } else return NPCIcon.unknown;
       }
     }
     return NPCIcon.unknown;

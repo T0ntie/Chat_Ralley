@@ -13,6 +13,8 @@ class Resources{
         return Icon(Icons.location_on, color: Colors.black, size: 40, );
       case NPCIcon.nearby:
         return Icon(Icons.location_on, color: Colors.redAccent, size: 40, );
+      case NPCIcon.unknown_nearby:
+        return Icon(Icons.not_listed_location, color: Colors.redAccent, size: 40, );
     }
   }
 
