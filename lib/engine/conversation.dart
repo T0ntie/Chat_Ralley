@@ -1,6 +1,6 @@
-import 'package:hello_world/game_engine.dart';
+import 'package:hello_world/engine/game_engine.dart';
 
-import 'chat_service.dart';
+import '../services/chat_service.dart';
 import 'npc.dart';
 import 'dart:convert';
 

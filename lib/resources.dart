@@ -1,4 +1,4 @@
-import 'package:hello_world/npc.dart';
+import 'package:hello_world/engine/npc.dart';
 import 'package:flutter/material.dart';
 
 

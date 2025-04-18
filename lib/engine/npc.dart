@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
-import 'action.dart';
+import '../actions/action.dart';
 
 enum NPCIcon { unknown, identified, alert }
 

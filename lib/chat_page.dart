@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/game_engine.dart';
-import 'npc.dart';
-import 'conversation.dart';
+import 'package:hello_world/engine/game_engine.dart';
+import 'engine/npc.dart';
+import 'engine/conversation.dart';
 
 class ChatPage extends StatefulWidget {
   ChatPage({super.key, required this.npc, required this.gameEngine});

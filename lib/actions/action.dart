@@ -1,6 +1,6 @@
 import 'walk_action.dart';
 import 'appear_action.dart';
-import 'npc.dart';
+import '../engine/npc.dart';
 
 abstract class Action{
   final String signal;

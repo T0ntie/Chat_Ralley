@@ -1,5 +1,5 @@
 import 'action.dart';
-import 'npc.dart';
+import '../engine/npc.dart';
 
 class AppearAction extends Action{
 

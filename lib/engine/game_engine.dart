@@ -1,6 +1,6 @@
 import 'story_line.dart';
 import 'npc.dart';
-import 'action.dart';
+import '../actions/action.dart';
 
 class GameEngine
 {

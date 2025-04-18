@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'location_service.dart';
-import 'compass_service.dart';
+import 'services/location_service.dart';
+import 'services/compass_service.dart';
 import 'chat_page.dart';
-import 'npc.dart';
-import 'game_engine.dart';
+import 'engine/npc.dart';
+import 'engine/game_engine.dart';
 import 'resources.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
