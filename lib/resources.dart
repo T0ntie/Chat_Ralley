@@ -13,7 +13,6 @@ class Resources{
         return Icon(Icons.fmd_bad, color: Colors.black, size: 40, );
       case NPCIcon.alert:
         return Icon(Icons.fmd_bad, color: Colors.redAccent, size: 40, );
-
     }
   }
 

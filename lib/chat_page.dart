@@ -4,9 +4,9 @@ import 'engine/npc.dart';
 import 'engine/conversation.dart';
 
 class ChatPage extends StatefulWidget {
-  ChatPage({super.key, required this.npc, required this.gameEngine});
+  ChatPage({super.key, required this.npc,});
   final Npc npc;
-  final GameEngine gameEngine;
+  final GameEngine gameEngine = GameEngine.instance;
 
 
   @override

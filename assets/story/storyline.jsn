@@ -5,6 +5,7 @@
     "name": "Bozzi",
     "position" : { "lat": 47.4141605, "lng": 13.6381008 },
     "prompt": "prompts/bozzi-prompt.txt",
+    "image" : "images/bozzi.png",
     "visible" : false,
     "actions": [
       {
@@ -23,6 +24,7 @@
     "name": "Kommissar Knatterbach",
     "position" : { "lat": 47.4141705, "lng": 13.6382008 },
     "prompt": "prompts/knatterbach-prompt.txt",
+    "image" : "images/knatterbach.png",
     "visible" : true,
     "actions":[]
   },
@@ -31,6 +33,7 @@
     "name": "Alice",
     "position" : { "lat": 48.08418, "lng": 16.29050 },
     "prompt": "prompts/bozzi-prompt.txt",
+    "image" : "images/bozzi.png",
     "visible" : true,
     "actions":[]
   }

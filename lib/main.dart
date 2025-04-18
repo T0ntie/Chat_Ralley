@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_world/gui/npc_info_dialog.dart';
 import 'services/location_service.dart';
 import 'services/compass_service.dart';
 import 'chat_page.dart';
@@ -186,7 +187,13 @@ class _MyHomePageState extends State<MyHomePage> {
     initializeMapController();
   }
 
-  // Dialog anzeigen, wenn der Marker angetippt wird
+  void _showNPCInfo(BuildContext context, Npc npc) {
+    showDialog(context: context,
+        builder: (BuildContext) {
+          return NpcInfoDialog(npc: npc);
+        });
+  }
+/*  // Dialog anzeigen, wenn der Marker angetippt wird
   void _showNPCInfo(BuildContext context, Npc npc) {
     showDialog(
       context: context,
@@ -231,7 +238,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChatPage(npc: npc, gameEngine: _gameEngine),
+                              builder: (context) => ChatPage(npc: npc),
                             ),
                           );
                         }
@@ -248,7 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       },
     );
-  }
+  }*/
 
   Marker buildLocationMarker() {
     return (Marker(
@@ -298,7 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ChatPage(npc: npc, gameEngine: _gameEngine,),
+                          builder: (context) => ChatPage(npc: npc,),
                         ),
                       );
                     },
@@ -385,7 +392,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatPage(npc: _npcs[0], gameEngine: _gameEngine,),
+                  builder: (context) => ChatPage(npc: _npcs[0],),
                 ),
               );
             },

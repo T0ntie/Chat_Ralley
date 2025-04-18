@@ -8,6 +8,7 @@ enum NPCIcon { unknown, identified, alert }
 class Npc {
   final String name;
   final String prompt;
+  final String imageAsset;
   LatLng position;
   late NPCIcon icon;
   late String displayName;
@@ -25,6 +26,7 @@ class Npc {
     required this.position,
     required this.actions,
     required this.isVisible,
+    required this.imageAsset,
     Conversation? currentConversation,
   }) {
     this.currentConversation = Conversation(this);
@@ -46,6 +48,7 @@ class Npc {
             (json['position']['lng'] as num).toDouble()
         ),
         prompt: promptText,
+        imageAsset: json['image'],
         isVisible: json['visible'] as bool,
         actions: actions,
       );
