@@ -10,9 +10,9 @@ class Resources{
       case NPCIcon.unknown:
           return Icon(Icons.not_listed_location, color: Colors.grey, size: 40, );
       case NPCIcon.identified:
-        return Icon(Icons.fmd_bad, color: Colors.black, size: 40, );
-      case NPCIcon.alert:
-        return Icon(Icons.fmd_bad, color: Colors.redAccent, size: 40, );
+        return Icon(Icons.location_on, color: Colors.black, size: 40, );
+      case NPCIcon.nearby:
+        return Icon(Icons.location_on, color: Colors.redAccent, size: 40, );
     }
   }
 

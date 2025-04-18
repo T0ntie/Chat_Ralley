@@ -18,7 +18,7 @@ class NpcInfoDialog extends StatelessWidget
           SizedBox(
             width: 150, // oder was dir gefällt
             height: 150,
-            child: Image.asset("assets/story/${npc.imageAsset}",
+            child: Image.asset("assets/story/${npc.displayImageAsset}",
               fit: BoxFit.contain,
             ),
           ),

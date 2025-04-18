@@ -3,16 +3,16 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
 import '../actions/action.dart';
 
-enum NPCIcon { unknown, identified, alert }
+enum NPCIcon { unknown, identified, nearby }
 
 class Npc {
   final String name;
   final String prompt;
-  final String imageAsset;
+  String imageAsset;
+  final String unknownImageAsset = "images/unknown.png";
   LatLng position;
-  late NPCIcon icon;
-  late String displayName;
   bool isVisible;
+  bool isRevealed;
   double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
@@ -20,18 +20,18 @@ class Npc {
 
   List<Action> actions = [];
 
+
+
   Npc({
     required this.name,
+    required this.imageAsset,
     required this.prompt,
     required this.position,
     required this.actions,
     required this.isVisible,
-    required this.imageAsset,
-    Conversation? currentConversation,
+    required this.isRevealed,
   }) {
     this.currentConversation = Conversation(this);
-    this.displayName = name;
-    this.icon = NPCIcon.unknown;
   }
 
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
@@ -49,13 +49,46 @@ class Npc {
         ),
         prompt: promptText,
         imageAsset: json['image'],
-        isVisible: json['visible'] as bool,
+        isVisible: json['visible'] as bool? ?? true,
+        isRevealed: json['revealed'] as bool? ?? false,
         actions: actions,
       );
     }catch (e, stack) {
       print('❌ Fehler im Json der Npcs:\n$e\n$stack');
       rethrow;
     }
+  }
+
+  void appear() {
+    isVisible = true;
+  }
+
+  void reveal() {
+    isVisible = true;
+    isRevealed = true;
+  }
+
+  String get displayImageAsset {
+    return isRevealed ? imageAsset : unknownImageAsset;
+  }
+  String get displayName {
+    return isRevealed ? name : "Unbekannt";
+  }
+
+  NPCIcon get icon {
+
+    if (isVisible) {
+      if (isRevealed) {
+        if (canCommunicate()) {
+          return NPCIcon.nearby;
+        } else {
+          return NPCIcon.identified;
+        }
+      } else {
+        return NPCIcon.unknown;
+      }
+    }
+    return NPCIcon.unknown;
   }
 
   bool canCommunicate()

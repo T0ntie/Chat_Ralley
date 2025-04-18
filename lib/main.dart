@@ -12,9 +12,17 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env"); // lädt die .env-Datei
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Nur Hochformat erlauben
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const MyApp());
 }
 

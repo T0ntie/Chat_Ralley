@@ -1,5 +1,6 @@
 import 'walk_action.dart';
 import 'appear_action.dart';
+import 'reveal_action.dart';
 import '../engine/npc.dart';
 
 abstract class Action{
@@ -18,6 +19,8 @@ abstract class Action{
           return WalkAction.fromJson(json);
         case 'appear':
           return AppearAction.fromJson(json);
+        case 'reveal':
+          return RevealAction.fromJson(json);
         default:
         throw Exception('❌ Unknown action type in Action Json: $actionType');
       }

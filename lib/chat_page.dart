@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hello_world/engine/game_engine.dart';
 import 'engine/npc.dart';
 import 'engine/conversation.dart';
+import 'gui/snack_bar_service.dart';
 
 class ChatPage extends StatefulWidget {
   ChatPage({super.key, required this.npc,});
@@ -42,10 +43,7 @@ class _ChatPageState extends State<ChatPage> {
         _conversation.addAssistantMessage(response);
       });
     } catch (e) {
-      print('❌ Kommunikation mit Chat GPT fehlgeschlagen.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('❌ Kommunikation mit Chat GPT fehlgeschlagen.')),
-      );
+      SnackBarService.showErrorSnackBar(context, '❌ Kommunikation mit Chat GPT fehlgeschlagen.');
     } finally {
       setState(() {
         _isSending = false;
@@ -90,7 +88,7 @@ class _ChatPageState extends State<ChatPage> {
     final messages = _conversation.getVisibleMessages();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Kommuniziere mit ${widget.npc.name}"),
+        title: Text(widget.npc.displayName),
       ),
       body: Column(
         children: [

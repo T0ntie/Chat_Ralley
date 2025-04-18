@@ -14,8 +14,8 @@
         "params" : { "lat": 47.417, "lng": 13.64 }
       },
       {
-        "onSignal" : "bozziAppears",
-        "invokeAction" : "appear",
+        "onSignal" : "bozzi",
+        "invokeAction" : "reveal",
         "params" : {}
       }
     ]
@@ -26,7 +26,13 @@
     "prompt": "prompts/knatterbach-prompt.txt",
     "image" : "images/knatterbach.png",
     "visible" : true,
-    "actions":[]
+    "actions":[
+      {
+        "onSignal" : "knatterbachDebut",
+        "invokeAction" : "reveal",
+        "params" : {}
+      }
+    ]
   },
 
   {
