@@ -12,7 +12,6 @@ abstract class Action{
 
   static Future<Action> fromJsonAsync(Map<String, dynamic> json) async{
     try {
-      final signal = json['onSignal'];
       final actionType = json['invokeAction'];
       switch (actionType) {
         case 'walkTo':

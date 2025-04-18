@@ -5,6 +5,7 @@ import 'services/compass_service.dart';
 import 'chat_page.dart';
 import 'engine/npc.dart';
 import 'engine/game_engine.dart';
+import 'gui/snack_bar_service.dart';
 import 'resources.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -84,10 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _gameInitialized = true;
       _checkIfInitializationCompleted();
     } catch (e) {
-      print('❌ Laden der Story fehlgeschlagen.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('❌ Laden der Story fehlgeschlagen.')),
-      );
+      SnackBarService.showErrorSnackBar(context, '❌ Laden der Story fehlgeschlagen.');
     }
   }
 
@@ -105,14 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       await LocationService.initialize();
     } catch (e) {
-      print('❌ Initialisieren der Standortbestimmung fehlgeschlagen.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '❌ Initialisieren der Standortbestimmung fehlgeschlagen.',
-          ),
-        ),
-      );
+      SnackBarService.showErrorSnackBar(context, '❌ Initialisieren der Standortbestimmung fehlgeschlagen.');
     } // Warten bis der Stream bereit ist
     _positionSubscription = LocationService.getPositionStream().listen((
       Position position,
@@ -144,10 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       });
     } catch (e) {
-      print('❌ Initialisieren des Karte fehlgeschlagen.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('❌ Initialisieren des Karte fehlgeschlagen.')),
-      );
+      SnackBarService.showErrorSnackBar(context, '❌ Initialisieren des Karte fehlgeschlagen.');
     } //
   }
 
@@ -155,10 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       CompassService.initialize();
     } catch (e) {
-      print('❌ Initialisieren des Kompass fehlgeschlagen.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('❌ Initialisieren des Kompass fehlgeschlagen.')),
-      );
+      SnackBarService.showErrorSnackBar(context, '❌ Initialisieren des Kompass fehlgeschlagen.');
     } //
     _compassSubscription = CompassService.getCompassDirection().listen((
       heading,
@@ -193,70 +178,6 @@ class _MyHomePageState extends State<MyHomePage> {
           return NpcInfoDialog(npc: npc);
         });
   }
-/*  // Dialog anzeigen, wenn der Marker angetippt wird
-  void _showNPCInfo(BuildContext context, Npc npc) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('NPC Info'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Name: ${npc.displayName}'),
-              Text(
-                'Position:${npc.position.latitude.toStringAsFixed(3)}, ${npc.position.longitude.toStringAsFixed(3)}',
-              ),
-              Text(
-                //'Distance: ${Distance().as(LengthUnit.Meter, _location, npc.position).toStringAsFixed(1)} meters',
-                'Distance: ${npc.currentDistance} meters',
-              ),
-              SizedBox(height: 10),
-              if (!npc.canCommunicate())
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    "Komm näher, um mit ${npc.displayName} zu kommunizieren.",
-                    style: TextStyle(color: Colors.grey[600]),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-            ],
-          ),
-          actions: <Widget>[
-            Tooltip(
-              message:
-                  "Du musst näher kommen, um mit ${npc.displayName} kommunizieren zu können.",
-              child: TextButton(
-                child: Text('Chat starten'),
-                onPressed:
-                    npc.canCommunicate()
-                        ? () {
-                          Navigator.of(
-                            context,
-                          ).pop(); // Erst den Dialog schließen
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChatPage(npc: npc),
-                            ),
-                          );
-                        }
-                        : null,
-              ),
-            ),
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Dialog schließen
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }*/
-
   Marker buildLocationMarker() {
     return (Marker(
       point: _location,

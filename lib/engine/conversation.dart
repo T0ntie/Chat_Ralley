@@ -97,6 +97,7 @@ static String _filterMessage(String rawText) {
     return null;
   }
 
+/*
 static Map<String, dynamic>? _extractSignal(String rawText) {
   final regex = RegExp(r'<json-signal>\s*([\s\S]*?)\s*<\/json-signal>', multiLine: true);
   final match = regex.firstMatch(rawText);
@@ -110,6 +111,7 @@ static Map<String, dynamic>? _extractSignal(String rawText) {
   }
   return null;
 }
+*/
 
 // Getter für "fromUser"
 bool get fromUser => chatRole == ChatRole.user;
