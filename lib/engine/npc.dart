@@ -17,7 +17,7 @@ class Npc {
   bool isMoving = false;
   late LatLng toPosition;
   DateTime lastPositionUpdate = DateTime.now();
-  double currentDistance = double.infinity;
+  //double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
   final double conversationDistance = 20.0; //how close you need to be to communicate
@@ -77,6 +77,10 @@ class Npc {
     lastPositionUpdate = DateTime.now();
   }
 
+  double get currentDistance  {
+    return Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
+  }
+
   String get displayImageAsset {
     return isRevealed ? imageAsset : unknownImageAsset;
   }
@@ -121,11 +125,9 @@ class Npc {
     return (currentDistance < conversationDistance);
   }
 
-  //fixme mach currentDistance zum getter ohne updatePlayerPosition zu benötigen
   void updatePlayerPosition(LatLng playerPosition) {
     print("updating player position");
     this.playerPosition = playerPosition;
-    currentDistance = Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
   }
 
   void startNewConversation(Conversation conversation) {
