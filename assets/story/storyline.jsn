@@ -36,12 +36,18 @@
   },
 
   {
-    "name": "Alice",
+    "name": "Professor Dr. Theobald Knöchelbein",
     "position" : { "lat": 48.08418, "lng": 16.29050 },
-    "prompt": "prompts/bozzi-prompt.txt",
-    "image" : "images/bozzi.png",
+    "prompt": "prompts/knöchelbein-prompt.txt",
+    "image" : "images/knöchelbein.png",
     "visible" : true,
-    "actions":[]
+    "actions":[
+    {
+            "onSignal" : "knöchelbeinDebut",
+            "invokeAction" : "reveal",
+            "params" : {}
+          }
+    ]
   }
   ]
 }

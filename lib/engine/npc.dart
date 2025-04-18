@@ -1,3 +1,4 @@
+
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
@@ -13,14 +14,15 @@ class Npc {
   LatLng position;
   bool isVisible;
   bool isRevealed;
+  bool isMoving = false;
+  late LatLng toPosition;
+  DateTime lastPositionUpdate = DateTime.now();
   double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
   final double conversationDistance = 20.0; //how close you need to be to communicate
-
+  final double speed = 5 * 1000 / 3600;
   List<Action> actions = [];
-
-
 
   Npc({
     required this.name,
@@ -32,6 +34,7 @@ class Npc {
     required this.isRevealed,
   }) {
     this.currentConversation = Conversation(this);
+    this.toPosition = position;
   }
 
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
@@ -68,15 +71,37 @@ class Npc {
     isRevealed = true;
   }
 
+  void moveTo(LatLng toPosition) {
+    this.toPosition = toPosition;
+    isMoving = true;
+    lastPositionUpdate = DateTime.now();
+  }
+
   String get displayImageAsset {
     return isRevealed ? imageAsset : unknownImageAsset;
   }
   String get displayName {
     return isRevealed ? name : "Unbekannt";
   }
+  LatLng get currentPosition {
+    if (! isMoving) return position;
+
+    final now = DateTime.now();
+    final timeDiffSeconds = now.difference(lastPositionUpdate).inMilliseconds / 1000.0;
+    final distanceToTravel = speed * timeDiffSeconds;
+    final distance = const Distance().as(LengthUnit.Meter, position, toPosition!);
+    if (distanceToTravel > distance) {
+      isMoving = false;
+      position = toPosition;
+      return position;
+    }
+    final fraction = distanceToTravel/distance;
+    final newLat = position.latitude + (toPosition.latitude - position.latitude) * fraction;
+    final newLng = position.longitude + (toPosition.longitude - position.longitude) * fraction;
+    return LatLng(newLat, newLng);
+  }
 
   NPCIcon get icon {
-
     if (isVisible) {
       if (isRevealed) {
         if (canCommunicate()) {
@@ -96,10 +121,11 @@ class Npc {
     return (currentDistance < conversationDistance);
   }
 
+  //fixme mach currentDistance zum getter ohne updatePlayerPosition zu benötigen
   void updatePlayerPosition(LatLng playerPosition) {
     print("updating player position");
     this.playerPosition = playerPosition;
-    currentDistance = Distance().as(LengthUnit.Meter, position, playerPosition);
+    currentDistance = Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
   }
 
   void startNewConversation(Conversation conversation) {

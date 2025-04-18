@@ -67,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late final StreamSubscription<Position> _positionSubscription;
   late final GameEngine _gameEngine;
   List<Npc> get _npcs => _gameEngine.npcs;
+  late final Timer _updateTimer;
 
   bool _isMapHeadingBasedOrientation = false;
 
@@ -171,6 +172,15 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void initializeUpdateTimer()
+  {
+    _updateTimer = Timer.periodic(Duration(microseconds: 33), (timer) {
+      if (_initializationCompleted) {
+        setState(() {});
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -178,6 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _initializeCompassStream();
     _initializeLocationStream();
     initializeMapController();
+    initializeUpdateTimer();
   }
 
   void _showNPCInfo(BuildContext context, Npc npc) {
@@ -207,7 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
       .where((npc) => npc.isVisible)
       .map((npc) {
       return Marker(
-        point: npc.position, // Verwende die Position des NPCs
+        point: npc.currentPosition, // Verwende die Position des NPCs
         width: 170.0,
         height: 100.0,
         child: Transform.rotate(
@@ -345,6 +356,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _mapControllerSubscription.cancel();
     _compassSubscription.cancel();
     _positionSubscription.cancel();
+    _updateTimer.cancel();
     super.dispose();
   }
 }

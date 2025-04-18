@@ -1,3 +1,5 @@
+import 'package:latlong2/latlong.dart';
+
 import 'action.dart';
 import '../engine/npc.dart';
 
@@ -12,6 +14,7 @@ class WalkAction extends Action{
   void invoke(Npc npc) {
     super.invoke(npc);
     print('${npc.name} starts walking to ${lat}, ${lng}');
+    npc.moveTo(LatLng(lat, lng));
   }
 
   static WalkAction fromJson(Map<String, dynamic> json) {
