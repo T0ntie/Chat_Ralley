@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hello_world/game_engine.dart';
 import 'npc.dart';
 import 'conversation.dart';
 
 class ChatPage extends StatefulWidget {
-  ChatPage({super.key, required this.npc});
+  ChatPage({super.key, required this.npc, required this.gameEngine});
   final Npc npc;
+  final GameEngine gameEngine;
 
 
   @override
@@ -34,7 +36,7 @@ class _ChatPageState extends State<ChatPage> {
       _isSending = true;
     });
     try {
-      String response = await _conversation.ask();
+      String response = await _conversation.processConversation();
 
       setState(() {
         _conversation.addAssistantMessage(response);

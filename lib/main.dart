@@ -3,7 +3,7 @@ import 'location_service.dart';
 import 'compass_service.dart';
 import 'chat_page.dart';
 import 'npc.dart';
-import 'story_line.dart';
+import 'game_engine.dart';
 import 'resources.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final String title = "Chat Ralley";
   LatLng _location = LatLng(51.5074, -0.1278); // Beispiel für London
   bool _isLocationLoaded = false;
-  bool _backendRessourcesLoaded = false;
+  bool _gameInitialized = false;
   bool _initializationCompleted = false;
 
   double _currentHeading = 0.0;
@@ -55,8 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
   late final StreamSubscription<MapEvent> _mapControllerSubscription;
   late final StreamSubscription<double> _compassSubscription;
   late final StreamSubscription<Position> _positionSubscription;
-  late final StoryLine _storyLine;
-  List<Npc> _nPCs = [];
+  late final GameEngine _gameEngine;
+  List<Npc> get _npcs => _gameEngine.npcs;
 
   bool _isMapHeadingBasedOrientation = false;
 
@@ -74,11 +74,13 @@ class _MyHomePageState extends State<MyHomePage> {
     _currentMapRotation = 0;
   }
 
-  Future<void> _loadBackendResources() async {
+  Future<void> _initializeGame() async {
     try {
-      _storyLine = await StoryLine.loadStoryLine();
-      _nPCs = _storyLine.npcs;
-      _backendRessourcesLoaded = true;
+      //_storyLine = await StoryLine.loadStoryLine();
+      //_nPCs = _storyLine.npcs;
+      _gameEngine = GameEngine.instance;
+      await _gameEngine.initializeGame();
+      _gameInitialized = true;
       _checkIfInitializationCompleted();
     } catch (e) {
       print('❌ Laden der Story fehlgeschlagen.');
@@ -89,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _checkIfInitializationCompleted() {
-    if (_backendRessourcesLoaded &&
+    if (_gameInitialized &&
         _isLocationLoaded &&
         !_initializationCompleted) {
       setState(() {
@@ -119,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // Verwende setState, um den Zustand zu ändern und die UI zu aktualisieren
       _location = LatLng(position.latitude, position.longitude);
 
-      for (final npc in _nPCs) {
+      for (final npc in _npcs) {
         npc.updatePlayerPosition(_location);
       }
       //print("all npcs should be updated");
@@ -178,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _loadBackendResources();
+    _initializeGame();
     _initializeCompassStream();
     _initializeLocationStream();
     initializeMapController();
@@ -229,7 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChatPage(npc: npc),
+                              builder: (context) => ChatPage(npc: npc, gameEngine: _gameEngine),
                             ),
                           );
                         }
@@ -265,7 +267,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<Marker> buildNPCMarkers() {
-    return _nPCs.map((npc) {
+    return _npcs
+      .where((npc) => npc.isVisible)
+      .map((npc) {
       return Marker(
         point: npc.position, // Verwende die Position des NPCs
         width: 170.0,
@@ -294,7 +298,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ChatPage(npc: npc),
+                          builder: (context) => ChatPage(npc: npc, gameEngine: _gameEngine,),
                         ),
                       );
                     },
@@ -381,7 +385,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatPage(npc: _nPCs[0]),
+                  builder: (context) => ChatPage(npc: _npcs[0], gameEngine: _gameEngine,),
                 ),
               );
             },

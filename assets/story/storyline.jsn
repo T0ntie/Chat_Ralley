@@ -4,12 +4,35 @@
   "npcs": [ {
     "name": "Bozzi",
     "position" : { "lat": 47.4141605, "lng": 13.6381008 },
-    "prompt": "prompts/bozzi-prompt.txt"
+    "prompt": "prompts/bozzi-prompt.txt",
+    "visible" : false,
+    "actions": [
+      {
+        "onSignal" : "leadingToBone",
+        "invokeAction" : "walkTo",
+        "params" : { "lat": 47.417, "lng": 13.64 }
+      },
+      {
+        "onSignal" : "bozziAppears",
+        "invokeAction" : "appear",
+        "params" : {}
+      }
+    ]
   },
+  {
+    "name": "Kommissar Knatterbach",
+    "position" : { "lat": 47.4141705, "lng": 13.6382008 },
+    "prompt": "prompts/knatterbach-prompt.txt",
+    "visible" : true,
+    "actions":[]
+  },
+
   {
     "name": "Alice",
     "position" : { "lat": 48.08418, "lng": 16.29050 },
-    "prompt": "prompts/bozzi-prompt.txt"
+    "prompt": "prompts/bozzi-prompt.txt",
+    "visible" : true,
+    "actions":[]
   }
   ]
 }

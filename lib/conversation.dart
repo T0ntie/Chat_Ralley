@@ -1,3 +1,5 @@
+import 'package:hello_world/game_engine.dart';
+
 import 'chat_service.dart';
 import 'npc.dart';
 import 'dart:convert';
@@ -23,18 +25,24 @@ class Conversation {
   }
   void addAssistantMessage(String message)
   {
-    _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.assistant));
+    final ChatMessage chatMessage = ChatMessage(rawText: message, chatRole: ChatRole.assistant);
+     _messages.add(chatMessage);
+     if (chatMessage.signalString != null) {
+       GameEngine.instance.registerSignal(chatMessage.signalString!);
+     }
   }
   void addSystemMessage(String message)
   {
     _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.system));
   }
 
+/*
   void addMessage(ChatMessage message) {
     _messages.add(message);
   }
+*/
 
-  Future<String> ask() async
+  Future<String> processConversation() async
   {
     return await ChatService.processMessages(_toOpenAIMessages ());
   }
@@ -56,15 +64,14 @@ static const systemRole = "system";
 
 final String rawText; // die komplette Message, wie sie Chat-GPT bekommt (inklusive JSON Signale)
 final String filteredText; //alle Singale rausgefiltert, so wie sie dem Benutzer angezeigt wird
-final Map<String, dynamic>? signal; // das extrahierte JSON Signal
-
-
+//final Map<String, dynamic>? signal; // das extrahierte JSON Signal
+final String? signalString;
 
 final ChatRole chatRole;
 ChatMessage({required this.rawText, required this.chatRole}): filteredText = _filterMessage(rawText),
-  signal = _extractSignal(rawText) {
-  if (chatRole == ChatRole.assistant && signal != null) {
-    print("✅ Signal gefunden: $signal");
+      signalString = (chatRole == ChatRole.assistant) ? _extractSignalStatus(rawText) : null {
+  if (chatRole == ChatRole.assistant ) {
+    print("✅ Signal gefunden: $signalString");
   }
 }
 
@@ -73,6 +80,22 @@ static String _filterMessage(String rawText) {
   final regex = RegExp(r'<json-signal>\s*([\s\S]*?)\s*<\/json-signal>', multiLine: true);
   return rawText.replaceAll(regex, '').trim();
 }
+
+  static String? _extractSignalStatus(String rawText) {
+    final regex = RegExp(r'<json-signal>\s*([\s\S]*?)\s*<\/json-signal>', multiLine: true);
+    final match = regex.firstMatch(rawText);
+
+    if (match != null) {
+      final jsonString = match.group(1);
+      try {
+        final Map<String, dynamic> decoded = jsonDecode(jsonString!);
+        return decoded['status']?.toString(); // falls 'status' existiert
+      } catch (_) {
+        return null;
+      }
+    }
+    return null;
+  }
 
 static Map<String, dynamic>? _extractSignal(String rawText) {
   final regex = RegExp(r'<json-signal>\s*([\s\S]*?)\s*<\/json-signal>', multiLine: true);
