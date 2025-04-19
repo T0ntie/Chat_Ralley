@@ -5,18 +5,17 @@ import 'engine/conversation.dart';
 import 'gui/snack_bar_service.dart';
 
 class ChatPage extends StatefulWidget {
-  ChatPage({super.key, required this.npc,});
+  ChatPage({super.key, required this.npc});
+
   final Npc npc;
   final GameEngine gameEngine = GameEngine.instance;
-
 
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-
-  late  Conversation _conversation;
+  late Conversation _conversation;
 
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -29,7 +28,7 @@ class _ChatPageState extends State<ChatPage> {
     _triggerInitiativeStart();
   }
 
-  void _triggerInitiativeStart() async{
+  void _triggerInitiativeStart() async {
     setState(() {
       _isSending = true;
     });
@@ -57,7 +56,10 @@ class _ChatPageState extends State<ChatPage> {
         _conversation.addAssistantMessage(response);
       });
     } catch (e) {
-      SnackBarService.showErrorSnackBar(context, '❌ Kommunikation mit Chat GPT fehlgeschlagen.');
+      SnackBarService.showErrorSnackBar(
+        context,
+        '❌ Kommunikation mit Chat GPT fehlgeschlagen.',
+      );
     } finally {
       setState(() {
         _isSending = false;
@@ -67,19 +69,21 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildMessageBubble(ChatMessage msg) {
-    final alignment = msg.fromUser ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+    final alignment =
+        msg.fromUser ? CrossAxisAlignment.end : CrossAxisAlignment.start;
     final color = msg.fromUser ? Colors.green[200] : Colors.grey[300];
-    final radius = msg.fromUser
-        ? BorderRadius.only(
-      topLeft: Radius.circular(12),
-      topRight: Radius.circular(12),
-      bottomLeft: Radius.circular(12),
-    )
-        : BorderRadius.only(
-      topLeft: Radius.circular(12),
-      topRight: Radius.circular(12),
-      bottomRight: Radius.circular(12),
-    );
+    final radius =
+        msg.fromUser
+            ? BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
+              bottomLeft: Radius.circular(12),
+            )
+            : BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
+              bottomRight: Radius.circular(12),
+            );
 
     return Column(
       crossAxisAlignment: alignment,
@@ -87,10 +91,7 @@ class _ChatPageState extends State<ChatPage> {
         Container(
           margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: radius,
-          ),
+          decoration: BoxDecoration(color: color, borderRadius: radius),
           child: Text(msg.filteredText),
         ),
       ],
@@ -101,60 +102,74 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     final messages = _conversation.getVisibleMessages();
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.npc.displayName),
-      ),
-      body: Column(
+      appBar: AppBar(title: Text(widget.npc.displayName)),
+      body: Stack(
         children: [
-          Expanded(
-            child: ListView.builder(
-              reverse: true,
-              padding: EdgeInsets.all(8),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final reversedIndex = messages.length - 1 - index;
-                return _buildMessageBubble(messages[reversedIndex]);
-              },
-            ),
-          ),
-          Divider(height: 1),
-
-          Container(
-            padding: EdgeInsets.all(8),
-            color: Colors.white,
-            child: Material(
-              elevation: 4,
-              borderRadius: BorderRadius.circular(24),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Scrollbar(
-                        child: TextField(
-                          controller: _controller,
-                          scrollController: _scrollController,
-                          minLines: 1,
-                          maxLines: 5,
-                          keyboardType: TextInputType.multiline,
-                          textInputAction: TextInputAction.newline,
-                          decoration: InputDecoration(
-                            hintText: "Nachricht schreiben...",
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.send),
-                      color: Colors.green,
-                      onPressed: _isSending ?null : () => _sendMessage(_controller.text),
-                    ),
-                  ],
-                ),
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.2,
+              child: Image.asset(
+                'assets/story/${widget.npc.displayImageAsset}',
+                fit: BoxFit.cover,
               ),
             ),
+          ),
+          Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  reverse: true,
+                  padding: EdgeInsets.all(8),
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final reversedIndex = messages.length - 1 - index;
+                    return _buildMessageBubble(messages[reversedIndex]);
+                  },
+                ),
+              ),
+              Divider(height: 1),
+
+              Container(
+                padding: EdgeInsets.all(8),
+                color: Colors.white,
+                child: Material(
+                  elevation: 4,
+                  borderRadius: BorderRadius.circular(24),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Scrollbar(
+                            child: TextField(
+                              controller: _controller,
+                              scrollController: _scrollController,
+                              minLines: 1,
+                              maxLines: 5,
+                              keyboardType: TextInputType.multiline,
+                              textInputAction: TextInputAction.newline,
+                              decoration: InputDecoration(
+                                hintText: "Nachricht schreiben...",
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.send),
+                          color: Colors.green,
+                          onPressed:
+                              _isSending
+                                  ? null
+                                  : () => _sendMessage(_controller.text),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -167,5 +182,4 @@ class _ChatPageState extends State<ChatPage> {
     _scrollController.dispose();
     super.dispose();
   }
-
 }

@@ -11,6 +11,7 @@
       "prompt": "prompts/system-prompt.txt",
       "image": "images/system.png",
       "visible": false,
+      "revealed": true,
       "actions": []
     },
     {
