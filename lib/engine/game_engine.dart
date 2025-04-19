@@ -1,6 +1,6 @@
 import 'story_line.dart';
 import 'npc.dart';
-import '../actions/action.dart';
+import '../actions/npc_action.dart';
 
 class GameEngine
 {
@@ -9,7 +9,7 @@ class GameEngine
 
   late final StoryLine storyLine;
   List<Npc> get npcs => storyLine.npcs;
-  final Map<String, List<(Npc, Action)>> _signalSubscriptions = {};
+  final Map<String, List<(Npc, NpcAction)>> _signalSubscriptions = {};
 
   GameEngine._internal();
 

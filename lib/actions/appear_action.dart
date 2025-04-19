@@ -1,7 +1,7 @@
-import 'action.dart';
+import 'npc_action.dart';
 import '../engine/npc.dart';
 
-class AppearAction extends Action{
+class AppearAction extends NpcAction{
 
   AppearAction({required String signal}) : super(signal: signal);
 

@@ -1,9 +1,9 @@
 import 'package:latlong2/latlong.dart';
 
-import 'action.dart';
+import 'npc_action.dart';
 import '../engine/npc.dart';
 
-class WalkAction extends Action{
+class WalkAction extends NpcAction{
 
   final double lat;
   final double lng;

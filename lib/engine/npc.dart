@@ -2,7 +2,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
-import '../actions/action.dart';
+import '../actions/npc_action.dart';
 
 enum NPCIcon { unknown, identified, nearby, unknown_nearby }
 
@@ -14,7 +14,9 @@ class Npc {
   LatLng position;
   bool isVisible;
   bool isRevealed;
+  bool isInitiative;
   bool isMoving = false;
+  bool isFollowing = false;
   late LatLng toPosition;
   DateTime lastPositionUpdate = DateTime.now();
   //double currentDistance = double.infinity;
@@ -22,7 +24,7 @@ class Npc {
   late Conversation currentConversation;
   final double conversationDistance = 20.0; //how close you need to be to communicate
   final double speed = 5 * 1000 / 3600;
-  List<Action> actions = [];
+  List<NpcAction> actions = [];
 
   Npc({
     required this.name,
@@ -32,6 +34,7 @@ class Npc {
     required this.actions,
     required this.isVisible,
     required this.isRevealed,
+    required this.isInitiative,
   }) {
     this.currentConversation = Conversation(this);
     this.toPosition = position;
@@ -43,7 +46,7 @@ class Npc {
       final promptText = await rootBundle.loadString(
           'assets/story/${promptFile}');
       final actionsJson = json['actions'] as List;
-      final actions = await Future.wait(actionsJson.map((a) => Action.fromJsonAsync(a)));
+      final actions = await Future.wait(actionsJson.map((a) => NpcAction.fromJsonAsync(a)));
       return Npc(
         name: json['name'],
         position: LatLng(
@@ -54,6 +57,7 @@ class Npc {
         imageAsset: json['image'],
         isVisible: json['visible'] as bool? ?? true,
         isRevealed: json['revealed'] as bool? ?? false,
+        isInitiative: json['initiative'] as bool? ?? false,
         actions: actions,
       );
     }catch (e, stack) {
@@ -77,6 +81,13 @@ class Npc {
     lastPositionUpdate = DateTime.now();
   }
 
+  void startFollowing() {
+    this.toPosition = playerPosition;
+    isFollowing = true;
+    isMoving = true;
+    lastPositionUpdate = DateTime.now();
+  }
+
   double get currentDistance  {
     return Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
   }
@@ -88,12 +99,12 @@ class Npc {
     return isRevealed ? name : "Unbekannt";
   }
   LatLng get currentPosition {
-    if (! isMoving) return position;
+    if (!isMoving) return position;
 
     final now = DateTime.now();
     final timeDiffSeconds = now.difference(lastPositionUpdate).inMilliseconds / 1000.0;
     final distanceToTravel = speed * timeDiffSeconds;
-    final distance = const Distance().as(LengthUnit.Meter, position, toPosition!);
+    final distance = const Distance().as(LengthUnit.Meter, position, toPosition);
     if (distanceToTravel > distance) {
       isMoving = false;
       position = toPosition;
@@ -128,9 +139,9 @@ class Npc {
   void updatePlayerPosition(LatLng playerPosition) {
     print("updating player position");
     this.playerPosition = playerPosition;
-  }
-
-  void startNewConversation(Conversation conversation) {
-    currentConversation = conversation;
+    if (isFollowing) {
+      lastPositionUpdate = DateTime.now();
+      toPosition = this.playerPosition;
+    }
   }
 }

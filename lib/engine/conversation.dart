@@ -10,15 +10,28 @@ class Conversation {
 
   Conversation(this.npc) {
     addSystemMessage(npc.prompt);
-}
+  }
+
+  Future<void> initiateConversationIfAppropriate() async{
+    if (npc.isInitiative && getVisibleMessages().isEmpty) {
+      addHiddenMessage("Servas Oida!");
+      String greeting = await processConversation();
+      print('reveived a greeting: ${greeting}');
+      addAssistantMessage(greeting);
+    }
+  }
+
 
   List<ChatMessage> getMessages() {
     return List.unmodifiable(_messages); // Unmodifiable List zurückgeben
   }
   List<ChatMessage> getVisibleMessages() {
-    return List.unmodifiable(_messages.where((msg) => !msg.fromSystem));
+    return List.unmodifiable(_messages.where((msg) => (!msg.fromSystem && !msg.isHidden)));
   }
 
+  void addHiddenMessage(String message){
+    _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.user, isHidden: true));
+  }
   void addUserMessage(String message)
   {
     _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.user));
@@ -35,12 +48,6 @@ class Conversation {
   {
     _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.system));
   }
-
-/*
-  void addMessage(ChatMessage message) {
-    _messages.add(message);
-  }
-*/
 
   Future<String> processConversation() async
   {
@@ -66,9 +73,10 @@ final String rawText; // die komplette Message, wie sie Chat-GPT bekommt (inklus
 final String filteredText; //alle Singale rausgefiltert, so wie sie dem Benutzer angezeigt wird
 //final Map<String, dynamic>? signal; // das extrahierte JSON Signal
 final String? signalString;
+bool isHidden;
 
 final ChatRole chatRole;
-ChatMessage({required this.rawText, required this.chatRole}): filteredText = _filterMessage(rawText),
+ChatMessage({required this.rawText, required this.chatRole, this.isHidden = false}): filteredText = _filterMessage(rawText),
       signalString = (chatRole == ChatRole.assistant) ? _extractSignalStatus(rawText) : null {
   if (chatRole == ChatRole.assistant ) {
     print("✅ Signal gefunden: $signalString");
@@ -96,22 +104,6 @@ static String _filterMessage(String rawText) {
     }
     return null;
   }
-
-/*
-static Map<String, dynamic>? _extractSignal(String rawText) {
-  final regex = RegExp(r'<json-signal>\s*([\s\S]*?)\s*<\/json-signal>', multiLine: true);
-  final match = regex.firstMatch(rawText);
-  if (match != null) {
-    final jsonString = match.group(1);
-    try {
-      return jsonDecode(jsonString!);
-    } catch (_) {
-      return null;
-    }
-  }
-  return null;
-}
-*/
 
 // Getter für "fromUser"
 bool get fromUser => chatRole == ChatRole.user;

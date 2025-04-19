@@ -1,7 +1,7 @@
-import 'action.dart';
+import 'npc_action.dart';
 import '../engine/npc.dart';
 
-class RevealAction extends Action{
+class RevealAction extends NpcAction{
 
   RevealAction({required String signal}) : super(signal: signal);
 

@@ -1,22 +1,25 @@
 import 'walk_action.dart';
 import 'appear_action.dart';
 import 'reveal_action.dart';
+import 'follow_action.dart';
 import '../engine/npc.dart';
 
-abstract class Action{
+abstract class NpcAction{
   final String signal;
   void invoke(Npc npc) {
     print('invoke für ${npc.name} aufgerufen');
   }
 
-  Action({required this.signal});
+  NpcAction({required this.signal});
 
-  static Future<Action> fromJsonAsync(Map<String, dynamic> json) async{
+  static Future<NpcAction> fromJsonAsync(Map<String, dynamic> json) async{
     try {
       final actionType = json['invokeAction'];
       switch (actionType) {
         case 'walkTo':
           return WalkAction.fromJson(json);
+        case 'follow':
+          return FollowAction.fromJson(json);
         case 'appear':
           return AppearAction.fromJson(json);
         case 'reveal':

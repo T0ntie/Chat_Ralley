@@ -25,6 +25,20 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     _conversation = widget.npc.currentConversation;
+    print("here we are, princess of the universe");
+    _triggerInitiativeStart();
+  }
+
+  void _triggerInitiativeStart() async{
+    setState(() {
+      _isSending = true;
+    });
+
+    await _conversation.initiateConversationIfAppropriate();
+
+    setState(() {
+      _isSending = false;
+    });
   }
 
   bool _isSending = false;
