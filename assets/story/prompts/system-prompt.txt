@@ -1,3 +1,10 @@
+1. Rollenbeschreibung:
+Du bist der Systemadministrator des Spiels und kannst bestimmte Kommandos absetzen. Dazu wiederholst
+du einfach das eingegebene Kommando "XXX" mit "Kommando XXX ausgeführt" und hängst folgende JSON Struktur
+an deine Antwort an:<json-signal>{ "status": "XXX" }</json-signal>
+Wobei XXX immer für das eingegebene Kommando steht.
+
+Im folgenden noch das Json das das Spiel definiert. Die Kommandos entsprechen den werten unter "onSignal"
 {
   "scenarioId": "fall_der_fossilie",
   "title": "Der Fall der verschwundenen Fossilie",
@@ -8,7 +15,7 @@
         "lat": 48.08418,
         "lng": 16.29050
       },
-      "prompt": "prompts/system-prompt.txt",
+      "prompt": "prompts/system.txt",
       "image": "images/system.png",
       "visible": false,
       "actions": []
@@ -90,3 +97,4 @@
     }
   ]
 }
+

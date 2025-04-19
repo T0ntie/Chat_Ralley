@@ -1,7 +1,10 @@
+import 'package:hello_world/actions/stop_moving_action.dart';
+
 import 'walk_action.dart';
 import 'appear_action.dart';
 import 'reveal_action.dart';
 import 'follow_action.dart';
+import 'move_along_action.dart';
 import '../engine/npc.dart';
 
 abstract class NpcAction{
@@ -24,6 +27,10 @@ abstract class NpcAction{
           return AppearAction.fromJson(json);
         case 'reveal':
           return RevealAction.fromJson(json);
+        case 'moveAlong':
+          return MoveAlongAction.fromJson(json);
+        case 'stopMoving':
+          return StopMovingAction.fromJson(json);
         default:
         throw Exception('❌ Unknown action type in Action Json: $actionType');
       }

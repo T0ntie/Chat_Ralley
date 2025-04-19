@@ -18,6 +18,7 @@ class Npc {
   bool isMoving = false;
   bool isFollowing = false;
   late LatLng toPosition;
+  List <LatLng> movementPath = [];
   DateTime lastPositionUpdate = DateTime.now();
   //double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
@@ -78,14 +79,31 @@ class Npc {
   void moveTo(LatLng toPosition) {
     this.toPosition = toPosition;
     isMoving = true;
+    isFollowing = false;
+    lastPositionUpdate = DateTime.now();
+  }
+
+  void moveAlong(List<LatLng> path) {
+    movementPath = List.from(path);
+    this.toPosition = movementPath.removeAt(0);
+    isMoving = true;
+    isFollowing = false;
     lastPositionUpdate = DateTime.now();
   }
 
   void startFollowing() {
     this.toPosition = playerPosition;
+    this.movementPath = [];
     isFollowing = true;
     isMoving = true;
     lastPositionUpdate = DateTime.now();
+  }
+
+  void stopMoving() {
+    position = currentPosition;
+    isFollowing = false;
+    isMoving = false;
+    this.movementPath = [];
   }
 
   double get currentDistance  {
@@ -98,22 +116,39 @@ class Npc {
   String get displayName {
     return isRevealed ? name : "Unbekannt";
   }
+
   LatLng get currentPosition {
     if (!isMoving) return position;
-
     final now = DateTime.now();
     final timeDiffSeconds = now.difference(lastPositionUpdate).inMilliseconds / 1000.0;
     final distanceToTravel = speed * timeDiffSeconds;
     final distance = const Distance().as(LengthUnit.Meter, position, toPosition);
+
     if (distanceToTravel > distance) {
-      isMoving = false;
       position = toPosition;
+      if (movementPath.isNotEmpty){
+        toPosition = movementPath.removeAt(0);
+        lastPositionUpdate = now;
+        return currentPosition; //rekursiver Aufruf
+      }
+      isMoving = false;
       return position;
     }
     final fraction = distanceToTravel/distance;
     final newLat = position.latitude + (toPosition.latitude - position.latitude) * fraction;
     final newLng = position.longitude + (toPosition.longitude - position.longitude) * fraction;
-    return LatLng(newLat, newLng);
+    final interpolatedPosition = LatLng(newLat, newLng);
+
+    //wenn npc nahe genug beim player ist bleibt er stehen
+    if (isFollowing) {
+      final distanceToPlayer = const Distance().as(LengthUnit.Meter, interpolatedPosition, playerPosition);
+      if (distanceToPlayer < 5.0) {
+        isMoving = false;
+        position = interpolatedPosition;
+        return interpolatedPosition;
+      }
+    }
+    return interpolatedPosition;
   }
 
   NPCIcon get icon {
@@ -140,8 +175,11 @@ class Npc {
     print("updating player position");
     this.playerPosition = playerPosition;
     if (isFollowing) {
-      lastPositionUpdate = DateTime.now();
-      toPosition = this.playerPosition;
+      if (currentDistance > 5.0) {
+        lastPositionUpdate = DateTime.now();
+        toPosition = this.playerPosition;
+        isMoving = true;
+      }
     }
   }
 }

@@ -71,7 +71,6 @@ static const systemRole = "system";
 
 final String rawText; // die komplette Message, wie sie Chat-GPT bekommt (inklusive JSON Signale)
 final String filteredText; //alle Singale rausgefiltert, so wie sie dem Benutzer angezeigt wird
-//final Map<String, dynamic>? signal; // das extrahierte JSON Signal
 final String? signalString;
 bool isHidden;
 
