@@ -181,6 +181,15 @@ class _ChatPageState extends State<ChatPage> {
               _buildInputBar(),
             ],
           ),
+          if (_isSending)
+            Positioned.fill(
+              child: Container(
+                color: Colors.white.withAlpha((0.6 * 255).toInt()),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
         ],
       ),
     );
