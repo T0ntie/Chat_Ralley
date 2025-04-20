@@ -23,7 +23,7 @@
       "prompt": "prompts/bozzi-prompt.txt",
       "image": "images/bozzi.png",
       "visible": true,
-      "speed" : 10,
+      "speed": 10,
       "actions": [
         {
           "onApproach": "leadToBone",
@@ -54,11 +54,11 @@
           "params": {}
         },
         {
-           "onSignal": "bozziTalk",
-           "invokeAction": "talk",
-           "params": {
-                "trigger" : "[Der Spieler erscheint]"
-           }
+          "onSignal": "bozziTalk",
+          "invokeAction": "talk",
+          "params": {
+            "trigger": "[Der Spieler erscheint]"
+          }
         }
       ]
     },
@@ -73,15 +73,15 @@
       "visible": true,
       "actions": [
         {
-           "onInteraction": null,
-           "invokeAction": "reveal"
+          "onInteraction": null,
+          "invokeAction": "reveal"
         },
         {
-           "onInteraction": null,
-           "invokeAction": "talk",
-           "params": {
-                "trigger" : "[Der Spieler sieht dich freundlich an]"
-           }
+          "onInteraction": null,
+          "invokeAction": "talk",
+          "params": {
+            "trigger": "[Der Spieler sieht dich freundlich an]"
+          }
         }
       ]
     },
@@ -89,7 +89,7 @@
       "name": "Professor Dr. Theobald Knöchelbein",
       "position": {
         "lat": 47.414665,
-         "lng": 13.638239
+        "lng": 13.638239
       },
       "prompt": "prompts/knöchelbein-prompt.txt",
       "image": "images/knöchelbein.png",
@@ -101,6 +101,26 @@
           "params": {}
         }
       ]
+    }
+  ],
+  "hotspots": [
+    {
+      "name": "museum",
+      "position": {
+        "lat": 47.414665,
+        "lng": 13.638239
+      },
+      "radius": 6,
+      "visible": true
+    },
+    {
+      "name": "schatz",
+      "position": {
+        "lat": 47.414365,
+        "lng": 13.637239
+      },
+      "radius": 4,
+      "visible": true
     }
   ]
 }

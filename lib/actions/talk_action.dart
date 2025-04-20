@@ -1,5 +1,3 @@
-import 'package:latlong2/latlong.dart';
-
 import 'npc_action.dart';
 import '../engine/npc.dart';
 

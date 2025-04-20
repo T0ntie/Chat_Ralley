@@ -1,5 +1,4 @@
 
-import 'package:flutter/foundation.dart';
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -51,7 +50,7 @@ class Npc {
       final promptText = await rootBundle.loadString(
           'assets/story/${promptFile}');
       final actionsJson = json['actions'] as List? ?? [];
-      final actions = actionsJson.map((a) => NpcAction.fromJsonAsync(a)).toList();
+      final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
 
       //check vor valid position
       final pos = json['position'];

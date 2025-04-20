@@ -22,8 +22,15 @@ class Resources{
     return createIconforNPC(iconType);
   }
 
-  static Icon getChatBubbleIcon()
-  {
+  static Icon getHotspotIcon()  {
+    return Icon(
+      Icons.close,
+      color: Colors.red, // Die Farbe des Pins
+      size: 30.0, // Die Größe des Markers
+    );
+  }
+
+  static Icon getChatBubbleIcon()  {
     return Icon(
       Icons.feedback,
       color: Colors.blue, // Die Farbe der Sprechblase

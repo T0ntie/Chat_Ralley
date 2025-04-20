@@ -1,6 +1,7 @@
 import 'story_line.dart';
 import 'npc.dart';
 import '../actions/npc_action.dart';
+import 'hotspot.dart';
 
 class GameEngine {
   static final GameEngine _instance = GameEngine._internal(); //Singleton
@@ -9,6 +10,7 @@ class GameEngine {
   late final StoryLine storyLine;
 
   List<Npc> get npcs => storyLine.npcs;
+  List<Hotspot> get hotspots => storyLine.hotspots;
   final Map<String, List<(Npc, NpcAction)>> _signalSubscriptions = {};
   final Map<Npc, List<NpcAction>> _interactionSubscriptions = {};
   final Map<Npc, List<NpcAction>> _approachSubscriptions = {};
@@ -36,7 +38,7 @@ class GameEngine {
           case TriggerType.approach:
             _approachSubscriptions.putIfAbsent(npc, () => []).add(action);
             print('👣 Registered aproach action for ${npc.name}');
-
+            break;
         }
       }
     }

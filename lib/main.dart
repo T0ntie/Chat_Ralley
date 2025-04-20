@@ -5,6 +5,7 @@ import 'services/compass_service.dart';
 import 'gui/chat_page.dart';
 import 'engine/npc.dart';
 import 'engine/game_engine.dart';
+import 'engine/hotspot.dart';
 import 'gui/snack_bar_service.dart';
 import 'resources.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -69,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late final StreamSubscription<Position> _positionSubscription;
   late final GameEngine _gameEngine;
   List<Npc> get _npcs => _gameEngine.npcs;
+  List<Hotspot> get _hotspots => _gameEngine.hotspots;
   late final Timer _updateTimer;
 
   bool _isMapHeadingBasedOrientation = false;
@@ -212,6 +214,35 @@ class _MyHomePageState extends State<MyHomePage> {
     ));
   }
 
+  List<Marker> buildHotspotMarkers() {
+    return _hotspots
+        .where((hotspot) => hotspot.isVisible)
+        .map((hotspot) {
+          return Marker(
+            point: hotspot.position,
+            width: 50,
+            height: 50,
+            child: Transform.rotate(
+              angle:
+              (_isMapHeadingBasedOrientation
+                  ? _currentHeading
+                  : -_currentMapRotation) *
+                  (pi / 180),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      print("🎯 Tapped on Hotspot");
+                    },
+                    child: Resources.getHotspotIcon(),//hotspot.icon
+                  ),
+                ],
+              ),
+            ),
+          );
+    }).toList();
+  }
   List<Marker> buildNPCMarkers() {
     return _npcs
       .where((npc) => npc.isVisible)
@@ -277,7 +308,7 @@ class _MyHomePageState extends State<MyHomePage> {
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         ),
-        MarkerLayer(markers: [buildLocationMarker(), ...buildNPCMarkers()]),
+        MarkerLayer(markers: [buildLocationMarker(), ...buildHotspotMarkers(), ...buildNPCMarkers(),]),
       ], // Children
     );
   }

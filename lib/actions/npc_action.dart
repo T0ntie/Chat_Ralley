@@ -44,7 +44,7 @@ abstract class NpcAction{
 
   NpcAction({required this.trigger});
 
-  static NpcAction fromJsonAsync(Map<String, dynamic> json) {
+  static NpcAction fromJson(Map<String, dynamic> json) {
     final actionType = json['invokeAction'];
     final factory = _actionRegistry[actionType];
 
