@@ -1,6 +1,6 @@
 import '../engine/npc.dart';
 import 'package:flutter/material.dart';
-import '../chat_page.dart';
+import 'chat_page.dart';
 
 class NpcInfoDialog extends StatelessWidget
 {
@@ -26,8 +26,8 @@ class NpcInfoDialog extends StatelessWidget
           Text('${npc.displayName}'),
           /*Text(
             'Position: ${npc.position.latitude.toStringAsFixed(3)}, ${npc.position.longitude.toStringAsFixed(3)}',
-          ),
-          Text('Distance: ${npc.currentDistance} meters'),*/
+          ),*/
+          Text('Entfernung: ${npc.currentDistance} Meter'),
           SizedBox(height: 10),
           if (!npc.canCommunicate())
             Padding(
