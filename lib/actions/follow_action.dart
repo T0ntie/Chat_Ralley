@@ -4,7 +4,7 @@ import '../engine/npc.dart';
 
 class FollowAction extends NpcAction{
 
-  FollowAction({required String signal}) : super(signal: signal);
+  FollowAction({required super.trigger});
 
   @override
   void invoke(Npc npc) {
@@ -14,9 +14,10 @@ class FollowAction extends NpcAction{
   }
 
   static FollowAction actionFromJson(Map<String, dynamic> json) {
-    final signal = json['onSignal'];
-    return FollowAction(signal: signal);
+    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
+    return FollowAction(trigger: actionTrigger);
   }
+  
   static void register() {
     NpcAction.registerAction('follow', FollowAction.actionFromJson);
   }

@@ -24,15 +24,16 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     _conversation = widget.npc.currentConversation;
-    _triggerInitiativeStart();
+    widget.gameEngine.registerInteraction(widget.npc);
+    _handleTriggers();
   }
 
-  void _triggerInitiativeStart() async {
+  void _handleTriggers() async {
     setState(() {
       _isSending = true;
     });
 
-    await _conversation.initiateConversationIfAppropriate();
+    await _conversation.handleTriggerMessage();
 
     if (!mounted) return;
 
@@ -52,6 +53,8 @@ class _ChatPageState extends State<ChatPage> {
     });
     try {
       String response = await _conversation.processConversation();
+
+      if (!mounted) return;
 
       setState(() {
         _conversation.addAssistantMessage(response);

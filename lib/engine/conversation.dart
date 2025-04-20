@@ -12,12 +12,11 @@ class Conversation {
     addSystemMessage(npc.prompt);
   }
 
-  Future<void> initiateConversationIfAppropriate() async{
-    if (npc.isInitiative && getVisibleMessages().isEmpty) {
-      addHiddenMessage("Servas Oida!");
-      String greeting = await processConversation();
-      print('reveived a greeting: ${greeting}');
-      addAssistantMessage(greeting);
+  Future<void> handleTriggerMessage() async{
+    if (_messages.last.isTrigger) {
+      String triggeredResponse = await processConversation();
+      print('triggered Response is ${triggeredResponse}');
+      addAssistantMessage(triggeredResponse);
     }
   }
 
@@ -26,11 +25,11 @@ class Conversation {
     return List.unmodifiable(_messages); // Unmodifiable List zurückgeben
   }
   List<ChatMessage> getVisibleMessages() {
-    return List.unmodifiable(_messages.where((msg) => (!msg.fromSystem && !msg.isHidden)));
+    return List.unmodifiable(_messages.where((msg) => (!msg.fromSystem && !msg.isTrigger)));
   }
 
-  void addHiddenMessage(String message){
-    _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.user, isHidden: true));
+  void addTriggerMessage(String message){
+    _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.user, isTrigger: true));
   }
   void addUserMessage(String message)
   {
@@ -72,10 +71,10 @@ static const systemRole = "system";
 final String rawText; // die komplette Message, wie sie Chat-GPT bekommt (inklusive JSON Signale)
 final String filteredText; //alle Singale rausgefiltert, so wie sie dem Benutzer angezeigt wird
 final String? signalString;
-bool isHidden;
+bool isTrigger;
 
 final ChatRole chatRole;
-ChatMessage({required this.rawText, required this.chatRole, this.isHidden = false}): filteredText = _filterMessage(rawText),
+ChatMessage({required this.rawText, required this.chatRole, this.isTrigger = false}): filteredText = _filterMessage(rawText),
       signalString = (chatRole == ChatRole.assistant) ? _extractSignalStatus(rawText) : null {
   if (chatRole == ChatRole.assistant && signalString != null) {
     print("✅ Signal gefunden: $signalString");

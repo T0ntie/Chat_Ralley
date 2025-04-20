@@ -235,7 +235,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: Resources.getNPCIcon(npc.icon),
               ),
-              if (npc.canCommunicate())
+              if (npc.hasSomethingToSay/*.canCommunicate()*/)
                 Positioned(
                   top: 5,
                   right: 40, // Verschieben der Sprechblase nach oben

@@ -5,11 +5,9 @@ import '../engine/npc.dart';
 
 class MoveAlongAction extends NpcAction{
 
-  //final double lat;
-  //final double lng;
   final List<LatLng> path;
 
-  MoveAlongAction({required String signal, required this.path}) : super(signal: signal);
+  MoveAlongAction({required super.trigger, required this.path});
 
   @override
   void invoke(Npc npc) {
@@ -19,15 +17,14 @@ class MoveAlongAction extends NpcAction{
   }
 
   static MoveAlongAction actionFromJson(Map<String, dynamic> json) {
-    final signal = json['onSignal'];
+    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
     final pathJson = json['params']['path'] as List;
     final path = pathJson.map((p) {
       final lat = p['lat'] as double;
       final lng = p['lng'] as double;
       return LatLng(lat, lng);
     }).toList();
-
-    return MoveAlongAction(signal: signal, path: path);
+    return MoveAlongAction(trigger: actionTrigger, path: path);
   }
 
   static void register() {

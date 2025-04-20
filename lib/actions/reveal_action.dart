@@ -3,7 +3,7 @@ import '../engine/npc.dart';
 
 class RevealAction extends NpcAction{
 
-  RevealAction({required String signal}) : super(signal: signal);
+  RevealAction({required super.trigger});
 
   @override
   void invoke(Npc npc) {
@@ -13,8 +13,8 @@ class RevealAction extends NpcAction{
   }
 
   static RevealAction actionFromJson(Map<String, dynamic> json) {
-    final signal = json['onSignal'];
-    return RevealAction(signal: signal);
+    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
+    return RevealAction(trigger: actionTrigger);
   }
   static void register() {
     NpcAction.registerAction('reveal', RevealAction.actionFromJson);

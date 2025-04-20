@@ -8,7 +8,7 @@ class WalkAction extends NpcAction{
   final double lat;
   final double lng;
 
-  WalkAction({required String signal, required this.lat, required this.lng}) : super(signal: signal);
+  WalkAction({required super.trigger, required this.lat, required this.lng});
 
   @override
   void invoke(Npc npc) {
@@ -18,11 +18,11 @@ class WalkAction extends NpcAction{
   }
 
   static WalkAction actionFromJson(Map<String, dynamic> json) {
-    final signal = json['onSignal'];
+    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
     final lat = json['params']['lat'];
     final lng = json['params']['lng'];
 
-    return WalkAction(signal: signal, lat: lat, lng: lng);
+    return WalkAction(trigger: actionTrigger, lat: lat, lng: lng);
   }
 
   static void register() {

@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
@@ -14,9 +15,9 @@ class Npc {
   LatLng position;
   bool isVisible;
   bool isRevealed;
-  bool isInitiative;
   bool isMoving = false;
   bool isFollowing = false;
+  bool hasSomethingToSay = false;
   static final followingDistance = 5.0;
   late LatLng toPosition;
   List <LatLng> movementPath = [];
@@ -36,7 +37,6 @@ class Npc {
     required this.actions,
     required this.isVisible,
     required this.isRevealed,
-    required this.isInitiative,
     required this.speed, //in km/h
   }) {
     this.currentConversation = Conversation(this);
@@ -68,7 +68,6 @@ class Npc {
         imageAsset: json['image'] as String? ?? unknownImageAsset,
         isVisible: json['visible'] as bool? ?? true,
         isRevealed: json['revealed'] as bool? ?? false,
-        isInitiative: json['initiative'] as bool? ?? false,
         speed: (json['speed'] as num?)?.toDouble() ?? 5.0,
         actions: actions,
       );
@@ -124,6 +123,13 @@ class Npc {
     isFollowing = false;
     isMoving = false;
     this.movementPath = [];
+  }
+
+  void talk(String repsondTo) async{
+    hasSomethingToSay = true;
+    currentConversation.addTriggerMessage(repsondTo);
+    final String response = await currentConversation.processConversation();
+    currentConversation.addAssistantMessage(response);
   }
 
   double get currentDistance  {

@@ -52,6 +52,13 @@
           "onSignal": "bozziStop",
           "invokeAction": "stopMoving",
           "params": {}
+        },
+        {
+           "onSignal": "bozziTalk",
+           "invokeAction": "talk",
+           "params": {
+                "trigger" : "[Der Spieler erscheint]"
+           }
         }
       ]
     },
@@ -64,20 +71,26 @@
       "prompt": "prompts/knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
       "visible": true,
-      "initiative": true,
       "actions": [
         {
-          "onSignal": "knatterbachDebut",
-          "invokeAction": "reveal",
-          "params": {}
+           "onInteraction": null,
+           "invokeAction": "reveal"
+        },
+        {
+           "onInteraction": null,
+           "invokeAction": "talk",
+           "params": {
+                "trigger" : "[Der Spieler sieht dich freundlich an]"
+           }
         }
       ]
     },
     {
       "name": "Professor Dr. Theobald Knöchelbein",
-      "position": {
-        "lat": 48.08418,
-        "lng": 16.29050
+       "position": {
+          "lat": 47.4131705,
+           "lng": 13.638308
+        },
       },
       "prompt": "prompts/knöchelbein-prompt.txt",
       "image": "images/knöchelbein.png",
