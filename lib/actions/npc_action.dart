@@ -9,34 +9,38 @@ import '../engine/npc.dart';
 
 abstract class NpcAction{
   final String signal;
+
+  static final Map<String, NpcAction Function(Map<String, dynamic>)> _actionRegistry = {};
+  static void registerAction(
+      String type,
+      NpcAction Function(Map<String, dynamic>) factory,
+      ) {
+    _actionRegistry[type] = factory;
+  }
+
   void invoke(Npc npc) {
     print('invoke für ${npc.name} aufgerufen');
   }
 
   NpcAction({required this.signal});
 
-  static Future<NpcAction> fromJsonAsync(Map<String, dynamic> json) async{
-    try {
-      final actionType = json['invokeAction'];
-      switch (actionType) {
-        case 'walkTo':
-          return WalkAction.fromJson(json);
-        case 'follow':
-          return FollowAction.fromJson(json);
-        case 'appear':
-          return AppearAction.fromJson(json);
-        case 'reveal':
-          return RevealAction.fromJson(json);
-        case 'moveAlong':
-          return MoveAlongAction.fromJson(json);
-        case 'stopMoving':
-          return StopMovingAction.fromJson(json);
-        default:
-        throw Exception('❌ Unknown action type in Action Json: $actionType');
-      }
-    }catch (e, stack) {
-      print('❌ Fehler im Json der Action:\n$e\n$stack');
-      rethrow;
+  static NpcAction fromJsonAsync(Map<String, dynamic> json) {
+    final actionType = json['invokeAction'];
+    final factory = _actionRegistry[actionType];
+
+    if (factory == null) {
+      throw Exception('❌ Unknown action type in storyline.jnsn: $actionType');
     }
+
+    return factory(json);
+  }
+
+  static void registerAllNpcActions() {
+    WalkAction.register();
+    FollowAction.register();
+    AppearAction.register();
+    RevealAction.register();
+    MoveAlongAction.register();
+    StopMovingAction.register();
   }
 }

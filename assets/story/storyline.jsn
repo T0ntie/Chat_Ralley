@@ -23,6 +23,7 @@
       "prompt": "prompts/bozzi-prompt.txt",
       "image": "images/bozzi.png",
       "visible": true,
+      "speed" : 10,
       "actions": [
         {
           "onSignal": "leadToBone",

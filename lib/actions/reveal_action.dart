@@ -12,8 +12,11 @@ class RevealAction extends NpcAction{
     npc.reveal();
   }
 
-  static RevealAction fromJson(Map<String, dynamic> json) {
+  static RevealAction actionFromJson(Map<String, dynamic> json) {
     final signal = json['onSignal'];
     return RevealAction(signal: signal);
+  }
+  static void register() {
+    NpcAction.registerAction('reveal', RevealAction.actionFromJson);
   }
 }

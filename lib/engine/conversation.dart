@@ -77,7 +77,7 @@ bool isHidden;
 final ChatRole chatRole;
 ChatMessage({required this.rawText, required this.chatRole, this.isHidden = false}): filteredText = _filterMessage(rawText),
       signalString = (chatRole == ChatRole.assistant) ? _extractSignalStatus(rawText) : null {
-  if (chatRole == ChatRole.assistant ) {
+  if (chatRole == ChatRole.assistant && signalString != null) {
     print("✅ Signal gefunden: $signalString");
   }
 }

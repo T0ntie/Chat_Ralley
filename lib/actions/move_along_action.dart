@@ -18,7 +18,7 @@ class MoveAlongAction extends NpcAction{
     npc.moveAlong(path);
   }
 
-  static MoveAlongAction fromJson(Map<String, dynamic> json) {
+  static MoveAlongAction actionFromJson(Map<String, dynamic> json) {
     final signal = json['onSignal'];
     final pathJson = json['params']['path'] as List;
     final path = pathJson.map((p) {
@@ -28,5 +28,9 @@ class MoveAlongAction extends NpcAction{
     }).toList();
 
     return MoveAlongAction(signal: signal, path: path);
+  }
+
+  static void register() {
+    NpcAction.registerAction('moveAlong', MoveAlongAction.actionFromJson);
   }
 }

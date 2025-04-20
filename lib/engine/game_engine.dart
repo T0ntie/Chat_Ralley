@@ -14,6 +14,7 @@ class GameEngine
   GameEngine._internal();
 
   Future<void> initializeGame() async {
+    NpcAction.registerAllNpcActions();
     storyLine = await StoryLine.loadStoryLine();
     for (final npc in npcs) {
       for (final action in npc.actions) {

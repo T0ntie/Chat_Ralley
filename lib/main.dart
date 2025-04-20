@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
-      home: const MyHomePage(title: 'Chat Ralleyfbuild'),
+      home: const MyHomePage(title: 'Chat Ralley'),
     );
   }
 }
@@ -52,6 +52,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  final _frameRate = Duration(microseconds: 33);
   final String title = "Chat Ralley";
   LatLng _location = LatLng(51.5074, -0.1278); // Beispiel für London
   bool _isLocationLoaded = false;
@@ -77,18 +79,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _switchMapOrientationMode() {
     _isMapHeadingBasedOrientation = !_isMapHeadingBasedOrientation;
-    print(
-      "switching map orientation to dyniamic orientation: " +
-          _isMapHeadingBasedOrientation.toString(),
-    );
     _mapController.rotate(_isMapHeadingBasedOrientation ? _currentHeading : 0);
     _currentMapRotation = 0;
   }
 
   Future<void> _initializeGame() async {
     try {
-      //_storyLine = await StoryLine.loadStoryLine();
-      //_nPCs = _storyLine.npcs;
       _gameEngine = GameEngine.instance;
       await _gameEngine.initializeGame();
       _gameInitialized = true;
@@ -117,28 +113,23 @@ class _MyHomePageState extends State<MyHomePage> {
     _positionSubscription = LocationService.getPositionStream().listen((
       Position position,
     ) {
-      //print("now updating the position" + position.toString());
-
-      // Verwende setState, um den Zustand zu ändern und die UI zu aktualisieren
       _location = LatLng(position.latitude, position.longitude);
 
       for (final npc in _npcs) {
         npc.updatePlayerPosition(_location);
       }
-      //print("all npcs should be updated");
       _isLocationLoaded = true;
       _checkIfInitializationCompleted();
     });
   }
 
-  void initializeMapController() {
+  void _initializeMapController() {
     try {
       _mapControllerSubscription = _mapController.mapEventStream.listen((
         event,
       ) {
         if (event is MapEventRotate) {
           setState(() {
-            // Aktualisiere den Rotationswinkel
             _currentMapRotation = event.camera.rotation;
           });
         }
@@ -160,7 +151,6 @@ class _MyHomePageState extends State<MyHomePage> {
       DateTime currentTime = DateTime.now();
       if ((heading - _currentHeading).abs() >= 5 ||
           currentTime.difference(_lastHeadingUpdateTime).inSeconds >= 1) {
-        //print("now updating compass heading to " + heading.toString());
         if (_isMapHeadingBasedOrientation) {
           _mapController.rotate(-heading);
         }
@@ -172,24 +162,33 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void initializeUpdateTimer()
+  void _initializeUpdateTimer()
   {
-    _updateTimer = Timer.periodic(Duration(microseconds: 33), (timer) {
+    _updateTimer = Timer.periodic(_frameRate, (timer) {
       if (_initializationCompleted) {
         setState(() {});
       }
     });
   }
 
+  Future<void> _initializeApp() async{
+    await _initializeGame();
+    await Future.wait([
+      _initializeCompassStream(),
+      _initializeLocationStream(),
+    ]);
+
+    _initializeMapController();
+    _initializeUpdateTimer();
+  }
+
   @override
   void initState() {
     super.initState();
-    _initializeGame();
-    _initializeCompassStream();
-    _initializeLocationStream();
-    initializeMapController();
-    initializeUpdateTimer();
+    _initializeApp();
   }
+
+
 
   void _showNPCInfo(BuildContext context, Npc npc) {
     showDialog(context: context,
@@ -307,12 +306,12 @@ class _MyHomePageState extends State<MyHomePage> {
   FloatingActionButton buildFloatingActionButton() {
     return (FloatingActionButton(
       heroTag: "CenterLocation_fab",
-      onPressed: () {
+      onPressed:  _initializationCompleted ? () {
         setState(() {
           // Wenn der Button gedrückt wird, zentrieren wir die Karte auf den aktuellen Standort
           _centerMapOnCurrentLocation();
         });
-      },
+      } :null,
       child:
           Resources.centerLocationIcon(), // Zeigt ein Symbol für den "Mein Standort"-Button
     ));
@@ -340,7 +339,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body:
-          !_isLocationLoaded
+          !_initializationCompleted
               ? Center(
                 child: CircularProgressIndicator(),
               ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist

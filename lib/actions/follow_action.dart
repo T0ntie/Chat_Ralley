@@ -13,8 +13,11 @@ class FollowAction extends NpcAction{
     npc.startFollowing();
   }
 
-  static FollowAction fromJson(Map<String, dynamic> json) {
+  static FollowAction actionFromJson(Map<String, dynamic> json) {
     final signal = json['onSignal'];
     return FollowAction(signal: signal);
+  }
+  static void register() {
+    NpcAction.registerAction('follow', FollowAction.actionFromJson);
   }
 }

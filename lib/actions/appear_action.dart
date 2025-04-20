@@ -12,8 +12,12 @@ class AppearAction extends NpcAction{
     npc.isVisible = true;
   }
 
-  static AppearAction fromJson(Map<String, dynamic> json) {
+  static AppearAction actionFromJson(Map<String, dynamic> json) {
     final signal = json['onSignal'];
     return AppearAction(signal: signal);
   }
+  static void register() {
+    NpcAction.registerAction('appear', AppearAction.actionFromJson);
+  }
+
 }

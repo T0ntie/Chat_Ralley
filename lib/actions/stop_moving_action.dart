@@ -12,8 +12,11 @@ class StopMovingAction extends NpcAction{
     npc.stopMoving();
   }
 
-  static StopMovingAction fromJson(Map<String, dynamic> json) {
+  static StopMovingAction actionFromJson(Map<String, dynamic> json) {
     final signal = json['onSignal'];
     return StopMovingAction(signal: signal);
+  }
+  static void register() {
+    NpcAction.registerAction('stopMoving', StopMovingAction.actionFromJson);
   }
 }

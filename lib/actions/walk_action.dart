@@ -17,11 +17,16 @@ class WalkAction extends NpcAction{
     npc.moveTo(LatLng(lat, lng));
   }
 
-  static WalkAction fromJson(Map<String, dynamic> json) {
+  static WalkAction actionFromJson(Map<String, dynamic> json) {
     final signal = json['onSignal'];
     final lat = json['params']['lat'];
     final lng = json['params']['lng'];
 
     return WalkAction(signal: signal, lat: lat, lng: lng);
   }
+
+  static void register() {
+    NpcAction.registerAction('walkTo', WalkAction.actionFromJson);
+  }
+
 }

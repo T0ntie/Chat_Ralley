@@ -10,13 +10,14 @@ class Npc {
   final String name;
   final String prompt;
   String imageAsset;
-  final String unknownImageAsset = "images/unknown.png";
+  static final String unknownImageAsset = "images/unknown.png";
   LatLng position;
   bool isVisible;
   bool isRevealed;
   bool isInitiative;
   bool isMoving = false;
   bool isFollowing = false;
+  static final followingDistance = 5.0;
   late LatLng toPosition;
   List <LatLng> movementPath = [];
   DateTime lastPositionUpdate = DateTime.now();
@@ -24,7 +25,7 @@ class Npc {
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
   final double conversationDistance = 20.0; //how close you need to be to communicate
-  final double speed = 5 * 1000 / 3600;
+  double speed; //in m/s
   List<NpcAction> actions = [];
 
   Npc({
@@ -36,9 +37,11 @@ class Npc {
     required this.isVisible,
     required this.isRevealed,
     required this.isInitiative,
+    required this.speed, //in km/h
   }) {
     this.currentConversation = Conversation(this);
     this.toPosition = position;
+    this.speed = speed * 1000 /3600;
   }
 
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
@@ -46,19 +49,27 @@ class Npc {
       final promptFile = json['prompt'] as String;
       final promptText = await rootBundle.loadString(
           'assets/story/${promptFile}');
-      final actionsJson = json['actions'] as List;
-      final actions = await Future.wait(actionsJson.map((a) => NpcAction.fromJsonAsync(a)));
+      final actionsJson = json['actions'] as List? ?? [];
+      final actions = actionsJson.map((a) => NpcAction.fromJsonAsync(a)).toList();
+
+      //check vor valid position
+      final pos = json['position'];
+      if (pos is! Map || pos['lat'] == null || pos['lng'] == null) {
+        throw FormatException('Ungültige Positionsdaten in stryline.jsn: $pos bei ${json['name']}');
+      }
+
       return Npc(
         name: json['name'],
         position: LatLng(
             (json['position']['lat'] as num).toDouble(),
-            (json['position']['lng'] as num).toDouble()
+            (json['position']['lng'] as num).toDouble(),
         ),
         prompt: promptText,
-        imageAsset: json['image'],
+        imageAsset: json['image'] as String? ?? unknownImageAsset,
         isVisible: json['visible'] as bool? ?? true,
         isRevealed: json['revealed'] as bool? ?? false,
         isInitiative: json['initiative'] as bool? ?? false,
+        speed: (json['speed'] as num?)?.toDouble() ?? 5.0,
         actions: actions,
       );
     }catch (e, stack) {
@@ -77,6 +88,9 @@ class Npc {
   }
 
   void moveTo(LatLng toPosition) {
+    if (isMoving){
+      position = currentPosition;
+    }
     this.toPosition = toPosition;
     isMoving = true;
     isFollowing = false;
@@ -84,6 +98,9 @@ class Npc {
   }
 
   void moveAlong(List<LatLng> path) {
+    if (isMoving){
+      position = currentPosition;
+    }
     movementPath = List.from(path);
     this.toPosition = movementPath.removeAt(0);
     isMoving = true;
@@ -92,6 +109,9 @@ class Npc {
   }
 
   void startFollowing() {
+    if (isMoving){
+      position = currentPosition;
+    }
     this.toPosition = playerPosition;
     this.movementPath = [];
     isFollowing = true;
@@ -142,7 +162,7 @@ class Npc {
     //wenn npc nahe genug beim player ist bleibt er stehen
     if (isFollowing) {
       final distanceToPlayer = const Distance().as(LengthUnit.Meter, interpolatedPosition, playerPosition);
-      if (distanceToPlayer < 5.0) {
+      if (distanceToPlayer < followingDistance) {
         isMoving = false;
         position = interpolatedPosition;
         return interpolatedPosition;
@@ -172,10 +192,9 @@ class Npc {
   }
 
   void updatePlayerPosition(LatLng playerPosition) {
-    print("updating player position");
     this.playerPosition = playerPosition;
     if (isFollowing) {
-      if (currentDistance > 5.0) {
+      if (currentDistance > followingDistance) {
         lastPositionUpdate = DateTime.now();
         toPosition = this.playerPosition;
         isMoving = true;
