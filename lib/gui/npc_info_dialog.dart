@@ -41,10 +41,7 @@ class NpcInfoDialog extends StatelessWidget
         ],
       ),
       actions: <Widget>[
-        Tooltip(
-          message:
-          "Du musst näher kommen, um mit ${npc.displayName} kommunizieren zu können.",
-          child: TextButton(
+          TextButton(
             child: Text('Chat starten'),
             onPressed: npc.canCommunicate()
                 ? () {
@@ -58,7 +55,6 @@ class NpcInfoDialog extends StatelessWidget
             }
                 : null,
           ),
-        ),
         TextButton(
           child: Text('OK'),
           onPressed: () {

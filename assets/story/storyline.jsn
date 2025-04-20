@@ -87,10 +87,9 @@
     },
     {
       "name": "Professor Dr. Theobald Knöchelbein",
-       "position": {
-          "lat": 47.4131705,
-           "lng": 13.638308
-        },
+      "position": {
+        "lat": 47.4131705,
+         "lng": 13.638308
       },
       "prompt": "prompts/knöchelbein-prompt.txt",
       "image": "images/knöchelbein.png",

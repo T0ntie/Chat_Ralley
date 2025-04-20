@@ -128,8 +128,10 @@ class Npc {
   void talk(String repsondTo) async{
     hasSomethingToSay = true;
     currentConversation.addTriggerMessage(repsondTo);
+    /*
     final String response = await currentConversation.processConversation();
     currentConversation.addAssistantMessage(response);
+     */
   }
 
   double get currentDistance  {
