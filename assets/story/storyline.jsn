@@ -26,7 +26,7 @@
       "speed" : 10,
       "actions": [
         {
-          "onSignal": "leadToBone",
+          "onApproach": "leadToBone",
           "invokeAction": "moveAlong",
           "params": {
             "path": [
@@ -88,15 +88,15 @@
     {
       "name": "Professor Dr. Theobald Knöchelbein",
       "position": {
-        "lat": 47.4131705,
-         "lng": 13.638308
+        "lat": 47.414665,
+         "lng": 13.638239
       },
       "prompt": "prompts/knöchelbein-prompt.txt",
       "image": "images/knöchelbein.png",
       "visible": true,
       "actions": [
         {
-          "onSignal": "knöchelbeinDebut",
+          "onApproach": null,
           "invokeAction": "reveal",
           "params": {}
         }

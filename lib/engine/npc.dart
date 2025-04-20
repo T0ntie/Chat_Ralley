@@ -1,5 +1,6 @@
 
 import 'package:flutter/foundation.dart';
+import 'package:hello_world/engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
@@ -207,6 +208,9 @@ class Npc {
         toPosition = this.playerPosition;
         isMoving = true;
       }
+    }
+    if (currentDistance < conversationDistance){
+      GameEngine.instance.registerApproach(this);
     }
   }
 }

@@ -11,6 +11,7 @@ class GameEngine {
   List<Npc> get npcs => storyLine.npcs;
   final Map<String, List<(Npc, NpcAction)>> _signalSubscriptions = {};
   final Map<Npc, List<NpcAction>> _interactionSubscriptions = {};
+  final Map<Npc, List<NpcAction>> _approachSubscriptions = {};
 
   GameEngine._internal();
 
@@ -32,20 +33,37 @@ class GameEngine {
             _interactionSubscriptions.putIfAbsent(npc, () => []).add(action);
             print('🗣️ Registered interaction action for ${npc.name}');
             break;
+          case TriggerType.approach:
+            _approachSubscriptions.putIfAbsent(npc, () => []).add(action);
+            print('👣 Registered aproach action for ${npc.name}');
+
         }
       }
     }
   }
 
+  void registerApproach(Npc npc) {
+    final actions = _approachSubscriptions[npc];
+    if (actions != null) {
+      for (final action in actions) {
+        print('👣 Executing action for NPC: ${npc.name}');
+        action.invoke(npc);
+      }
+      _approachSubscriptions.remove(npc);
+    } else {
+      print('👣 No approach actions registered for ${npc.name}');
+    }
+  }
   void registerInteraction(Npc npc) {
     final actions = _interactionSubscriptions[npc];
     if (actions != null) {
       for (final action in actions) {
+        print('🗣️ Executing action for NPC: ${npc.name}');
         action.invoke(npc);
       }
       _interactionSubscriptions.remove(npc);
     } else {
-      print('ℹ️ No interaction actions registered for ${npc.name}');
+      print('🗣️ No interaction actions registered for ${npc.name}');
     }
   }
 
@@ -53,11 +71,11 @@ class GameEngine {
     print('Signal ${signal} registered!');
     final subscribers = _signalSubscriptions[signal];
     if (subscribers == null) {
-      print('No subscribers for signal $signal.');
+      print('🔔 No subscribers for signal $signal.');
       return;
     }
     for (final (npc, action) in subscribers) {
-      print('Executing action for NPC: ${npc.name}');
+      print('🔔 Executing action for NPC: ${npc.name}');
       action.invoke(npc); // vorausgesetzt, Action hat diese Methode
     }
   }

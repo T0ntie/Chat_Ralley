@@ -8,7 +8,7 @@ import 'follow_action.dart';
 import 'move_along_action.dart';
 import '../engine/npc.dart';
 
-enum TriggerType {signal, interaction}
+enum TriggerType {signal, interaction, approach}
 
 class NpcActionTrigger {
   final TriggerType type;
@@ -20,6 +20,8 @@ class NpcActionTrigger {
       return NpcActionTrigger(type: TriggerType.signal, value: json['onSignal']);
     }else if (json.containsKey('onInteraction')){
       return NpcActionTrigger(type: TriggerType.interaction, value: json['onInteraction']);
+    }else if (json.containsKey('onApproach')){
+      return NpcActionTrigger(type: TriggerType.approach, value: json['onApproach']);
     }
     throw FormatException("Unbekannter Action Trigger in:$json");
   }
@@ -49,7 +51,6 @@ abstract class NpcAction{
     if (factory == null) {
       throw Exception('❌ Unknown action type in storyline.jnsn: $actionType');
     }
-
     return factory(json);
   }
 
