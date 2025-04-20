@@ -13,6 +13,7 @@ class Conversation {
   }
 
   Future<void> handleTriggerMessage() async{
+
     if (_messages.last.isTrigger) {
       String triggeredResponse = await processConversation();
       print('triggered Response is ${triggeredResponse}');

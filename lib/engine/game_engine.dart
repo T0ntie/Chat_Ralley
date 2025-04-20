@@ -43,6 +43,7 @@ class GameEngine {
       for (final action in actions) {
         action.invoke(npc);
       }
+      _interactionSubscriptions.remove(npc);
     } else {
       print('ℹ️ No interaction actions registered for ${npc.name}');
     }

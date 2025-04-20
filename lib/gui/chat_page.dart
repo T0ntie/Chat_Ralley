@@ -26,6 +26,7 @@ class _ChatPageState extends State<ChatPage> {
     _conversation = widget.npc.currentConversation;
     widget.gameEngine.registerInteraction(widget.npc);
     _handleTriggers();
+    widget.npc.hasSomethingToSay = false;
   }
 
   void _handleTriggers() async {
