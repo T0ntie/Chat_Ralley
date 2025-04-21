@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import 'package:hello_world/gui/npc_info_dialog.dart';
 import 'services/location_service.dart';
 import 'services/compass_service.dart';
@@ -53,7 +54,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final _frameRate = Duration(microseconds: 33);
   final String title = "Chat Ralley";
   LatLng _location = LatLng(51.5074, -0.1278); // Beispiel für London
@@ -69,7 +69,9 @@ class _MyHomePageState extends State<MyHomePage> {
   late final StreamSubscription<double> _compassSubscription;
   late final StreamSubscription<Position> _positionSubscription;
   late final GameEngine _gameEngine;
+
   List<Npc> get _npcs => _gameEngine.npcs;
+
   List<Hotspot> get _hotspots => _gameEngine.hotspots;
   late final Timer _updateTimer;
 
@@ -92,14 +94,15 @@ class _MyHomePageState extends State<MyHomePage> {
       _gameInitialized = true;
       _checkIfInitializationCompleted();
     } catch (e) {
-      SnackBarService.showErrorSnackBar(context, '❌ Laden der Story fehlgeschlagen.');
+      SnackBarService.showErrorSnackBar(
+        context,
+        '❌ Laden der Story fehlgeschlagen.',
+      );
     }
   }
 
   void _checkIfInitializationCompleted() {
-    if (_gameInitialized &&
-        _isLocationLoaded &&
-        !_initializationCompleted) {
+    if (_gameInitialized && _isLocationLoaded && !_initializationCompleted) {
       setState(() {
         _initializationCompleted = true;
       });
@@ -110,7 +113,10 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       await LocationService.initialize();
     } catch (e) {
-      SnackBarService.showErrorSnackBar(context, '❌ Initialisieren der Standortbestimmung fehlgeschlagen.');
+      SnackBarService.showErrorSnackBar(
+        context,
+        '❌ Initialisieren der Standortbestimmung fehlgeschlagen.',
+      );
     } // Warten bis der Stream bereit ist
     _positionSubscription = LocationService.getPositionStream().listen((
       Position position,
@@ -137,7 +143,10 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       });
     } catch (e) {
-      SnackBarService.showErrorSnackBar(context, '❌ Initialisieren des Karte fehlgeschlagen.');
+      SnackBarService.showErrorSnackBar(
+        context,
+        '❌ Initialisieren des Karte fehlgeschlagen.',
+      );
     } //
   }
 
@@ -145,7 +154,10 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       CompassService.initialize();
     } catch (e) {
-      SnackBarService.showErrorSnackBar(context, '❌ Initialisieren des Kompass fehlgeschlagen.');
+      SnackBarService.showErrorSnackBar(
+        context,
+        '❌ Initialisieren des Kompass fehlgeschlagen.',
+      );
     } //
     _compassSubscription = CompassService.getCompassDirection().listen((
       heading,
@@ -164,8 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _initializeUpdateTimer()
-  {
+  void _initializeUpdateTimer() {
     _updateTimer = Timer.periodic(_frameRate, (timer) {
       if (_initializationCompleted) {
         setState(() {});
@@ -173,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> _initializeApp() async{
+  Future<void> _initializeApp() async {
     await _initializeGame();
     await Future.wait([
       _initializeCompassStream(),
@@ -190,14 +201,15 @@ class _MyHomePageState extends State<MyHomePage> {
     _initializeApp();
   }
 
-
-
   void _showNPCInfo(BuildContext context, Npc npc) {
-    showDialog(context: context,
-        builder: (BuildContext) {
-          return NpcInfoDialog(npc: npc);
-        });
+    showDialog(
+      context: context,
+      builder: (BuildContext) {
+        return NpcInfoDialog(npc: npc);
+      },
+    );
   }
+
   Marker buildLocationMarker() {
     return (Marker(
       point: _location,
@@ -215,38 +227,35 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<Marker> buildHotspotMarkers() {
-    return _hotspots
-        .where((hotspot) => hotspot.isVisible)
-        .map((hotspot) {
-          return Marker(
-            point: hotspot.position,
-            width: 50,
-            height: 50,
-            child: Transform.rotate(
-              angle:
+    return _hotspots.where((hotspot) => hotspot.isVisible).map((hotspot) {
+      return Marker(
+        point: hotspot.position,
+        width: hotspot.radius * 2 * 10,
+        height: hotspot.radius * 2 * 10,
+        child: Transform.rotate(
+          angle:
               (_isMapHeadingBasedOrientation
                   ? _currentHeading
                   : -_currentMapRotation) *
-                  (pi / 180),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      print("🎯 Tapped on Hotspot");
-                    },
-                    child: Resources.getHotspotIcon(),//hotspot.icon
-                  ),
-                ],
+              (pi / 180),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  print("🎯 Tapped on Hotspot");
+                },
+                child: Resources.getHotspotIcon(), //hotspot.icon
               ),
-            ),
-          );
+            ],
+          ),
+        ),
+      );
     }).toList();
   }
+
   List<Marker> buildNPCMarkers() {
-    return _npcs
-      .where((npc) => npc.isVisible)
-      .map((npc) {
+    return _npcs.where((npc) => npc.isVisible).map((npc) {
       return Marker(
         point: npc.currentPosition, // Verwende die Position des NPCs
         width: 170.0,
@@ -266,7 +275,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: Resources.getNPCIcon(npc.icon),
               ),
-              if (npc.hasSomethingToSay/*.canCommunicate()*/)
+              if (npc.hasSomethingToSay /*.canCommunicate()*/ )
                 Positioned(
                   top: 5,
                   right: 40, // Verschieben der Sprechblase nach oben
@@ -275,7 +284,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ChatPage(npc: npc,),
+                          builder: (context) => ChatPage(npc: npc),
                         ),
                       );
                     },
@@ -301,6 +310,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   FlutterMap buildFlutterMap() {
+    final pulse = _getPulseState(GameEngine.conversationDistance);
     return FlutterMap(
       mapController: _mapController,
       options: MapOptions(initialCenter: _location, initialZoom: 16.0),
@@ -308,10 +318,70 @@ class _MyHomePageState extends State<MyHomePage> {
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         ),
-        MarkerLayer(markers: [buildLocationMarker(), ...buildHotspotMarkers(), ...buildNPCMarkers(),]),
+        CircleLayer(
+          circles: [
+            ..._hotspots
+                .where((h) => h.isVisible)
+                .map(
+                  (hotspot) => CircleMarker(
+                    point: hotspot.position,
+                    radius: hotspot.radius,
+                    // ❗️ in Metern
+                    useRadiusInMeter: true,
+                    color: Colors.red.withAlpha((0.1 * 255).toInt()),
+                    borderColor: Colors.red.withAlpha((0.5 * 255).toInt()),
+                    borderStrokeWidth: 2,
+                  ),
+                ),/*
+            CircleMarker(
+              point: _location,
+              radius: _getPulsingRadius(20),
+              useRadiusInMeter: true,
+              color: Colors.blue.withAlpha((0.06 * 255).toInt()),
+              borderColor: Colors.blue.withAlpha((0.5 * 255).toInt()),
+              borderStrokeWidth: 2,
+            ),*/
+            CircleMarker(
+              point: _location,
+              radius: pulse.radius,
+              useRadiusInMeter: true,
+              color: pulse.maxReached ? Colors.transparent : Colors.blue.withAlpha((pulse.colorFade*0.5*255).toInt()),
+              borderColor: pulse.maxReached ? Colors.white.withAlpha(((pulse.colorFade+0.2)*255).toInt()) : Colors.blue.withAlpha((pulse.colorFade*0.5*255).toInt()),
+              borderStrokeWidth: 2,
+            ),
+
+            // Ring exakt bei 100% Radius
+            if (pulse.maxReached)
+              CircleMarker(
+                point: _location,
+                radius: GameEngine.conversationDistance, // Fixer Wert = 100% Radius
+                useRadiusInMeter: true,
+                color: Colors.blue.withAlpha((pulse.colorFade*0.5*255).toInt()),
+                borderColor: Colors.blue.withAlpha((pulse.colorFade*0.3*255).toInt()),
+                borderStrokeWidth: 2,
+              ),          ],
+        ),
+        MarkerLayer(
+          markers: [
+            buildLocationMarker(),
+            ...buildHotspotMarkers(),
+            ...buildNPCMarkers(),
+          ],
+        ),
       ], // Children
     );
   }
+
+  /*
+  double _getPulsingRadius(double baseRadius) {
+    final int pulseDuration = 3000; // ms
+    final int now = DateTime.now().millisecondsSinceEpoch;
+    final double t = (now % pulseDuration) / pulseDuration; // 0.0 - 1.0
+    //final double curve = 0.5 * (1 - cos(2 * pi * t)); // schöne Sinus-Welle (0 → 1 → 0)
+    return baseRadius * t;
+  }*/
+
+
 
   Positioned buildMapOrientationModeButton() {
     return (Positioned(
@@ -337,12 +407,15 @@ class _MyHomePageState extends State<MyHomePage> {
   FloatingActionButton buildFloatingActionButton() {
     return (FloatingActionButton(
       heroTag: "CenterLocation_fab",
-      onPressed:  _initializationCompleted ? () {
-        setState(() {
-          // Wenn der Button gedrückt wird, zentrieren wir die Karte auf den aktuellen Standort
-          _centerMapOnCurrentLocation();
-        });
-      } :null,
+      onPressed:
+          _initializationCompleted
+              ? () {
+                setState(() {
+                  // Wenn der Button gedrückt wird, zentrieren wir die Karte auf den aktuellen Standort
+                  _centerMapOnCurrentLocation();
+                });
+              }
+              : null,
       child:
           Resources.centerLocationIcon(), // Zeigt ein Symbol für den "Mein Standort"-Button
     ));
@@ -362,7 +435,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatPage(npc: _npcs[0],),
+                  builder: (context) => ChatPage(npc: _npcs[0]),
                 ),
               );
             },
@@ -390,3 +463,36 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 }
+
+class PulseState {
+  final double radius;
+  final bool maxReached;
+  final double colorFade;
+
+  PulseState({
+    required this.radius,
+    required this.maxReached,
+    required this.colorFade,
+  });
+}
+
+PulseState _getPulseState(double baseRadius) {
+  const pulseDuration = 2000; // in ms
+  const double maxFactor = 1.6;
+  const double whiteRingStart = 1.0;
+
+  final int now = DateTime.now().millisecondsSinceEpoch;
+  final double t = (now % pulseDuration) / pulseDuration; // 0.0 - 1.0
+  final double currentFactor = t * maxFactor;
+  final double radius = baseRadius * currentFactor;
+  final double colorFade = (1-t).abs();
+
+  final bool maxReached = currentFactor >= whiteRingStart;
+
+  return PulseState(
+    radius: radius,
+    maxReached: maxReached,
+    colorFade : colorFade,
+  );
+}
+

@@ -25,7 +25,7 @@ class Npc {
   //double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
-  final double conversationDistance = 20.0; //how close you need to be to communicate
+   //how close you need to be to communicate
   double speed; //in m/s
   List<NpcAction> actions = [];
 
@@ -196,7 +196,7 @@ class Npc {
 
   bool canCommunicate()
   {
-    return (currentDistance < conversationDistance);
+    return (currentDistance < GameEngine.conversationDistance);
   }
 
   void updatePlayerPosition(LatLng playerPosition) {
@@ -208,7 +208,7 @@ class Npc {
         isMoving = true;
       }
     }
-    if (currentDistance < conversationDistance){
+    if (currentDistance < GameEngine.conversationDistance){
       GameEngine.instance.registerApproach(this);
     }
   }
