@@ -1,3 +1,4 @@
+import 'package:hello_world/actions/spawn_action.dart';
 import 'package:hello_world/actions/stop_moving_action.dart';
 import 'package:hello_world/actions/talk_action.dart';
 
@@ -8,7 +9,7 @@ import 'follow_action.dart';
 import 'move_along_action.dart';
 import '../engine/npc.dart';
 
-enum TriggerType {signal, interaction, approach}
+enum TriggerType {signal, interaction, approach, init}
 
 class NpcActionTrigger {
   final TriggerType type;
@@ -22,6 +23,8 @@ class NpcActionTrigger {
       return NpcActionTrigger(type: TriggerType.interaction, value: json['onInteraction']);
     }else if (json.containsKey('onApproach')){
       return NpcActionTrigger(type: TriggerType.approach, value: json['onApproach']);
+    } else if (json.containsKey('onInit')){
+      return NpcActionTrigger(type: TriggerType.init, value: json['onInit']);
     }
     throw FormatException("Unbekannter Action Trigger in:$json");
   }
@@ -62,5 +65,6 @@ abstract class NpcAction{
     MoveAlongAction.register();
     StopMovingAction.register();
     TalkAction.register();
+    SpawnAction.register();
   }
 }

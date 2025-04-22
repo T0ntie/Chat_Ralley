@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
 import '../actions/npc_action.dart';
+import 'dart:math';
 
 enum NPCIcon { unknown, identified, nearby, unknown_nearby }
 
@@ -84,6 +85,18 @@ class Npc {
   void reveal() {
     isVisible = true;
     isRevealed = true;
+  }
+
+  void spawn() {
+    final random = Random();
+    // Ein kleiner zufälliger Offset in Grad (ca. 0.00005 ~ 5 Meter)
+    final offsetLat = (random.nextDouble() - 0.5) * 0.0001;
+    final offsetLng = (random.nextDouble() - 0.5) * 0.0001;
+
+    position = LatLng(
+      playerPosition.latitude + offsetLat,
+      playerPosition.longitude + offsetLng,
+    );
   }
 
   void moveTo(LatLng toPosition) {

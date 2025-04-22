@@ -15,6 +15,7 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_joystick/flutter_joystick.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env"); // lädt die .env-Datei
@@ -77,6 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool _isMapHeadingBasedOrientation = false;
 
+  bool _isGPSSimulating = false;
+  LatLng? _realPosition = null;
+
   void _centerMapOnCurrentLocation() {
     _mapController.move(_location, 16.0);
   }
@@ -106,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _initializationCompleted = true;
       });
+      _gameEngine.registerInitialization();
     }
   }
 
@@ -121,10 +126,12 @@ class _MyHomePageState extends State<MyHomePage> {
     _positionSubscription = LocationService.getPositionStream().listen((
       Position position,
     ) {
-      _location = LatLng(position.latitude, position.longitude);
-
-      for (final npc in _npcs) {
-        npc.updatePlayerPosition(_location);
+      if (!_isGPSSimulating){
+        _location = LatLng(position.latitude, position.longitude);
+        print("setting location to ${_location}");
+        for (final npc in _npcs) {
+          npc.updatePlayerPosition(_location);
+        }
       }
       _isLocationLoaded = true;
       _checkIfInitializationCompleted();
@@ -332,7 +339,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     borderColor: Colors.red.withAlpha((0.5 * 255).toInt()),
                     borderStrokeWidth: 2,
                   ),
-                ),/*
+                ),
+            /*
             CircleMarker(
               point: _location,
               radius: _getPulsingRadius(20),
@@ -345,8 +353,20 @@ class _MyHomePageState extends State<MyHomePage> {
               point: _location,
               radius: pulse.radius,
               useRadiusInMeter: true,
-              color: pulse.maxReached ? Colors.transparent : Colors.blue.withAlpha((pulse.colorFade*0.5*255).toInt()),
-              borderColor: pulse.maxReached ? Colors.white.withAlpha(((pulse.colorFade+0.2)*255).toInt()) : Colors.blue.withAlpha((pulse.colorFade*0.5*255).toInt()),
+              color:
+                  pulse.maxReached
+                      ? Colors.transparent
+                      : Colors.blue.withAlpha(
+                        (pulse.colorFade * 0.5 * 255).toInt(),
+                      ),
+              borderColor:
+                  pulse.maxReached
+                      ? Colors.white.withAlpha(
+                        ((pulse.colorFade + 0.2) * 255).toInt(),
+                      )
+                      : Colors.blue.withAlpha(
+                        (pulse.colorFade * 0.5 * 255).toInt(),
+                      ),
               borderStrokeWidth: 2,
             ),
 
@@ -354,12 +374,18 @@ class _MyHomePageState extends State<MyHomePage> {
             if (pulse.maxReached)
               CircleMarker(
                 point: _location,
-                radius: GameEngine.conversationDistance, // Fixer Wert = 100% Radius
+                radius: GameEngine.conversationDistance,
+                // Fixer Wert = 100% Radius
                 useRadiusInMeter: true,
-                color: Colors.blue.withAlpha((pulse.colorFade*0.5*255).toInt()),
-                borderColor: Colors.blue.withAlpha((pulse.colorFade*0.3*255).toInt()),
+                color: Colors.blue.withAlpha(
+                  (pulse.colorFade * 0.5 * 255).toInt(),
+                ),
+                borderColor: Colors.blue.withAlpha(
+                  (pulse.colorFade * 0.3 * 255).toInt(),
+                ),
                 borderStrokeWidth: 2,
-              ),          ],
+              ),
+          ],
         ),
         MarkerLayer(
           markers: [
@@ -371,17 +397,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ], // Children
     );
   }
-
-  /*
-  double _getPulsingRadius(double baseRadius) {
-    final int pulseDuration = 3000; // ms
-    final int now = DateTime.now().millisecondsSinceEpoch;
-    final double t = (now % pulseDuration) / pulseDuration; // 0.0 - 1.0
-    //final double curve = 0.5 * (1 - cos(2 * pi * t)); // schöne Sinus-Welle (0 → 1 → 0)
-    return baseRadius * t;
-  }*/
-
-
 
   Positioned buildMapOrientationModeButton() {
     return (Positioned(
@@ -421,12 +436,73 @@ class _MyHomePageState extends State<MyHomePage> {
     ));
   }
 
+  Positioned buildJoystick() {
+    return Positioned(
+      bottom: 40,
+      left: 20,
+      child: Transform.scale(
+        scale: 0.7, // oder 80, 60 – je nach Geschmack
+        child: Joystick(
+          mode: JoystickMode.all,
+          stickOffsetCalculator: CircleStickOffsetCalculator(),
+          listener: (details) {
+            //if (!_isSimulated) return;
+
+            const double step = 0.00005; // Schrittweite pro Tick
+            // Heading in Radiant umwandeln (Blickrichtung des Spielers)
+            final double headingRadians = _currentHeading * (pi / 180);
+            /*
+            final double joystickX = details.x;
+            final double joystickY = details.y; // <- Invertieren
+
+            final double dx = (joystickX * cos(headingRadians) + joystickY * sin(headingRadians)) * step;
+            final double dy = (joystickX * sin(headingRadians) + joystickY * cos(headingRadians)) * step;
+            */
+            //in Nord ausirchung
+            final double dx = -details.y * cos(headingRadians);
+            final double dy = details.x * sin(headingRadians);
+
+            //drehen in richtung heading
+            final double drx = dx * cos(headingRadians)- dy * sin(headingRadians);
+            final double dry = dx * sin(headingRadians) + dy * cos(headingRadians);
+
+            _moveSimulatdLocation(drx * step, dry * step);
+          },
+        ),
+      ),
+    );
+  }
+
+  void _moveSimulatdLocation(double x, double y) {
+    setState(() {
+      _location = LatLng(_location.latitude+x, _location.longitude+y);
+    });
+    for (final npc in _npcs) {
+      npc.updatePlayerPosition(_location);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: [
+          IconButton(
+            icon: Icon(Icons.sports_esports_outlined),
+            tooltip: "Simulate",
+            onPressed: () {
+              if (!_isGPSSimulating){
+                _realPosition = _location;
+              }else {
+                if (_realPosition != null){
+                  _location = _realPosition!;
+                }
+              }
+              _isGPSSimulating = !_isGPSSimulating;
+              print("simulationg: $_isGPSSimulating");
+            },
+          ),
           IconButton(
             icon: Icon(Icons.chat_bubble_outline),
             tooltip: "Chat",
@@ -448,7 +524,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: CircularProgressIndicator(),
               ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist
               : Stack(
-                children: [buildFlutterMap(), buildMapOrientationModeButton()],
+                children: [
+                  buildFlutterMap(),
+                  buildMapOrientationModeButton(),
+                  if (_isGPSSimulating) buildJoystick(),
+                ],
               ),
       floatingActionButton: buildFloatingActionButton(),
     );
@@ -485,14 +565,13 @@ PulseState _getPulseState(double baseRadius) {
   final double t = (now % pulseDuration) / pulseDuration; // 0.0 - 1.0
   final double currentFactor = t * maxFactor;
   final double radius = baseRadius * currentFactor;
-  final double colorFade = (1-t).abs();
+  final double colorFade = (1 - t).abs();
 
   final bool maxReached = currentFactor >= whiteRingStart;
 
   return PulseState(
     radius: radius,
     maxReached: maxReached,
-    colorFade : colorFade,
+    colorFade: colorFade,
   );
 }
-

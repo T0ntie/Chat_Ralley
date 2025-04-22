@@ -73,6 +73,10 @@
       "visible": true,
       "actions": [
         {
+            "onInit" : null,
+            "invokeAction" : "spawn"
+        },
+        {
           "onInteraction": null,
           "invokeAction": "reveal"
         },

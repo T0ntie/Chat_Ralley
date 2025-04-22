@@ -15,6 +15,7 @@ class GameEngine {
   final Map<String, List<(Npc, NpcAction)>> _signalSubscriptions = {};
   final Map<Npc, List<NpcAction>> _interactionSubscriptions = {};
   final Map<Npc, List<NpcAction>> _approachSubscriptions = {};
+  final Map<Npc, List<NpcAction>> _initSubscriptions = {};
 
   GameEngine._internal();
 
@@ -40,6 +41,9 @@ class GameEngine {
             _approachSubscriptions.putIfAbsent(npc, () => []).add(action);
             print('👣 Registered aproach action for ${npc.name}');
             break;
+          case TriggerType.init:
+            _initSubscriptions.putIfAbsent(npc, () => []).add(action);
+            print('🚀 Registered init action for ${npc.name}');
         }
       }
     }
@@ -67,6 +71,18 @@ class GameEngine {
       _interactionSubscriptions.remove(npc);
     } else {
       print('🗣️ No interaction actions registered for ${npc.name}');
+    }
+  }
+
+  void registerInitialization(){
+    print ('🚀 Initialization registered!');
+    for (final entry in _initSubscriptions.entries) {
+      final Npc npc = entry.key;
+      final List<NpcAction> actions = entry.value;
+      for(final action in actions) {
+        action.invoke(npc);
+      }
+      print(' Excecuting action for NPC: ');
     }
   }
 

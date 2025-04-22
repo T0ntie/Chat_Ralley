@@ -24,8 +24,8 @@ class Resources{
 
   static Icon getHotspotIcon()  {
     return Icon(
-      Icons.close,
-      color: Colors.red, // Die Farbe des Pins
+      Icons.flag,
+      color: Colors.green, // Die Farbe des Pins
       size: 30.0, // Die Größe des Markers
     );
   }
