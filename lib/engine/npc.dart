@@ -1,20 +1,18 @@
 
+import 'package:hello_world/engine/game_element.dart';
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
-import '../actions/npc_action.dart';
+import 'game_action.dart';
 import 'dart:math';
 
 enum NPCIcon { unknown, identified, nearby, unknown_nearby }
 
-class Npc {
-  final String name;
+class Npc extends GameElement{
   final String prompt;
   String imageAsset;
   static final String unknownImageAsset = "images/unknown.png";
-  LatLng position;
-  bool isVisible;
   bool isRevealed;
   bool isMoving = false;
   bool isFollowing = false;
@@ -28,15 +26,15 @@ class Npc {
   late Conversation currentConversation;
    //how close you need to be to communicate
   double speed; //in m/s
-  List<NpcAction> actions = [];
+
 
   Npc({
-    required this.name,
+    required super.name,
     required this.imageAsset,
     required this.prompt,
-    required this.position,
-    required this.actions,
-    required this.isVisible,
+    required super.position,
+    required super.actions,
+    required super.isVisible,
     required this.isRevealed,
     required this.speed, //in km/h
   }) {
@@ -51,7 +49,7 @@ class Npc {
       final promptText = await rootBundle.loadString(
           'assets/story/${promptFile}');
       final actionsJson = json['actions'] as List? ?? [];
-      final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
+      final actions = actionsJson.map((a) => GameAction.fromJson(a)).toList();
 
       //check vor valid position
       final pos = json['position'];
@@ -78,9 +76,7 @@ class Npc {
     }
   }
 
-  void appear() {
-    isVisible = true;
-  }
+
 
   void reveal() {
     isVisible = true;

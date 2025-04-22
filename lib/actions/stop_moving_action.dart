@@ -1,23 +1,29 @@
-import 'npc_action.dart';
+import 'package:hello_world/engine/game_element.dart';
+
+import '../engine/game_action.dart';
 import '../engine/npc.dart';
 
-class StopMovingAction extends NpcAction{
+class StopMovingAction extends GameAction{
 
   StopMovingAction({required super.trigger});
 
   @override
-  void invoke(Npc npc) {
-    super.invoke(npc);
-    print('${npc.name} stops');
-    npc.stopMoving();
+  void invoke(GameElement element) {
+    super.invoke(element);
+    if (element is Npc) {
+      print('${element.name} stops moving');
+      element.stopMoving();
+    } else {
+      print('⚠️ StoipMovingAction can only be applied to Npc, but got ${element.runtimeType}');
+    }
   }
 
   static StopMovingAction actionFromJson(Map<String, dynamic> json) {
-    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
+    GameActionTrigger actionTrigger = GameActionTrigger.npcActionTriggerfromJson(json);
     return StopMovingAction(trigger: actionTrigger);
   }
 
   static void register() {
-    NpcAction.registerAction('stopMoving', StopMovingAction.actionFromJson);
+    GameAction.registerAction('stopMoving', StopMovingAction.actionFromJson);
   }
 }

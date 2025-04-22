@@ -1,7 +1,8 @@
 import 'story_line.dart';
 import 'npc.dart';
-import '../actions/npc_action.dart';
+import 'game_action.dart';
 import 'hotspot.dart';
+import 'game_element.dart';
 
 class GameEngine {
   static final GameEngine _instance = GameEngine._internal(); //Singleton
@@ -12,77 +13,77 @@ class GameEngine {
 
   List<Npc> get npcs => storyLine.npcs;
   List<Hotspot> get hotspots => storyLine.hotspots;
-  final Map<String, List<(Npc, NpcAction)>> _signalSubscriptions = {};
-  final Map<Npc, List<NpcAction>> _interactionSubscriptions = {};
-  final Map<Npc, List<NpcAction>> _approachSubscriptions = {};
-  final Map<Npc, List<NpcAction>> _initSubscriptions = {};
+  final Map<String, List<(GameElement, GameAction)>> _signalSubscriptions = {};
+  final Map<GameElement, List<GameAction>> _interactionSubscriptions = {};
+  final Map<GameElement, List<GameAction>> _approachSubscriptions = {};
+  final Map<GameElement, List<GameAction>> _initSubscriptions = {};
 
   GameEngine._internal();
 
   Future<void> initializeGame() async {
-    NpcAction.registerAllNpcActions();
+    GameAction.registerAllNpcActions();
     storyLine = await StoryLine.loadStoryLine();
-    for (final npc in npcs) {
-      for (final action in npc.actions) {
+    for (final element in [...npcs, ...hotspots]) {
+      for (final action in element.actions) {
         switch (action.trigger.type) {
           case TriggerType.signal:
             final signal = action.trigger.value as String;
             _signalSubscriptions.putIfAbsent(signal, () => []).add((
-              npc,
+              element,
               action,
             ));
-            print('🔔 Registered signal action: "$signal" for ${npc.name}');
+            print('🔔 Registered signal action: "$signal" for ${element.name}');
             break;
           case TriggerType.interaction:
-            _interactionSubscriptions.putIfAbsent(npc, () => []).add(action);
-            print('🗣️ Registered interaction action for ${npc.name}');
+            _interactionSubscriptions.putIfAbsent(element, () => []).add(action);
+            print('🗣️ Registered interaction action for ${element.name}');
             break;
           case TriggerType.approach:
-            _approachSubscriptions.putIfAbsent(npc, () => []).add(action);
-            print('👣 Registered aproach action for ${npc.name}');
+            _approachSubscriptions.putIfAbsent(element, () => []).add(action);
+            print('👣 Registered aproach action for ${element.name}');
             break;
           case TriggerType.init:
-            _initSubscriptions.putIfAbsent(npc, () => []).add(action);
-            print('🚀 Registered init action for ${npc.name}');
+            _initSubscriptions.putIfAbsent(element, () => []).add(action);
+            print('🚀 Registered init action for ${element.name}');
         }
       }
     }
   }
 
-  void registerApproach(Npc npc) {
-    final actions = _approachSubscriptions[npc];
+  void registerApproach(GameElement element) {
+    final actions = _approachSubscriptions[element];
     if (actions != null) {
       for (final action in actions) {
-        print('👣 Executing action for NPC: ${npc.name}');
-        action.invoke(npc);
+        print('👣 Executing action for : ${element.name}');
+        action.invoke(element);
       }
-      _approachSubscriptions.remove(npc);
+      _approachSubscriptions.remove(element);
     } else {
-      print('👣 No approach actions registered for ${npc.name}');
+      print('👣 No approach actions registered for ${element.name}');
     }
   }
-  void registerInteraction(Npc npc) {
-    final actions = _interactionSubscriptions[npc];
+  void registerInteraction(GameElement element) {
+    final actions = _interactionSubscriptions[element];
     if (actions != null) {
       for (final action in actions) {
-        print('🗣️ Executing action for NPC: ${npc.name}');
-        action.invoke(npc);
+        print('🗣️ Executing action for: ${element.name}');
+        action.invoke(element);
       }
-      _interactionSubscriptions.remove(npc);
+      _interactionSubscriptions.remove(element);
     } else {
-      print('🗣️ No interaction actions registered for ${npc.name}');
+      print('🗣️ No interaction actions registered for ${element.name}');
     }
   }
 
   void registerInitialization(){
     print ('🚀 Initialization registered!');
     for (final entry in _initSubscriptions.entries) {
-      final Npc npc = entry.key;
-      final List<NpcAction> actions = entry.value;
+      final GameElement element = entry.key;
+      final List<GameAction> actions = entry.value;
       for(final action in actions) {
-        action.invoke(npc);
+        action.invoke(element);
       }
-      print(' Excecuting action for NPC: ');
+      print(' Excecuting action for: ${element.name} ');
     }
   }
 
@@ -93,9 +94,9 @@ class GameEngine {
       print('🔔 No subscribers for signal $signal.');
       return;
     }
-    for (final (npc, action) in subscribers) {
-      print('🔔 Executing action for NPC: ${npc.name}');
-      action.invoke(npc); // vorausgesetzt, Action hat diese Methode
+    for (final (element, action) in subscribers) {
+      print('🔔 Executing action for: ${element.name}');
+      action.invoke(element); // vorausgesetzt, Action hat diese Methode
     }
   }
 }

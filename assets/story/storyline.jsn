@@ -115,7 +115,15 @@
         "lng": 16.297281
       },
       "radius": 20,
-      "visible": true
+      "visible": false,
+      "actions": [
+      {
+        "onSignal": "showKH",
+        "invokeAction": "appear",
+        "params": {}
+      }
+    ]
+
     },
     {
       "name": "schatz",
