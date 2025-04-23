@@ -104,7 +104,7 @@
       },
       "prompt": "prompts/knöchelbein-prompt.txt",
       "image": "images/knöchelbein.png",
-      "visible": true,
+      "visible": false,
       "actions": [
         {
           "onApproach": null,
@@ -116,12 +116,12 @@
   ],
   "hotspots": [
     {
-      "name": "krankenhaus",
+      "name": "Museum",
       "position": {
-        "lat": 48.089188,
-        "lng": 16.297281
+        "lat": 48.08654208326306,
+        "lng": 16.287920962933388
       },
-      "radius": 20,
+      "radius": 50,
       "visible": true
     },
     {
