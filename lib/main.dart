@@ -55,7 +55,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _frameRate = Duration(microseconds: 33);
+  final _frameRate = Duration(milliseconds: 33);
   final String title = "Chat Ralley";
   LatLng _location = LatLng(51.5074, -0.1278); // Beispiel für London
   bool _isLocationLoaded = false;
@@ -457,21 +457,13 @@ class _MyHomePageState extends State<MyHomePage> {
           mode: JoystickMode.all,
           stickOffsetCalculator: CircleStickOffsetCalculator(),
           listener: (details) {
-            //if (!_isSimulated) return;
 
             const double step = 0.00005; // Schrittweite pro Tick
-            // Heading in Radiant umwandeln (Blickrichtung des Spielers)
             final double headingRadians = _currentHeading * (pi / 180);
-            /*
-            final double joystickX = details.x;
-            final double joystickY = details.y; // <- Invertieren
 
-            final double dx = (joystickX * cos(headingRadians) + joystickY * sin(headingRadians)) * step;
-            final double dy = (joystickX * sin(headingRadians) + joystickY * cos(headingRadians)) * step;
-            */
-            //in Nord ausirchung
-            final double dx = -details.y * cos(headingRadians);
-            final double dy = details.x * sin(headingRadians);
+            //in Nordausrichtung
+            final double dx = -details.y;
+            final double dy = details.x;
 
             //drehen in richtung heading
             final double drx = dx * cos(headingRadians)- dy * sin(headingRadians);
