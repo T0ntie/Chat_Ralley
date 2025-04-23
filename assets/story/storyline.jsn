@@ -86,6 +86,13 @@
           "params": {
             "trigger": "[Der Spieler sieht dich freundlich an]"
           }
+        },
+        {
+          "onHotspot" : "krankenhaus",
+          "invokeAction": "talk",
+          "params": {
+            "trigger": "[Der Sieler kommt ins Krankenhaus]"
+          }
         }
       ]
     },
@@ -115,15 +122,7 @@
         "lng": 16.297281
       },
       "radius": 20,
-      "visible": false,
-      "actions": [
-      {
-        "onSignal": "showKH",
-        "invokeAction": "appear",
-        "params": {}
-      }
-    ]
-
+      "visible": true
     },
     {
       "name": "schatz",

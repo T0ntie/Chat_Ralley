@@ -1,28 +1,23 @@
-import 'package:hello_world/engine/game_element.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../engine/game_action.dart';
+import 'npc_action.dart';
 import '../engine/npc.dart';
 
-class MoveAlongAction extends GameAction{
+class MoveAlongAction extends NpcAction{
 
   final List<LatLng> path;
 
   MoveAlongAction({required super.trigger, required this.path});
 
   @override
-  void invoke(GameElement element) {
-    super.invoke(element);
-    if (element is Npc) {
-      print('${element.name} starts moving along a path');
-      element.moveAlong(path);
-    } else {
-      print('⚠️ MoveAlongAction can only be applied to Npc, but got ${element.runtimeType}');
-    }
+  void invoke(Npc npc) {
+    super.invoke(npc);
+    print('${npc.name} starts moving along a path');
+    npc.moveAlong(path);
   }
 
   static MoveAlongAction actionFromJson(Map<String, dynamic> json) {
-    GameActionTrigger actionTrigger = GameActionTrigger.npcActionTriggerfromJson(json);
+    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
     final pathJson = json['params']['path'] as List;
     final path = pathJson.map((p) {
       final lat = p['lat'] as double;
@@ -33,6 +28,6 @@ class MoveAlongAction extends GameAction{
   }
 
   static void register() {
-    GameAction.registerAction('moveAlong', MoveAlongAction.actionFromJson);
+    NpcAction.registerAction('moveAlong', MoveAlongAction.actionFromJson);
   }
 }

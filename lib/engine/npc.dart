@@ -1,10 +1,11 @@
 
+import 'package:hello_world/actions/npc_action.dart';
 import 'package:hello_world/engine/game_element.dart';
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
-import 'game_action.dart';
+
 import 'dart:math';
 
 enum NPCIcon { unknown, identified, nearby, unknown_nearby }
@@ -49,7 +50,7 @@ class Npc extends GameElement{
       final promptText = await rootBundle.loadString(
           'assets/story/${promptFile}');
       final actionsJson = json['actions'] as List? ?? [];
-      final actions = actionsJson.map((a) => GameAction.fromJson(a)).toList();
+      final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
 
       //check vor valid position
       final pos = json['position'];

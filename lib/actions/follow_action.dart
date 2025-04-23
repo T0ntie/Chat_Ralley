@@ -1,31 +1,24 @@
 
-import 'package:hello_world/engine/game_element.dart';
-
-import '../engine/game_action.dart';
+import 'npc_action.dart';
 import '../engine/npc.dart';
 
-class FollowAction extends GameAction{
+class FollowAction extends NpcAction{
 
   FollowAction({required super.trigger});
 
   @override
-  void invoke(GameElement element) {
-    super.invoke(element);
-    if (element is Npc) {
-      print('${element.name} starts following you');
-      element.startFollowing();
-    } else {
-      print('⚠️ FollowAction can only be applied to Npc, but got ${element.runtimeType}');
-    }
+  void invoke(Npc npc) {
+    super.invoke(npc);
+    print('${npc.name} starts following you');
+    npc.startFollowing();
   }
 
-
   static FollowAction actionFromJson(Map<String, dynamic> json) {
-    GameActionTrigger actionTrigger = GameActionTrigger.npcActionTriggerfromJson(json);
+    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
     return FollowAction(trigger: actionTrigger);
   }
   
   static void register() {
-    GameAction.registerAction('follow', FollowAction.actionFromJson);
+    NpcAction.registerAction('follow', FollowAction.actionFromJson);
   }
 }

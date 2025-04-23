@@ -129,13 +129,24 @@ class _MyHomePageState extends State<MyHomePage> {
       if (!_isGPSSimulating){
         _location = LatLng(position.latitude, position.longitude);
         print("setting location to ${_location}");
-        for (final npc in _npcs) {
-          npc.updatePlayerPosition(_location);
-        }
+        _processNewLocation(_location);
       }
       _isLocationLoaded = true;
       _checkIfInitializationCompleted();
     });
+  }
+
+  void _processNewLocation(LatLng location)
+  {
+    for (final npc in _npcs) {
+      npc.updatePlayerPosition(_location);
+    }
+    for (final hotspot in _hotspots) {
+      if (hotspot.contains(_location))
+      {
+        _gameEngine.registerHotspot(hotspot);
+      }
+    }
   }
 
   void _initializeMapController() {
@@ -477,9 +488,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _location = LatLng(_location.latitude+x, _location.longitude+y);
     });
-    for (final npc in _npcs) {
-      npc.updatePlayerPosition(_location);
-    }
+    _processNewLocation(_location);
   }
 
   @override

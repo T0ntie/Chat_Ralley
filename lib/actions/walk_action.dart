@@ -1,10 +1,9 @@
-import 'package:hello_world/engine/game_element.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../engine/game_action.dart';
+import 'npc_action.dart';
 import '../engine/npc.dart';
 
-class WalkAction extends GameAction{
+class WalkAction extends NpcAction{
 
   final double lat;
   final double lng;
@@ -12,18 +11,14 @@ class WalkAction extends GameAction{
   WalkAction({required super.trigger, required this.lat, required this.lng});
 
   @override
-  void invoke(GameElement element) {
-    super.invoke(element);
-    if (element is Npc) {
-      print('${element.name} starts walking to ${lat}, ${lng}');
-      element.moveTo(LatLng(lat, lng));
-    } else {
-      print('⚠️ WalkAction can only be applied to Npc, but got ${element.runtimeType}');
-    }
+  void invoke(Npc npc) {
+    super.invoke(npc);
+    print('${npc.name} starts walking to ${lat}, ${lng}');
+    npc.moveTo(LatLng(lat, lng));
   }
 
   static WalkAction actionFromJson(Map<String, dynamic> json) {
-    GameActionTrigger actionTrigger = GameActionTrigger.npcActionTriggerfromJson(json);
+    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
     final lat = json['params']['lat'];
     final lng = json['params']['lng'];
 
@@ -31,7 +26,7 @@ class WalkAction extends GameAction{
   }
 
   static void register() {
-    GameAction.registerAction('walkTo', WalkAction.actionFromJson);
+    NpcAction.registerAction('walkTo', WalkAction.actionFromJson);
   }
 
 }

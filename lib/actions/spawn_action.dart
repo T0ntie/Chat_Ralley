@@ -1,28 +1,22 @@
-import 'package:hello_world/engine/game_element.dart';
-
-import '../engine/game_action.dart';
+import 'npc_action.dart';
 import '../engine/npc.dart';
 
-class SpawnAction extends GameAction{
+class SpawnAction extends NpcAction{
 
   SpawnAction({required super.trigger});
 
   @override
-  void invoke(GameElement element) {
-    super.invoke(element);
-    if (element is Npc) {
-      print('${element.name} spawns');
-      element.spawn();
-    } else {
-      print('⚠️ SpawnAction can only be applied to Npc, but got ${element.runtimeType}');
-    }
+  void invoke(Npc npc) {
+    super.invoke(npc);
+    print('${npc.name} spawns');
+    npc.spawn();
   }
 
   static SpawnAction actionFromJson(Map<String, dynamic> json) {
-    GameActionTrigger actionTrigger = GameActionTrigger.npcActionTriggerfromJson(json);
+    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
     return SpawnAction(trigger: actionTrigger);
   }
   static void register() {
-    GameAction.registerAction('spawn', SpawnAction.actionFromJson);
+    NpcAction.registerAction('spawn', SpawnAction.actionFromJson);
   }
 }

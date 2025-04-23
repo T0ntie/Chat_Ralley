@@ -1,5 +1,5 @@
+import 'package:hello_world/actions/npc_action.dart';
 import 'package:latlong2/latlong.dart';
-import 'game_action.dart';
 
 class GameElement {
 
@@ -7,7 +7,7 @@ class GameElement {
   LatLng position;
   bool isVisible;
 
-  List<GameAction> actions = [];
+  List<NpcAction> actions = [];
 
   GameElement({
     required this.name,

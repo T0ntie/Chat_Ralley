@@ -1,6 +1,7 @@
+import 'package:hello_world/actions/npc_action.dart';
 import 'package:hello_world/engine/game_element.dart';
 import 'package:latlong2/latlong.dart';
-import 'game_action.dart';
+
 
 class Hotspot extends GameElement{
   double radius;
@@ -20,7 +21,7 @@ class Hotspot extends GameElement{
       throw FormatException('Ungültige Positionsdaten in stryline.jsn: $pos bei ${json['name']}');
     }
     final actionsJson = json['actions'] as List? ?? [];
-    final actions = actionsJson.map((a) => GameAction.fromJson(a)).toList();
+    final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
     return Hotspot(
       name: json['name'],
       radius: (json['radius'] as num).toDouble(),
@@ -31,5 +32,10 @@ class Hotspot extends GameElement{
       ),
       actions: actions,
     );
+  }
+
+  bool contains(LatLng point) {
+    double distance = const Distance().as(LengthUnit.Meter, position, point);
+    return distance <= radius;
   }
 }
