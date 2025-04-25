@@ -12,6 +12,8 @@ class GameEngine {
 
   List<Npc> get npcs => storyLine.npcs;
   List<Hotspot> get hotspots => storyLine.hotspots;
+  Map <String, bool> get flags => storyLine.flags;
+
   final Map<String, List<(Npc, NpcAction)>> _signalSubscriptions = {};
   final Map<Npc, List<NpcAction>> _interactionSubscriptions = {};
   final Map<Npc, List<NpcAction>> _approachSubscriptions = {};
@@ -61,6 +63,21 @@ class GameEngine {
     }
   }
 
+  bool checkFlag(String flag) {
+    if (!flags.containsKey(flag)) {
+      print('Unknown flag in checkFlag: $flag');
+    }
+    return flags[flag] ?? false;
+  }
+
+  void setFlag(String flag, bool value)
+  {
+    if (!flags.containsKey(flag)) {
+      print ('New flag: $flag set to $value');
+    }
+    flags[flag] = value;
+  }
+
   void registerApproach(Npc npc) {
     final actions = _approachSubscriptions[npc];
     if (actions != null) {
@@ -98,18 +115,36 @@ class GameEngine {
     }
   }
 
-  void registerSignal(String signal) {
-    print('Signal ${signal} registered!');
-    final subscribers = _signalSubscriptions[signal];
+  void registerSignal(Map<String, dynamic> json) {
+    print('Signal ${json} registered!');
+    if (json.containsKey('signal')) {
+      _handleSignals(json);
+    }
+    if (json.containsKey('flags')) {
+      _handleFlags(json);
+    }
+  }
+  void _handleSignals(json) {
+    final signalString = json['signal'] as String;
+    final subscribers = _signalSubscriptions[signalString];
     if (subscribers == null) {
-      print('🔔 No subscribers for signal $signal.');
+      print('🔔 No subscribers for signal $signalString.');
       return;
     }
     for (final (npc, action) in subscribers) {
       print('🔔 Executing action for NPC: ${npc.name}');
-      action.invoke(npc); // vorausgesetzt, Action hat diese Methode
+      action.invoke(npc);
     }
   }
+
+  void _handleFlags(json){
+    Map<String, bool> newFlags = Map<String, bool>.from(json['flags']);
+    newFlags.forEach((key, value) {
+      flags[key] = value;  // Das Flag wird entweder hinzugefügt oder der Wert geändert
+      print('🚩 Flag ${key} set to ${value}');
+    });
+  }
+
   void registerHotspot(Hotspot hotspot) {
     print('🧿 Hotspot registered: ${hotspot.name}');
     final subscribers = _hotspotSubscriptions[hotspot.name];

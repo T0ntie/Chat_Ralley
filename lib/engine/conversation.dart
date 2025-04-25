@@ -5,6 +5,7 @@ import 'npc.dart';
 import 'dart:convert';
 
 class Conversation {
+
   final Npc npc; // Der NPC, mit dem der User chattet
   final List<ChatMessage> _messages = []; // Liste von Nachrichten
   int userMessageCount = 0;
@@ -48,8 +49,8 @@ class Conversation {
       chatRole: ChatRole.assistant,
     );
     _messages.add(chatMessage);
-    if (chatMessage.signalString != null) {
-      GameEngine.instance.registerSignal(chatMessage.signalString!);
+    if (chatMessage.signalJson.isNotEmpty) {
+      GameEngine.instance.registerSignal(chatMessage.signalJson);
     }
   }
 
@@ -80,7 +81,7 @@ class ChatMessage {
   rawText; // die komplette Message, wie sie Chat-GPT bekommt (inklusive JSON Signale)
   final String
   filteredText; //alle Singale rausgefiltert, so wie sie dem Benutzer angezeigt wird
-  final String? signalString;
+  late final Map<String, dynamic> signalJson;
   bool isTrigger;
 
   final ChatRole chatRole;
@@ -90,48 +91,44 @@ class ChatMessage {
     required this.chatRole,
     this.isTrigger = false,
   }) : filteredText = _filterMessage(rawText),
-       signalString =
+       signalJson =
            (chatRole == ChatRole.assistant)
-               ? _extractSignalStatus(rawText)
-               : null {
-    if (chatRole == ChatRole.assistant && signalString != null) {
-      print("✅ Signal gefunden: $signalString");
+               ? _extractSignal(rawText)
+               : {} {
+    if (chatRole == ChatRole.assistant && signalJson.isNotEmpty) {
+      print("✅ Signal gefunden: $signalJson");
     }
   }
 
   //entfernt alle signale aus der message
   static String _filterMessage(String rawText) {
     final regex = RegExp(
-      r'<json-signal>\s*([\s\S]*?)\s*<\/json-signal>',
+      r'<npc-signal>\s*([\s\S]*?)\s*<\/npc-signal>',
       multiLine: true,
     );
     return rawText.replaceAll(regex, '').trim();
   }
 
-  static String? _extractSignalStatus(String rawText) {
+  static Map<String, dynamic> _extractSignal(String rawText){
     final regex = RegExp(
-      r'<json-signal>\s*([\s\S]*?)\s*<\/json-signal>',
+      r'<npc-signal>\s*([\s\S]*?)\s*<\/npc-signal>',
       multiLine: true,
     );
     final match = regex.firstMatch(rawText);
-
     if (match != null) {
       final jsonString = match.group(1);
       try {
-        final Map<String, dynamic> decoded = jsonDecode(jsonString!);
-        return decoded['status']?.toString(); // falls 'status' existiert
+        return jsonDecode(jsonString!);
       } catch (_) {
-        return null;
+        return {};
       }
     }
-    return null;
+    return {};
   }
 
   // Getter für "fromUser"
   bool get fromUser => chatRole == ChatRole.user;
-
   bool get fromAssistant => chatRole == ChatRole.assistant;
-
   bool get fromSystem => chatRole == ChatRole.system;
 
   String getRoleString() {

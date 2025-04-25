@@ -160,5 +160,8 @@
       "radius": 50,
       "visible": true
     }
-  ]
+  ],
+  "flags": {
+    "knowsKrollsAddress": false
+  }
 }
