@@ -3,18 +3,16 @@ import '../engine/npc.dart';
 
 class SpawnAction extends NpcAction{
 
-  SpawnAction({required super.trigger});
+  SpawnAction({required super.trigger, required super.conditions});
 
   @override
-  void invoke(Npc npc) {
-    super.invoke(npc);
+  void excecute(Npc npc) {
     print('${npc.name} spawns');
     npc.spawn();
   }
 
   static SpawnAction actionFromJson(Map<String, dynamic> json) {
-    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
-    return SpawnAction(trigger: actionTrigger);
+    return SpawnAction(trigger: NpcActionTrigger.npcActionTriggerfromJson(json), conditions: NpcAction.conditionsFromJson(json));
   }
   static void register() {
     NpcAction.registerAction('spawn', SpawnAction.actionFromJson);

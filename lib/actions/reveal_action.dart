@@ -3,18 +3,18 @@ import '../engine/npc.dart';
 
 class RevealAction extends NpcAction{
 
-  RevealAction({required super.trigger});
+  RevealAction({required super.trigger, required super.conditions});
 
   @override
-  void invoke(Npc npc) {
-    super.invoke(npc);
+  void excecute(Npc npc) {
     print('${npc.name} reveals');
     npc.reveal();
   }
 
   static RevealAction actionFromJson(Map<String, dynamic> json) {
-    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
-    return RevealAction(trigger: actionTrigger);
+    return RevealAction(
+        trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
+        conditions: NpcAction.conditionsFromJson(json));
   }
   static void register() {
     NpcAction.registerAction('reveal', RevealAction.actionFromJson);

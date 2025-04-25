@@ -2,6 +2,7 @@ import 'package:hello_world/actions/behave_action.dart';
 import 'package:hello_world/actions/spawn_action.dart';
 import 'package:hello_world/actions/stop_moving_action.dart';
 import 'package:hello_world/actions/talk_action.dart';
+import 'package:hello_world/engine/game_engine.dart';
 
 import 'walk_action.dart';
 import 'appear_action.dart';
@@ -11,7 +12,6 @@ import 'move_along_action.dart';
 import '../engine/npc.dart';
 
 enum TriggerType {signal, interaction, approach, init, hotspot, message}
-
 
 class NpcActionTrigger {
   static const signalString = 'onSignal';
@@ -45,6 +45,7 @@ class NpcActionTrigger {
 
 abstract class NpcAction{
   final NpcActionTrigger trigger;
+  final Map<String, bool> conditions;
 
   static final Map<String, NpcAction Function(Map<String, dynamic>)> _actionRegistry = {};
   static void registerAction(
@@ -54,12 +55,30 @@ abstract class NpcAction{
     _actionRegistry[type] = factory;
   }
 
-  void invoke(Npc npc) {
-    //print('invoke für ${npc.name} aufgerufen');
+  void invoke(Npc npc)
+  {
+    Map<String, bool> flags = GameEngine.instance.flags;
+
+    bool allConditionsMet = conditions.keys
+        .where(flags.containsKey)  // Nur die gemeinsamen Schlüssel betrachten
+        .every((key) => conditions[key] == flags[key]);  // Werte vergleichen
+    print('vergleiche ${flags} mit ${conditions} mit dem Ergebnis: ${allConditionsMet}');
+    if (allConditionsMet) {
+      excecute(npc);
+    }
   }
 
-  NpcAction({required this.trigger});
+  void excecute(Npc npc);
 
+  NpcAction({required this.trigger, required this.conditions,});
+
+  static Map<String, bool> conditionsFromJson(Map<String, dynamic> json) {
+    if (json.containsKey('conditions')) {
+      return (json['conditions'] as Map<String, dynamic>).cast<String, bool>();
+    }
+    return {};
+  }
+  
   static NpcAction fromJson(Map<String, dynamic> json) {
     final actionType = json['invokeAction'];
     final factory = _actionRegistry[actionType];

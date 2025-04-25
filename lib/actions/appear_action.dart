@@ -3,18 +3,18 @@ import '../engine/npc.dart';
 
 class AppearAction extends NpcAction{
 
-  AppearAction({required super.trigger});
+  AppearAction({required super.trigger, required super.conditions});
 
   @override
-  void invoke(Npc npc) {
-    super.invoke(npc);
+  void excecute(Npc npc) {
     print('${npc.name} appears');
     npc.isVisible = true;
   }
 
   static AppearAction actionFromJson(Map<String, dynamic> json) {
-    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
-    return AppearAction(trigger: actionTrigger);
+    return AppearAction(
+        trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
+        conditions: NpcAction.conditionsFromJson(json));
   }
 
   static void register() {

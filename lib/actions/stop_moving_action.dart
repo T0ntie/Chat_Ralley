@@ -3,18 +3,18 @@ import '../engine/npc.dart';
 
 class StopMovingAction extends NpcAction{
 
-  StopMovingAction({required super.trigger});
+  StopMovingAction({required super.trigger, required super.conditions});
 
   @override
-  void invoke(Npc npc) {
-    super.invoke(npc);
+  void excecute(Npc npc) {
     print('${npc.name} stops');
     npc.stopMoving();
   }
 
   static StopMovingAction actionFromJson(Map<String, dynamic> json) {
-    NpcActionTrigger actionTrigger = NpcActionTrigger.npcActionTriggerfromJson(json);
-    return StopMovingAction(trigger: actionTrigger);
+    return StopMovingAction(
+        trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
+        conditions: NpcAction.conditionsFromJson(json));
   }
 
   static void register() {

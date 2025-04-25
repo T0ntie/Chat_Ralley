@@ -114,6 +114,9 @@
           "invokeAction": "behave",
           "params": {
             "directive": "[Sprich ab jetzt in Englisch!]"
+          },
+          "conditions": {
+            "knowsKrollsAddress" : true
           }
         }
       ]
