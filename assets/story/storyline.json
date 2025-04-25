@@ -30,11 +30,26 @@
           "invokeAction": "moveAlong",
           "params": {
             "path": [
-              { "lat": 48.090066, "lng": 16.298747 },
-              { "lat": 48.088539, "lng": 16.298612 },
-              { "lat": 48.088691, "lng": 16.295810 },
-              { "lat": 48.090177, "lng": 16.295720 },
-              { "lat": 48.090221, "lng": 16.296259 }
+              {
+                "lat": 48.090066,
+                "lng": 16.298747
+              },
+              {
+                "lat": 48.088539,
+                "lng": 16.298612
+              },
+              {
+                "lat": 48.088691,
+                "lng": 16.295810
+              },
+              {
+                "lat": 48.090177,
+                "lng": 16.295720
+              },
+              {
+                "lat": 48.090221,
+                "lng": 16.296259
+              }
             ]
           }
         },
@@ -73,8 +88,8 @@
       "visible": true,
       "actions": [
         {
-            "onInit" : null,
-            "invokeAction" : "spawn"
+          "onInit": null,
+          "invokeAction": "spawn"
         },
         {
           "onInteraction": null,
@@ -88,10 +103,17 @@
           }
         },
         {
-          "onHotspot" : "krankenhaus",
+          "onHotspot": "krankenhaus",
           "invokeAction": "talk",
           "params": {
             "trigger": "[Der Sieler kommt ins Krankenhaus]"
+          }
+        },
+        {
+          "onMessageCount": 3,
+          "invokeAction": "behave",
+          "params": {
+            "directive": "[Sprich ab jetzt in Englisch!]"
           }
         }
       ]
@@ -99,15 +121,20 @@
     {
       "name": "Professor Dr. Theobald Knöchelbein",
       "position": {
-        "lat": 47.414665,
-        "lng": 13.638239
+        "lat": 48.08647939094122,
+        "lng": 16.287956708555186
       },
       "prompt": "prompts/knöchelbein-prompt.txt",
       "image": "images/knöchelbein.png",
       "visible": false,
       "actions": [
         {
-          "onApproach": null,
+          "onHotspot": "Museum",
+          "invokeAction": "appear",
+          "params": {}
+        },
+        {
+          "onInteraction": null,
           "invokeAction": "reveal",
           "params": {}
         }
@@ -125,12 +152,12 @@
       "visible": true
     },
     {
-      "name": "schatz",
+      "name": "HausKroll",
       "position": {
-        "lat": 47.414365,
-        "lng": 13.637239
+        "lat": 48.085468,
+        "lng": 16.279234
       },
-      "radius": 40,
+      "radius": 50,
       "visible": true
     }
   ]

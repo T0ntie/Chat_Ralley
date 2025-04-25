@@ -138,10 +138,10 @@ class Npc extends GameElement{
   void talk(String repsondTo) async{
     hasSomethingToSay = true;
     currentConversation.addTriggerMessage(repsondTo);
-    /*
-    final String response = await currentConversation.processConversation();
-    currentConversation.addAssistantMessage(response);
-     */
+  }
+
+  void behave(String directive) {
+    currentConversation.addSystemMessage(directive);
   }
 
   double get currentDistance  {

@@ -17,6 +17,7 @@ class GameEngine {
   final Map<Npc, List<NpcAction>> _approachSubscriptions = {};
   final Map<Npc, List<NpcAction>> _initSubscriptions = {};
   final Map<String, List<(Npc, NpcAction)>> _hotspotSubscriptions = {};
+  final Map<Npc, List<(NpcAction, int)>> _messageCountSubscriptions = {};
 
   GameEngine._internal();
 
@@ -50,6 +51,11 @@ class GameEngine {
             final hotspotName = action.trigger.value as String;
             _hotspotSubscriptions.putIfAbsent(hotspotName, () => []).add((npc, action));
             print('🧿 Registered hotspot action for ${hotspotName}');
+            break;
+          case TriggerType.message:
+            final messageCount = action.trigger.value as int;
+            _messageCountSubscriptions.putIfAbsent(npc, () => []).add((action, messageCount));
+            print ('💬 Registered message action for ${npc.name}');
         }
       }
     }
@@ -114,6 +120,22 @@ class GameEngine {
     for (final (npc, action) in subscribers){
       print('🧿 Executing action for hotspot: ${hotspot.name} and npc: ${npc.name}');
       action.invoke(npc);
+    }
+  }
+
+  void registerMessage(Npc npc, int count)
+  {
+    print('💬 Message for ${npc.name} registered');
+    for (final entry in _messageCountSubscriptions.entries) {
+      final Npc npc = entry.key;
+      final List<(NpcAction, int)> actionsEntries = entry.value;
+      for(final actionEntry in actionsEntries) {
+        final (NpcAction action, int messageCount) = actionEntry;
+        if (messageCount == count) {
+          print('💬 Executing action for ${npc.name}');
+          action.invoke(npc);
+        }
+      }
     }
   }
 }

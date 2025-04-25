@@ -9,6 +9,7 @@ class StoryLine {
   final String title;
   final List<Npc> npcs;
   final List<Hotspot> hotspots;
+  static const storyLineAsset = 'assets/story/storyline.json';
 
   StoryLine({required this.scenarioId, required this.title, required this.npcs, required this.hotspots});
 
@@ -32,8 +33,7 @@ class StoryLine {
 
   static Future<StoryLine> loadStoryLine() async {
     try {
-      final jsonString = await rootBundle.loadString(
-          'assets/story/storyline.jsn');
+      final jsonString = await rootBundle.loadString(storyLineAsset);
       final jsonData = json.decode(jsonString);
       return await StoryLine.fromJsonAsync(jsonData);
     } catch (e, stack) {
