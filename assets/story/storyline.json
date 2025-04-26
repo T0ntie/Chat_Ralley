@@ -86,6 +86,7 @@
       "prompt": "prompts/knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
       "visible": true,
+      "speed" : 200,
       "actions": [
         {
           "onInit": null,
@@ -103,20 +104,34 @@
           }
         },
         {
-          "onHotspot": "krankenhaus",
-          "invokeAction": "talk",
+          "onSignal": "KnatterbachFollow",
+          "invokeAction": "follow"
+        },
+        {
+          "onSignal": "KnatterbachStop",
+          "invokeAction": "stopMoving"
+        },
+        {
+          "onSignal": "KnatterbachLeave",
+          "invokeAction": "walkTo",
           "params": {
-            "trigger": "[Der Sieler kommt ins Krankenhaus]"
+            "lat": 48.086400519489516,
+            "lng": 16.28759483776743
           }
         },
         {
-          "onMessageCount": 3,
-          "invokeAction": "behave",
+          "onHotspot": "Museum",
+          "invokeAction": "talk",
           "params": {
-            "directive": "[Sprich ab jetzt in Englisch!]"
-          },
-          "conditions": {
-            "knowsKrollsAddress" : true
+            "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]"
+          }
+        },
+
+        {
+          "onHotspot": "Polizei",
+          "invokeAction": "talk",
+          "params": {
+            "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]"
           }
         }
       ]
@@ -140,7 +155,18 @@
           "onInteraction": null,
           "invokeAction": "reveal",
           "params": {}
+        },
+        {
+          "onMessageCount": 10,
+          "invokeAction": "behave",
+          "params": {
+            "directive": "[Erinnere dich an das Besucherbuch]"
+          },
+          "conditions": {
+            "knowsKrollsAddress" : false
+          }
         }
+
       ]
     }
   ],
@@ -161,6 +187,15 @@
         "lng": 16.279234
       },
       "radius": 50,
+      "visible": true
+    },
+    {
+      "name": "Polizei",
+      "position": {
+        "lat": 48.086400519489516,
+        "lng": 16.28759483776743
+      },
+      "radius": 10,
       "visible": true
     }
   ],

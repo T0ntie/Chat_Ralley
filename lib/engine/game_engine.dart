@@ -7,6 +7,8 @@ class GameEngine {
   static final GameEngine _instance = GameEngine._internal(); //Singleton
   static GameEngine get instance => _instance;
   static final double conversationDistance = 50.0;
+  bool isTestSimimulationOn = false;
+
 
   late final StoryLine storyLine;
 

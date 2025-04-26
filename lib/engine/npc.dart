@@ -25,8 +25,9 @@ class Npc extends GameElement{
   //double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
-   //how close you need to be to communicate
-  double speed; //in m/s
+
+  double _speed;
+  double  get speed => (GameEngine.instance.isTestSimimulationOn ? 100.0 : _speed);//in m/s
 
 
   Npc({
@@ -37,11 +38,10 @@ class Npc extends GameElement{
     required super.actions,
     required super.isVisible,
     required this.isRevealed,
-    required this.speed, //in km/h
-  }) {
+    required speed, //in km/h
+  }): _speed = speed * 1000 / 3600  {
     this.currentConversation = Conversation(this);
     this.toPosition = position;
-    this.speed = speed * 1000 /3600;
   }
 
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {

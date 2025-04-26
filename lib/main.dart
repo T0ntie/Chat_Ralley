@@ -78,7 +78,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool _isMapHeadingBasedOrientation = false;
 
-  bool _isGPSSimulating = false;
+  bool get _isGPSSimulating => _gameEngine.isTestSimimulationOn;
+  set _isGPSSimulating(bool value) {
+    _gameEngine.isTestSimimulationOn = value;
+  }
+
   LatLng? _realPosition = null;
 
   void _centerMapOnCurrentLocation() {
@@ -126,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _positionSubscription = LocationService.getPositionStream().listen((
       Position position,
     ) {
-      if (!_isGPSSimulating){
+      if (!_isGPSSimulating) {
         _location = LatLng(position.latitude, position.longitude);
         print("setting location to ${_location}");
         _processNewLocation(_location);
@@ -136,14 +140,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _processNewLocation(LatLng location)
-  {
+  void _processNewLocation(LatLng location) {
     for (final npc in _npcs) {
       npc.updatePlayerPosition(_location);
     }
     for (final hotspot in _hotspots) {
-      if (hotspot.contains(_location))
-      {
+      if (hotspot.contains(_location)) {
         _gameEngine.registerHotspot(hotspot);
       }
     }
@@ -331,7 +333,22 @@ class _MyHomePageState extends State<MyHomePage> {
     final pulse = _getPulseState(GameEngine.conversationDistance);
     return FlutterMap(
       mapController: _mapController,
-      options: MapOptions(initialCenter: _location, initialZoom: 16.0),
+      options: MapOptions(
+        initialCenter: _location,
+        initialZoom: 16.0,
+        onLongPress: (tapPosition, point) {
+          if (_isGPSSimulating)
+            {
+              setState(() {
+                _location = point;
+                _processNewLocation(_location);
+              });
+            }
+        },
+        onTap: (tapPosition, point) {
+          print('Tapped on location: ${point.latitude}, ${point.longitude}');
+        }
+      ),
       children: [
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -351,15 +368,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     borderStrokeWidth: 2,
                   ),
                 ),
-            /*
-            CircleMarker(
-              point: _location,
-              radius: _getPulsingRadius(20),
-              useRadiusInMeter: true,
-              color: Colors.blue.withAlpha((0.06 * 255).toInt()),
-              borderColor: Colors.blue.withAlpha((0.5 * 255).toInt()),
-              borderStrokeWidth: 2,
-            ),*/
             CircleMarker(
               point: _location,
               radius: pulse.radius,
@@ -457,7 +465,6 @@ class _MyHomePageState extends State<MyHomePage> {
           mode: JoystickMode.all,
           stickOffsetCalculator: CircleStickOffsetCalculator(),
           listener: (details) {
-
             const double step = 0.00005; // Schrittweite pro Tick
             final double headingRadians = _currentHeading * (pi / 180);
 
@@ -466,8 +473,10 @@ class _MyHomePageState extends State<MyHomePage> {
             final double dy = details.x;
 
             //drehen in richtung heading
-            final double drx = dx * cos(headingRadians)- dy * sin(headingRadians);
-            final double dry = dx * sin(headingRadians) + dy * cos(headingRadians);
+            final double drx =
+                dx * cos(headingRadians) - dy * sin(headingRadians);
+            final double dry =
+                dx * sin(headingRadians) + dy * cos(headingRadians);
 
             _moveSimulatdLocation(drx * step, dry * step);
           },
@@ -478,7 +487,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _moveSimulatdLocation(double x, double y) {
     setState(() {
-      _location = LatLng(_location.latitude+x, _location.longitude+y);
+      _location = LatLng(_location.latitude + x, _location.longitude + y);
     });
     _processNewLocation(_location);
   }
@@ -493,10 +502,10 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.sports_esports_outlined),
             tooltip: "Simulate",
             onPressed: () {
-              if (!_isGPSSimulating){
+              if (!_isGPSSimulating) {
                 _realPosition = _location;
-              }else {
-                if (_realPosition != null){
+              } else {
+                if (_realPosition != null) {
                   _location = _realPosition!;
                 }
               }
