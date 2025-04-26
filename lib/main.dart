@@ -355,7 +355,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         CircleLayer(
           circles: [
-            ..._hotspots
+            if (_isGPSSimulating)..._hotspots
                 .where((h) => h.isVisible)
                 .map(
                   (hotspot) => CircleMarker(

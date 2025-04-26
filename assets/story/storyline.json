@@ -126,7 +126,6 @@
             "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]"
           }
         },
-
         {
           "onHotspot": "Polizei",
           "invokeAction": "talk",
