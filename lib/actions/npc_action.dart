@@ -1,4 +1,5 @@
 import 'package:hello_world/actions/behave_action.dart';
+import 'package:hello_world/actions/show_hotspot_action.dart';
 import 'package:hello_world/actions/spawn_action.dart';
 import 'package:hello_world/actions/stop_moving_action.dart';
 import 'package:hello_world/actions/talk_action.dart';
@@ -99,5 +100,6 @@ abstract class NpcAction{
     TalkAction.register();
     BehaveAction.register();
     SpawnAction.register();
+    ShowHotspotAction.register();
   }
 }

@@ -57,7 +57,7 @@
       "prompt": "prompts/knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
       "visible": true,
-      "speed" : 200,
+      "speed": 200,
       "actions": [
         {
           "onInit": null,
@@ -73,6 +73,11 @@
           "params": {
             "trigger": "[Der Spieler sieht dich freundlich an]"
           }
+        },
+        {
+          "onSignal": "ShowMuseum",
+          "invokeAction": "showHotspot",
+          "hotSpot": "Museum"
         },
         {
           "onSignal": "KnatterbachFollow",
@@ -109,7 +114,7 @@
       "prompt": "prompts/tschulli-prompt.txt",
       "image": "images/tschulli.png",
       "visible": true,
-      "revealed" : true
+      "revealed": true
     },
     {
       "name": "Dieter Kroll",
@@ -143,7 +148,7 @@
             "directive": "[Erinnere dich an das Besucherbuch]"
           },
           "conditions": {
-            "knowsKrollsAddress" : false
+            "knowsKrollsAddress": false
           }
         }
       ]
@@ -154,7 +159,7 @@
       "name": "Museum",
       "position": "MuseumPosition",
       "radius": 50,
-      "visible": true
+      "visible": false
     },
     {
       "name": "HausKroll",

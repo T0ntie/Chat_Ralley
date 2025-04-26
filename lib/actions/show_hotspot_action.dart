@@ -1,0 +1,33 @@
+import 'package:hello_world/engine/game_engine.dart';
+import 'package:hello_world/engine/hotspot.dart';
+
+import 'npc_action.dart';
+import '../engine/npc.dart';
+
+class ShowHotspotAction extends NpcAction{
+
+  String hotspotName;
+
+  ShowHotspotAction({required super.trigger, required super.conditions, required this.hotspotName});
+
+  @override
+  void excecute(Npc npc) {
+    print('$hotspotName appears');
+    Hotspot? spot = GameEngine.instance.getHotspotByName(hotspotName);
+    if (spot != null) {
+      spot.isVisible = true;
+    }
+  }
+
+  static ShowHotspotAction actionFromJson(Map<String, dynamic> json) {
+    final hotspotName = json['hotSpot'];
+    return ShowHotspotAction(
+        trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
+        conditions: NpcAction.conditionsFromJson(json),
+      hotspotName: hotspotName,
+    );
+  }
+  static void register() {
+    NpcAction.registerAction('showHotspot', ShowHotspotAction.actionFromJson);
+  }
+}

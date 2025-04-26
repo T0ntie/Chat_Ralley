@@ -13,7 +13,7 @@ class GameEngine {
   late final StoryLine storyLine;
 
   List<Npc> get npcs => storyLine.npcs;
-  List<Hotspot> get hotspots => storyLine.hotspots;
+  List<Hotspot> get hotspots => storyLine.hotspotsList;
   Map <String, bool> get flags => storyLine.flags;
 
   final Map<String, List<(Npc, NpcAction)>> _signalSubscriptions = {};
@@ -24,6 +24,10 @@ class GameEngine {
   final Map<Npc, List<(NpcAction, int)>> _messageCountSubscriptions = {};
 
   GameEngine._internal();
+
+  Hotspot? getHotspotByName(String hotspotName) {
+    return storyLine.hotspotMap[hotspotName];
+  }
 
   Future<void> initializeGame() async {
     NpcAction.registerAllNpcActions();
