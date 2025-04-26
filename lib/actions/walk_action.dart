@@ -1,3 +1,4 @@
+import 'package:hello_world/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'npc_action.dart';
@@ -21,13 +22,14 @@ class WalkAction extends NpcAction {
   }
 
   static WalkAction actionFromJson(Map<String, dynamic> json) {
-    final lat = json['params']['lat'];
-    final lng = json['params']['lng'];
+    LatLng toPosition = StoryLine.positionFromJson(json);
+    //final lat = json['params']['lat'];
+    //final lng = json['params']['lng'];
     return WalkAction(
       trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
       conditions: NpcAction.conditionsFromJson(json),
-      lat: lat,
-      lng: lng,
+      lat: toPosition.latitude,
+      lng: toPosition.longitude,
     );
   }
 

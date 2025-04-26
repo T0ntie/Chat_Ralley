@@ -7,7 +7,7 @@ class GameElement {
   LatLng position;
   bool isVisible;
 
-  List<NpcAction> actions = [];
+  List<NpcAction> actions = []; //fixme doch in die NPC Klasse verschieben?
 
   GameElement({
     required this.name,

@@ -1,5 +1,6 @@
 import 'package:hello_world/actions/npc_action.dart';
 import 'package:hello_world/engine/game_element.dart';
+import 'package:hello_world/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 
 
@@ -15,22 +16,15 @@ class Hotspot extends GameElement{
   });
 
   static Hotspot fromJson(Map<String, dynamic> json) {
-    //check vor valid position
-    final pos = json['position'];
-    if (pos is! Map || pos['lat'] == null || pos['lng'] == null) {
-      throw FormatException('Ungültige Positionsdaten in stryline.jsn: $pos bei ${json['name']}');
-    }
+    final LatLng position = StoryLine.positionFromJson(json);
     final actionsJson = json['actions'] as List? ?? [];
     final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
     return Hotspot(
       name: json['name'],
       radius: (json['radius'] as num).toDouble(),
       isVisible: json['visible'] as bool? ?? true,
-      position: LatLng(
-        (json['position']['lat'] as num).toDouble(),
-        (json['position']['lng'] as num).toDouble(),
-      ),
-      actions: actions,
+      position: position,
+      actions: actions,//fixme actions in hotspots?
     );
   }
 

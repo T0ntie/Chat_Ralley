@@ -1,3 +1,4 @@
+import 'package:hello_world/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'npc_action.dart';
@@ -19,13 +20,7 @@ class MoveAlongAction extends NpcAction {
   }
 
   static MoveAlongAction actionFromJson(Map<String, dynamic> json) {
-    final pathJson = json['params']['path'] as List;
-    final path =
-        pathJson.map((p) {
-          final lat = p['lat'] as double;
-          final lng = p['lng'] as double;
-          return LatLng(lat, lng);
-        }).toList();
+    final path = StoryLine.pathFromJson(json);
     return MoveAlongAction(
       trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
       conditions: NpcAction.conditionsFromJson(json),

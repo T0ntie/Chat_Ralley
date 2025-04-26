@@ -141,14 +141,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _processNewLocation(LatLng location) {
-    for (final npc in _npcs) {
-      npc.updatePlayerPosition(_location);
-    }
-    for (final hotspot in _hotspots) {
-      if (hotspot.contains(_location)) {
-        _gameEngine.registerHotspot(hotspot);
+      for (final npc in _npcs) {
+        npc.updatePlayerPosition(_location);
       }
-    }
+      for (final hotspot in _hotspots) {
+        if (hotspot.contains(_location)) {
+          _gameEngine.registerHotspot(hotspot);
+        }
+      }
   }
 
   void _initializeMapController() {
@@ -206,6 +206,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initializeApp() async {
     await _initializeGame();
+    print("Story should be loaded --------------------------------------------------");
     await Future.wait([
       _initializeCompassStream(),
       _initializeLocationStream(),

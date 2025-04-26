@@ -1,7 +1,7 @@
-
 import 'package:hello_world/actions/npc_action.dart';
 import 'package:hello_world/engine/game_element.dart';
 import 'package:hello_world/engine/game_engine.dart';
+import 'package:hello_world/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
@@ -10,7 +10,7 @@ import 'dart:math';
 
 enum NPCIcon { unknown, identified, nearby, unknown_nearby }
 
-class Npc extends GameElement{
+class Npc extends GameElement {
   final String prompt;
   String imageAsset;
   static final String unknownImageAsset = "images/unknown.png";
@@ -22,12 +22,15 @@ class Npc extends GameElement{
   late LatLng toPosition;
   List <LatLng> movementPath = [];
   DateTime lastPositionUpdate = DateTime.now();
+
   //double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
 
   double _speed;
-  double  get speed => (GameEngine.instance.isTestSimimulationOn ? 100.0 : _speed);//in m/s
+
+  double get speed =>
+      (GameEngine.instance.isTestSimimulationOn ? 100.0 : _speed); //in m/s
 
 
   Npc({
@@ -39,7 +42,7 @@ class Npc extends GameElement{
     required super.isVisible,
     required this.isRevealed,
     required speed, //in km/h
-  }): _speed = speed * 1000 / 3600  {
+  }) : _speed = speed * 1000 / 3600 {
     this.currentConversation = Conversation(this);
     this.toPosition = position;
   }
@@ -52,18 +55,28 @@ class Npc extends GameElement{
       final actionsJson = json['actions'] as List? ?? [];
       final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
 
+      final LatLng position = StoryLine.positionFromJson(json);
+      /*
       //check vor valid position
       final pos = json['position'];
-      if (pos is! Map || pos['lat'] == null || pos['lng'] == null) {
-        throw FormatException('Ungültige Positionsdaten in stryline.jsn: $pos bei ${json['name']}');
+      final LatLng position;
+      if (pos is String && StoryLine.positions.containsKey(pos)) {
+        position = StoryLine.positions[pos]!;
+        print("Found Position in Positionmap: $pos");
+      } else {
+        if (pos is! Map || pos['lat'] == null || pos['lng'] == null) {
+          throw FormatException(
+              'Ungültige Positionsdaten in stryline.jsn: $pos bei ${json['name']}');
+        }
+        position = LatLng(
+          (json['position']['lat'] as num).toDouble(),
+          (json['position']['lng'] as num).toDouble(),
+        );
       }
-
+      */
       return Npc(
         name: json['name'],
-        position: LatLng(
-            (json['position']['lat'] as num).toDouble(),
-            (json['position']['lng'] as num).toDouble(),
-        ),
+        position: position,
         prompt: promptText,
         imageAsset: json['image'] as String? ?? unknownImageAsset,
         isVisible: json['visible'] as bool? ?? true,
@@ -71,13 +84,11 @@ class Npc extends GameElement{
         speed: (json['speed'] as num?)?.toDouble() ?? 5.0,
         actions: actions,
       );
-    }catch (e, stack) {
+    } catch (e, stack) {
       print('❌ Fehler im Json der Npcs:\n$e\n$stack');
       rethrow;
     }
   }
-
-
 
   void reveal() {
     isVisible = true;
@@ -97,7 +108,7 @@ class Npc extends GameElement{
   }
 
   void moveTo(LatLng toPosition) {
-    if (isMoving){
+    if (isMoving) {
       position = currentPosition;
     }
     this.toPosition = toPosition;
@@ -107,7 +118,7 @@ class Npc extends GameElement{
   }
 
   void moveAlong(List<LatLng> path) {
-    if (isMoving){
+    if (isMoving) {
       position = currentPosition;
     }
     movementPath = List.from(path);
@@ -118,7 +129,7 @@ class Npc extends GameElement{
   }
 
   void startFollowing() {
-    if (isMoving){
+    if (isMoving) {
       position = currentPosition;
     }
     this.toPosition = playerPosition;
@@ -135,7 +146,7 @@ class Npc extends GameElement{
     this.movementPath = [];
   }
 
-  void talk(String repsondTo) async{
+  void talk(String repsondTo) async {
     hasSomethingToSay = true;
     currentConversation.addTriggerMessage(repsondTo);
   }
@@ -144,13 +155,14 @@ class Npc extends GameElement{
     currentConversation.addSystemMessage(directive);
   }
 
-  double get currentDistance  {
+  double get currentDistance {
     return Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
   }
 
   String get displayImageAsset {
     return isRevealed ? imageAsset : unknownImageAsset;
   }
+
   String get displayName {
     return isRevealed ? name : "Unbekannt";
   }
@@ -158,13 +170,16 @@ class Npc extends GameElement{
   LatLng get currentPosition {
     if (!isMoving) return position;
     final now = DateTime.now();
-    final timeDiffSeconds = now.difference(lastPositionUpdate).inMilliseconds / 1000.0;
+    final timeDiffSeconds = now
+        .difference(lastPositionUpdate)
+        .inMilliseconds / 1000.0;
     final distanceToTravel = speed * timeDiffSeconds;
-    final distance = const Distance().as(LengthUnit.Meter, position, toPosition);
+    final distance = const Distance().as(
+        LengthUnit.Meter, position, toPosition);
 
     if (distanceToTravel > distance) {
       position = toPosition;
-      if (movementPath.isNotEmpty){
+      if (movementPath.isNotEmpty) {
         toPosition = movementPath.removeAt(0);
         lastPositionUpdate = now;
         return currentPosition; //rekursiver Aufruf
@@ -172,14 +187,17 @@ class Npc extends GameElement{
       isMoving = false;
       return position;
     }
-    final fraction = distanceToTravel/distance;
-    final newLat = position.latitude + (toPosition.latitude - position.latitude) * fraction;
-    final newLng = position.longitude + (toPosition.longitude - position.longitude) * fraction;
+    final fraction = distanceToTravel / distance;
+    final newLat = position.latitude +
+        (toPosition.latitude - position.latitude) * fraction;
+    final newLng = position.longitude +
+        (toPosition.longitude - position.longitude) * fraction;
     final interpolatedPosition = LatLng(newLat, newLng);
 
     //wenn npc nahe genug beim player ist bleibt er stehen
     if (isFollowing) {
-      final distanceToPlayer = const Distance().as(LengthUnit.Meter, interpolatedPosition, playerPosition);
+      final distanceToPlayer = const Distance().as(
+          LengthUnit.Meter, interpolatedPosition, playerPosition);
       if (distanceToPlayer < followingDistance) {
         isMoving = false;
         position = interpolatedPosition;
@@ -194,18 +212,19 @@ class Npc extends GameElement{
       if (isRevealed) {
         if (canCommunicate()) {
           return NPCIcon.nearby;
-        } else return NPCIcon.identified;
+        } else
+          return NPCIcon.identified;
       } else {
         if (canCommunicate()) {
           return NPCIcon.unknown_nearby;
-        } else return NPCIcon.unknown;
+        } else
+          return NPCIcon.unknown;
       }
     }
     return NPCIcon.unknown;
   }
 
-  bool canCommunicate()
-  {
+  bool canCommunicate() {
     return (currentDistance < GameEngine.conversationDistance);
   }
 
@@ -218,7 +237,7 @@ class Npc extends GameElement{
         isMoving = true;
       }
     }
-    if (currentDistance < GameEngine.conversationDistance){
+    if (currentDistance < GameEngine.conversationDistance) {
       GameEngine.instance.registerApproach(this);
     }
   }
