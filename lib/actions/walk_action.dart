@@ -17,7 +17,7 @@ class WalkAction extends NpcAction {
 
   @override
   void excecute(Npc npc) {
-    print('${npc.name} starts walking to ${lat}, ${lng}');
+    print('${npc.name} starts walking to $lat, $lng');
     npc.moveTo(LatLng(lat, lng));
   }
 

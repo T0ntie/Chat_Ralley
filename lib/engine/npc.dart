@@ -23,6 +23,8 @@ class Npc extends GameElement {
   List <LatLng> movementPath = [];
   DateTime lastPositionUpdate = DateTime.now();
 
+  List<NpcAction> actions = [];
+
   //double currentDistance = double.infinity;
   LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
@@ -38,7 +40,7 @@ class Npc extends GameElement {
     required this.imageAsset,
     required this.prompt,
     required super.position,
-    required super.actions,
+    required this.actions,
     required super.isVisible,
     required this.isRevealed,
     required speed, //in km/h
@@ -56,24 +58,6 @@ class Npc extends GameElement {
       final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
 
       final LatLng position = StoryLine.positionFromJson(json);
-      /*
-      //check vor valid position
-      final pos = json['position'];
-      final LatLng position;
-      if (pos is String && StoryLine.positions.containsKey(pos)) {
-        position = StoryLine.positions[pos]!;
-        print("Found Position in Positionmap: $pos");
-      } else {
-        if (pos is! Map || pos['lat'] == null || pos['lng'] == null) {
-          throw FormatException(
-              'Ungültige Positionsdaten in stryline.jsn: $pos bei ${json['name']}');
-        }
-        position = LatLng(
-          (json['position']['lat'] as num).toDouble(),
-          (json['position']['lng'] as num).toDouble(),
-        );
-      }
-      */
       return Npc(
         name: json['name'],
         position: position,
