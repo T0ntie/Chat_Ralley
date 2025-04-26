@@ -29,25 +29,20 @@
         },
         {
           "onSignal": "bozziDebut",
-          "invokeAction": "reveal",
-          "params": {}
+          "invokeAction": "reveal"
         },
         {
           "onSignal": "bozziFollow",
-          "invokeAction": "follow",
-          "params": {}
+          "invokeAction": "follow"
         },
         {
           "onSignal": "bozziStop",
-          "invokeAction": "stopMoving",
-          "params": {}
+          "invokeAction": "stopMoving"
         },
         {
           "onSignal": "bozziTalk",
           "invokeAction": "talk",
-          "params": {
-            "trigger": "[Der Spieler erscheint]"
-          }
+          "trigger": "[Der Spieler erscheint]"
         }
       ]
     },
@@ -70,9 +65,7 @@
         {
           "onInteraction": null,
           "invokeAction": "talk",
-          "params": {
-            "trigger": "[Der Spieler sieht dich freundlich an]"
-          }
+          "trigger": "[Der Spieler sieht dich freundlich an]"
         },
         {
           "onSignal": "ShowMuseum",
@@ -95,16 +88,12 @@
         {
           "onHotspot": "Museum",
           "invokeAction": "talk",
-          "params": {
-            "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]"
-          }
+          "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]"
         },
         {
           "onHotspot": "Polizei",
           "invokeAction": "talk",
-          "params": {
-            "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]"
-          }
+          "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]"
         }
       ]
     },
@@ -133,20 +122,16 @@
       "actions": [
         {
           "onHotspot": "Museum",
-          "invokeAction": "appear",
-          "params": {}
+          "invokeAction": "appear"
         },
         {
           "onInteraction": null,
-          "invokeAction": "reveal",
-          "params": {}
+          "invokeAction": "reveal"
         },
         {
           "onMessageCount": 10,
           "invokeAction": "behave",
-          "params": {
-            "directive": "[Erinnere dich an das Besucherbuch]"
-          },
+          "directive": "[Erinnere dich an das Besucherbuch]",
           "conditions": {
             "knowsKrollsAddress": false
           }

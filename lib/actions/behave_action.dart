@@ -11,7 +11,7 @@ class BehaveAction extends NpcAction{
   }
 
   static BehaveAction actionFromJson(Map<String, dynamic> json) {
-    final directiveMessage = json['params']['directive'];
+    final directiveMessage = json['directive'];
     return BehaveAction(
         trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
         conditions: NpcAction.conditionsFromJson(json),

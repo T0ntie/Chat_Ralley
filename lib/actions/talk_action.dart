@@ -11,7 +11,7 @@ class TalkAction extends NpcAction{
   }
 
   static TalkAction actionFromJson(Map<String, dynamic> json) {
-    final triggerMessage = json['params']['trigger'];
+    final triggerMessage = json['trigger'];
     return TalkAction(
         trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
         conditions: NpcAction.conditionsFromJson(json),
