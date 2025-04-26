@@ -66,6 +66,7 @@ class _ChatPageState extends State<ChatPage> {
         '❌ Kommunikation mit Chat GPT fehlgeschlagen.',
       );
     } finally {
+      if (!mounted) return;
       setState(() {
         _isSending = false;
       });
