@@ -83,7 +83,7 @@
         {
           "onSignal": "KnatterbachLeave",
           "invokeAction": "walkTo",
-          "position": "MuseumPosition"
+          "position": "PolizeiPosition"
         },
         {
           "onHotspot": "Museum",
