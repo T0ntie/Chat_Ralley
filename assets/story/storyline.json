@@ -15,7 +15,7 @@
       "actions": []
     },
     {
-      "name": "Bozzi",
+      "name": "{{Bozzi}}",
       "position": "BozziPosition",
       "prompt": "prompts/bozzi-prompt.txt",
       "image": "images/bozzi.png",
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "name": "Kommissar Knatterbach",
+      "name": "{{Kommissar_Knatterbach}}",
       "position": "KnatterbachPosition",
       "prompt": "prompts/knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
@@ -98,7 +98,7 @@
       ]
     },
     {
-      "name": "Martha Tschulli",
+      "name": "{{Martha_Tschulli}}",
       "position": "TschulliPosition",
       "prompt": "prompts/tschulli-prompt.txt",
       "image": "images/tschulli.png",
@@ -106,7 +106,7 @@
       "revealed": true
     },
     {
-      "name": "Dieter Kroll",
+      "name": "{{Dieter_Kroll}}",
       "position": "KrollPosition",
       "prompt": "prompts/kroll-prompt.txt",
       "image": "images/kroll.png",
@@ -114,7 +114,7 @@
       "revealed": true
     },
     {
-      "name": "Professor Dr. Theobald Knöchelbein",
+      "name": "{{Professor_Dr._Theobald_Knöchelbein}}",
       "position": "KnöchelbeinPosition",
       "prompt": "prompts/knöchelbein-prompt.txt",
       "image": "images/knöchelbein.png",

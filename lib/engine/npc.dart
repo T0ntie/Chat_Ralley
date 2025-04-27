@@ -14,6 +14,7 @@ class Npc extends GameElement {
   final String prompt;
   String imageAsset;
   static final String unknownImageAsset = "images/unknown.png";
+  static const String gamePromptFile = 'assets/story/prompts/game-prompt.txt';
   bool isRevealed;
   bool isMoving = false;
   bool isFollowing = false;
@@ -34,7 +35,6 @@ class Npc extends GameElement {
   double get speed =>
       (GameEngine.instance.isTestSimimulationOn ? 100.0 : _speed); //in m/s
 
-
   Npc({
     required super.name,
     required this.imageAsset,
@@ -49,11 +49,21 @@ class Npc extends GameElement {
     this.toPosition = position;
   }
 
+  static Future<String> _loadPrompt(String promptFile) async{
+    try {
+      final String gamePrompt = await rootBundle.loadString(gamePromptFile);
+      final String npcPrompt = await rootBundle.loadString(promptFile);
+      return StoryLine.localizeString(gamePrompt + npcPrompt);
+    } catch (e, stack) {
+      print('❌ Failed to load prompt files $gamePromptFile or $promptFile:\n$e\n$stack');
+      rethrow;
+    }
+  }
+
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
     try {
       final promptFile = json['prompt'] as String;
-      final promptText = await rootBundle.loadString(
-          'assets/story/${promptFile}');
+      String promptText = await _loadPrompt('assets/story/${promptFile}');
       final actionsJson = json['actions'] as List? ?? [];
       final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
 
