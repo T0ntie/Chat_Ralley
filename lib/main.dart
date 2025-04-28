@@ -9,7 +9,7 @@ import 'engine/npc.dart';
 import 'engine/game_engine.dart';
 import 'engine/hotspot.dart';
 import 'gui/snack_bar_service.dart';
-import 'resources.dart';
+import 'app_resources.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
@@ -241,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ? _currentHeading
                 : _currentHeading) *
             (pi / 180),
-        child: Resources.playerPositionIcon(),
+        child: AppIcons.playerPosition(),
       ),
     ));
   }
@@ -265,7 +265,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   print("🎯 Tapped on Hotspot");
                 },
-                child: Resources.getHotspotIcon(), //hotspot.icon
+                child: AppIcons.hotspot(), //hotspot.icon
               ),
             ],
           ),
@@ -293,7 +293,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   _showNPCInfo(context, npc);
                 },
-                child: Resources.getNPCIcon(npc.icon),
+                child: AppIcons.npcIcon(npc.icon),
               ),
               if (npc.hasSomethingToSay /*.canCommunicate()*/ )
                 Positioned(
@@ -308,7 +308,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       );
                     },
-                    child: Resources.getChatBubbleIcon(),
+                    child: AppIcons.chatBubble(),
                   ),
                 ),
               Positioned(
@@ -433,7 +433,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Macht den Hintergrund transparent
         elevation: 0,
         // Entfernt den Schatten
-        child: Resources.getMapHeadingIcon(_isMapHeadingBasedOrientation),
+        child: AppIcons.mapHeading(_isMapHeadingBasedOrientation),
       ),
     ));
   }
@@ -451,7 +451,7 @@ class _MyHomePageState extends State<MyHomePage> {
               }
               : null,
       child:
-          Resources.centerLocationIcon(), // Zeigt ein Symbol für den "Mein Standort"-Button
+          AppIcons.centerLocation(), // Zeigt ein Symbol für den "Mein Standort"-Button
     ));
   }
 
