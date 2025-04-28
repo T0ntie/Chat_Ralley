@@ -23,7 +23,7 @@
       "speed": 100,
       "actions": [
         {
-          "onSignal": "leadToBone",
+          "onSignal": "BozziLead",
           "invokeAction": "moveAlong",
           "path": "BonePath"
         },
