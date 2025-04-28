@@ -3,7 +3,7 @@ import '../engine/npc.dart';
 
 class BehaveAction extends NpcAction{
   String directiveMessage;
-  BehaveAction({required super.trigger, required super.conditions, required this.directiveMessage});
+  BehaveAction({required super.trigger, required super.conditions, super.notification, required this.directiveMessage});
 
   @override
   void excecute(Npc npc) {
@@ -12,9 +12,11 @@ class BehaveAction extends NpcAction{
 
   static BehaveAction actionFromJson(Map<String, dynamic> json) {
     final directiveMessage = json['directive'];
+    final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(json);
     return BehaveAction(
-        trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
-        conditions: NpcAction.conditionsFromJson(json),
+        trigger: trigger,
+        conditions: conditions,
+        notification: notification,
         directiveMessage: directiveMessage);
   }
 

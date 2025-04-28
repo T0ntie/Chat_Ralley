@@ -14,38 +14,7 @@
       "revealed": true,
       "actions": []
     },
-    {
-      "name": "{{Bozzi}}",
-      "position": "BozziPosition",
-      "prompt": "prompts/bozzi-prompt.txt",
-      "image": "images/bozzi.png",
-      "visible": true,
-      "speed": 100,
-      "actions": [
-        {
-          "onSignal": "BozziLead",
-          "invokeAction": "moveAlong",
-          "path": "BonePath"
-        },
-        {
-          "onSignal": "bozziDebut",
-          "invokeAction": "reveal"
-        },
-        {
-          "onSignal": "bozziFollow",
-          "invokeAction": "follow"
-        },
-        {
-          "onSignal": "bozziStop",
-          "invokeAction": "stopMoving"
-        },
-        {
-          "onSignal": "bozziTalk",
-          "invokeAction": "talk",
-          "trigger": "[Der Spieler erscheint]"
-        }
-      ]
-    },
+
     {
       "name": "{{Kommissar_Knatterbach}}",
       "position": "KnatterbachPosition",
@@ -98,28 +67,6 @@
       ]
     },
     {
-      "name": "{{Martha_Tschulli}}",
-      "position": "TschulliPosition",
-      "prompt": "prompts/tschulli-prompt.txt",
-      "image": "images/tschulli.png",
-      "visible": true,
-      "revealed": true
-    },
-    {
-      "name": "{{Dieter_Kroll}}",
-      "position": "KrollPosition",
-      "prompt": "prompts/kroll-prompt.txt",
-      "image": "images/kroll.png",
-      "visible": true,
-      "revealed": true,
-      "actions": [
-        {
-        "onSignal": "KrollCutOff",
-        "invokeAction": "stopTalking"
-        }
-      ]
-    },
-    {
       "name": "{{Professor_Dr._Theobald_Knöchelbein}}",
       "position": "KnöchelbeinPosition",
       "prompt": "prompts/knöchelbein-prompt.txt",
@@ -143,6 +90,66 @@
           }
         }
       ]
+    },
+    {
+      "name": "{{Dieter_Kroll}}",
+      "position": "KrollPosition",
+      "prompt": "prompts/kroll-prompt.txt",
+      "image": "images/kroll.png",
+      "visible": true,
+      "revealed": true,
+      "actions": [
+        {
+        "onSignal": "KrollCutOff",
+        "invokeAction": "stopTalking"
+        }
+      ]
+    },
+    {
+      "name": "{{Bozzi}}",
+      "position": "BozziPosition",
+      "prompt": "prompts/bozzi-prompt.txt",
+      "image": "images/bozzi.png",
+      "visible": false,
+      "revealed": false,
+      "speed": 20,
+      "actions": [
+        {
+          "onSignal": "BozziLead",
+          "invokeAction": "moveAlong",
+          "path": "BonePath"
+        },
+        {
+          "onSignal": "CallBozzi",
+          "invokeAction": "spawn",
+          "notification": "Ein Hund erscheint"
+        },
+        {
+          "onSignal": "CallBozzi",
+          "invokeAction": "appear"
+        },
+        {
+          "onSignal": "bozziFollow",
+          "invokeAction": "follow"
+        },
+        {
+          "onSignal": "bozziStop",
+          "invokeAction": "stopMoving"
+        },
+        {
+          "onSignal": "bozziTalk",
+          "invokeAction": "talk",
+          "trigger": "[Der Spieler erscheint]"
+        }
+      ]
+    },
+    {
+      "name": "{{Martha_Tschulli}}",
+      "position": "TschulliPosition",
+      "prompt": "prompts/tschulli-prompt.txt",
+      "image": "images/tschulli.png",
+      "visible": true,
+      "revealed": true
     }
   ],
   "hotspots": [

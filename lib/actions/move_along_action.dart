@@ -10,6 +10,7 @@ class MoveAlongAction extends NpcAction {
   MoveAlongAction({
     required super.trigger,
     required super.conditions,
+    super.notification,
     required this.path,
   });
 
@@ -21,9 +22,13 @@ class MoveAlongAction extends NpcAction {
 
   static MoveAlongAction actionFromJson(Map<String, dynamic> json) {
     final path = StoryLine.pathFromJson(json);
+    final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(
+      json,
+    );
     return MoveAlongAction(
-      trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
-      conditions: NpcAction.conditionsFromJson(json),
+      trigger: trigger,
+      conditions: conditions,
+      notification: notification,
       path: path,
     );
   }

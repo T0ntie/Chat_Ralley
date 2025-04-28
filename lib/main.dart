@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_world/gui/flush_bar_service.dart';
 import 'dart:math';
 import 'package:hello_world/gui/npc_info_dialog.dart';
 import 'services/location_service.dart';
@@ -219,6 +220,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    FlushBarService().setContext(context);
     _initializeApp();
   }
 

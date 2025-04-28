@@ -11,6 +11,7 @@ class WalkAction extends NpcAction {
   WalkAction({
     required super.trigger,
     required super.conditions,
+    super.notification,
     required this.lat,
     required this.lng,
   });
@@ -23,11 +24,13 @@ class WalkAction extends NpcAction {
 
   static WalkAction actionFromJson(Map<String, dynamic> json) {
     LatLng toPosition = StoryLine.positionFromJson(json);
-    //final lat = json['params']['lat'];
-    //final lng = json['params']['lng'];
+    final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(
+      json,
+    );
     return WalkAction(
-      trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
-      conditions: NpcAction.conditionsFromJson(json),
+      trigger: trigger,
+      conditions: conditions,
+      notification: notification,
       lat: toPosition.latitude,
       lng: toPosition.longitude,
     );

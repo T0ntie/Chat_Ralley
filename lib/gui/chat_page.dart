@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world/engine/game_engine.dart';
+import 'package:hello_world/gui/flush_bar_service.dart';
 import '../engine/npc.dart';
 import '../engine/conversation.dart';
 import 'snack_bar_service.dart';
+import 'package:another_flushbar/flushbar.dart';
 
 class ChatPage extends StatefulWidget {
   ChatPage({super.key, required this.npc});
@@ -23,6 +25,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    FlushBarService().setContext(context);
     _conversation = widget.npc.currentConversation;
     _conversation.onConversationFinished = _closeChatAfterDelay;
     widget.gameEngine.registerInteraction(widget.npc);
@@ -33,7 +36,7 @@ class _ChatPageState extends State<ChatPage> {
   void _closeChatAfterDelay() {
     Future.delayed(Duration(seconds: 2), () {
       if (mounted) {
-        Navigator.of(context).pop();
+        Navigator.of(context, rootNavigator: true).pop();
       }
     });
   }
@@ -69,6 +72,7 @@ class _ChatPageState extends State<ChatPage> {
       setState(() {
         _conversation.addAssistantMessage(response);
       });
+
     } catch (e) {
       SnackBarService.showErrorSnackBar(
         context,
@@ -205,6 +209,7 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
+
 
   @override
   void dispose() {

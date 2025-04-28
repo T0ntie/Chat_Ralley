@@ -26,6 +26,7 @@ class Conversation {
 
   void finishConversation()
   {
+    print("Schließe das chat fenster: conversation finished");
     onConversationFinished?.call();
   }
 

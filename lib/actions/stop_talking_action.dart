@@ -3,7 +3,7 @@ import '../engine/npc.dart';
 
 class StopTalkingAction extends NpcAction{
 
-  StopTalkingAction({required super.trigger, required super.conditions});
+  StopTalkingAction({required super.trigger, required super.conditions, super.notification});
 
   @override
   void excecute(Npc npc) {
@@ -12,9 +12,11 @@ class StopTalkingAction extends NpcAction{
   }
 
   static StopTalkingAction actionFromJson(Map<String, dynamic> json) {
+    final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(json);
     return StopTalkingAction(
-        trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
-        conditions: NpcAction.conditionsFromJson(json));
+        trigger: trigger,
+        conditions: conditions,
+        notification: notification);
   }
 
   static void register() {

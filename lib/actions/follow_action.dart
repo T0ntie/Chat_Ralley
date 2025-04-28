@@ -4,7 +4,7 @@ import '../engine/npc.dart';
 
 class FollowAction extends NpcAction{
 
-  FollowAction({required super.trigger, required super.conditions});
+  FollowAction({required super.trigger, required super.conditions, super.notification});
 
   @override
   void excecute(Npc npc) {
@@ -13,10 +13,11 @@ class FollowAction extends NpcAction{
   }
 
   static FollowAction actionFromJson(Map<String, dynamic> json) {
+    final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(json);
     return FollowAction(
-        trigger: NpcActionTrigger.npcActionTriggerfromJson(json),
-        conditions: NpcAction.conditionsFromJson(json));
-
+        trigger: trigger,
+        conditions: conditions,
+        notification: notification);
   }
   
   static void register() {

@@ -3,7 +3,7 @@ import '../engine/npc.dart';
 
 class SpawnAction extends NpcAction{
 
-  SpawnAction({required super.trigger, required super.conditions});
+  SpawnAction({required super.trigger, required super.conditions, super.notification});
 
   @override
   void excecute(Npc npc) {
@@ -12,7 +12,8 @@ class SpawnAction extends NpcAction{
   }
 
   static SpawnAction actionFromJson(Map<String, dynamic> json) {
-    return SpawnAction(trigger: NpcActionTrigger.npcActionTriggerfromJson(json), conditions: NpcAction.conditionsFromJson(json));
+    final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(json);
+    return SpawnAction(trigger: trigger, conditions: conditions, notification: notification);
   }
   static void register() {
     NpcAction.registerAction('spawn', SpawnAction.actionFromJson);
