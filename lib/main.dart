@@ -70,18 +70,17 @@ class _MyHomePageState extends State<MyHomePage> {
   late final StreamSubscription<MapEvent> _mapControllerSubscription;
   late final StreamSubscription<double> _compassSubscription;
   late final StreamSubscription<Position> _positionSubscription;
-  late final GameEngine _gameEngine;
 
-  List<Npc> get _npcs => _gameEngine.npcs;
+  List<Npc> get _npcs => GameEngine().npcs;
 
-  List<Hotspot> get _hotspots => _gameEngine.hotspots;
+  List<Hotspot> get _hotspots => GameEngine().hotspots;
   late final Timer _updateTimer;
 
   bool _isMapHeadingBasedOrientation = false;
 
-  bool get _isGPSSimulating => _gameEngine.isTestSimimulationOn;
+  bool get _isGPSSimulating => GameEngine().isTestSimimulationOn;
   set _isGPSSimulating(bool value) {
-    _gameEngine.isTestSimimulationOn = value;
+    GameEngine().isTestSimimulationOn = value;
   }
 
   LatLng? _realPosition = null;
@@ -98,8 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initializeGame() async {
     try {
-      _gameEngine = GameEngine.instance;
-      await _gameEngine.initializeGame();
+      await GameEngine().initializeGame();
       _gameInitialized = true;
       _checkIfInitializationCompleted();
     } catch (e) {
@@ -115,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _initializationCompleted = true;
       });
-      _gameEngine.registerInitialization();
+      GameEngine().registerInitialization();
     }
   }
 
@@ -147,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       for (final hotspot in _hotspots) {
         if (hotspot.contains(_location)) {
-          _gameEngine.registerHotspot(hotspot);
+          GameEngine().registerHotspot(hotspot);
         }
       }
   }
@@ -207,7 +205,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initializeApp() async {
     await _initializeGame();
-    print("Story should be loaded --------------------------------------------------");
     await Future.wait([
       _initializeCompassStream(),
       _initializeLocationStream(),

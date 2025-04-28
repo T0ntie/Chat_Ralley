@@ -44,6 +44,7 @@ class Resources{
       color: isMapHeadingBasedOrientation ? Colors.deepOrange : Colors.black,
     );
   }
+
   static Icon centerLocationIcon()
   {
     return Icon(Icons.my_location);

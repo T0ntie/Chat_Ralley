@@ -35,7 +35,7 @@ class Npc extends GameElement {
   double _speed;
 
   double get speed =>
-      (GameEngine.instance.isTestSimimulationOn ? 100.0 : _speed); //in m/s
+      (GameEngine().isTestSimimulationOn ? 100.0 : _speed); //in m/s
 
   Npc({
     required super.name,
@@ -245,7 +245,7 @@ class Npc extends GameElement {
       }
     }
     if (currentDistance < GameEngine.conversationDistance) {
-      GameEngine.instance.registerApproach(this);
+      GameEngine().registerApproach(this);
     }
   }
 }

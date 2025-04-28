@@ -10,7 +10,6 @@ class ChatPage extends StatefulWidget {
   ChatPage({super.key, required this.npc});
 
   final Npc npc;
-  final GameEngine gameEngine = GameEngine.instance;
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -28,7 +27,7 @@ class _ChatPageState extends State<ChatPage> {
     FlushBarService().setContext(context);
     _conversation = widget.npc.currentConversation;
     _conversation.onConversationFinished = _closeChatAfterDelay;
-    widget.gameEngine.registerInteraction(widget.npc);
+    GameEngine().registerInteraction(widget.npc);
     _handleTriggers();
     widget.npc.hasSomethingToSay = false;
   }

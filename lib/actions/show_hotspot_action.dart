@@ -13,7 +13,7 @@ class ShowHotspotAction extends NpcAction{
   @override
   void excecute(Npc npc) {
     print('$hotspotName appears');
-    Hotspot? spot = GameEngine.instance.getHotspotByName(hotspotName);
+    Hotspot? spot = GameEngine().getHotspotByName(hotspotName);
     if (spot != null) {
       spot.isVisible = true;
     }

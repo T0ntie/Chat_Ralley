@@ -55,7 +55,7 @@ abstract class NpcAction{
 
   void invoke(Npc npc)
   {
-    Map<String, bool> flags = GameEngine.instance.flags;
+    Map<String, bool> flags = GameEngine().flags;
 
     bool allConditionsMet = conditions.keys
         .where(flags.containsKey)  // Nur die gemeinsamen Schlüssel betrachten
@@ -64,7 +64,7 @@ abstract class NpcAction{
     if (allConditionsMet) {
       excecute(npc);
       if (notification != null) {
-        GameEngine.instance.showNotification(notification!);
+        GameEngine().showNotification(notification!);
       }
     }
   }

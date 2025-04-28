@@ -48,7 +48,7 @@ class Conversation {
 
   void addUserMessage(String message) {
     _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.user));
-    GameEngine.instance.registerMessage(npc, ++userMessageCount);
+    GameEngine().registerMessage(npc, ++userMessageCount);
   }
 
   void addAssistantMessage(String message) {
@@ -58,7 +58,7 @@ class Conversation {
     );
     _messages.add(chatMessage);
     if (chatMessage.signalJson.isNotEmpty) {
-      GameEngine.instance.registerSignal(chatMessage.signalJson);
+      GameEngine().registerSignal(chatMessage.signalJson);
     }
   }
 

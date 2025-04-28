@@ -8,11 +8,13 @@ import '../actions/npc_action.dart';
 import 'hotspot.dart';
 
 class GameEngine {
-  static final GameEngine _instance = GameEngine._internal(); //Singleton
-  static GameEngine get instance => _instance;
+
+  static final GameEngine _instance = GameEngine._internal();
+  factory GameEngine() => _instance;
+  GameEngine._internal();
+
   static final double conversationDistance = 50.0;
   bool isTestSimimulationOn = false;
-
 
   late final StoryLine storyLine;
 
@@ -28,8 +30,6 @@ class GameEngine {
   final Map<Npc, List<NpcAction>> _initSubscriptions = {};
   final Map<String, List<(Npc, NpcAction)>> _hotspotSubscriptions = {};
   final Map<Npc, List<(NpcAction, int)>> _messageCountSubscriptions = {};
-
-  GameEngine._internal();
 
   Hotspot? getHotspotByName(String hotspotName) {
     return storyLine.hotspotMap[hotspotName];
