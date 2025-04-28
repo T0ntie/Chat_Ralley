@@ -10,6 +10,8 @@ class Conversation {
   final List<ChatMessage> _messages = []; // Liste von Nachrichten
   int userMessageCount = 0;
 
+  void Function()? onConversationFinished;
+
   Conversation(this.npc) {
     addSystemMessage(npc.prompt);
   }
@@ -17,9 +19,14 @@ class Conversation {
   Future<void> handleTriggerMessage() async {
     if (_messages.last.isTrigger) {
       String triggeredResponse = await processConversation();
-      print('triggered Response is $triggeredResponse');
+      //print('triggered Response is $triggeredResponse');
       addAssistantMessage(triggeredResponse);
     }
+  }
+
+  void finishConversation()
+  {
+    onConversationFinished?.call();
   }
 
   List<ChatMessage> getMessages() {

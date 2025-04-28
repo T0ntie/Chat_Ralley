@@ -111,7 +111,13 @@
       "prompt": "prompts/kroll-prompt.txt",
       "image": "images/kroll.png",
       "visible": true,
-      "revealed": true
+      "revealed": true,
+      "actions": [
+        {
+        "onSignal": "KrollCutOff",
+        "invokeAction": "stopTalking"
+        }
+      ]
     },
     {
       "name": "{{Professor_Dr._Theobald_Knöchelbein}}",

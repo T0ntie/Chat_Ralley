@@ -140,6 +140,10 @@ class Npc extends GameElement {
     this.movementPath = [];
   }
 
+  void stopTalking() {
+    currentConversation.finishConversation();
+  }
+
   void talk(String repsondTo) async {
     hasSomethingToSay = true;
     currentConversation.addTriggerMessage(repsondTo);

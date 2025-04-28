@@ -24,9 +24,18 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     _conversation = widget.npc.currentConversation;
+    _conversation.onConversationFinished = _closeChatAfterDelay;
     widget.gameEngine.registerInteraction(widget.npc);
     _handleTriggers();
     widget.npc.hasSomethingToSay = false;
+  }
+
+  void _closeChatAfterDelay() {
+    Future.delayed(Duration(seconds: 2), () {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   void _handleTriggers() async {
