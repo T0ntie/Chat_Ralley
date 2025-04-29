@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/gui/flush_bar_service.dart';
+import 'package:hello_world/gui/notification_services.dart';
 import 'dart:math';
 import 'package:hello_world/gui/npc_info_dialog.dart';
 import 'services/location_service.dart';
@@ -8,7 +8,6 @@ import 'gui/chat_page.dart';
 import 'engine/npc.dart';
 import 'engine/game_engine.dart';
 import 'engine/hotspot.dart';
-import 'gui/snack_bar_service.dart';
 import 'app_resources.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';

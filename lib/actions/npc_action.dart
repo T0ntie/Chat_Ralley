@@ -5,7 +5,7 @@ import 'package:hello_world/actions/stop_moving_action.dart';
 import 'package:hello_world/actions/stop_talking_action.dart';
 import 'package:hello_world/actions/talk_action.dart';
 import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/gui/flush_bar_service.dart';
+import 'package:hello_world/gui/notification_services.dart';
 
 import 'walk_action.dart';
 import 'appear_action.dart';

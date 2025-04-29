@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world/app_resources.dart';
 import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/gui/flush_bar_service.dart';
+import 'package:hello_world/gui/notification_services.dart';
 import '../engine/npc.dart';
 import '../engine/conversation.dart';
-import 'snack_bar_service.dart';
-import 'package:another_flushbar/flushbar.dart';
 
 class ChatPage extends StatefulWidget {
   ChatPage({super.key, required this.npc});

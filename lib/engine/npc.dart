@@ -3,7 +3,7 @@ import 'package:hello_world/actions/npc_action.dart';
 import 'package:hello_world/engine/game_element.dart';
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:hello_world/engine/story_line.dart';
-import 'package:hello_world/gui/flush_bar_service.dart';
+import 'package:hello_world/gui/notification_services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';

@@ -1,7 +1,7 @@
 import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_world/app_resources.dart';
-import 'package:hello_world/gui/flush_bar_service.dart';
+import 'package:hello_world/gui/notification_services.dart';
 
 import 'story_line.dart';
 import 'npc.dart';
