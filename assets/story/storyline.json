@@ -154,21 +154,27 @@
   ],
   "hotspots": [
     {
-      "name": "Museum",
+      "name": "{{Museum}}",
       "position": "MuseumPosition",
-      "radius": 50,
-      "visible": false
-    },
-    {
-      "name": "HausKroll",
-      "position": "HausKrollPosition",
-      "radius": 50,
+      "radius": 20,
       "visible": true
     },
     {
-      "name": "Polizei",
+      "name": "{{Polizei}}",
       "position": "PolizeiPosition",
-      "radius": 10,
+      "radius": 15,
+      "visible": true
+    },
+    {
+      "name": "{{Haus_Kroll}}",
+      "position": "HausKrollPosition",
+      "radius": 20,
+      "visible": true
+    },
+    {
+      "name": "{{Haus_Tschulli}}",
+      "position": "HausTschulliPosition",
+      "radius": 20,
       "visible": true
     }
   ],

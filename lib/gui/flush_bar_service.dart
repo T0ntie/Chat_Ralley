@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
+import 'package:hello_world/app_resources.dart';
 
 class FlushBarService {
   static final FlushBarService _instance = FlushBarService._internal();
@@ -17,17 +18,15 @@ class FlushBarService {
   void showFlushbar({
     required String title,
     required String message,
-    required IconData icon,
-    required Color backgroundColor,
   }) {
-    if (_context == null) return;
+    //if (_context == null) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Flushbar(
         title: title,
         message: message,
-        icon: Icon(icon, color: Colors.white),
+        icon: AppIcons.notification(_context),
         duration: Duration(seconds: 3),
-        backgroundColor: backgroundColor,
+        backgroundColor: ResourceColors.notificationBackground(_context),
         borderRadius: BorderRadius.circular(8),
         margin: EdgeInsets.all(8),
         animationDuration: Duration(milliseconds: 500),

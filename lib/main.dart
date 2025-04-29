@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        colorScheme: ColorScheme.fromSeed(seedColor: ResourceColors.seed,)
       ),
       home: const MyHomePage(title: 'Chat Ralley'),
     );
@@ -241,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ? _currentHeading
                 : _currentHeading) *
             (pi / 180),
-        child: AppIcons.playerPosition(),
+        child: AppIcons.playerPosition,
       ),
     ));
   }
@@ -250,22 +250,30 @@ class _MyHomePageState extends State<MyHomePage> {
     return _hotspots.where((hotspot) => hotspot.isVisible).map((hotspot) {
       return Marker(
         point: hotspot.position,
-        width: hotspot.radius * 2 * 10,
-        height: hotspot.radius * 2 * 10,
+        width: 60, // feste Markerbreite
+        height: 80, // genug Höhe für Icon + Text
         child: Transform.rotate(
-          angle:
-              (_isMapHeadingBasedOrientation
-                  ? _currentHeading
-                  : -_currentMapRotation) *
+          angle: (_isMapHeadingBasedOrientation
+              ? _currentHeading
+              : -_currentMapRotation) *
               (pi / 180),
-          child: Stack(
-            alignment: Alignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               GestureDetector(
                 onTap: () {
                   print("🎯 Tapped on Hotspot");
                 },
-                child: AppIcons.hotspot(), //hotspot.icon
+                child: AppIcons.hotspot(context), // oder hotspot.icon
+              ),
+              const SizedBox(height: 4), // Abstand zwischen Icon und Text
+              Text(
+                hotspot.name,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: ResourceColors.npcName,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -293,7 +301,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   _showNPCInfo(context, npc);
                 },
-                child: AppIcons.npcIcon(npc.icon),
+                child: AppIcons.npc(context, npc.icon),
               ),
               if (npc.hasSomethingToSay /*.canCommunicate()*/ )
                 Positioned(
@@ -308,7 +316,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       );
                     },
-                    child: AppIcons.chatBubble(),
+                    child: AppIcons.chatBubble(context),
                   ),
                 ),
               Positioned(
@@ -317,7 +325,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   npc.displayName, // Der Name des NPCs
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.black,
+                    color: ResourceColors.npcName,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -361,10 +369,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   (hotspot) => CircleMarker(
                     point: hotspot.position,
                     radius: hotspot.radius,
-                    // ❗️ in Metern
                     useRadiusInMeter: true,
-                    color: Colors.red.withAlpha((0.1 * 255).toInt()),
-                    borderColor: Colors.red.withAlpha((0.5 * 255).toInt()),
+                    color: ResourceColors.hotspotCircle.withAlpha((0.1 * 255).toInt()),
+                    borderColor: ResourceColors.hotspotCircle.withAlpha((0.5 * 255).toInt()),
                     borderStrokeWidth: 2,
                   ),
                 ),
@@ -375,15 +382,15 @@ class _MyHomePageState extends State<MyHomePage> {
               color:
                   pulse.maxReached
                       ? Colors.transparent
-                      : Colors.blue.withAlpha(
+                      : ResourceColors.playerPositionCircle .withAlpha(
                         (pulse.colorFade * 0.5 * 255).toInt(),
                       ),
               borderColor:
                   pulse.maxReached
-                      ? Colors.white.withAlpha(
+                      ? ResourceColors.playerPositionFadeoutCircle.withAlpha(
                         ((pulse.colorFade + 0.2) * 255).toInt(),
                       )
-                      : Colors.blue.withAlpha(
+                      : ResourceColors.playerPositionCircle.withAlpha(
                         (pulse.colorFade * 0.5 * 255).toInt(),
                       ),
               borderStrokeWidth: 2,
@@ -396,10 +403,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 radius: GameEngine.conversationDistance,
                 // Fixer Wert = 100% Radius
                 useRadiusInMeter: true,
-                color: Colors.blue.withAlpha(
+                color: ResourceColors.playerPositionCircle.withAlpha(
                   (pulse.colorFade * 0.5 * 255).toInt(),
                 ),
-                borderColor: Colors.blue.withAlpha(
+                borderColor: ResourceColors.playerPositionCircle.withAlpha(
                   (pulse.colorFade * 0.3 * 255).toInt(),
                 ),
                 borderStrokeWidth: 2,
@@ -433,7 +440,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Macht den Hintergrund transparent
         elevation: 0,
         // Entfernt den Schatten
-        child: AppIcons.mapHeading(_isMapHeadingBasedOrientation),
+        child: AppIcons.mapHeading(context, _isMapHeadingBasedOrientation),
       ),
     ));
   }
@@ -451,16 +458,16 @@ class _MyHomePageState extends State<MyHomePage> {
               }
               : null,
       child:
-          AppIcons.centerLocation(), // Zeigt ein Symbol für den "Mein Standort"-Button
+          AppIcons.centerLocation(context), // Zeigt ein Symbol für den "Mein Standort"-Button
     ));
   }
 
   Positioned buildJoystick() {
     return Positioned(
-      bottom: 40,
-      left: 20,
+      bottom: 5,
+      left: 5,
       child: Transform.scale(
-        scale: 0.7, // oder 80, 60 – je nach Geschmack
+        scale: 0.5, // oder 80, 60 – je nach Geschmack
         child: Joystick(
           mode: JoystickMode.all,
           stickOffsetCalculator: CircleStickOffsetCalculator(),

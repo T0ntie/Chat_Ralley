@@ -89,12 +89,13 @@ class Npc extends GameElement {
   void reveal() {
     isVisible = true;
     isRevealed = true;
-    FlushBarService().showFlushbar(
+    GameEngine().showNotification("✨ Ein neuer NPC ist aufgetaucht!");
+    /*FlushBarService().showFlushbar(
       title: "Neues Ereignis",
       message: "✨ Ein neuer NPC ist aufgetaucht!",
       icon: Icons.person_add,
       backgroundColor: Colors.blueAccent,
-    );
+    );*/
 
   }
 

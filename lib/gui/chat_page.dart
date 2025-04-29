@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_world/app_resources.dart';
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:hello_world/gui/flush_bar_service.dart';
 import '../engine/npc.dart';
@@ -90,7 +91,7 @@ class _ChatPageState extends State<ChatPage> {
     return fromUser ? CrossAxisAlignment.end : CrossAxisAlignment.start;
   }
   Color? _getBubbleColor(bool fromUser) {
-    return fromUser ? Colors.green[200] : Colors.grey[300];
+    return fromUser ? ResourceColors.userChatBubble(context) : ResourceColors.assistantChatBubble(context);
   }
   BorderRadius _getRadius(bool fromUser) {
     return fromUser
@@ -124,7 +125,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildInputBar() {
     return Container(
       padding: EdgeInsets.all(8),
-      color: Colors.white,
+      color: ResourceColors.messageFieldBackground(context),
       child: Material(
         elevation: 4,
         borderRadius: BorderRadius.circular(24),
@@ -151,7 +152,7 @@ class _ChatPageState extends State<ChatPage> {
               ),
               IconButton(
                 icon: Icon(Icons.send),
-                color: Colors.green,
+                color: ResourceColors.messageSendButton(context),
                 onPressed:
                     _isSending ? null : () => _sendMessage(_controller.text),
               ),
@@ -198,7 +199,8 @@ class _ChatPageState extends State<ChatPage> {
           if (_isSending)
             Positioned.fill(
               child: Container(
-                color: Colors.white.withAlpha((0.6 * 255).toInt()),
+                //color: Colors.white.withAlpha((0.6 * 255).toInt()),
+                color: ResourceColors.messageDialogBackground(context).withAlpha((0.6 * 255).toInt()),
                 child: Center(
                   child: CircularProgressIndicator(),
                 ),
