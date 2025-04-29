@@ -52,17 +52,18 @@ class SnackBarService {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
+        backgroundColor: ResourceColors.errorSnack(context),
       ),
     );
     print('message');
   }
 
+
   static void showSuccessSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.green,
+        backgroundColor: ResourceColors.successSnack(context),
       ),
     );
   }

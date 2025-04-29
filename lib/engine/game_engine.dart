@@ -17,13 +17,13 @@ class GameEngine {
   static final double conversationDistance = 50.0;
   bool isTestSimimulationOn = false;
 
-  late final StoryLine storyLine;
+  StoryLine? storyLine;
 
-  List<Npc> get npcs => storyLine.npcs;
+  List<Npc> get npcs => storyLine?.npcs ?? [];
 
-  List<Hotspot> get hotspots => storyLine.hotspotsList;
+  List<Hotspot> get hotspots => storyLine?.hotspotsList ?? [];
 
-  Map <String, bool> get flags => storyLine.flags;
+  Map <String, bool> get flags => storyLine?.flags ?? {};
 
   final Map<String, List<(Npc, NpcAction)>> _signalSubscriptions = {};
   final Map<Npc, List<NpcAction>> _interactionSubscriptions = {};
@@ -33,7 +33,7 @@ class GameEngine {
   final Map<Npc, List<(NpcAction, int)>> _messageCountSubscriptions = {};
 
   Hotspot? getHotspotByName(String hotspotName) {
-    return storyLine.hotspotMap[hotspotName];
+    return storyLine?.hotspotMap[hotspotName];
   }
 
   Future<void> initializeGame() async {

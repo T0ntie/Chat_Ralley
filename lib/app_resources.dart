@@ -11,6 +11,8 @@ class ResourceIcons {
   static const IconData centerLocation = Icons.my_location;
   static const IconData playerPosition = Icons.navigation;
   static const IconData notification = Icons.info_outlined;
+  static const IconData error = Icons.error_outline;
+  static const IconData retry = Icons.refresh;
 }
 
 class ResourceColors {
@@ -26,8 +28,8 @@ class ResourceColors {
   static Color playerPositionMarker = Color(0xFF2962FF);
   static Color playerPositionCircle = Color(0xFF2962FF);
   static Color playerPositionFadeoutCircle = Colors.white;
+  static Color npcTalkIndicator = Colors.blue;
 
-  static Color chatBubble(BuildContext context) => Theme.of(context).colorScheme.secondaryContainer;
   static Color mapHeading(BuildContext context) => Theme.of(context).colorScheme.onSurface;
   static Color notification(BuildContext context) => Theme.of(context).colorScheme.onTertiaryContainer;
   static Color notificationBackground(BuildContext context) => Theme.of(context).colorScheme.tertiaryContainer;
@@ -39,6 +41,10 @@ class ResourceColors {
   static Color messageSendButton(BuildContext context) => Theme.of(context).colorScheme.primary;
   static Color messageDialogBackground(BuildContext context) => Theme.of(context).colorScheme.surface;
 
+  //snackbar
+  static Color errorSnack(BuildContext context) => Theme.of(context).colorScheme.error;
+  static Color successSnack(BuildContext context) => Color(0xFF00C853); //Theme.of(context).colorScheme.primaryContainer;
+  static Color errorMessage(BuildContext context) => Theme.of(context).colorScheme.error;
 }
 class ResourceSizes {
   static const double npcIconSize = 40.0;
@@ -65,7 +71,7 @@ class AppIcons {
   }
 
   static Icon hotspot(BuildContext context) => buildIcon(ResourceIcons.hotspot, color: ResourceColors.hotspotMarker, size: ResourceSizes.hotspotSize);
-  static Icon chatBubble(BuildContext context) => buildIcon(ResourceIcons.chatBubble, color: ResourceColors.chatBubble(context), size: ResourceSizes.npcIconSize);
+  static Icon chatBubble(BuildContext context) => buildIcon(ResourceIcons.chatBubble, color: ResourceColors.npcTalkIndicator, size: ResourceSizes.npcIconSize);
   static Icon mapHeading(BuildContext context, bool isHeadingActivated) => buildIcon(
     isHeadingActivated ? ResourceIcons.mapHeadingOn : ResourceIcons.mapHeadingOff,
     color: ResourceColors.mapHeading(context),
@@ -74,4 +80,7 @@ class AppIcons {
   static Icon centerLocation(BuildContext context) => buildIcon(ResourceIcons.centerLocation);
   static Icon playerPosition = buildIcon(ResourceIcons.playerPosition, color: ResourceColors.playerPositionMarker, size: ResourceSizes.playerPositionSize);
   static Icon notification(BuildContext context) => buildIcon(ResourceIcons.notification, color: ResourceColors.notification(context));
+
+  static Icon error(BuildContext context) => buildIcon(ResourceIcons.error, color: ResourceColors.errorMessage(context), size: 64);
+  static Icon retry(BuildContext context) => buildIcon(ResourceIcons.retry);
 }

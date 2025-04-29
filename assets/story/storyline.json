@@ -25,7 +25,8 @@
       "actions": [
         {
           "onInit": null,
-          "invokeAction": "spawn"
+          "invokeAction": "spawn",
+          "notification": "Jemand kommt auf dich zu"
         },
         {
           "onInteraction": null,
@@ -39,11 +40,13 @@
         {
           "onSignal": "ShowMuseum",
           "invokeAction": "showHotspot",
-          "hotSpot": "Museum"
+          "hotSpot": "Museum",
+          "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
           "onSignal": "KnatterbachFollow",
-          "invokeAction": "follow"
+          "invokeAction": "follow",
+          "notification": "{{Kommissar_Knatterbach}} folgt dir jetzt."
         },
         {
           "onSignal": "KnatterbachStop",
@@ -58,6 +61,12 @@
           "onHotspot": "Museum",
           "invokeAction": "talk",
           "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]"
+        },
+        {
+          "onSignal": "Talk",
+          "invokeAction": "talk",
+          "trigger": "[sage ganz laut 42]",
+          "notification": "Ein NPC hat was zu sagen"
         },
         {
           "onHotspot": "Polizei",

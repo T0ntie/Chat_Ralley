@@ -60,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   LatLng _location = LatLng(51.5074, -0.1278); // Beispiel für London
   bool _isLocationLoaded = false;
   bool _gameInitialized = false;
+  String? _initializationError;
   bool _initializationCompleted = false;
 
   double _currentHeading = 0.0;
@@ -95,16 +96,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _initializeGame() async {
-    try {
       await GameEngine().initializeGame();
       _gameInitialized = true;
       _checkIfInitializationCompleted();
-    } catch (e) {
-      SnackBarService.showErrorSnackBar(
-        context,
-        '❌ Laden der Story fehlgeschlagen.',
-      );
-    }
+      SnackBarService.showSuccessSnackBar(context, "✔️ Alle Spieldaten geladen");
   }
 
   void _checkIfInitializationCompleted() {
@@ -117,14 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _initializeLocationStream() async {
-    try {
-      await LocationService.initialize();
-    } catch (e) {
-      SnackBarService.showErrorSnackBar(
-        context,
-        '❌ Initialisieren der Standortbestimmung fehlgeschlagen.',
-      );
-    } // Warten bis der Stream bereit ist
+    await LocationService.initialize();
     _positionSubscription = LocationService.getPositionStream().listen((
       Position position,
     ) {
@@ -150,32 +138,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _initializeMapController() {
-    try {
-      _mapControllerSubscription = _mapController.mapEventStream.listen((
-        event,
-      ) {
-        if (event is MapEventRotate) {
-          setState(() {
-            _currentMapRotation = event.camera.rotation;
-          });
-        }
-      });
-    } catch (e) {
-      SnackBarService.showErrorSnackBar(
-        context,
-        '❌ Initialisieren des Karte fehlgeschlagen.',
-      );
-    } //
+    _mapControllerSubscription = _mapController.mapEventStream.listen((
+      event,
+    ) {
+      if (event is MapEventRotate) {
+        setState(() {
+          _currentMapRotation = event.camera.rotation;
+        });
+      }
+    });
   }
 
   Future<void> _initializeCompassStream() async {
     try {
       CompassService.initialize();
     } catch (e) {
-      SnackBarService.showErrorSnackBar(
-        context,
-        '❌ Initialisieren des Kompass fehlgeschlagen.',
-      );
+      rethrow;
     } //
     _compassSubscription = CompassService.getCompassDirection().listen((
       heading,
@@ -203,13 +181,43 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _initializeApp() async {
-    await _initializeGame();
-    await Future.wait([
-      _initializeCompassStream(),
-      _initializeLocationStream(),
-    ]);
 
-    _initializeMapController();
+    try{
+      print (" Bevor Initialize Game");
+      await _initializeGame();
+      print (" danach Initialize Game");
+    }
+    catch(e) {
+      print (" im catch Initialize Game");
+      _initializationError = '❌ Initialisierung der Spieldaten fehlgeschlagen.';
+      SnackBarService.showErrorSnackBar(context, _initializationError!);
+      return;
+    }
+
+    try {
+      print (" Bevor Wait");
+      await Future.wait([
+        _initializeCompassStream(),
+        _initializeLocationStream(),
+      ]);
+      print (" Nach Wait");
+
+    }
+    catch (e) {
+      print (" im zweiten Catch");
+      _initializationError = '❌ Initialisieren der Standortbestimmung fehlgeschlagen.';
+      SnackBarService.showErrorSnackBar(context, _initializationError!);
+      return;
+    }
+
+    try {
+      _initializeMapController();
+    } catch (e) {
+      _initializationError = '❌ Initialisieren der Karte fehlgeschlagen.';
+      SnackBarService.showErrorSnackBar(context, _initializationError!);
+      return;
+    }
+
     _initializeUpdateTimer();
   }
 
@@ -500,6 +508,50 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    if (_initializationError != null) {
+      return Scaffold(
+        appBar: AppBar(title: Text(title)),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppIcons.error(context), //Icon(Icons.error_outline, size: 64, color: Colors.red),
+                const SizedBox(height: 16),
+                const Text(
+                  'Fehler bei der Initialisierung',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  _initializationError!,
+                  style: TextStyle(color: ResourceColors.errorMessage(context)),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _initializationError = null;
+                      _initializationCompleted = false;
+                      _gameInitialized = false;
+                      _isLocationLoaded = false;
+                    });
+                    _initializeApp();
+                  },
+                  icon: const Icon(Icons.refresh),
+                  label: const Text("Erneut versuchen"),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
