@@ -31,8 +31,8 @@ class FlushBarService {
         margin: EdgeInsets.all(8),
         animationDuration: Duration(milliseconds: 500),
         flushbarPosition: FlushbarPosition.TOP,
-        titleColor: Colors.white,
-        messageColor: Colors.white,
+        titleColor: ResourceColors.notificationTitle(_context),
+        messageColor: ResourceColors.notificationMessage(_context),
       ).show(_context);
     });
   }
@@ -63,6 +63,7 @@ class SnackBarService {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
+
         backgroundColor: ResourceColors.successSnack(context),
       ),
     );

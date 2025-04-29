@@ -32,7 +32,9 @@ class ResourceColors {
 
   static Color mapHeading(BuildContext context) => Theme.of(context).colorScheme.onSurface;
   static Color notification(BuildContext context) => Theme.of(context).colorScheme.onTertiaryContainer;
-  static Color notificationBackground(BuildContext context) => Theme.of(context).colorScheme.tertiaryContainer;
+  static Color notificationBackground(BuildContext context) => Theme.of(context).colorScheme.primaryContainer;
+  static Color notificationMessage(BuildContext context) => Theme.of(context).colorScheme.onPrimaryContainer;
+  static Color notificationTitle(BuildContext context) => Theme.of(context).colorScheme.onPrimaryFixedVariant;
 
   //chatpage
   static Color messageFieldBackground(BuildContext context) => Theme.of(context).colorScheme.surface;
@@ -79,7 +81,7 @@ class AppIcons {
   );
   static Icon centerLocation(BuildContext context) => buildIcon(ResourceIcons.centerLocation);
   static Icon playerPosition = buildIcon(ResourceIcons.playerPosition, color: ResourceColors.playerPositionMarker, size: ResourceSizes.playerPositionSize);
-  static Icon notification(BuildContext context) => buildIcon(ResourceIcons.notification, color: ResourceColors.notification(context));
+  static Icon notification(BuildContext context) => buildIcon(ResourceIcons.notification, color: ResourceColors.notification(context), size: 40);
 
   static Icon error(BuildContext context) => buildIcon(ResourceIcons.error, color: ResourceColors.errorMessage(context), size: 64);
   static Icon retry(BuildContext context) => buildIcon(ResourceIcons.retry);

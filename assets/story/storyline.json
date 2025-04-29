@@ -63,12 +63,6 @@
           "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]"
         },
         {
-          "onSignal": "Talk",
-          "invokeAction": "talk",
-          "trigger": "[sage ganz laut 42]",
-          "notification": "Ein NPC hat was zu sagen"
-        },
-        {
           "onHotspot": "Polizei",
           "invokeAction": "talk",
           "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]"
