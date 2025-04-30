@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:hello_world/actions/npc_action.dart';
 import 'package:hello_world/engine/game_element.dart';
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:hello_world/engine/story_line.dart';
-import 'package:hello_world/gui/notification_services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
@@ -17,7 +15,7 @@ class Npc extends GameElement {
   String imageAsset;
   static final String unknownImageAsset = "images/unknown.png";
   static const String gamePromptFile = 'assets/story/prompts/game-prompt.txt';
-  bool isRevealed;
+  //bool isRevealed;
   bool isMoving = false;
   bool isFollowing = false;
   bool hasSomethingToSay = false;
@@ -44,7 +42,7 @@ class Npc extends GameElement {
     required super.position,
     required this.actions,
     required super.isVisible,
-    required this.isRevealed,
+    required super.isRevealed,
     required speed, //in km/h
   }) : _speed = speed * 1000 / 3600 {
     this.currentConversation = Conversation(this);
@@ -89,16 +87,28 @@ class Npc extends GameElement {
   void reveal() {
     isVisible = true;
     isRevealed = true;
-    GameEngine().showNotification("✨ Ein neuer NPC ist aufgetaucht!");
-    /*FlushBarService().showFlushbar(
-      title: "Neues Ereignis",
-      message: "✨ Ein neuer NPC ist aufgetaucht!",
-      icon: Icons.person_add,
-      backgroundColor: Colors.blueAccent,
-    );*/
-
   }
 
+  void spawn(double distance) {
+    final random = Random();
+
+    // Zufälliger Winkel (0–360 Grad in Radiant)
+    final angle = random.nextDouble() * 2 * pi;
+
+    // Umrechnung Meter → Grad
+    const metersPerDegreeLat = 111320.0;
+    final metersPerDegreeLng = metersPerDegreeLat * cos(playerPosition.latitude * pi / 180);
+
+    final deltaLat = (distance * cos(angle)) / metersPerDegreeLat;
+    final deltaLng = (distance * sin(angle)) / metersPerDegreeLng;
+
+    position = LatLng(
+      playerPosition.latitude + deltaLat,
+      playerPosition.longitude + deltaLng,
+    );
+  }
+
+  /*
   void spawn() {
     final random = Random();
     // Ein kleiner zufälliger Offset in Grad (ca. 0.00005 ~ 5 Meter)
@@ -110,6 +120,7 @@ class Npc extends GameElement {
       playerPosition.longitude + offsetLng,
     );
   }
+*/
 
   void moveTo(LatLng toPosition) {
     if (isMoving) {
@@ -168,7 +179,8 @@ class Npc extends GameElement {
   }
 
   String get displayImageAsset {
-    return isRevealed ? imageAsset : unknownImageAsset;
+    //return isRevealed ? imageAsset : unknownImageAsset;
+    return imageAsset;
   }
 
   String get displayName {

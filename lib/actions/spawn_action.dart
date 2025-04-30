@@ -3,17 +3,20 @@ import '../engine/npc.dart';
 
 class SpawnAction extends NpcAction{
 
-  SpawnAction({required super.trigger, required super.conditions, super.notification});
+  double distance;
+
+  SpawnAction({required super.trigger, required super.conditions, super.notification, required this.distance});
 
   @override
   void excecute(Npc npc) {
     print('${npc.name} spawns');
-    npc.spawn();
+    npc.spawn(distance);
   }
 
   static SpawnAction actionFromJson(Map<String, dynamic> json) {
     final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(json);
-    return SpawnAction(trigger: trigger, conditions: conditions, notification: notification);
+    final distance = (json['distance'] as num?)?.toDouble() ?? 5.0;
+    return SpawnAction(trigger: trigger, conditions: conditions, notification: notification, distance: distance);
   }
   static void register() {
     NpcAction.registerAction('spawn', SpawnAction.actionFromJson);

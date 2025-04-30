@@ -21,12 +21,17 @@
       "prompt": "prompts/knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
       "visible": true,
-      "speed": 200,
+      "speed": 15,
       "actions": [
         {
           "onInit": null,
           "invokeAction": "spawn",
+          "distance": 100,
           "notification": "Jemand kommt auf dich zu"
+        },
+        {
+          "onInit": null,
+          "invokeAction": "follow"
         },
         {
           "onInteraction": null,
@@ -40,7 +45,7 @@
         {
           "onSignal": "ShowMuseum",
           "invokeAction": "showHotspot",
-          "hotSpot": "Museum",
+          "hotspot": "Museum",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
@@ -88,9 +93,16 @@
           "onMessageCount": 10,
           "invokeAction": "behave",
           "directive": "[Erinnere dich an das Besucherbuch]",
-          "conditions": {
+          "conditions":
+          {
             "knowsKrollsAddress": false
           }
+        },
+        {
+          "onSignal": "ShowKroll",
+          "invokeAction": "showHotspot",
+          "hotspot": "{{Haus_Kroll}}",
+          "notification": "Ein neuer Ort wurde auf der Karte markiert."
         }
       ]
     },
@@ -99,12 +111,31 @@
       "position": "KrollPosition",
       "prompt": "prompts/kroll-prompt.txt",
       "image": "images/kroll.png",
-      "visible": true,
-      "revealed": true,
+      "visible": false,
+      "revealed": false,
       "actions": [
         {
-        "onSignal": "KrollCutOff",
-        "invokeAction": "stopTalking"
+          "onHotspot": "{{Haus_Kroll}}",
+          "invokeAction": "appear"
+        },
+        {
+          "onSignal": "KrollCutOff",
+          "invokeAction": "stopTalking",
+          "notification": "Das Gespräch wurde beendet."
+        },
+        {
+          "onSignal": "KrollDebut",
+          "invokeAction": "reveal"
+        },
+        {
+          "onSignal": "KrollDebut",
+          "invokeAction": "revealHotspot",
+          "hotspot": "{{Haus_Kroll}}"
+        },
+        {
+          "onSignal": "ShowKirchengasse",
+          "invokeAction": "showHotspot",
+          "hotspot": "{{Haus_Tschulli}}"
         }
       ]
     },
@@ -172,7 +203,8 @@
       "name": "{{Haus_Kroll}}",
       "position": "HausKrollPosition",
       "radius": 20,
-      "visible": true
+      "visible": true,
+      "revealed": false
     },
     {
       "name": "{{Haus_Tschulli}}",

@@ -274,14 +274,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: AppIcons.hotspot(context), // oder hotspot.icon
               ),
               const SizedBox(height: 4), // Abstand zwischen Icon und Text
-              Text(
-                hotspot.name,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: ResourceColors.npcName,
-                  fontWeight: FontWeight.bold,
+              if (hotspot.isRevealed)
+                Text(
+                  hotspot.name,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: ResourceColors.npcName,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
             ],
           ),
         ),

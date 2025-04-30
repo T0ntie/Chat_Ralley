@@ -11,6 +11,7 @@ class Hotspot extends GameElement{
     required super.position,
     required this.radius,
     required super.isVisible,
+    required super.isRevealed,
   });
 
   static Hotspot fromJson(Map<String, dynamic> json) {
@@ -19,6 +20,7 @@ class Hotspot extends GameElement{
       name: json['name'],
       radius: (json['radius'] as num).toDouble(),
       isVisible: json['visible'] as bool? ?? true,
+      isRevealed: json['revealed'] as bool? ?? true,
       position: position,
     );
   }
