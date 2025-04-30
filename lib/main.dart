@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_world/actions/npc_action.dart';
 import 'package:hello_world/gui/notification_services.dart';
 import 'dart:math';
 import 'package:hello_world/gui/npc_info_dialog.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: ResourceColors.seed,)
+        colorScheme: ColorScheme.fromSeed(seedColor: ResourceColors.seed),
       ),
       home: const MyHomePage(title: 'Chat Ralley'),
     );
@@ -79,6 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isMapHeadingBasedOrientation = false;
 
   bool get _isGPSSimulating => GameEngine().isTestSimimulationOn;
+
+  bool showActionTestingPanel = false;
+
   set _isGPSSimulating(bool value) {
     GameEngine().isTestSimimulationOn = value;
   }
@@ -96,10 +100,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _initializeGame() async {
-      await GameEngine().initializeGame();
-      _gameInitialized = true;
-      _checkIfInitializationCompleted();
-      SnackBarService.showSuccessSnackBar(context, "✔️ Alle Spieldaten geladen");
+    await GameEngine().initializeGame();
+    _gameInitialized = true;
+    _checkIfInitializationCompleted();
+    SnackBarService.showSuccessSnackBar(context, "✔️ Alle Spieldaten geladen");
   }
 
   void _checkIfInitializationCompleted() {
@@ -127,20 +131,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _processNewLocation(LatLng location) {
-      for (final npc in _npcs) {
-        npc.updatePlayerPosition(_location);
+    for (final npc in _npcs) {
+      npc.updatePlayerPosition(_location);
+    }
+    for (final hotspot in _hotspots) {
+      if (hotspot.contains(_location)) {
+        GameEngine().registerHotspot(hotspot);
       }
-      for (final hotspot in _hotspots) {
-        if (hotspot.contains(_location)) {
-          GameEngine().registerHotspot(hotspot);
-        }
-      }
+    }
   }
 
   void _initializeMapController() {
-    _mapControllerSubscription = _mapController.mapEventStream.listen((
-      event,
-    ) {
+    _mapControllerSubscription = _mapController.mapEventStream.listen((event) {
       if (event is MapEventRotate) {
         setState(() {
           _currentMapRotation = event.camera.rotation;
@@ -181,31 +183,28 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _initializeApp() async {
-
-    try{
-      print (" Bevor Initialize Game");
+    try {
+      print(" Bevor Initialize Game");
       await _initializeGame();
-      print (" danach Initialize Game");
-    }
-    catch(e) {
-      print (" im catch Initialize Game");
+      print(" danach Initialize Game");
+    } catch (e) {
+      print(" im catch Initialize Game");
       _initializationError = '❌ Initialisierung der Spieldaten fehlgeschlagen.';
       SnackBarService.showErrorSnackBar(context, _initializationError!);
       return;
     }
 
     try {
-      print (" Bevor Wait");
+      print(" Bevor Wait");
       await Future.wait([
         _initializeCompassStream(),
         _initializeLocationStream(),
       ]);
-      print (" Nach Wait");
-
-    }
-    catch (e) {
-      print (" im zweiten Catch");
-      _initializationError = '❌ Initialisieren der Standortbestimmung fehlgeschlagen.';
+      print(" Nach Wait");
+    } catch (e) {
+      print(" im zweiten Catch");
+      _initializationError =
+          '❌ Initialisieren der Standortbestimmung fehlgeschlagen.';
       SnackBarService.showErrorSnackBar(context, _initializationError!);
       return;
     }
@@ -260,9 +259,10 @@ class _MyHomePageState extends State<MyHomePage> {
         width: 60, // feste Markerbreite
         height: 80, // genug Höhe für Icon + Text
         child: Transform.rotate(
-          angle: (_isMapHeadingBasedOrientation
-              ? _currentHeading
-              : -_currentMapRotation) *
+          angle:
+              (_isMapHeadingBasedOrientation
+                  ? _currentHeading
+                  : -_currentMapRotation) *
               (pi / 180),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -353,17 +353,16 @@ class _MyHomePageState extends State<MyHomePage> {
         initialCenter: _location,
         initialZoom: 16.0,
         onLongPress: (tapPosition, point) {
-          if (_isGPSSimulating)
-            {
-              setState(() {
-                _location = point;
-                _processNewLocation(_location);
-              });
-            }
+          if (_isGPSSimulating) {
+            setState(() {
+              _location = point;
+              _processNewLocation(_location);
+            });
+          }
         },
         onTap: (tapPosition, point) {
           print('Tapped on location: ${point.latitude}, ${point.longitude}');
-        }
+        },
       ),
       children: [
         TileLayer(
@@ -371,18 +370,23 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         CircleLayer(
           circles: [
-            if (_isGPSSimulating)..._hotspots
-                .where((h) => h.isVisible)
-                .map(
-                  (hotspot) => CircleMarker(
-                    point: hotspot.position,
-                    radius: hotspot.radius,
-                    useRadiusInMeter: true,
-                    color: ResourceColors.hotspotCircle.withAlpha((0.1 * 255).toInt()),
-                    borderColor: ResourceColors.hotspotCircle.withAlpha((0.5 * 255).toInt()),
-                    borderStrokeWidth: 2,
+            if (_isGPSSimulating)
+              ..._hotspots
+                  .where((h) => h.isVisible)
+                  .map(
+                    (hotspot) => CircleMarker(
+                      point: hotspot.position,
+                      radius: hotspot.radius,
+                      useRadiusInMeter: true,
+                      color: ResourceColors.hotspotCircle.withAlpha(
+                        (0.1 * 255).toInt(),
+                      ),
+                      borderColor: ResourceColors.hotspotCircle.withAlpha(
+                        (0.5 * 255).toInt(),
+                      ),
+                      borderStrokeWidth: 2,
+                    ),
                   ),
-                ),
             CircleMarker(
               point: _location,
               radius: pulse.radius,
@@ -390,7 +394,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color:
                   pulse.maxReached
                       ? Colors.transparent
-                      : ResourceColors.playerPositionCircle .withAlpha(
+                      : ResourceColors.playerPositionCircle.withAlpha(
                         (pulse.colorFade * 0.5 * 255).toInt(),
                       ),
               borderColor:
@@ -465,8 +469,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               }
               : null,
-      child:
-          AppIcons.centerLocation(context), // Zeigt ein Symbol für den "Mein Standort"-Button
+      child: AppIcons.centerLocation(
+        context,
+      ), // Zeigt ein Symbol für den "Mein Standort"-Button
     ));
   }
 
@@ -509,7 +514,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     if (_initializationError != null) {
       return Scaffold(
         appBar: AppBar(title: Text(title)),
@@ -519,7 +523,8 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AppIcons.error(context), //Icon(Icons.error_outline, size: 64, color: Colors.red),
+                AppIcons.error(context),
+                //Icon(Icons.error_outline, size: 64, color: Colors.red),
                 const SizedBox(height: 16),
                 const Text(
                   'Fehler bei der Initialisierung',
@@ -551,12 +556,19 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
     }
-
-
+    final actionsByTrigger = GameEngine().getActionsGroupedByTrigger();
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: [
+          IconButton(
+            icon: Icon(Icons.bug_report),
+            tooltip: "Test Actions",
+            onPressed: () {
+              print("ready to test some actions");
+              showActionTestingPanel = !showActionTestingPanel;
+            },
+          ),
           IconButton(
             icon: Icon(Icons.sports_esports_outlined),
             tooltip: "Simulate",
@@ -597,6 +609,71 @@ class _MyHomePageState extends State<MyHomePage> {
                   buildFlutterMap(),
                   buildMapOrientationModeButton(),
                   if (_isGPSSimulating) buildJoystick(),
+
+                  if (showActionTestingPanel)
+                    // DraggableScrollableSheet mit ExpansionTiles
+                    DraggableScrollableSheet(
+                      initialChildSize: 0.1,
+                      minChildSize: 0.1,
+                      maxChildSize: 0.6,
+                      builder: (context, scrollController) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(16),
+                            ),
+                            boxShadow: [
+                              BoxShadow(blurRadius: 10, color: Colors.black26),
+                            ],
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: ListView(
+                            controller: scrollController,
+                            children: [
+                              Center(
+                                child: Container(
+                                  width: 40,
+                                  height: 5,
+                                  margin: EdgeInsets.symmetric(vertical: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[400],
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                "Registrierte Actions",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              ...actionsByTrigger.entries.map((entry) {
+                                final triggerName = entry.key;
+                                final actions = entry.value;
+
+                                return ExpansionTile(
+                                  title: Text(triggerName),
+                                  children: actions.map((pair) {
+                                    final npc = pair.$1;
+                                    final action = pair.$2;
+
+                                    return ListTile(
+                                      title: Text("${npc.name} → ${action.runtimeType}"),
+                                      subtitle: Text("Trigger-Wert: ${action.trigger.value}"),
+                                      trailing: Icon(Icons.play_arrow),
+                                      onTap: () => action.invoke(npc),
+                                    );
+                                  }).toList(),
+                                );
+                              }).toList()
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                 ],
               ),
       floatingActionButton: buildFloatingActionButton(),

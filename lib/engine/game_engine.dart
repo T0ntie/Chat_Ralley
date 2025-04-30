@@ -33,6 +33,64 @@ class GameEngine {
     return storyLine?.hotspotMap[hotspotName];
   }
 
+  Map<String, List<(Npc, NpcAction)>> getActionsGroupedByTrigger() {
+    final Map<String, List<(Npc, NpcAction)>> grouped = {};
+
+    for (var (trigger, npc, action) in getAllRegisteredActionEntries()) {
+      grouped.putIfAbsent(trigger, () => []).add((npc, action));
+    }
+
+    return grouped;
+  }
+
+  List<(String triggerType, Npc npc, NpcAction action)> getAllRegisteredActionEntries() {
+    final List<(String, Npc, NpcAction)> result = [];
+
+    // Signal: Map<String, List<(Npc, NpcAction)>>
+    for (var entry in _signalSubscriptions.values) {
+      for (var (npc, action) in entry) {
+        result.add(('signal', npc, action));
+      }
+    }
+
+    // Interaction: Map<Npc, List<NpcAction>>
+    for (var entry in _interactionSubscriptions.entries) {
+      for (var action in entry.value) {
+        result.add(('interaction', entry.key, action));
+      }
+    }
+
+    // Approach: Map<Npc, List<NpcAction>>
+    for (var entry in _approachSubscriptions.entries) {
+      for (var action in entry.value) {
+        result.add(('approach', entry.key, action));
+      }
+    }
+
+    // Init: Map<Npc, List<NpcAction>>
+    for (var entry in _initSubscriptions.entries) {
+      for (var action in entry.value) {
+        result.add(('init', entry.key, action));
+      }
+    }
+
+    // Hotspot: Map<String, List<(Npc, NpcAction)>>
+    for (var entry in _hotspotSubscriptions.values) {
+      for (var (npc, action) in entry) {
+        result.add(('hotspot', npc, action));
+      }
+    }
+
+    // MessageCount: Map<Npc, List<(NpcAction, int)>>
+    for (var entry in _messageCountSubscriptions.entries) {
+      for (var (action, _) in entry.value) {
+        result.add(('message', entry.key, action));
+      }
+    }
+
+    return result;
+  }
+
   Future<void> initializeGame() async {
     NpcAction.registerAllNpcActions();
     storyLine = await StoryLine.loadStoryLine();
