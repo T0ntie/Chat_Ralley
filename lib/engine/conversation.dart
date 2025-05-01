@@ -68,6 +68,8 @@ class Conversation {
 
   Future<String> processConversation() async {
     final response = await ChatService.processMessages(_toOpenAIMessages());
+    final count = ChatService.countTokens(_toOpenAIMessages());
+    print("Currently $count tokens used");
     return response;
   }
 
