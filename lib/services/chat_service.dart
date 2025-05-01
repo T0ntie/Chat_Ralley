@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tiktoken/tiktoken.dart';
@@ -10,6 +11,10 @@ class ChatService {
   static const _encodingModel = 'gpt-4';
   static const tokenLimit = 1000000;
   static const tokenThreshold = 7000;
+
+  static bool compressionNecessary(List<Map<String, String>> messages) {
+    return tokenThreshold < countTokens(messages);
+  }
 
   static int countTokens(List<Map<String, String>> messages) {
     final encoding = encodingForModel(_encodingModel);

@@ -71,6 +71,11 @@
           "onHotspot": "Polizei",
           "invokeAction": "talk",
           "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]"
+        },
+        {
+          "onSignal": "KnatterbachFunk",
+          "invokeAction": "behave",
+          "directive": "[Funkmodus wurde aktiviert]"
         }
       ]
     },

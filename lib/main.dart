@@ -222,8 +222,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    FlushBarService().setContext(context);
+    //FlushBarService().setContext(context);
     _initializeApp();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    FlushBarService().setContext(context);
   }
 
   void _showNPCInfo(BuildContext context, Npc npc) {

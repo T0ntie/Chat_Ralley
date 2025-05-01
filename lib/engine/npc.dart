@@ -4,7 +4,6 @@ import 'package:hello_world/engine/game_engine.dart';
 import 'package:hello_world/engine/prompt.dart';
 import 'package:hello_world/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'conversation.dart';
 
 import 'dart:math';
@@ -12,7 +11,7 @@ import 'dart:math';
 enum NPCIcon { unknown, identified, nearby, unknown_nearby }
 
 class Npc extends GameElement {
-  final String prompt;
+  final Prompt prompt;
   String imageAsset;
   static final String unknownImageAsset = "images/unknown.png";
   //bool isRevealed;
@@ -55,7 +54,7 @@ class Npc extends GameElement {
     try {
       final promptFile = json['prompt'] as String;
       Prompt prompt = await Prompt.createPrompt(promptFile);
-      String promptText = prompt.getGamplayPrompt();
+      //String promptText = prompt.getGamplayPrompt();
       final actionsJson = json['actions'] as List? ?? [];
       final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
 
@@ -63,7 +62,7 @@ class Npc extends GameElement {
       return Npc(
         name: json['name'],
         position: position,
-        prompt: promptText,
+        prompt: prompt,
         imageAsset: json['image'] as String? ?? unknownImageAsset,
         isVisible: json['visible'] as bool? ?? true,
         isRevealed: json['revealed'] as bool? ?? false,

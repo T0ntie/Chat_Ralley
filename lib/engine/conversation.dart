@@ -1,19 +1,21 @@
 import 'package:hello_world/engine/game_engine.dart';
+import 'package:hello_world/engine/prompt.dart';
 
 import '../services/chat_service.dart';
 import 'npc.dart';
 import 'dart:convert';
 
 class Conversation {
-
   final Npc npc; // Der NPC, mit dem der User chattet
   final List<ChatMessage> _messages = []; // Liste von Nachrichten
   int userMessageCount = 0;
 
+  int messagesToKeep = 10;
+
   void Function()? onConversationFinished;
 
   Conversation(this.npc) {
-    addSystemMessage(npc.prompt);
+    addSystemMessage(npc.prompt.getGamplayPrompt());
   }
 
   Future<void> handleTriggerMessage() async {
@@ -24,8 +26,7 @@ class Conversation {
     }
   }
 
-  void finishConversation()
-  {
+  void finishConversation() {
     print("Schließe das chat fenster: conversation finished");
     onConversationFinished?.call();
   }
@@ -66,15 +67,107 @@ class Conversation {
     _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.system));
   }
 
-  Future<String> processConversation() async {
-    final response = await ChatService.processMessages(_toOpenAIMessages());
-    final count = ChatService.countTokens(_toOpenAIMessages());
-    print("Currently $count tokens used");
-    return response;
+  Future<void> _compressConversation() async {
+    final keep = messagesToKeep;
+
+    // 1) --- Listen vorbereiten -----------------------------------------------
+
+    final initialPrompt = _messages.firstWhere(
+          (m) => m.fromSystem,
+      orElse: () =>
+          ChatMessage(
+              rawText: npc.prompt.getGamplayPrompt(),
+              chatRole: ChatRole.system),
+    );
+
+    final List<ChatMessage> laterSystem = [];
+    final List<ChatMessage> userAssist = [];
+
+    // Ab Index 1 durchsuchen, damit initialPrompt nicht doppelt landet
+    for (var i = 1; i < _messages.length; i++) {
+      final m = _messages[i];
+      (m.fromSystem ? laterSystem : userAssist).add(m);
+    }
+
+    if (userAssist.length <= keep && laterSystem.isEmpty)
+      return; // nichts zu tun
+
+    // 2) --- bestimmen, was behalten / zusammengefasst wird -------------------
+    final userAssistToKeep = userAssist.sublist(
+      userAssist.length - keep.clamp(0, userAssist.length),
+    );
+
+    final toSummarize = [
+      ...laterSystem,
+      ...userAssist.sublist(0, userAssist.length - userAssistToKeep.length),
+    ];
+
+    // 3) --- GPT-Aufruf --------------------------------------------------------
+    final promptForGPT = [
+      ChatMessage(
+        rawText: npc.prompt.getCompressPrompt(),
+        chatRole: ChatRole.system,
+      ),
+      ...toSummarize,
+      ChatMessage(
+        rawText: Prompt.compressCommand, //  "[Fasse zusammen]"
+        chatRole: ChatRole.user,
+      ),
+    ];
+
+    final summary = await _processConversation(promptForGPT);
+
+    print("Summary durchgeführt: $summary");
+
+    // 4) --- Neue Nachrichtenliste zusammenbauen ------------------------------
+    _messages
+      ..clear()
+      ..addAll([
+        initialPrompt,
+        ChatMessage(rawText: summary, chatRole: ChatRole.system),
+        ...userAssistToKeep,
+      ]);
   }
 
-  List<Map<String, String>> _toOpenAIMessages() {
-    return _messages
+/*
+    if (_messages.length <= keep + 1) return;
+
+    final toCompress = [
+      ChatMessage(
+        rawText: npc.prompt.getCompressPrompt(),
+        chatRole: ChatRole.system,
+      ),
+      ..._messages.sublist(1, _messages.length - keep),
+      ChatMessage(rawText: Prompt.compressCommand, chatRole: ChatRole.user),
+    ];
+
+    final summary = await _processConversation(toCompress);
+
+    _messages.replaceRange(1, _messages.length - keep, [
+      ChatMessage(rawText: summary, chatRole: ChatRole.system),
+    ]);
+  }
+*/
+
+  bool _isCompressing = false;
+
+  Future<String> _processConversation(List<ChatMessage> messages) async {
+    if (!_isCompressing &&
+        ChatService.compressionNecessary(_toOpenAIMessages(messages))) {
+      _isCompressing = true;
+      try {
+        await _compressConversation();
+      } finally {
+        _isCompressing = false;
+      }
+    }
+    return ChatService.processMessages(_toOpenAIMessages(messages));
+  }
+
+  Future<String> processConversation() => _processConversation(_messages);
+
+  List<Map<String, String>> _toOpenAIMessages(List<ChatMessage> messages) {
+    return messages
         .map((msg) => {'role': msg.getRoleString(), 'content': msg.rawText})
         .toList();
   }
@@ -102,9 +195,7 @@ class ChatMessage {
     this.isTrigger = false,
   }) : filteredText = _filterMessage(rawText),
        signalJson =
-           (chatRole == ChatRole.assistant)
-               ? _extractSignal(rawText)
-               : {} {
+           (chatRole == ChatRole.assistant) ? _extractSignal(rawText) : {} {
     if (chatRole == ChatRole.assistant && signalJson.isNotEmpty) {
       print("✅ Signal gefunden: $signalJson");
     }
@@ -119,7 +210,7 @@ class ChatMessage {
     return rawText.replaceAll(regex, '').trim();
   }
 
-  static Map<String, dynamic> _extractSignal(String rawText){
+  static Map<String, dynamic> _extractSignal(String rawText) {
     final regex = RegExp(
       r'<npc-signal>\s*([\s\S]*?)\s*<\/npc-signal>',
       multiLine: true,
@@ -138,7 +229,9 @@ class ChatMessage {
 
   // Getter für "fromUser"
   bool get fromUser => chatRole == ChatRole.user;
+
   bool get fromAssistant => chatRole == ChatRole.assistant;
+
   bool get fromSystem => chatRole == ChatRole.system;
 
   String getRoleString() {

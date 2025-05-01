@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:hello_world/engine/story_line.dart';
 
@@ -5,6 +7,7 @@ class Prompt {
   Prompt._();
 
   static const String gamePromptFile = 'assets/story/prompts/game-prompt.txt';
+  static const String promptSectionsFile = 'assets/story/prompts.json';
   static const String compressPromptFile =
       'assets/story/prompts/compress-prompt.txt';
   static const String promptAssetPath = 'assets/story/prompts/';
@@ -13,41 +16,11 @@ class Prompt {
 
   final Map<String, String> promptSectionMap = {};
 
-  static final Set<String> validSections = {
-    "Allgemeines",
-    "Das Spiel",
-    "Der Ort",
-    "Deine Rolle",
-    "Inspirationsquellen",
-    "Deine Aufgabe",
-    "Antwortstil",
-    "Die wichtigsten Informationen",
-    "Gesprächsverlauf",
-    "Verhalten in besonderen Situationen",
-    "Signale",
-    "Zusammenfassungsregeln",
-  };
+  static final Set<String> validSections = <String>{};
+  static Set<String> gamePlaySections = <String>{};
+  static Set<String> compressSections = <String>{};
 
-  static Set<String> gamePlaySections = {
-    "Allgemeines",
-    "Das Spiel",
-    "Der Ort",
-    "Deine Rolle",
-    "Inspirationsquellen",
-    "Deine Aufgabe",
-    "Antwortstil",
-    "Die wichtigsten Informationen",
-    "Gesprächsverlauf",
-    "Verhalten in besonderen Situationen",
-    "Signale",
-  };
-
-  static Set<String> compressSections = {
-    "Deine Rolle",
-    "Die wichtigsten Informationen",
-    "Gesprächsverlauf",
-    "Zusammenfassungsregeln",
-  };
+  static const String compressCommand = "[Fasse zusammen]";
 
   String getGamplayPrompt() {
     return _getCustomPrompt(gamePlaySections);
@@ -76,8 +49,24 @@ class Prompt {
 
   static Future<Prompt> createPrompt(String promptFile) async {
     final prompt = Prompt._();
+    if (validSections.isEmpty){
+      await _loadPromptsections();
+    }
     await prompt._loadPrompt(promptFile);
     return prompt;
+  }
+
+  static Future<void> _loadPromptsections() async {
+    try {
+      String jsonString = await rootBundle.loadString(promptSectionsFile);
+      final Map<String, dynamic> json = jsonDecode(jsonString);
+      validSections.addAll(Set<String>.from(json['validSections']));
+      gamePlaySections.addAll(Set<String>.from(json['gamePlaySections']));
+      compressSections.addAll(Set<String>.from(json['compressSections']));
+    } catch (e) {
+      print("❌ Feher beim Parsen der Promptsections '$promptSectionsFile': $e");
+      rethrow;
+    }
   }
 
   Future<void> _loadPrompt(String promptFile) async {

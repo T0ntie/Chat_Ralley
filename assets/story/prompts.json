@@ -1,0 +1,37 @@
+{
+  "validSections": [
+    "Allgemeines",
+    "Das Spiel",
+    "Der Ort",
+    "Deine Rolle",
+    "Inspirationsquellen",
+    "Deine Aufgabe",
+    "Antwortstil",
+    "Die wichtigsten Informationen",
+    "Gesprächsverlauf",
+    "Verhalten in besonderen Situationen",
+    "Signale",
+    "Zusammenfassungsregeln",
+    "Funkmodus aktiv"
+  ],
+  "gamePlaySections": [
+    "Allgemeines",
+    "Das Spiel",
+    "Der Ort",
+    "Deine Rolle",
+    "Inspirationsquellen",
+    "Deine Aufgabe",
+    "Antwortstil",
+    "Die wichtigsten Informationen",
+    "Gesprächsverlauf",
+    "Verhalten in besonderen Situationen",
+    "Signale",
+    "Funkmodus aktiv"
+  ],
+  "compressSections": [
+    "Deine Rolle",
+    "Die wichtigsten Informationen",
+    "Gesprächsverlauf",
+    "Zusammenfassungsregeln"
+  ]
+}
