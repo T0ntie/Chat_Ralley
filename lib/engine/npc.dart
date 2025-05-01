@@ -1,6 +1,7 @@
 import 'package:hello_world/actions/npc_action.dart';
 import 'package:hello_world/engine/game_element.dart';
 import 'package:hello_world/engine/game_engine.dart';
+import 'package:hello_world/engine/prompt.dart';
 import 'package:hello_world/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -14,7 +15,6 @@ class Npc extends GameElement {
   final String prompt;
   String imageAsset;
   static final String unknownImageAsset = "images/unknown.png";
-  static const String gamePromptFile = 'assets/story/prompts/game-prompt.txt';
   //bool isRevealed;
   bool isMoving = false;
   bool isFollowing = false;
@@ -49,21 +49,13 @@ class Npc extends GameElement {
     this.toPosition = position;
   }
 
-  static Future<String> _loadPrompt(String promptFile) async{
-    try {
-      final String gamePrompt = await rootBundle.loadString(gamePromptFile);
-      final String npcPrompt = await rootBundle.loadString(promptFile);
-      return StoryLine.localizeString(gamePrompt + npcPrompt);
-    } catch (e, stack) {
-      print('❌ Failed to load prompt files $gamePromptFile or $promptFile:\n$e\n$stack');
-      rethrow;
-    }
-  }
+
 
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
     try {
       final promptFile = json['prompt'] as String;
-      String promptText = await _loadPrompt('assets/story/${promptFile}');
+      Prompt prompt = await Prompt.createPrompt(promptFile);
+      String promptText = prompt.getGamplayPrompt();
       final actionsJson = json['actions'] as List? ?? [];
       final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
 
@@ -168,6 +160,10 @@ class Npc extends GameElement {
   void talk(String repsondTo) async {
     hasSomethingToSay = true;
     currentConversation.addTriggerMessage(repsondTo);
+  }
+
+  void reprompt(String promptFile) async {
+    //String promptText = await Prompt.loadPrompt(promptFile);
   }
 
   void behave(String directive) {

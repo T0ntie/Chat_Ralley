@@ -8,7 +8,7 @@
         "lat": 48.08418,
         "lng": 16.29050
       },
-      "prompt": "prompts/system-prompt.txt",
+      "prompt": "system-prompt.txt",
       "image": "images/system.png",
       "visible": false,
       "revealed": true,
@@ -18,7 +18,7 @@
     {
       "name": "{{Kommissar_Knatterbach}}",
       "position": "KnatterbachPosition",
-      "prompt": "prompts/knatterbach-prompt.txt",
+      "prompt": "knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
       "visible": true,
       "speed": 15,
@@ -77,7 +77,7 @@
     {
       "name": "{{Professor_Dr._Theobald_Knöchelbein}}",
       "position": "KnöchelbeinPosition",
-      "prompt": "prompts/knöchelbein-prompt.txt",
+      "prompt": "knöchelbein-prompt.txt",
       "image": "images/knöchelbein.png",
       "visible": false,
       "actions": [
@@ -109,7 +109,7 @@
     {
       "name": "{{Dieter_Kroll}}",
       "position": "KrollPosition",
-      "prompt": "prompts/kroll-prompt.txt",
+      "prompt": "kroll-prompt.txt",
       "image": "images/kroll.png",
       "visible": false,
       "revealed": false,
@@ -142,7 +142,7 @@
     {
       "name": "{{Bozzi}}",
       "position": "BozziPosition",
-      "prompt": "prompts/bozzi-prompt.txt",
+      "prompt": "bozzi-prompt.txt",
       "image": "images/bozzi.png",
       "visible": false,
       "revealed": false,
@@ -180,7 +180,7 @@
     {
       "name": "{{Martha_Tschulli}}",
       "position": "TschulliPosition",
-      "prompt": "prompts/tschulli-prompt.txt",
+      "prompt": "tschulli-prompt.txt",
       "image": "images/tschulli.png",
       "visible": true,
       "revealed": true

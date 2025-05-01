@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/actions/npc_action.dart';
 import 'package:hello_world/gui/notification_services.dart';
 import 'dart:math';
 import 'package:hello_world/gui/npc_info_dialog.dart';
