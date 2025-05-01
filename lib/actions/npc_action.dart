@@ -1,4 +1,5 @@
 import 'package:hello_world/actions/behave_action.dart';
+import 'package:hello_world/actions/set_flag_action.dart';
 import 'package:hello_world/actions/show_hotspot_action.dart';
 import 'package:hello_world/actions/reveal_hotspot_action.dart';
 import 'package:hello_world/actions/spawn_action.dart';
@@ -58,9 +59,9 @@ abstract class NpcAction{
     Map<String, bool> flags = GameEngine().flags;
 
     bool allConditionsMet = conditions.keys
-        .where(flags.containsKey)  // Nur die gemeinsamen Schlüssel betrachten
+        .where(flags.containsKey)
         .every((key) => conditions[key] == flags[key]);  // Werte vergleichen
-    //print('vergleiche $flags mit $conditions mit dem Ergebnis: $allConditionsMet');
+
     if (allConditionsMet) {
       excecute(npc);
       if (notification != null) {
@@ -110,5 +111,6 @@ abstract class NpcAction{
     ShowHotspotAction.register();
     RevealHotspotAction.register();
     StopTalkingAction.register();
+    SetFlagAction.register();
   }
 }

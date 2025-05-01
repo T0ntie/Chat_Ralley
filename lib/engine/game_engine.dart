@@ -151,6 +151,10 @@ class GameEngine {
     flags[flag] = value;
   }
 
+  void setFlags(Map<String, bool> newFlags){
+    flags.addAll(newFlags);
+  }
+
   void showNotification(String notification) {
     FlushBarService().showFlushbar(title: "Ereignis", message: notification);
   }

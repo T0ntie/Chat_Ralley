@@ -60,13 +60,11 @@
           "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]"
         },
         {
-          "onSignal": "KnatterbachFunk",
-          "invokeAction": "behave",
-          "directive": "[FUNK EIN]"
-        },
-        { "onSignal":  "KnatterbachFunkAus",
-          "invokeAction": "behave",
-          "directive": "[FUNK AUS]"
+          "onSignal": "GetWalkie",
+          "invokeAction": "setflag",
+          "flags": {
+            "walkie": true
+          }
         }
       ]
     },
