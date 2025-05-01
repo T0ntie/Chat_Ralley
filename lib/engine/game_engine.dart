@@ -33,6 +33,10 @@ class GameEngine {
     return storyLine?.hotspotMap[hotspotName];
   }
 
+  Npc? getNpcByName(String npcName){
+    return storyLine?.npcs.firstWhere((npc) => npc.name == npcName);
+  }
+
   Map<String, List<(Npc, NpcAction)>> getActionsGroupedByTrigger() {
     final Map<String, List<(Npc, NpcAction)>> grouped = {};
 

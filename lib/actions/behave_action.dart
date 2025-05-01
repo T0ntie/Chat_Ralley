@@ -1,3 +1,5 @@
+import 'package:hello_world/engine/game_engine.dart';
+
 import 'npc_action.dart';
 import '../engine/npc.dart';
 
@@ -8,6 +10,8 @@ class BehaveAction extends NpcAction{
   @override
   void excecute(Npc npc) {
     npc.behave(directiveMessage);
+
+
   }
 
   static BehaveAction actionFromJson(Map<String, dynamic> json) {

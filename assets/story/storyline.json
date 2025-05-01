@@ -3,19 +3,6 @@
   "title": "Der Fall der verschwundenen Fossilie",
   "npcs": [
     {
-      "name": "System",
-      "position": {
-        "lat": 48.08418,
-        "lng": 16.29050
-      },
-      "prompt": "system-prompt.txt",
-      "image": "images/system.png",
-      "visible": false,
-      "revealed": true,
-      "actions": []
-    },
-
-    {
       "name": "{{Kommissar_Knatterbach}}",
       "position": "KnatterbachPosition",
       "prompt": "knatterbach-prompt.txt",
@@ -75,7 +62,11 @@
         {
           "onSignal": "KnatterbachFunk",
           "invokeAction": "behave",
-          "directive": "[Funkmodus wurde aktiviert]"
+          "directive": "[FUNK EIN]"
+        },
+        { "onSignal":  "KnatterbachFunkAus",
+          "invokeAction": "behave",
+          "directive": "[FUNK AUS]"
         }
       ]
     },
@@ -219,6 +210,7 @@
     }
   ],
   "flags": {
-    "knowsKrollsAddress": false
+    "knowsKrollsAddress": false,
+    "walkie": false
   }
 }

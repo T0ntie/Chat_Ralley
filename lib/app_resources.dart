@@ -1,3 +1,4 @@
+import 'package:flutter_svg/svg.dart';
 import 'package:hello_world/engine/npc.dart';
 import 'package:flutter/material.dart';
 
@@ -58,6 +59,10 @@ Icon buildIcon(IconData iconData, {Color color = Colors.black, double size = 24.
   return Icon(iconData, color: color, size: size);
 }
 
+SvgPicture buildSVGIcon({required String assetName, double width = 24.0, double height = 24.0}) {
+  return SvgPicture.asset(assetName, width: width, height: height);
+}
+
 class AppIcons {
   static Icon npc(BuildContext context, NPCIcon type) {
     switch (type) {
@@ -85,4 +90,6 @@ class AppIcons {
 
   static Icon error(BuildContext context) => buildIcon(ResourceIcons.error, color: ResourceColors.errorMessage(context), size: 64);
   static Icon retry(BuildContext context) => buildIcon(ResourceIcons.retry);
+  
+  static SvgPicture walkie(BuildContext context) => buildSVGIcon(assetName: "assets/story/icons/walkie-talkie.svg");
 }

@@ -589,19 +589,23 @@ class _MyHomePageState extends State<MyHomePage> {
               print("simulationg: $_isGPSSimulating");
             },
           ),
-          IconButton(
-            icon: Icon(Icons.chat_bubble_outline),
-            tooltip: "Chat",
-            onPressed: () {
-              //print("chat pressed");
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatPage(npc: _npcs[0]),
-                ),
-              );
-            },
-          ),
+          //if (GameEngine().checkFlag('walkie'))
+            IconButton(
+              icon: AppIcons.walkie(context), //Icon(Icons.chat_bubble_outline),
+              tooltip: "Chat",
+              onPressed: () async {
+                //print("chat pressed");
+                Npc knatterbach = GameEngine().getNpcByName("Kommissar Knatterbach")!;
+                knatterbach.behave("[FUNK EIN]");
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatPage(npc: knatterbach),
+                  ),
+                );
+                knatterbach.behave("[FUNK AUS]");
+              },
+            ),
         ],
       ),
       body:
@@ -661,19 +665,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                 return ExpansionTile(
                                   title: Text(triggerName),
-                                  children: actions.map((pair) {
-                                    final npc = pair.$1;
-                                    final action = pair.$2;
+                                  children:
+                                      actions.map((pair) {
+                                        final npc = pair.$1;
+                                        final action = pair.$2;
 
-                                    return ListTile(
-                                      title: Text("${npc.name} → ${action.runtimeType}"),
-                                      subtitle: Text("Trigger-Wert: ${action.trigger.value}"),
-                                      trailing: Icon(Icons.play_arrow),
-                                      onTap: () => action.invoke(npc),
-                                    );
-                                  }).toList(),
+                                        return ListTile(
+                                          title: Text(
+                                            "${npc.name} → ${action.runtimeType}",
+                                          ),
+                                          subtitle: Text(
+                                            "Trigger-Wert: ${action.trigger.value}",
+                                          ),
+                                          trailing: Icon(Icons.play_arrow),
+                                          onTap: () => action.invoke(npc),
+                                        );
+                                      }).toList(),
                                 );
-                              }).toList()
+                              }).toList(),
                             ],
                           ),
                         );

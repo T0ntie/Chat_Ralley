@@ -60,7 +60,7 @@ abstract class NpcAction{
     bool allConditionsMet = conditions.keys
         .where(flags.containsKey)  // Nur die gemeinsamen Schlüssel betrachten
         .every((key) => conditions[key] == flags[key]);  // Werte vergleichen
-    print('vergleiche $flags mit $conditions mit dem Ergebnis: $allConditionsMet');
+    //print('vergleiche $flags mit $conditions mit dem Ergebnis: $allConditionsMet');
     if (allConditionsMet) {
       excecute(npc);
       if (notification != null) {
