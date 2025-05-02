@@ -1,4 +1,5 @@
 import 'package:hello_world/engine/hotspot.dart';
+import 'package:hello_world/engine/item.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'npc.dart';
@@ -12,6 +13,7 @@ class StoryLine {
   final List<Hotspot> hotspotsList;
   final Map<String, Hotspot> hotspotMap;
   final Map<String, bool> flags;
+  final List<Item> items;
   static final Map<String, LatLng> _positions = {};
   static final Map<String, List<LatLng>> _paths = {};
   static final Map<String, String> _localizations = {};
@@ -26,6 +28,7 @@ class StoryLine {
     required this.npcs,
     required this.hotspotsList,
     required this.flags,
+    required this.items,
   }) : hotspotMap = Map<String, Hotspot>.fromIterable(
     hotspotsList,
     key: (hotspot) => hotspot.name,
@@ -137,12 +140,14 @@ class StoryLine {
       final hotspots = hotspotsJsn.map((e) => Hotspot.fromJson(e)).toList();
       final flags =
           (json['flags'] as Map<String, dynamic>).cast<String, bool>();
+      final items = (json['items'] as List).map((e) => Item.fromJson(e)).toList();
       return StoryLine(
         scenarioId: json['scenarioId'],
         title: json['title'],
         npcs: npcs,
         hotspotsList: hotspots,
         flags: flags,
+        items: items,
       );
     } catch (e, stack) {
       print('❌ Fehler im Json der Storyline:\n$e\n$stack');

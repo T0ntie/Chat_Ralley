@@ -207,6 +207,15 @@
       "visible": true
     }
   ],
+  "items": [
+    {
+      "name": "Walkie",
+      "icon": "icons/walkie-talkie.png",
+      "owned": true,
+      "useType": "radio",
+      "targetNpc": "{{Kommissar_Knatterbach}}"
+    }
+  ],
   "flags": {
     "knowsKrollsAddress": false,
     "walkie": false

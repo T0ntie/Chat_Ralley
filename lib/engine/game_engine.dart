@@ -1,3 +1,4 @@
+import 'package:hello_world/engine/item.dart';
 import 'package:hello_world/gui/notification_services.dart';
 
 import 'story_line.dart';
@@ -19,6 +20,8 @@ class GameEngine {
   List<Npc> get npcs => storyLine?.npcs ?? [];
 
   List<Hotspot> get hotspots => storyLine?.hotspotsList ?? [];
+
+  List<Item> get items => storyLine?.items ?? [];
 
   Map <String, bool> get flags => storyLine?.flags ?? {};
 

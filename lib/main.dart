@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_world/engine/item.dart';
 import 'package:hello_world/gui/action_testing_panel.dart';
 import 'package:hello_world/gui/notification_services.dart';
 import 'dart:math';
@@ -74,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late final StreamSubscription<Position> _positionSubscription;
 
   List<Npc> get _npcs => GameEngine().npcs;
+  List<Item> get _items => GameEngine().items;
 
   List<Hotspot> get _hotspots => GameEngine().hotspots;
   late final Timer _updateTimer;
@@ -484,6 +486,18 @@ class _MyHomePageState extends State<MyHomePage> {
     ));
   }
 
+  List<IconButton> buildItems() {
+    return _items.where((i) => i.isOwned).map((item) {
+      return IconButton(
+        icon: Image.asset(
+            'assets/story/${item.iconAsset}',
+            width: 24,
+            height: 24),
+        onPressed: () async {await item.execute(context);},
+      );
+    }).toList();
+  }
+
   Positioned buildJoystick() {
     return Positioned(
       bottom: 5,
@@ -592,6 +606,7 @@ class _MyHomePageState extends State<MyHomePage> {
               print("simulationg: $_isGPSSimulating");
             },
           ),
+
           if (GameEngine().checkFlag('walkie'))
             IconButton(
               icon: AppIcons.walkie(context), //Icon(Icons.chat_bubble_outline),
@@ -637,74 +652,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   if (showActionTestingPanel)
                     ActionTestingPanel(actionsByTrigger: actionsByTrigger),
-                    /*// DraggableScrollableSheet mit ExpansionTiles
-                    DraggableScrollableSheet(
-                      initialChildSize: 0.1,
-                      minChildSize: 0.1,
-                      maxChildSize: 0.6,
-                      builder: (context, scrollController) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16),
-                            ),
-                            boxShadow: [
-                              BoxShadow(blurRadius: 10, color: Colors.black26),
-                            ],
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          child: ListView(
-                            controller: scrollController,
-                            children: [
-                              Center(
-                                child: Container(
-                                  width: 40,
-                                  height: 5,
-                                  margin: EdgeInsets.symmetric(vertical: 12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[400],
-                                    borderRadius: BorderRadius.circular(3),
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                "Registrierte Actions",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              ...actionsByTrigger.entries.map((entry) {
-                                final triggerName = entry.key;
-                                final actions = entry.value;
-
-                                return ExpansionTile(
-                                  title: Text(triggerName),
-                                  children:
-                                      actions.map((pair) {
-                                        final npc = pair.$1;
-                                        final action = pair.$2;
-
-                                        return ListTile(
-                                          title: Text(
-                                            "${npc.name} → ${action.runtimeType}",
-                                          ),
-                                          subtitle: Text(
-                                            "Trigger-Wert: ${action.trigger.value}",
-                                          ),
-                                          trailing: Icon(Icons.play_arrow),
-                                          onTap: () => action.invoke(npc),
-                                        );
-                                      }).toList(),
-                                );
-                              }).toList(),
-                            ],
-                          ),
-                        );
-                      },
-                    ),*/
                   SidePanel(
                     isVisible: _isSidePanelVisible,
                     onClose: () {
@@ -713,6 +660,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       });
                     },
                     children: [
+                      ...buildItems(),
                       if (GameEngine().checkFlag('walkie'))
                         IconButton(
                           icon: AppIcons.walkie(context), //Icon(Icons.chat_bubble_outline),
@@ -738,51 +686,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
-                  /*AnimatedPositioned(
-                    duration: Duration(milliseconds: 900),
-                    curve: Curves.easeInOut,
-                    top: MediaQuery.of(context).size.height / 2 - 100, // ca. zentriert
-                    right: _isSidePanelVisible ? 0 : -100, // rein/raus
-                    width: 80,
-                    child: AnimatedOpacity(
-                      duration: Duration(milliseconds: 900),
-                      opacity: _isSidePanelVisible ? 1.0 : 0.0,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.horizontal(left: Radius.circular(12)),
-                        child: Container(
-                          color: Colors.white.withOpacity(0.9),
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.settings),
-                                onPressed: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('⚙️ Einstellungen gedrückt')),
-                                  );
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.info_outline),
-                                onPressed: () {
-                                  print("ℹ️ Info gedrückt");
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.close),
-                                onPressed: () {
-                                  setState(() {
-                                    _isSidePanelVisible = false;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),*/
                 ],
               ),
       floatingActionButton: buildFloatingActionButton(),
