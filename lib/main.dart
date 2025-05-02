@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hello_world/gui/action_testing_panel.dart';
 import 'package:hello_world/gui/notification_services.dart';
 import 'dart:math';
 import 'package:hello_world/gui/npc_info_dialog.dart';
+import 'package:hello_world/gui/side_panel.dart';
 import 'services/location_service.dart';
 import 'services/compass_service.dart';
 import 'gui/chat_page.dart';
@@ -87,6 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   LatLng? _realPosition = null;
+
+  bool _isSidePanelVisible = false; //fixme
 
   void _centerMapOnCurrentLocation() {
     _mapController.move(_location, 16.0);
@@ -570,7 +574,6 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.bug_report),
             tooltip: "Test Actions",
             onPressed: () {
-              print("ready to test some actions");
               showActionTestingPanel = !showActionTestingPanel;
             },
           ),
@@ -595,7 +598,8 @@ class _MyHomePageState extends State<MyHomePage> {
               tooltip: "Chat",
               onPressed: () async {
                 //print("chat pressed");
-                Npc knatterbach = GameEngine().getNpcByName("Kommissar Knatterbach")!;
+                Npc knatterbach =
+                    GameEngine().getNpcByName("Kommissar Knatterbach")!;
                 knatterbach.behave("[FUNK EIN]");
                 await Navigator.push(
                   context,
@@ -606,6 +610,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 knatterbach.behave("[FUNK AUS]");
               },
             ),
+          Builder(
+            builder:
+                (context) => IconButton(
+                  icon: Icon(Icons.menu_open),
+                  tooltip: "Seitenleiste öffnen",
+                  onPressed: () {
+                    setState(() {
+                      _isSidePanelVisible = true;
+                    });
+                  },
+                ),
+          ),
         ],
       ),
       body:
@@ -620,7 +636,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (_isGPSSimulating) buildJoystick(),
 
                   if (showActionTestingPanel)
-                    // DraggableScrollableSheet mit ExpansionTiles
+                    ActionTestingPanel(actionsByTrigger: actionsByTrigger),
+                    /*// DraggableScrollableSheet mit ExpansionTiles
                     DraggableScrollableSheet(
                       initialChildSize: 0.1,
                       minChildSize: 0.1,
@@ -687,7 +704,85 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         );
                       },
+                    ),*/
+                  SidePanel(
+                    isVisible: _isSidePanelVisible,
+                    onClose: () {
+                      setState(() {
+                        _isSidePanelVisible = false;
+                      });
+                    },
+                    children: [
+                      if (GameEngine().checkFlag('walkie'))
+                        IconButton(
+                          icon: AppIcons.walkie(context), //Icon(Icons.chat_bubble_outline),
+                          tooltip: "Knatterbach",
+                          onPressed: () async {
+                            Npc knatterbach =
+                            GameEngine().getNpcByName("Kommissar Knatterbach")!;
+                            knatterbach.behave("[FUNK EIN]");
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChatPage(npc: knatterbach),
+                              ),
+                            );
+                            knatterbach.behave("[FUNK AUS]");
+                          },
+                        ),
+                      IconButton(
+                        icon: Icon(Icons.info_outline),
+                        onPressed: () {
+                          print("ℹ️ Info gedrückt");
+                        },
+                      ),
+                    ],
+                  ),
+                  /*AnimatedPositioned(
+                    duration: Duration(milliseconds: 900),
+                    curve: Curves.easeInOut,
+                    top: MediaQuery.of(context).size.height / 2 - 100, // ca. zentriert
+                    right: _isSidePanelVisible ? 0 : -100, // rein/raus
+                    width: 80,
+                    child: AnimatedOpacity(
+                      duration: Duration(milliseconds: 900),
+                      opacity: _isSidePanelVisible ? 1.0 : 0.0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.horizontal(left: Radius.circular(12)),
+                        child: Container(
+                          color: Colors.white.withOpacity(0.9),
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.settings),
+                                onPressed: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('⚙️ Einstellungen gedrückt')),
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.info_outline),
+                                onPressed: () {
+                                  print("ℹ️ Info gedrückt");
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () {
+                                  setState(() {
+                                    _isSidePanelVisible = false;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
+                  ),*/
                 ],
               ),
       floatingActionButton: buildFloatingActionButton(),

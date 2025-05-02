@@ -6,7 +6,7 @@ import '../engine/npc.dart';
 import '../engine/conversation.dart';
 
 class ChatPage extends StatefulWidget {
-  ChatPage({super.key, required this.npc});
+  const ChatPage({super.key, required this.npc});
 
   final Npc npc;
 

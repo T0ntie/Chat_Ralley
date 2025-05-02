@@ -8,8 +8,6 @@ class BehaveAction extends NpcAction{
   @override
   void excecute(Npc npc) {
     npc.behave(directiveMessage);
-
-
   }
 
   static BehaveAction actionFromJson(Map<String, dynamic> json) {
