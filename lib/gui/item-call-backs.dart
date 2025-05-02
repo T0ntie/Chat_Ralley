@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hello_world/engine/conversation.dart';
 import 'package:hello_world/engine/item.dart';
-import 'package:hello_world/gui/chat_page.dart';
+import 'package:hello_world/gui/chat/chat_page.dart';
 
 typedef ItemUseCallback = Future<void> Function(BuildContext context, Item item);
 
@@ -15,7 +16,7 @@ class ItemCallbacks
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ChatPage(npc: item.npc),
+        builder: (_) => ChatPage(npc: item.npc, medium: Medium.radio,),
       ),
     );
     item.npc.behave("[FUNK AUS]");

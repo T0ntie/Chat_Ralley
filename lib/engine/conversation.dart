@@ -22,7 +22,7 @@ class Conversation {
     if (_messages.last.isTrigger) {
       String triggeredResponse = await processConversation();
       //print('triggered Response is $triggeredResponse');
-      addAssistantMessage(triggeredResponse);
+      addAssistantMessage(triggeredResponse, Medium.chat);
     }
   }
 
@@ -35,27 +35,28 @@ class Conversation {
     return List.unmodifiable(_messages); // Unmodifiable List zurückgeben
   }
 
-  List<ChatMessage> getVisibleMessages() {
+  List<ChatMessage> getVisibleMessages(Medium medium) {
     return List.unmodifiable(
-      _messages.where((msg) => (!msg.fromSystem && !msg.isTrigger)),
+      _messages.where((msg) => (!msg.fromSystem && !msg.isTrigger && msg.medium == medium)),
     );
   }
 
   void addTriggerMessage(String message) {
     _messages.add(
-      ChatMessage(rawText: message, chatRole: ChatRole.user, isTrigger: true),
+      ChatMessage(rawText: message, chatRole: ChatRole.user, medium: Medium.trigger),
     );
   }
 
-  void addUserMessage(String message) {
-    _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.user));
+  void addUserMessage(String message, Medium medium) {
+    _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.user, medium: medium));
     GameEngine().registerMessage(npc, ++userMessageCount);
   }
 
-  void addAssistantMessage(String message) {
+  void addAssistantMessage(String message, Medium medium) {
     final ChatMessage chatMessage = ChatMessage(
       rawText: message,
       chatRole: ChatRole.assistant,
+      medium: medium,
     );
     _messages.add(chatMessage);
     if (chatMessage.signalJson.isNotEmpty) {
@@ -129,36 +130,16 @@ class Conversation {
       ]);
   }
 
-/*
-    if (_messages.length <= keep + 1) return;
-
-    final toCompress = [
-      ChatMessage(
-        rawText: npc.prompt.getCompressPrompt(),
-        chatRole: ChatRole.system,
-      ),
-      ..._messages.sublist(1, _messages.length - keep),
-      ChatMessage(rawText: Prompt.compressCommand, chatRole: ChatRole.user),
-    ];
-
-    final summary = await _processConversation(toCompress);
-
-    _messages.replaceRange(1, _messages.length - keep, [
-      ChatMessage(rawText: summary, chatRole: ChatRole.system),
-    ]);
-  }
-*/
-
-  bool _isCompressing = false;
+  bool _isSummarizing = false;
 
   Future<String> _processConversation(List<ChatMessage> messages) async {
-    if (!_isCompressing &&
-        ChatService.compressionNecessary(_toOpenAIMessages(messages))) {
-      _isCompressing = true;
+    if (!_isSummarizing &&
+        ChatService.needsContextCompression(_toOpenAIMessages(messages))) {
+      _isSummarizing = true;
       try {
         await _compressConversation();
       } finally {
-        _isCompressing = false;
+        _isSummarizing = false;
       }
     }
     return ChatService.processMessages(_toOpenAIMessages(messages));
@@ -174,6 +155,7 @@ class Conversation {
 }
 
 enum ChatRole { user, assistant, system }
+enum Medium {chat, radio, trigger}
 
 class ChatMessage {
   static const userRole = "user";
@@ -185,14 +167,16 @@ class ChatMessage {
   final String
   filteredText; //alle Singale rausgefiltert, so wie sie dem Benutzer angezeigt wird
   late final Map<String, dynamic> signalJson;
-  bool isTrigger;
 
+  bool get isTrigger => medium == Medium.trigger;
   final ChatRole chatRole;
+  final Medium medium;
 
   ChatMessage({
     required this.rawText,
     required this.chatRole,
-    this.isTrigger = false,
+    //this.isTrigger = false,
+    this.medium = Medium.chat,
   }) : filteredText = _filterMessage(rawText),
        signalJson =
            (chatRole == ChatRole.assistant) ? _extractSignal(rawText) : {} {

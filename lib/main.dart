@@ -7,7 +7,7 @@ import 'package:hello_world/gui/npc_info_dialog.dart';
 import 'package:hello_world/gui/side_panel.dart';
 import 'services/location_service.dart';
 import 'services/compass_service.dart';
-import 'gui/chat_page.dart';
+import 'gui/chat/chat_page.dart';
 import 'engine/npc.dart';
 import 'engine/game_engine.dart';
 import 'engine/hotspot.dart';
@@ -607,6 +607,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
 
+/*
           if (GameEngine().checkFlag('walkie'))
             IconButton(
               icon: AppIcons.walkie(context), //Icon(Icons.chat_bubble_outline),
@@ -625,6 +626,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 knatterbach.behave("[FUNK AUS]");
               },
             ),
+*/
           Builder(
             builder:
                 (context) => IconButton(
@@ -661,6 +663,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     children: [
                       ...buildItems(),
+/*
                       if (GameEngine().checkFlag('walkie'))
                         IconButton(
                           icon: AppIcons.walkie(context), //Icon(Icons.chat_bubble_outline),
@@ -678,6 +681,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             knatterbach.behave("[FUNK AUS]");
                           },
                         ),
+*/
                       IconButton(
                         icon: Icon(Icons.info_outline),
                         onPressed: () {

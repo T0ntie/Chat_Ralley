@@ -1,6 +1,6 @@
 import '../engine/npc.dart';
 import 'package:flutter/material.dart';
-import 'chat_page.dart';
+import 'chat/chat_page.dart';
 
 class NpcInfoDialog extends StatelessWidget
 {

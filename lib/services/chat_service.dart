@@ -11,7 +11,7 @@ class ChatService {
   static const tokenLimit = 1000000;
   static const tokenThreshold = 7000;
 
-  static bool compressionNecessary(List<Map<String, String>> messages) {
+  static bool needsContextCompression(List<Map<String, String>> messages) {
     return tokenThreshold < countTokens(messages);
   }
 
