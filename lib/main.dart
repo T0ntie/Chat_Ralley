@@ -606,27 +606,6 @@ class _MyHomePageState extends State<MyHomePage> {
               print("simulationg: $_isGPSSimulating");
             },
           ),
-
-/*
-          if (GameEngine().checkFlag('walkie'))
-            IconButton(
-              icon: AppIcons.walkie(context), //Icon(Icons.chat_bubble_outline),
-              tooltip: "Chat",
-              onPressed: () async {
-                //print("chat pressed");
-                Npc knatterbach =
-                    GameEngine().getNpcByName("Kommissar Knatterbach")!;
-                knatterbach.behave("[FUNK EIN]");
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChatPage(npc: knatterbach),
-                  ),
-                );
-                knatterbach.behave("[FUNK AUS]");
-              },
-            ),
-*/
           Builder(
             builder:
                 (context) => IconButton(
@@ -663,25 +642,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     children: [
                       ...buildItems(),
-/*
-                      if (GameEngine().checkFlag('walkie'))
-                        IconButton(
-                          icon: AppIcons.walkie(context), //Icon(Icons.chat_bubble_outline),
-                          tooltip: "Knatterbach",
-                          onPressed: () async {
-                            Npc knatterbach =
-                            GameEngine().getNpcByName("Kommissar Knatterbach")!;
-                            knatterbach.behave("[FUNK EIN]");
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ChatPage(npc: knatterbach),
-                              ),
-                            );
-                            knatterbach.behave("[FUNK AUS]");
-                          },
-                        ),
-*/
                       IconButton(
                         icon: Icon(Icons.info_outline),
                         onPressed: () {
