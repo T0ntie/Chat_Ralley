@@ -19,7 +19,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  late Conversation _conversation;
+  late final Conversation _conversation;
 
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -91,10 +91,6 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
- /* CrossAxisAlignment _getAlignmen(bool fromUser){
-    return fromUser ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-  }
-*/
   @override
   Widget build(BuildContext context) {
     final messages = _conversation.getVisibleMessages(medium);
@@ -122,13 +118,11 @@ class _ChatPageState extends State<ChatPage> {
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     final reversedIndex = messages.length - 1 - index;
-                    return MessageBubble(message: messages[reversedIndex], context: context);
-                    //return _buildMessageBubble(messages[reversedIndex]);
+                    return MessageBubble(message: messages[reversedIndex]);
                   },
                 ),
               ),
               Divider(height: 1),
-              //_buildInputBar(),
               InputBar(
                 controller: _controller,
                 scrollController: _scrollController,

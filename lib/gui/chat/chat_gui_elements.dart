@@ -5,9 +5,9 @@ import 'package:hello_world/engine/conversation.dart';
 
 class MessageBubble extends StatelessWidget {
   final ChatMessage message;
-  final BuildContext context;
+  //final BuildContext context;
 
-  const MessageBubble({required this.message, required this.context});
+  const MessageBubble({required this.message });
 
   @override
   Widget build(BuildContext context) {
