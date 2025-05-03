@@ -95,9 +95,12 @@ abstract class NpcAction{
 
   static Map<String, bool> conditionsFromJson(Map<String, dynamic> json) {
     if (json.containsKey('conditions')) {
-      return (json['conditions'] as Map<String, dynamic>).cast<String, bool>();
-    }
-    return {};
+      final rawConditions = (json['conditions'] as Map<String, dynamic>);
+      return {
+        for (final entry in rawConditions.entries)
+          entry.key.norm: entry.value as bool,
+      };
+    }    return {};
   }
   
   static NpcAction fromJson(Map<String, dynamic> json) {

@@ -70,7 +70,7 @@
           "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]",
           "conditions":
           {
-            "KnatterbachAtPolice": true
+            "knatterbachAtPolice": true
           }
         },
         {

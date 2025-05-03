@@ -6,6 +6,10 @@ import 'npc.dart';
 import '../actions/npc_action.dart';
 import 'hotspot.dart';
 
+extension KeyNormalization on String {
+  String get norm => toLowerCase().trim();
+}
+
 class GameEngine {
 
   static final GameEngine _instance = GameEngine._internal();
@@ -145,21 +149,23 @@ class GameEngine {
   }
 
   bool checkFlag(String flag) {
-    if (!flags.containsKey(flag)) {
-      print('Unknown flag in checkFlag: $flag');
+    if (!flags.containsKey(flag.norm)) {
+      print('Unknown flag in checkFlag: ${flag.norm}');
     }
-    return flags[flag] ?? false;
+    return flags[flag.norm] ?? false;
   }
 
   void setFlag(String flag, bool value) {
-    if (!flags.containsKey(flag)) {
-      print('New flag: $flag set to $value');
+    if (!flags.containsKey(flag.norm)) {
+      print('New flag: ${flag.norm} set to $value');
     }
-    flags[flag] = value;
+    flags[flag.norm] = value;
   }
 
-  void setFlags(Map<String, bool> newFlags){
-    flags.addAll(newFlags);
+  void setFlags(Map<String, bool> newFlags) {
+    for (final entry in newFlags.entries) {
+      flags[entry.key.norm] = entry.value;
+    }
   }
 
   void showNotification(String notification) {
@@ -230,9 +236,9 @@ void _handleSignals(json) {
 void _handleFlags(json) {
   Map<String, bool> newFlags = Map<String, bool>.from(json['flags']);
   newFlags.forEach((key, value) {
-    flags[key] =
+    flags[key.norm] =
         value; // Das Flag wird entweder hinzugefügt oder der Wert geändert
-    print('🚩 Flag ${key} set to ${value}');
+    print('🚩 Flag ${key.norm} set to ${value}');
   });
 }
 

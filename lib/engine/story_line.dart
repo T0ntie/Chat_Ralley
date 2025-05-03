@@ -1,6 +1,7 @@
 import 'package:hello_world/engine/hotspot.dart';
 import 'package:hello_world/engine/item.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:hello_world/engine/game_engine.dart';
 
 import 'npc.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -138,8 +139,12 @@ class StoryLine {
       final npcs = await Future.wait(npcsJson.map((e) => Npc.fromJsonAsync(e)));
       final hotspotsJsn = json['hotspots'] as List;
       final hotspots = hotspotsJsn.map((e) => Hotspot.fromJson(e)).toList();
-      final flags =
-          (json['flags'] as Map<String, dynamic>).cast<String, bool>();
+      final rawFlags = (json['flags'] as Map<String, dynamic>);
+      final flags = <String, bool>{
+        for (final entry in rawFlags.entries)
+          entry.key.norm: entry.value as bool,
+      };
+
       final items = (json['items'] as List).map((e) => Item.fromJson(e)).toList();
       return StoryLine(
         scenarioId: json['scenarioId'],
