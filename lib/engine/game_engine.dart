@@ -36,8 +36,12 @@ class GameEngine {
     return storyLine?.hotspotMap[hotspotName];
   }
 
-  Npc? getNpcByName(String npcName){
+  Npc? getNpcByName(String npcName) {
     return storyLine?.npcs.firstWhere((npc) => npc.name == npcName);
+  }
+
+  Item? getItemByName(String itemName) {
+    return items.firstWhere((item) => item.name == itemName);
   }
 
   Map<String, List<(Npc, NpcAction)>> getActionsGroupedByTrigger() {

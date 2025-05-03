@@ -30,6 +30,14 @@ class Prompt {
     return _getCustomPrompt(compressSections);
   }
 
+  String getPromptSection(String section) {
+    final content = promptSectionMap[section];
+    if (content == null) {
+      throw ArgumentError("Prompt-Abschnitt '$section' existiert nicht.");
+    }
+    return content;
+  }
+
   String _getCustomPrompt(Set selection) {
     final buffer = StringBuffer();
 

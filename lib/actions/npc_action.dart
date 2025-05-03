@@ -1,3 +1,4 @@
+import 'package:hello_world/actions/add_to_inventory_action.dart';
 import 'package:hello_world/actions/behave_action.dart';
 import 'package:hello_world/actions/set_flag_action.dart';
 import 'package:hello_world/actions/show_hotspot_action.dart';
@@ -112,5 +113,6 @@ abstract class NpcAction{
     RevealHotspotAction.register();
     StopTalkingAction.register();
     SetFlagAction.register();
+    AddToInventoryAction.register();
   }
 }

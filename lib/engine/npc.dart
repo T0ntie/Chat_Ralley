@@ -48,8 +48,6 @@ class Npc extends GameElement {
     this.toPosition = position;
   }
 
-
-
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
     try {
       final promptFile = json['prompt'] as String;
@@ -99,20 +97,6 @@ class Npc extends GameElement {
     );
   }
 
-  /*
-  void spawn() {
-    final random = Random();
-    // Ein kleiner zufälliger Offset in Grad (ca. 0.00005 ~ 5 Meter)
-    final offsetLat = (random.nextDouble() - 0.5) * 0.0001;
-    final offsetLng = (random.nextDouble() - 0.5) * 0.0001;
-
-    position = LatLng(
-      playerPosition.latitude + offsetLat,
-      playerPosition.longitude + offsetLng,
-    );
-  }
-*/
-
   void moveTo(LatLng toPosition) {
     if (isMoving) {
       position = currentPosition;
@@ -161,8 +145,11 @@ class Npc extends GameElement {
     currentConversation.addTriggerMessage(repsondTo);
   }
 
-  void reprompt(String promptFile) async {
+  void injectPromptSection(String promptSection) async {
     //String promptText = await Prompt.loadPrompt(promptFile);
+    String section = prompt.getPromptSection(promptSection);
+    //print("folgene Prompt Section würde ich jetzt injizieren:\n $section ");
+    currentConversation.addSystemMessage(section);
   }
 
   void behave(String directive) {

@@ -61,10 +61,13 @@
         },
         {
           "onSignal": "GetWalkie",
-          "invokeAction": "setflag",
-          "flags": {
-            "walkie": true
-          }
+          "invokeAction": "addToInventory",
+          "item": "Walkie"
+        },
+        {
+          "onSignal": "GetWalkie",
+          "invokeAction": "behave",
+          "injectPromptSection": "Funkmodus"
         }
       ]
     },
@@ -211,7 +214,7 @@
     {
       "name": "Walkie",
       "icon": "icons/walkie-talkie.png",
-      "owned": true,
+      "owned": false,
       "useType": "radio",
       "targetNpc": "{{Kommissar_Knatterbach}}"
     }
