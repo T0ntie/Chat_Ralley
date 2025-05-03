@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world/engine/item.dart';
 import 'package:hello_world/gui/action_testing_panel.dart';
+import 'package:hello_world/gui/game_map_widget.dart';
+import 'package:hello_world/gui/joystick_overlay.dart';
 import 'package:hello_world/gui/notification_services.dart';
-import 'dart:math';
-import 'package:hello_world/gui/npc_info_dialog.dart';
 import 'package:hello_world/gui/side_panel.dart';
 import 'services/location_service.dart';
 import 'services/compass_service.dart';
-import 'gui/chat/chat_page.dart';
 import 'engine/npc.dart';
 import 'engine/game_engine.dart';
 import 'engine/hotspot.dart';
@@ -18,7 +17,6 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_joystick/flutter_joystick.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env"); // lädt die .env-Datei
@@ -35,15 +33,17 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static const String title = 'StoryTrail';
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: title,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: ResourceColors.seed),
       ),
-      home: const MyHomePage(title: 'Chat Ralley'),
+      home: const MyHomePage(title: title),
     );
   }
 }
@@ -59,9 +59,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _frameRate = Duration(milliseconds: 33);
-  final String title = "Chat Ralley";
-  LatLng _location = LatLng(51.5074, -0.1278); // Beispiel für London
-  bool _isLocationLoaded = false;
+  //final String title = "StoryTrail";
+  LatLng _playerPosition = LatLng(51.5074, -0.1278); // Beispiel für London
+  bool _locationServiceInitialized = false;
   bool _gameInitialized = false;
   String? _initializationError;
   bool _initializationCompleted = false;
@@ -75,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late final StreamSubscription<Position> _positionSubscription;
 
   List<Npc> get _npcs => GameEngine().npcs;
+
   List<Item> get _items => GameEngine().items;
 
   List<Hotspot> get _hotspots => GameEngine().hotspots;
@@ -82,20 +83,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool _isMapHeadingBasedOrientation = false;
 
-  bool get _isGPSSimulating => GameEngine().isTestSimimulationOn;
+  bool get _isSimulatingLocation => GameEngine().isTestSimimulationOn;
 
   bool showActionTestingPanel = false;
 
-  set _isGPSSimulating(bool value) {
+  set _isSimulatingLocation(bool value) {
     GameEngine().isTestSimimulationOn = value;
   }
 
-  LatLng? _realPosition = null;
+  LatLng? _lastRealGpsPosition = null;
 
   bool _isSidePanelVisible = false; //fixme
 
   void _centerMapOnCurrentLocation() {
-    _mapController.move(_location, 16.0);
+    _mapController.move(_playerPosition, 16.0);
   }
 
   void _switchMapOrientationMode() {
@@ -112,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _checkIfInitializationCompleted() {
-    if (_gameInitialized && _isLocationLoaded && !_initializationCompleted) {
+    if (_gameInitialized && _locationServiceInitialized && !_initializationCompleted) {
       setState(() {
         _initializationCompleted = true;
       });
@@ -125,22 +126,22 @@ class _MyHomePageState extends State<MyHomePage> {
     _positionSubscription = LocationService.getPositionStream().listen((
       Position position,
     ) {
-      if (!_isGPSSimulating) {
-        _location = LatLng(position.latitude, position.longitude);
-        print("setting location to ${_location}");
-        _processNewLocation(_location);
+      if (!_isSimulatingLocation) {
+        _playerPosition = LatLng(position.latitude, position.longitude);
+        //print("setting location to ${_location}");
+        _processNewLocation(_playerPosition);
       }
-      _isLocationLoaded = true;
+      _locationServiceInitialized = true;
       _checkIfInitializationCompleted();
     });
   }
 
   void _processNewLocation(LatLng location) {
     for (final npc in _npcs) {
-      npc.updatePlayerPosition(_location);
+      npc.updatePlayerPosition(_playerPosition);
     }
     for (final hotspot in _hotspots) {
-      if (hotspot.contains(_location)) {
+      if (hotspot.contains(_playerPosition)) {
         GameEngine().registerHotspot(hotspot);
       }
     }
@@ -189,25 +190,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initializeApp() async {
     try {
-      print(" Bevor Initialize Game");
       await _initializeGame();
-      print(" danach Initialize Game");
     } catch (e) {
-      print(" im catch Initialize Game");
       _initializationError = '❌ Initialisierung der Spieldaten fehlgeschlagen.';
       SnackBarService.showErrorSnackBar(context, _initializationError!);
       return;
     }
 
     try {
-      print(" Bevor Wait");
       await Future.wait([
         _initializeCompassStream(),
         _initializeLocationStream(),
       ]);
-      print(" Nach Wait");
     } catch (e) {
-      print(" im zweiten Catch");
       _initializationError =
           '❌ Initialisieren der Standortbestimmung fehlgeschlagen.';
       SnackBarService.showErrorSnackBar(context, _initializationError!);
@@ -228,7 +223,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    //FlushBarService().setContext(context);
     _initializeApp();
   }
 
@@ -236,215 +230,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     FlushBarService().setContext(context);
-  }
-
-  void _showNPCInfo(BuildContext context, Npc npc) {
-    showDialog(
-      context: context,
-      builder: (BuildContext) {
-        return NpcInfoDialog(npc: npc);
-      },
-    );
-  }
-
-  Marker buildLocationMarker() {
-    return (Marker(
-      point: _location,
-
-      // Die Position des Markers ist der aktuelle Standort
-      child: Transform.rotate(
-        angle:
-            (_isMapHeadingBasedOrientation
-                ? _currentHeading
-                : _currentHeading) *
-            (pi / 180),
-        child: AppIcons.playerPosition,
-      ),
-    ));
-  }
-
-  List<Marker> buildHotspotMarkers() {
-    return _hotspots.where((hotspot) => hotspot.isVisible).map((hotspot) {
-      return Marker(
-        point: hotspot.position,
-        width: 60, // feste Markerbreite
-        height: 80, // genug Höhe für Icon + Text
-        child: Transform.rotate(
-          angle:
-              (_isMapHeadingBasedOrientation
-                  ? _currentHeading
-                  : -_currentMapRotation) *
-              (pi / 180),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  print("🎯 Tapped on Hotspot");
-                },
-                child: AppIcons.hotspot(context), // oder hotspot.icon
-              ),
-              const SizedBox(height: 4), // Abstand zwischen Icon und Text
-              if (hotspot.isRevealed)
-                Text(
-                  hotspot.name,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: ResourceColors.npcName,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-            ],
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  List<Marker> buildNPCMarkers() {
-    return _npcs.where((npc) => npc.isVisible).map((npc) {
-      return Marker(
-        point: npc.currentPosition, // Verwende die Position des NPCs
-        width: 170.0,
-        height: 100.0,
-        child: Transform.rotate(
-          angle:
-              (_isMapHeadingBasedOrientation
-                  ? _currentHeading
-                  : -_currentMapRotation) *
-              (pi / 180),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  _showNPCInfo(context, npc);
-                },
-                child: AppIcons.npc(context, npc.icon),
-              ),
-              if (npc.hasSomethingToSay /*.canCommunicate()*/ )
-                Positioned(
-                  top: 5,
-                  right: 40, // Verschieben der Sprechblase nach oben
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChatPage(npc: npc),
-                        ),
-                      );
-                    },
-                    child: AppIcons.chatBubble(context),
-                  ),
-                ),
-              Positioned(
-                bottom: 15, // Position unter dem Marker
-                child: Text(
-                  npc.displayName, // Der Name des NPCs
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: ResourceColors.npcName,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }).toList(); // Umwandeln des iterierbaren Objekts (Map) in eine Liste
-  }
-
-  FlutterMap buildFlutterMap() {
-    final pulse = _getPulseState(GameEngine.conversationDistance);
-    return FlutterMap(
-      mapController: _mapController,
-      options: MapOptions(
-        initialCenter: _location,
-        initialZoom: 16.0,
-        onLongPress: (tapPosition, point) {
-          if (_isGPSSimulating) {
-            setState(() {
-              _location = point;
-              _processNewLocation(_location);
-            });
-          }
-        },
-        onTap: (tapPosition, point) {
-          print('Tapped on location: ${point.latitude}, ${point.longitude}');
-        },
-      ),
-      children: [
-        TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-        ),
-        CircleLayer(
-          circles: [
-            if (_isGPSSimulating)
-              ..._hotspots
-                  .where((h) => h.isVisible)
-                  .map(
-                    (hotspot) => CircleMarker(
-                      point: hotspot.position,
-                      radius: hotspot.radius,
-                      useRadiusInMeter: true,
-                      color: ResourceColors.hotspotCircle.withAlpha(
-                        (0.1 * 255).toInt(),
-                      ),
-                      borderColor: ResourceColors.hotspotCircle.withAlpha(
-                        (0.5 * 255).toInt(),
-                      ),
-                      borderStrokeWidth: 2,
-                    ),
-                  ),
-            CircleMarker(
-              point: _location,
-              radius: pulse.radius,
-              useRadiusInMeter: true,
-              color:
-                  pulse.maxReached
-                      ? Colors.transparent
-                      : ResourceColors.playerPositionCircle.withAlpha(
-                        (pulse.colorFade * 0.5 * 255).toInt(),
-                      ),
-              borderColor:
-                  pulse.maxReached
-                      ? ResourceColors.playerPositionFadeoutCircle.withAlpha(
-                        ((pulse.colorFade + 0.2) * 255).toInt(),
-                      )
-                      : ResourceColors.playerPositionCircle.withAlpha(
-                        (pulse.colorFade * 0.5 * 255).toInt(),
-                      ),
-              borderStrokeWidth: 2,
-            ),
-
-            // Ring exakt bei 100% Radius
-            if (pulse.maxReached)
-              CircleMarker(
-                point: _location,
-                radius: GameEngine.conversationDistance,
-                // Fixer Wert = 100% Radius
-                useRadiusInMeter: true,
-                color: ResourceColors.playerPositionCircle.withAlpha(
-                  (pulse.colorFade * 0.5 * 255).toInt(),
-                ),
-                borderColor: ResourceColors.playerPositionCircle.withAlpha(
-                  (pulse.colorFade * 0.3 * 255).toInt(),
-                ),
-                borderStrokeWidth: 2,
-              ),
-          ],
-        ),
-        MarkerLayer(
-          markers: [
-            buildLocationMarker(),
-            ...buildHotspotMarkers(),
-            ...buildNPCMarkers(),
-          ],
-        ),
-      ], // Children
-    );
   }
 
   Positioned buildMapOrientationModeButton() {
@@ -490,56 +275,30 @@ class _MyHomePageState extends State<MyHomePage> {
     return _items.where((i) => i.isOwned).map((item) {
       return IconButton(
         icon: Image.asset(
-            'assets/story/${item.iconAsset}',
-            width: 24,
-            height: 24),
-        onPressed: () async {await item.execute(context);},
+          'assets/story/${item.iconAsset}',
+          width: 24,
+          height: 24,
+        ),
+        onPressed: () async {
+          await item.execute(context);
+        },
       );
     }).toList();
   }
 
-  Positioned buildJoystick() {
-    return Positioned(
-      bottom: 5,
-      left: 5,
-      child: Transform.scale(
-        scale: 0.5, // oder 80, 60 – je nach Geschmack
-        child: Joystick(
-          mode: JoystickMode.all,
-          stickOffsetCalculator: CircleStickOffsetCalculator(),
-          listener: (details) {
-            const double step = 0.00005; // Schrittweite pro Tick
-            final double headingRadians = _currentHeading * (pi / 180);
 
-            //in Nordausrichtung
-            final double dx = -details.y;
-            final double dy = details.x;
-
-            //drehen in richtung heading
-            final double drx =
-                dx * cos(headingRadians) - dy * sin(headingRadians);
-            final double dry =
-                dx * sin(headingRadians) + dy * cos(headingRadians);
-
-            _moveSimulatdLocation(drx * step, dry * step);
-          },
-        ),
-      ),
-    );
-  }
-
-  void _moveSimulatdLocation(double x, double y) {
+  void _moveSimulatedLocation(double x, double y) {
     setState(() {
-      _location = LatLng(_location.latitude + x, _location.longitude + y);
+      _playerPosition = LatLng(_playerPosition.latitude + x, _playerPosition.longitude + y);
     });
-    _processNewLocation(_location);
+    _processNewLocation(_playerPosition);
   }
 
   @override
   Widget build(BuildContext context) {
     if (_initializationError != null) {
       return Scaffold(
-        appBar: AppBar(title: Text(title)),
+        appBar: AppBar(title: Text(widget.title)),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
@@ -566,7 +325,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       _initializationError = null;
                       _initializationCompleted = false;
                       _gameInitialized = false;
-                      _isLocationLoaded = false;
+                      _locationServiceInitialized = false;
                     });
                     _initializeApp();
                   },
@@ -582,28 +341,32 @@ class _MyHomePageState extends State<MyHomePage> {
     final actionsByTrigger = GameEngine().getActionsGroupedByTrigger();
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
         actions: [
           IconButton(
             icon: Icon(Icons.bug_report),
             tooltip: "Test Actions",
             onPressed: () {
-              showActionTestingPanel = !showActionTestingPanel;
+              setState(() {
+                showActionTestingPanel = !showActionTestingPanel;
+              });
             },
           ),
           IconButton(
             icon: Icon(Icons.sports_esports_outlined),
             tooltip: "Simulate",
             onPressed: () {
-              if (!_isGPSSimulating) {
-                _realPosition = _location;
-              } else {
-                if (_realPosition != null) {
-                  _location = _realPosition!;
+              setState(() {
+                if (!_isSimulatingLocation) {
+                  _lastRealGpsPosition = _playerPosition;
+                } else {
+                  if (_lastRealGpsPosition != null) {
+                    _playerPosition = _lastRealGpsPosition!;
+                    _processNewLocation(_playerPosition);
+                  }
                 }
-              }
-              _isGPSSimulating = !_isGPSSimulating;
-              print("simulationg: $_isGPSSimulating");
+                _isSimulatingLocation = !_isSimulatingLocation;
+              });
             },
           ),
           Builder(
@@ -613,7 +376,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   tooltip: "Seitenleiste öffnen",
                   onPressed: () {
                     setState(() {
-                      _isSidePanelVisible = true;
+                      _isSidePanelVisible = !_isSidePanelVisible;
                     });
                   },
                 ),
@@ -627,10 +390,27 @@ class _MyHomePageState extends State<MyHomePage> {
               ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist
               : Stack(
                 children: [
-                  buildFlutterMap(),
+                  //buildFlutterMap(),
+                  GameMapWidget(
+                    location: _playerPosition,
+                    mapController: _mapController,
+                    currentHeading: _currentHeading,
+                    currentMapRotation: _currentMapRotation,
+                    isMapHeadingBasedOrientation: _isMapHeadingBasedOrientation,
+                    isSimulatingLocation: _isSimulatingLocation,
+                    onSimulatedLocationChange: (point) {
+                      setState(() {
+                        _playerPosition = point;
+                        _processNewLocation(_playerPosition);
+                      });
+                    },
+                  ),
                   buildMapOrientationModeButton(),
-                  if (_isGPSSimulating) buildJoystick(),
-
+                    JoystickOverlay(
+                      heading: _currentHeading,
+                      onMove: (dx, dy) => _moveSimulatedLocation(dx, dy),
+                      isVisible: _isSimulatingLocation,
+                    ),
                   if (showActionTestingPanel)
                     ActionTestingPanel(actionsByTrigger: actionsByTrigger),
                   SidePanel(
@@ -664,36 +444,4 @@ class _MyHomePageState extends State<MyHomePage> {
     _updateTimer.cancel();
     super.dispose();
   }
-}
-
-class PulseState {
-  final double radius;
-  final bool maxReached;
-  final double colorFade;
-
-  PulseState({
-    required this.radius,
-    required this.maxReached,
-    required this.colorFade,
-  });
-}
-
-PulseState _getPulseState(double baseRadius) {
-  const pulseDuration = 2000; // in ms
-  const double maxFactor = 1.6;
-  const double whiteRingStart = 1.0;
-
-  final int now = DateTime.now().millisecondsSinceEpoch;
-  final double t = (now % pulseDuration) / pulseDuration; // 0.0 - 1.0
-  final double currentFactor = t * maxFactor;
-  final double radius = baseRadius * currentFactor;
-  final double colorFade = (1 - t).abs();
-
-  final bool maxReached = currentFactor >= whiteRingStart;
-
-  return PulseState(
-    radius: radius,
-    maxReached: maxReached,
-    colorFade: colorFade,
-  );
 }

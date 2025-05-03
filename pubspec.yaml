@@ -71,6 +71,7 @@ flutter:
 
   assets:
     - .env
+    - assets/logo/
     - assets/story/
     - assets/story/prompts/
     - assets/story/images/
