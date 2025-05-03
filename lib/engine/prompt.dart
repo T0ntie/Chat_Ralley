@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/services.dart';
 import 'package:hello_world/engine/story_line.dart';
 
@@ -7,7 +5,6 @@ class Prompt {
   Prompt._();
 
   static const String gamePromptFile = 'assets/story/prompts/game-prompt.txt';
-  static const String promptSectionsFile = 'assets/story/prompts.json';
   static const String compressPromptFile =
       'assets/story/prompts/compress-prompt.txt';
   static const String promptAssetPath = 'assets/story/prompts/';
@@ -15,19 +12,27 @@ class Prompt {
   late final String promptFile;
 
   final Map<String, String> promptSectionMap = {};
+  final Map<String, Set<String>> tagToSections = {};
 
-  static final Set<String> validSections = <String>{};
-  static Set<String> gamePlaySections = <String>{};
-  static Set<String> summarizeSections = <String>{};
+  static const String gamePlayTag = "gameplay";
+  static const String summarizeTag = "summarize";
 
   static const String summarizeCommand = "[Fasse zusammen]";
 
-  String getGamplayPrompt() {
-    return getCustomPrompt(gamePlaySections);
+  String getGameplayPrompt() {
+    return getTaggedPrompt(gamePlayTag);
   }
 
   String getSummarizePrompt() {
-    return getCustomPrompt(summarizeSections);
+    return getTaggedPrompt(summarizeTag);
+  }
+
+  String getTaggedPrompt(String tag) {
+    final sections = tagToSections[tag];
+    if (sections == null || sections.isEmpty) {
+      throw StateError("❌ Kein Abschnitt mit Tag $tag im Prompt '$promptFile' gefunden.");
+    }
+    return getCustomPrompt(sections);
   }
 
   String getPromptSection(String section) {
@@ -47,9 +52,7 @@ class Prompt {
         buffer.writeln(content);
         buffer.writeln(); // fügt eine Leerzeile zwischen Sektionen ein
       } else {
-        print(
-          "⚠️ Warnung: Abschnitt '$section' ist im Prompt ${promptFile} nicht vorhanden.",
-        );
+        throw StateError("❌ Abschnitt '$section' fehlt im Prompt '$promptFile'.");
       }
     }
     return buffer.toString().trim();
@@ -57,24 +60,8 @@ class Prompt {
 
   static Future<Prompt> createPrompt(String promptFile) async {
     final prompt = Prompt._();
-    if (validSections.isEmpty){
-      await _loadPromptsections();
-    }
     await prompt._loadPrompt(promptFile);
     return prompt;
-  }
-
-  static Future<void> _loadPromptsections() async {
-    try {
-      String jsonString = await rootBundle.loadString(promptSectionsFile);
-      final Map<String, dynamic> json = jsonDecode(jsonString);
-      validSections.addAll(Set<String>.from(json['validSections']));
-      gamePlaySections.addAll(Set<String>.from(json['gamePlaySections']));
-      summarizeSections.addAll(Set<String>.from(json['summarizeSections']));
-    } catch (e) {
-      print("❌ Feher beim Parsen der Promptsections '$promptSectionsFile': $e");
-      rethrow;
-    }
   }
 
   Future<void> _loadPrompt(String promptFile) async {
@@ -90,9 +77,8 @@ class Prompt {
       String prompt = StoryLine.localizeString(
         gamePrompt + npcPrompt + compressPrompt,
       );
-      //print("Start parsing prompt: $promptFile");
       try {
-        promptSectionMap.addAll(parsePromptSections(prompt));
+        parsePromptSections(prompt, promptSectionMap, tagToSections);
       } catch (e) {
         print("❌ Feher beim Parsen von '$promptFile': $e");
         rethrow;
@@ -105,32 +91,48 @@ class Prompt {
     }
   }
 
-  static Map<String, String> parsePromptSections(String prompt) {
-    final Map<String, String> sections = {};
-    final RegExp sectionHeader = RegExp(r'^## (.+)', multiLine: true);
+  static void parsePromptSections(
+      String prompt,
+      Map<String, String> sectionMap,
+      Map<String, Set<String>> tagMap,
+      ) {
+    sectionMap.clear();
+    tagMap.clear();
+
+    final RegExp sectionHeader = RegExp(r'^##\s(.+?)(?:\s\[(.+?)\])?$', multiLine: true);
     final matches = sectionHeader.allMatches(prompt).toList();
-    final List<String> errorList = [];
 
     for (int i = 0; i < matches.length; i++) {
       final currentMatch = matches[i];
-      final sectionTitle = currentMatch.group(1)!.trim();
+      final String sectionTitle = currentMatch.group(1)!.trim();
+      final String? tagsRaw = currentMatch.group(2);
 
-      final sectionStart = currentMatch.start;
-      final sectionEnd =
-          (i + 1 < matches.length) ? matches[i + 1].start : prompt.length;
-
-      if (!validSections.contains(sectionTitle)) {
-        errorList.add("$sectionTitle");
-      }
-
+      final sectionStart = currentMatch.end;
+      final sectionEnd = (i + 1 < matches.length) ? matches[i + 1].start : prompt.length;
       final sectionContent = prompt.substring(sectionStart, sectionEnd).trim();
-      sections[sectionTitle] = sectionContent;
+
+      sectionMap[sectionTitle] = sectionContent;
+
+      if (tagsRaw != null) {
+        final tags = tagsRaw.split(',').map((t) => t.trim().toLowerCase()).toSet();
+
+        for (final tag in tags) {
+          tagMap.putIfAbsent(tag, () => <String>{}).add(sectionTitle);
+        }
+      }
     }
-    if (errorList.isNotEmpty) {
-      throw FormatException(
-        "Unbekannte Abschnittstitel im Prompt: ${errorList.join(', ')}",
-      );
+
+//    print('🧩 Prompt-Parsing abgeschlossen.');
+//    print('📚 Gefundene Abschnitte: ${sectionMap.length}');
+//    print('🏷️  Tags erkannt: ${tagMap.keys.join(', ')}');
+
+/*
+    for (final tag in tagMap.entries) {
+      print('🔖 Tag "${tag.key}": ${tag.value.length} Abschnitt(e)');
+      for (final section in tag.value) {
+        print('   → $section');
+      }
     }
-    return sections;
+*/
   }
 }

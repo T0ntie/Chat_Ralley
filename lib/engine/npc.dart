@@ -228,7 +228,7 @@ class Npc extends GameElement {
     return (currentDistance < GameEngine.conversationDistance);
   }
 
-  void updatePlayerPosition(LatLng playerPosition) {
+  void updatePlayerPosition(LatLng playerPosition) {  //fixme der npc hüpft zurück bei following
     this.playerPosition = playerPosition;
     if (isFollowing) {
       if (currentDistance > followingDistance) {

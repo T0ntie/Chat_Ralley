@@ -15,7 +15,7 @@ class Conversation {
   void Function()? onConversationFinished;
 
   Conversation(this.npc) {
-    addSystemMessage(npc.prompt.getGamplayPrompt());
+    addSystemMessage(npc.prompt.getGameplayPrompt());
   }
 
   Future<void> handleTriggerMessage() async {
@@ -77,7 +77,7 @@ class Conversation {
           (m) => m.fromSystem,
       orElse: () =>
           ChatMessage(
-              rawText: npc.prompt.getGamplayPrompt(),
+              rawText: npc.prompt.getGameplayPrompt(),
               chatRole: ChatRole.system),
     );
 
