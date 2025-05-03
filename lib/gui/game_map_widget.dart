@@ -26,6 +26,7 @@ class GameMapWidget extends StatelessWidget {
     this.onSimulatedLocationChange,
   });
 
+
   double _getRotationAngle() {
     return (isMapHeadingBasedOrientation
             ? currentHeading
@@ -107,7 +108,7 @@ class GameMapWidget extends StatelessWidget {
             Marker(
               point: location,
               child: Transform.rotate(
-                angle: _getRotationAngle(),
+                angle: currentHeading *(pi / 180), //_getRotationAngle(),
                 child: AppIcons.playerPosition,
               ),
             ),
