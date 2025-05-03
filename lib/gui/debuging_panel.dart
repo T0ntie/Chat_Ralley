@@ -5,8 +5,9 @@ import '../engine/npc.dart';
 
 class ActionTestingPanel extends StatelessWidget {
   final Map<String, List<(Npc, NpcAction)>> actionsByTrigger;
+  final Map <String, bool> flags;
 
-  const ActionTestingPanel({Key? key, required this.actionsByTrigger})
+  const ActionTestingPanel({Key? key, required this.actionsByTrigger, required this.flags})
     : super(key: key);
 
   @override
@@ -93,6 +94,40 @@ class ActionTestingPanel extends StatelessWidget {
                           ),
                         );
                       }).toList(),
+                );
+              }).toList(),
+              const Text(
+                "Aktuelle Flags",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              ...flags.entries.map((entry) {
+                final flagName = entry.key;
+                final flagValue = entry.value;
+
+                return Container(
+                  margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        flagName,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      Text(
+                        flagValue ? "true" : "false",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: flagValue ? Colors.green : Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }).toList(),
             ],

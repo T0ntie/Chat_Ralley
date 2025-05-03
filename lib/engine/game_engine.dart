@@ -166,7 +166,6 @@ class GameEngine {
     FlushBarService().showFlushbar(title: "Ereignis", message: notification);
   }
 
-
 void registerApproach(Npc npc) {
   final actions = _approachSubscriptions[npc];
   if (actions != null) {

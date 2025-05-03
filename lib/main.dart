@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world/engine/item.dart';
-import 'package:hello_world/gui/action_testing_panel.dart';
+import 'package:hello_world/gui/debuging_panel.dart';
 import 'package:hello_world/gui/game_map_widget.dart';
 import 'package:hello_world/gui/joystick_overlay.dart';
 import 'package:hello_world/gui/notification_services.dart';
@@ -412,7 +412,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       isVisible: _isSimulatingLocation,
                     ),
                   if (showActionTestingPanel)
-                    ActionTestingPanel(actionsByTrigger: actionsByTrigger),
+                    ActionTestingPanel(actionsByTrigger: actionsByTrigger, flags: GameEngine().flags,),
                   SidePanel(
                     isVisible: _isSidePanelVisible,
                     onClose: () {

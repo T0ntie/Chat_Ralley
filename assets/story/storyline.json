@@ -45,19 +45,33 @@
           "invokeAction": "stopMoving"
         },
         {
-          "onSignal": "KnatterbachLeave",
+          "onHotspot": "Museum",
+          "invokeAction": "talk",
+          "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]",
+          "conditions":
+          {
+            "knatterbachAtPolice": false
+          }
+        },
+        {
+          "onSignal": "KnatterbachToPolice",
           "invokeAction": "walkTo",
           "position": "PolizeiPosition"
         },
         {
-          "onHotspot": "Museum",
-          "invokeAction": "talk",
-          "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]"
+          "onSignal": "KnatterbachToPolice",
+          "invokeAction": "behave",
+          "directive": "[Du bist jetzt auf der Polizeistation]",
+          "promptTag": "police"
         },
         {
           "onHotspot": "Polizei",
           "invokeAction": "talk",
-          "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]"
+          "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]",
+          "conditions":
+          {
+            "KnatterbachAtPolice": true
+          }
         },
         {
           "onSignal": "GetWalkie",
@@ -67,7 +81,7 @@
         {
           "onSignal": "GetWalkie",
           "invokeAction": "behave",
-          "injectPromptSections": ["Funkmodus"]
+          "promptTag": "radio"
         }
       ]
     },
@@ -221,6 +235,6 @@
   ],
   "flags": {
     "knowsKrollsAddress": false,
-    "walkie": false
+    "knatterbachAtPolice": false
   }
 }

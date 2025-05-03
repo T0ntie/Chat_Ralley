@@ -59,6 +59,17 @@ abstract class NpcAction{
   {
     Map<String, bool> flags = GameEngine().flags;
 
+    print("Aktuelle Flags im GameEngine:");
+    flags.forEach((key, value) {
+      print("  $key: $value");
+    });
+
+    print("Conditions für Invoke:");
+    conditions.forEach((key, value) {
+      print("  $key: $value");
+    });
+
+
     bool allConditionsMet = conditions.keys
         .where(flags.containsKey)
         .every((key) => conditions[key] == flags[key]);  // Werte vergleichen

@@ -145,8 +145,8 @@ class Npc extends GameElement {
     currentConversation.addTriggerMessage(repsondTo);
   }
 
-  void injectPromptSections(Set<String> promptSections) async {
-    String content = prompt.getCustomPrompt(promptSections);
+  void injectTaggedPrompts(String tag) async {
+    String content = prompt.getTaggedPrompt(tag);
     currentConversation.addSystemMessage(content);
   }
 
