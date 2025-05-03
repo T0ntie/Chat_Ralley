@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world/actions/npc_action.dart';
+import 'package:hello_world/app_resources.dart';
 import '../engine/npc.dart';
 
 class ActionTestingPanel extends StatelessWidget {
   final Map<String, List<(Npc, NpcAction)>> actionsByTrigger;
 
-  const ActionTestingPanel({Key? key, required this.actionsByTrigger}) : super(key: key);
+  const ActionTestingPanel({Key? key, required this.actionsByTrigger})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,17 +48,51 @@ class ActionTestingPanel extends StatelessWidget {
 
                 return ExpansionTile(
                   title: Text(triggerName),
-                  children: actions.map((pair) {
-                    final npc = pair.$1;
-                    final action = pair.$2;
+                  children:
+                      actions.asMap().entries.map((actionEntry) {
+                        final index = actionEntry.key;
+                        final pair = actionEntry.value;
+                        final npc = pair.$1;
+                        final action = pair.$2;
 
-                    return ListTile(
-                      title: Text("${npc.name} → ${action.runtimeType}"),
-                      subtitle: Text("Trigger-Wert: ${action.trigger.value}"),
-                      trailing: const Icon(Icons.play_arrow),
-                      onTap: () => action.invoke(npc),
-                    );
-                  }).toList(),
+                        final tileColor =
+                            index.isEven
+                                ? ResourceColors.tile(context).withOpacity(0.08)
+                                : ResourceColors.tile(
+                                  context,
+                                ).withOpacity(0.16);
+
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 4,
+                            horizontal: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: tileColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            // wichtig, damit die Container-Farbe durchkommt
+                            child: ListTile(
+                              title: Text(
+                                "${npc.name} → ${action.runtimeType}",
+                              ),
+                              subtitle: Text(
+                                "Trigger-Wert: ${action.trigger.value}",
+                              ),
+                              trailing: const Icon(Icons.play_arrow),
+                              onTap: () => action.invoke(npc),
+                              //tileColor: ResourceColors.tile(context),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  8,
+                                ), // ripple folgt den Ecken
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
                 );
               }).toList(),
             ],

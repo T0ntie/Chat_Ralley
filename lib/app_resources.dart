@@ -48,6 +48,9 @@ class ResourceColors {
   static Color errorSnack(BuildContext context) => Theme.of(context).colorScheme.error;
   static Color successSnack(BuildContext context) => Color(0xFF00C853); //Theme.of(context).colorScheme.primaryContainer;
   static Color errorMessage(BuildContext context) => Theme.of(context).colorScheme.error;
+
+  //ActionTestingPanel
+  static Color tile(BuildContext context) => Theme.of(context).colorScheme.primaryContainer;
 }
 class ResourceSizes {
   static const double npcIconSize = 40.0;
