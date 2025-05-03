@@ -67,7 +67,7 @@
         {
           "onSignal": "GetWalkie",
           "invokeAction": "behave",
-          "injectPromptSection": "Funkmodus"
+          "injectPromptSections": ["Funkmodus"]
         }
       ]
     },

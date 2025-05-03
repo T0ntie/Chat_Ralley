@@ -106,12 +106,12 @@ class Conversation {
     // 3) --- GPT-Aufruf --------------------------------------------------------
     final promptForGPT = [
       ChatMessage(
-        rawText: npc.prompt.getCompressPrompt(),
+        rawText: npc.prompt.getSummarizePrompt(),
         chatRole: ChatRole.system,
       ),
       ...toSummarize,
       ChatMessage(
-        rawText: Prompt.compressCommand, //  "[Fasse zusammen]"
+        rawText: Prompt.summarizeCommand, //  "[Fasse zusammen]"
         chatRole: ChatRole.user,
       ),
     ];

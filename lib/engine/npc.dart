@@ -145,11 +145,9 @@ class Npc extends GameElement {
     currentConversation.addTriggerMessage(repsondTo);
   }
 
-  void injectPromptSection(String promptSection) async {
-    //String promptText = await Prompt.loadPrompt(promptFile);
-    String section = prompt.getPromptSection(promptSection);
-    //print("folgene Prompt Section würde ich jetzt injizieren:\n $section ");
-    currentConversation.addSystemMessage(section);
+  void injectPromptSections(Set<String> promptSections) async {
+    String content = prompt.getCustomPrompt(promptSections);
+    currentConversation.addSystemMessage(content);
   }
 
   void behave(String directive) {

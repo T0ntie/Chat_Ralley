@@ -3,19 +3,24 @@ import '../engine/npc.dart';
 
 class BehaveAction extends NpcAction{
   String? directiveMessage;
-  String? promptSection;
-  BehaveAction({required super.trigger, required super.conditions, super.notification, required this.directiveMessage, required this.promptSection});
+  Set<String>? promptSections;
+  BehaveAction({required super.trigger, required super.conditions, super.notification, required this.directiveMessage, required this.promptSections});
 
   @override
   void excecute(Npc npc) {
-    if (promptSection case final section?) npc.injectPromptSection(section);
+    if (promptSections != null && promptSections!.isNotEmpty) {
+      npc.injectPromptSections(promptSections!);
+    }
     if (directiveMessage case final message?) npc.behave(message);
   }
 
   static BehaveAction actionFromJson(Map<String, dynamic> json) {
     final directiveMessage = json['directive'] as String?;
-    final promptSection = json['injectPromptSection'] as String?;
-    if (directiveMessage == null && promptSection == null) {
+    final promptSectionList = json['injectPromptSections'] as List?;
+    final promptSections = promptSectionList != null
+        ? Set<String>.from(promptSectionList.whereType<String>())
+        : null;
+    if (directiveMessage == null && promptSections == null && promptSections!.isNotEmpty) {
       throw ArgumentError("Weder 'directive' noch 'injectPromptSection' versorgt in BehaveAction at + ${json}");
     }
     final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(json);
@@ -24,7 +29,7 @@ class BehaveAction extends NpcAction{
         conditions: conditions,
         notification: notification,
         directiveMessage: directiveMessage,
-        promptSection: promptSection,
+        promptSections: promptSections,
     );
   }
 

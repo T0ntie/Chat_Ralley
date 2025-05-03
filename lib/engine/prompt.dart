@@ -18,16 +18,16 @@ class Prompt {
 
   static final Set<String> validSections = <String>{};
   static Set<String> gamePlaySections = <String>{};
-  static Set<String> compressSections = <String>{};
+  static Set<String> summarizeSections = <String>{};
 
-  static const String compressCommand = "[Fasse zusammen]";
+  static const String summarizeCommand = "[Fasse zusammen]";
 
   String getGamplayPrompt() {
-    return _getCustomPrompt(gamePlaySections);
+    return getCustomPrompt(gamePlaySections);
   }
 
-  String getCompressPrompt() {
-    return _getCustomPrompt(compressSections);
+  String getSummarizePrompt() {
+    return getCustomPrompt(summarizeSections);
   }
 
   String getPromptSection(String section) {
@@ -38,7 +38,7 @@ class Prompt {
     return content;
   }
 
-  String _getCustomPrompt(Set selection) {
+  String getCustomPrompt(Set selection) {
     final buffer = StringBuffer();
 
     for (final section in selection) {
@@ -70,7 +70,7 @@ class Prompt {
       final Map<String, dynamic> json = jsonDecode(jsonString);
       validSections.addAll(Set<String>.from(json['validSections']));
       gamePlaySections.addAll(Set<String>.from(json['gamePlaySections']));
-      compressSections.addAll(Set<String>.from(json['compressSections']));
+      summarizeSections.addAll(Set<String>.from(json['summarizeSections']));
     } catch (e) {
       print("❌ Feher beim Parsen der Promptsections '$promptSectionsFile': $e");
       rethrow;
