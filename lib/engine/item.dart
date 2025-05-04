@@ -6,6 +6,7 @@ import 'package:hello_world/gui/item-call-backs.dart';
 class Item {
   final String name;
   bool isOwned;
+  bool isNew = true; //fixme
   final String iconAsset;
   final String useType;
   final String npcName;

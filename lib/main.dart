@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hello_world/engine/item.dart';
 import 'package:hello_world/gui/debuging_panel.dart';
 import 'package:hello_world/gui/game_map_widget.dart';
+import 'package:hello_world/gui/item_button.dart';
 import 'package:hello_world/gui/joystick_overlay.dart';
 import 'package:hello_world/gui/notification_services.dart';
 import 'package:hello_world/gui/side_panel.dart';
@@ -59,6 +60,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _frameRate = Duration(milliseconds: 33);
+
   //final String title = "StoryTrail";
   LatLng _playerPosition = LatLng(51.5074, -0.1278); // Beispiel für London
   bool _locationServiceInitialized = false;
@@ -113,7 +115,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _checkIfInitializationCompleted() {
-    if (_gameInitialized && _locationServiceInitialized && !_initializationCompleted) {
+    if (_gameInitialized &&
+        _locationServiceInitialized &&
+        !_initializationCompleted) {
       setState(() {
         _initializationCompleted = true;
       });
@@ -271,8 +275,9 @@ class _MyHomePageState extends State<MyHomePage> {
     ));
   }
 
-  List<IconButton> buildItems() {
+  List<ItemButton> buildItems() {
     return _items.where((i) => i.isOwned).map((item) {
+      /*
       return IconButton(
         icon: Image.asset(
           'assets/story/${item.iconAsset}',
@@ -283,13 +288,17 @@ class _MyHomePageState extends State<MyHomePage> {
           await item.execute(context);
         },
       );
+*/
+      return ItemButton(item: item, showGlow: _isSidePanelVisible);
     }).toList();
   }
 
-
   void _moveSimulatedLocation(double x, double y) {
     setState(() {
-      _playerPosition = LatLng(_playerPosition.latitude + x, _playerPosition.longitude + y);
+      _playerPosition = LatLng(
+        _playerPosition.latitude + x,
+        _playerPosition.longitude + y,
+      );
     });
     _processNewLocation(_playerPosition);
   }
@@ -339,6 +348,15 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
     final actionsByTrigger = GameEngine().getActionsGroupedByTrigger();
+    if (!_isSidePanelVisible) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (GameEngine().hasNewItems()) {
+          setState(() {
+            _isSidePanelVisible = true;
+          });
+        }
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -377,6 +395,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     setState(() {
                       _isSidePanelVisible = !_isSidePanelVisible;
+                      GameEngine().markAllItemsAsSeen();
                     });
                   },
                 ),
@@ -406,29 +425,25 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                   buildMapOrientationModeButton(),
-                    JoystickOverlay(
-                      heading: _currentHeading,
-                      onMove: (dx, dy) => _moveSimulatedLocation(dx, dy),
-                      isVisible: _isSimulatingLocation,
-                    ),
+                  JoystickOverlay(
+                    heading: _currentHeading,
+                    onMove: (dx, dy) => _moveSimulatedLocation(dx, dy),
+                    isVisible: _isSimulatingLocation,
+                  ),
                   if (showActionTestingPanel)
-                    ActionTestingPanel(actionsByTrigger: actionsByTrigger, flags: GameEngine().flags,),
+                    ActionTestingPanel(
+                      actionsByTrigger: actionsByTrigger,
+                      flags: GameEngine().flags,
+                    ),
                   SidePanel(
-                    isVisible: _isSidePanelVisible,
+                    isVisible: (_isSidePanelVisible),
                     onClose: () {
                       setState(() {
                         _isSidePanelVisible = false;
+                        GameEngine().markAllItemsAsSeen();
                       });
                     },
-                    children: [
-                      ...buildItems(),
-                      IconButton(
-                        icon: Icon(Icons.info_outline),
-                        onPressed: () {
-                          print("ℹ️ Info gedrückt");
-                        },
-                      ),
-                    ],
+                    children: buildItems(),
                   ),
                 ],
               ),

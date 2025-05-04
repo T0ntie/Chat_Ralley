@@ -54,6 +54,17 @@ class GameEngine {
     return items.firstWhere((item) => item.name == itemName);
   }
 
+  bool hasNewItems() {
+      return items.any((item) => item.isOwned && item.isNew);
+  }
+  void markAllItemsAsSeen() {
+    for (final item in items) {
+      if (item.isOwned && item.isNew) {
+        item.isNew = false;
+      }
+    }
+  }
+
   Map<String, List<(Npc, NpcAction)>> getActionsGroupedByTrigger() {
     final Map<String, List<(Npc, NpcAction)>> grouped = {};
 
