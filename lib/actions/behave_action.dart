@@ -4,7 +4,7 @@ import '../engine/npc.dart';
 class BehaveAction extends NpcAction{
   String? directiveMessage;
   String? promptTag;
-  BehaveAction({required super.trigger, required super.conditions, super.notification, required this.directiveMessage, required this.promptTag});
+  BehaveAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.directiveMessage, required this.promptTag});
 
   @override
   void excecute(Npc npc) {
@@ -18,11 +18,12 @@ class BehaveAction extends NpcAction{
     if (directiveMessage == null && promptTag == null) {
       throw ArgumentError("Weder 'directive' noch 'promptTag' versorgt in BehaveAction at + ${json}");
     }
-    final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(json);
+    final (trigger, conditions, notification, defer) = NpcAction.actionFieldsFromJson(json);
     return BehaveAction(
         trigger: trigger,
         conditions: conditions,
         notification: notification,
+        defer: defer,
         directiveMessage: directiveMessage,
         promptTag: promptTag,
     );

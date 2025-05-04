@@ -10,6 +10,7 @@ class SetFlagAction extends NpcAction {
     required super.trigger,
     required super.conditions,
     super.notification,
+    super.defer,
     required this.flags,
   });
 
@@ -20,13 +21,14 @@ class SetFlagAction extends NpcAction {
 
   static SetFlagAction actionFromJson(Map<String, dynamic> json) {
     final flags = flagsFromJson(json);
-    final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(
+    final (trigger, conditions, notification, defer) = NpcAction.actionFieldsFromJson(
       json,
     );
     return SetFlagAction(
       trigger: trigger,
       conditions: conditions,
       notification: notification,
+      defer: defer,
       flags: flags,
     );
   }

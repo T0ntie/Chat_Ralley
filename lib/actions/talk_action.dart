@@ -3,7 +3,7 @@ import '../engine/npc.dart';
 
 class TalkAction extends NpcAction{
   String triggerMessage;
-  TalkAction({required super.trigger, required super.conditions, super.notification, required this.triggerMessage});
+  TalkAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.triggerMessage});
 
   @override
   void excecute(Npc npc) {
@@ -12,11 +12,12 @@ class TalkAction extends NpcAction{
 
   static TalkAction actionFromJson(Map<String, dynamic> json) {
     final triggerMessage = json['trigger'];
-    final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(json);
+    final (trigger, conditions, notification, defer) = NpcAction.actionFieldsFromJson(json);
     return TalkAction(
         trigger: trigger,
         conditions: conditions,
         notification: notification,
+        defer: defer,
         triggerMessage: triggerMessage);
 }
 

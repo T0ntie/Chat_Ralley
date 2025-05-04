@@ -46,6 +46,11 @@ abstract class NpcAction{
   final NpcActionTrigger trigger;
   final Map<String, bool> conditions;
   final String? notification;
+  final bool defer;
+
+  NpcAction({required this.trigger, required this.conditions, this.notification, this.defer = false});
+
+
 
   static final Map<String, NpcAction Function(Map<String, dynamic>)> _actionRegistry = {};
   static void registerAction(
@@ -84,13 +89,12 @@ abstract class NpcAction{
 
   void excecute(Npc npc);
 
-  NpcAction({required this.trigger, required this.conditions, this.notification});
-
-  static  (NpcActionTrigger, Map<String, bool>, String?) actionFieldsFromJson (Map<String, dynamic> json) {
+  static  (NpcActionTrigger, Map<String, bool>, String?, bool) actionFieldsFromJson (Map<String, dynamic> json) {
     final trigger = NpcActionTrigger.npcActionTriggerfromJson(json);
     final conditions = conditionsFromJson(json);
     final notification = json.containsKey('notification') ? json['notification'] as String : null;
-    return (trigger, conditions, notification);
+    final defer = json['defer'] == true;
+    return (trigger, conditions, notification, defer);
   }
 
   static Map<String, bool> conditionsFromJson(Map<String, dynamic> json) {

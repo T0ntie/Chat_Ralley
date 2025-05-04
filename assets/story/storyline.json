@@ -56,13 +56,15 @@
         {
           "onSignal": "KnatterbachToPolice",
           "invokeAction": "walkTo",
-          "position": "PolizeiPosition"
+          "position": "PolizeiPosition",
+          "defer": true
         },
         {
           "onSignal": "KnatterbachToPolice",
           "invokeAction": "behave",
           "directive": "[Du bist jetzt auf der Polizeistation]",
-          "promptTag": "police"
+          "promptTag": "police",
+          "defer": true
         },
         {
           "onHotspot": "Polizei",
@@ -76,7 +78,8 @@
         {
           "onSignal": "GetWalkie",
           "invokeAction": "addToInventory",
-          "item": "Walkie"
+          "item": "Walkie",
+          "notification": "Du hast ein Walkie-Talkie erhalten."
         },
         {
           "onSignal": "GetWalkie",

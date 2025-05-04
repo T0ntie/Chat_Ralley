@@ -8,7 +8,7 @@ import '../engine/npc.dart';
 class AddToInventoryAction extends NpcAction{
   final String itemName;
 
-  AddToInventoryAction({required super.trigger, required super.conditions, super.notification, required this.itemName});
+  AddToInventoryAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.itemName});
 
   @override
   void excecute(Npc npc) {
@@ -20,11 +20,12 @@ class AddToInventoryAction extends NpcAction{
   }
 
   static AddToInventoryAction actionFromJson(Map<String, dynamic> json) {
-    final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(json);
+    final (trigger, conditions, notification, defer) = NpcAction.actionFieldsFromJson(json);
     return AddToInventoryAction(
         trigger: trigger,
         conditions: conditions,
         notification: notification,
+        defer: defer,
         itemName: json['item']);
   }
   

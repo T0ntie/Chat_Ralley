@@ -8,7 +8,7 @@ class RevealHotspotAction extends NpcAction{
 
   String hotspotName;
 
-  RevealHotspotAction({required super.trigger, required super.conditions, super.notification, required this.hotspotName});
+  RevealHotspotAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.hotspotName});
 
   @override
   void excecute(Npc npc) {
@@ -22,11 +22,12 @@ class RevealHotspotAction extends NpcAction{
 
   static RevealHotspotAction actionFromJson(Map<String, dynamic> json) {
     final hotspotName = json['hotspot'];
-    final (trigger, conditions, notification) = NpcAction.actionFieldsFromJson(json);
+    final (trigger, conditions, notification, defer) = NpcAction.actionFieldsFromJson(json);
     return RevealHotspotAction(
         trigger: trigger,
         conditions: conditions,
         notification: notification,
+        defer: defer,
         hotspotName: hotspotName);
   }
   static void register() {
