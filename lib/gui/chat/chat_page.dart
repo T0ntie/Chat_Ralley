@@ -10,9 +10,9 @@ class ChatPage extends StatefulWidget {
 
   final Npc npc;
   final Medium medium;
+  final VoidCallback? onDispose; // <-- NEU
 
-
-  const ChatPage({super.key, required this.npc, this.medium = Medium.chat});
+  const ChatPage({super.key, required this.npc, this.medium = Medium.chat,  this.onDispose,});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -140,6 +140,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void dispose() {
     GameEngine().flushDeferredActions();
+    widget.onDispose?.call();
     _controller.dispose();
     _scrollController.dispose();
     super.dispose();

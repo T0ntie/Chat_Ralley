@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world/engine/item.dart';
+import 'package:hello_world/gui/chat/chat_page.dart';
 import 'package:hello_world/gui/debuging_panel.dart';
 import 'package:hello_world/gui/game_map_widget.dart';
 import 'package:hello_world/gui/item_button.dart';
@@ -289,7 +290,7 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       );
 */
-      return ItemButton(item: item, showGlow: _isSidePanelVisible);
+      return ItemButton(item: item);
     }).toList();
   }
 
@@ -348,15 +349,20 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
     final actionsByTrigger = GameEngine().getActionsGroupedByTrigger();
+/*
     if (!_isSidePanelVisible) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (GameEngine().hasNewItems()) {
-          setState(() {
-            _isSidePanelVisible = true;
-          });
+          await Future.delayed(Duration(seconds: 3));
+          if (mounted) {
+            setState(() {
+              _isSidePanelVisible = true;
+            });
+          }
         }
       });
     }
+*/
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -395,7 +401,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     setState(() {
                       _isSidePanelVisible = !_isSidePanelVisible;
-                      GameEngine().markAllItemsAsSeen();
+                      //GameEngine().markAllItemsAsSeen();
                     });
                   },
                 ),
@@ -423,6 +429,17 @@ class _MyHomePageState extends State<MyHomePage> {
                         _processNewLocation(_playerPosition);
                       });
                     },
+                    onNpcChatRequested: (npc) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ChatPage(
+                            npc: npc,
+                            onDispose: _checkForNewItemsWithDelay,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   buildMapOrientationModeButton(),
                   JoystickOverlay(
@@ -449,6 +466,22 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
       floatingActionButton: buildFloatingActionButton(),
     );
+  }
+
+
+  void _checkForNewItemsWithDelay() async {
+    print("👉 Check for new items triggered");
+
+    // Prüfen, ob neue Items vorhanden sind
+    if (!_isSidePanelVisible && GameEngine().hasNewItems()) {
+      await Future.delayed(Duration(seconds: 10)); // Optional: sanfte Verzögerung
+      if (!mounted) return;
+      print("👉 New items found, opening side panel");
+      setState(() {
+        _isSidePanelVisible = true;
+      });
+      //GameEngine().markAllItemsAsSeen(); // Nicht vergessen: als "gesehen" markieren
+    }
   }
 
   @override

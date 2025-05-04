@@ -37,7 +37,7 @@ class ResourceColors {
       Theme.of(context).colorScheme.onTertiaryContainer;
 
   static Color notificationBackground(BuildContext context) =>
-      Theme.of(context).colorScheme.primaryContainer;
+      Theme.of(context).colorScheme.secondaryContainer;
 
   static Color notificationMessage(BuildContext context) =>
       Theme.of(context).colorScheme.onPrimaryContainer;

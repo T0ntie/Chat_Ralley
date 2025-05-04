@@ -5,9 +5,8 @@ import '../engine/item.dart';
 
 class ItemButton extends StatefulWidget {
   final Item item;
-  final bool showGlow;
 
-  const ItemButton({super.key, required this.item, required this.showGlow});
+  const ItemButton({super.key, required this.item,});
 
   @override
   State<ItemButton> createState() => _ItemButtonState();
@@ -36,22 +35,26 @@ class _ItemButtonState extends State<ItemButton>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _glowAnimation = ColorTween(
-      begin: ResourceColors.glow.withAlpha((0.1*255).toInt()),
-      end: ResourceColors.glow.withAlpha((0.8*255).toInt()),
+      begin: ResourceColors.glow.withAlpha((0.1 * 255).toInt()),
+      end: ResourceColors.glow.withAlpha((0.8 * 255).toInt()),
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    if (widget.item.isNew) {
-      _controller.repeat(reverse: true);
-      Future.delayed(Duration(seconds: 2), () {
-        if (mounted) {
-          setState(() {
-            _controller.stop();
-            _showGlow = false;
-          });
-        }
-      });
-    }
+    // Animation nicht sofort starten – warte auf sichtbaren Aufbau
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.item.isNew && mounted) {
+        _controller.repeat(reverse: true);
+        /*Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            setState(() {
+              _controller.stop();
+              _showGlow = false;
+            });
+          }
+        });*/
+      }
+    });
   }
+
 
   @override
   void dispose() {
@@ -82,7 +85,7 @@ class _ItemButtonState extends State<ItemButton>
               color: (widget.item.isNew && !_showGlow) ? ResourceColors.newItemBackground(context): Colors.transparent,
               shape: BoxShape.circle, // <<< Macht die Glow-Fläche rund
               boxShadow:
-                  (widget.item.isNew && widget.showGlow && _showGlow)
+                  (widget.item.isNew && _showGlow)
                       ? [
                         BoxShadow(
                           color: _glowAnimation.value ?? Colors.transparent,

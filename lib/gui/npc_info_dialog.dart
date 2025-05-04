@@ -1,12 +1,12 @@
 import '../engine/npc.dart';
 import 'package:flutter/material.dart';
-import 'chat/chat_page.dart';
 
 class NpcInfoDialog extends StatelessWidget
 {
   final Npc npc;
+  final void Function(Npc npc) onNpcChatRequested;
+  const NpcInfoDialog({super.key, required this.npc, required this.onNpcChatRequested,});
 
-  const NpcInfoDialog({super.key, required this.npc,});
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +46,15 @@ class NpcInfoDialog extends StatelessWidget
             onPressed: npc.canCommunicate()
                 ? () {
               Navigator.of(context).pop(); // Erst den Dialog schließen
+              onNpcChatRequested.call(npc);
+              /*
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChatPage(npc: npc),
                 ),
               );
+              */
             }
                 : null,
           ),
@@ -64,7 +67,5 @@ class NpcInfoDialog extends StatelessWidget
       ],
     );
   }
-
-
 
 }

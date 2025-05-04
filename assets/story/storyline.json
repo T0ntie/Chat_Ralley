@@ -205,13 +205,13 @@
       "name": "{{Museum}}",
       "position": "MuseumPosition",
       "radius": 20,
-      "visible": true
+      "visible": false
     },
     {
       "name": "{{Polizei}}",
       "position": "PolizeiPosition",
       "radius": 15,
-      "visible": true
+      "visible": false
     },
     {
       "name": "{{Haus_Kroll}}",

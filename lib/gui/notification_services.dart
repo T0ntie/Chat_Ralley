@@ -22,18 +22,39 @@ class FlushBarService {
     //if (_context == null) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Flushbar(
-        title: title,
-        message: message,
-        icon: AppIcons.notification(_context),
+        titleText: Text(
+          title,
+          style: Theme.of(_context).textTheme.titleMedium?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        messageText: Text(
+          message,
+          style: Theme.of(_context).textTheme.bodyMedium?.copyWith(
+            color: Colors.white70,
+          ),
+        ),
+        icon: Icon(Icons.info_outline, color: Colors.white, size: 28),
+        backgroundGradient: LinearGradient(
+          colors: [Colors.blueGrey.shade700, Colors.blueGrey.shade900],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadows: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
         duration: Duration(seconds: 3),
-        backgroundColor: ResourceColors.notificationBackground(_context),
-        borderRadius: BorderRadius.circular(8),
-        margin: EdgeInsets.all(8),
-        animationDuration: Duration(milliseconds: 500),
+        borderRadius: BorderRadius.circular(12),
+        margin: EdgeInsets.all(12),
         flushbarPosition: FlushbarPosition.TOP,
-        titleColor: ResourceColors.notificationTitle(_context),
-        messageColor: ResourceColors.notificationMessage(_context),
+        animationDuration: Duration(milliseconds: 500),
       ).show(_context);
+
     });
   }
 }

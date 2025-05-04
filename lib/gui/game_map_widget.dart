@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:hello_world/app_resources.dart';
 import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/gui/chat/chat_page.dart';
+import 'package:hello_world/engine/npc.dart';
 import 'package:hello_world/gui/npc_info_dialog.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -14,6 +14,7 @@ class GameMapWidget extends StatelessWidget {
   final bool isMapHeadingBasedOrientation;
   final bool isSimulatingLocation;
   final void Function(LatLng point)? onSimulatedLocationChange;
+  final void Function(Npc npc) onNpcChatRequested;
 
   const GameMapWidget({
     super.key,
@@ -24,6 +25,7 @@ class GameMapWidget extends StatelessWidget {
     required this.isMapHeadingBasedOrientation,
     required this.isSimulatingLocation,
     this.onSimulatedLocationChange,
+    required this.onNpcChatRequested,
   });
 
 
@@ -173,7 +175,7 @@ class GameMapWidget extends StatelessWidget {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (ctx) => NpcInfoDialog(npc: npc),
+                    builder: (ctx) => NpcInfoDialog(npc: npc, onNpcChatRequested: onNpcChatRequested),
                   );
                 },
                 child: AppIcons.npc(context, npc.icon),
@@ -184,10 +186,13 @@ class GameMapWidget extends StatelessWidget {
                   right: 40,
                   child: GestureDetector(
                     onTap: () {
+                      onNpcChatRequested.call(npc);
+                      /*
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => ChatPage(npc: npc)),
                       );
+                      */
                     },
                     child: AppIcons.chatBubble(context),
                   ),
