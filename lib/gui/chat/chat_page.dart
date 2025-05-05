@@ -95,7 +95,41 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     final messages = _conversation.getVisibleMessages(medium);
     return Scaffold(
-      appBar: AppBar(title: isRadio ? Text("Walkie Talkie"): Text(widget.npc.displayName)),
+      appBar:
+
+      AppBar(
+      backgroundColor: Colors.blueGrey.shade900,
+      elevation: 4,
+      foregroundColor: Colors.white,
+      title: isRadio
+          ? Row(
+        children: [
+          Icon(Icons.radio, size: 20, color: Colors.white70),
+          SizedBox(width: 8),
+          Text(
+            "Walkie Talkie",
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      )
+          : Text(
+        widget.npc.displayName,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+
+
+
+
+
+
+    // AppBar(title: isRadio ? Text("Walkie Talkie"): Text(widget.npc.displayName)),
       body: Stack(
         children: [
           Positioned.fill(
