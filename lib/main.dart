@@ -408,8 +408,8 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: const EdgeInsets.all(8.0),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
+              color: Colors.white, // oder dein gewählter Hintergrund
+              borderRadius: BorderRadius.circular(12), // 8–16 ist typisch für Android-Icons
               boxShadow: [
                 BoxShadow(
                   color: Colors.black26,
@@ -419,6 +419,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             padding: const EdgeInsets.all(4.0),
+            width: 40,
+            height: 40,
             child: Image.asset(
               'assets/logo/StoryTrail.png',
               fit: BoxFit.contain,
