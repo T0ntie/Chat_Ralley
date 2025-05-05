@@ -474,7 +474,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Prüfen, ob neue Items vorhanden sind
     if (!_isSidePanelVisible && GameEngine().hasNewItems()) {
-      await Future.delayed(Duration(seconds: 10)); // Optional: sanfte Verzögerung
+      await Future.delayed(Duration(seconds: 3)); // Optional: sanfte Verzögerung
       if (!mounted) return;
       print("👉 New items found, opening side panel");
       setState(() {

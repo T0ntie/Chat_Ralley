@@ -1,4 +1,4 @@
-//import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hello_world/engine/npc.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class ResourceIcons {
 
 class ResourceColors {
   //Map Markers
-  static Color seed = Colors.green;
+  static Color seed = Color(0xFF455A64); //Colors.green;
   static Color unknownNpc = Colors.black;
   static Color identifiedNpc = Colors.black;
   static Color nearbyNpc = Color(0xFFD50000);
@@ -84,6 +84,7 @@ class ResourceSizes {
   static const double hotspotSize = 30.0;
   static const double playerPositionSize = 40.0;
 }
+
 
 class ResourceImages {
   static Image walkieTakie(BuildContext context) =>

@@ -230,7 +230,7 @@
   "items": [
     {
       "name": "Walkie",
-      "icon": "icons/walkie-talkie.png",
+      "icon": "icons/walkie-talkie.svg",
       "owned": false,
       "useType": "radio",
       "targetNpc": "{{Kommissar_Knatterbach}}"

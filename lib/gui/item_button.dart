@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hello_world/app_resources.dart';
 import 'package:hello_world/engine/game_engine.dart';
 import '../engine/item.dart';
@@ -98,8 +99,9 @@ class _ItemButtonState extends State<ItemButton>
             child: ClipOval(
               // <<< Damit auch das Icon nicht überlappt
               child: IconButton(
-                icon: Image.asset(
+                icon: SvgPicture.asset( //fixme icon classe die svg und png kann
                   'assets/story/${widget.item.iconAsset}',
+                  color: Colors.white,
                   width: 24,
                   height: 24,
                 ),
