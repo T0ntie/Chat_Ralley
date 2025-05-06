@@ -1,5 +1,6 @@
 import 'package:hello_world/actions/add_to_inventory_action.dart';
 import 'package:hello_world/actions/behave_action.dart';
+import 'package:hello_world/actions/notify_action.dart';
 import 'package:hello_world/actions/set_flag_action.dart';
 import 'package:hello_world/actions/show_hotspot_action.dart';
 import 'package:hello_world/actions/reveal_hotspot_action.dart';
@@ -69,15 +70,32 @@ abstract class NpcAction{
       print("  $key: $value");
     });
 
+    print("Aktuelle Items: ");
+    for (final item in GameEngine().items) {
+      print("Item: ${item.name}: owned: ${item.isOwned}");
+    }
+
     print("Conditions für Invoke:");
     conditions.forEach((key, value) {
       print("  $key: $value");
     });
 
+    bool allConditionsMet = conditions.entries.every((entry) {
+      final key = entry.key;
+      final expected = entry.value;
 
-    bool allConditionsMet = conditions.keys
-        .where(flags.containsKey)
-        .every((key) => conditions[key] == flags[key]);  // Werte vergleichen
+      if (key.startsWith('flag:')) {
+        final flagName = key.substring(5).norm;
+        return GameEngine().checkFlag(flagName) == expected;
+      } else if (key.startsWith('item:')) {
+        final itemName = key.substring(5).trim();
+        print("item: $itemName ${GameEngine().ownsItem(itemName)} == ${expected}");
+        return GameEngine().ownsItem(itemName) == expected;
+      } else {
+        // Rückwärtskompatibel für alte Keys ohne Präfix
+        return GameEngine().checkFlag(key.norm) == expected;
+      }
+    });
 
     if (allConditionsMet) {
       excecute(npc);
@@ -132,5 +150,6 @@ abstract class NpcAction{
     StopTalkingAction.register();
     SetFlagAction.register();
     AddToInventoryAction.register();
+    NotifyAction.register();
   }
 }

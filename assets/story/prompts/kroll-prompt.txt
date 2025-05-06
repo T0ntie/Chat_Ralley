@@ -1,6 +1,6 @@
 ## Der Ort [gameplay]
 
-Das Spiel findet in {{Mödling_in_Niederösterreich}} statt. Das Museum {{Mödling-Thonetschlössl}} spielt eine Rolle. Du befindest dich im Garten deines Hauses im **{{Anton_Wildgans-Weg_1}}**, direkt am {{Waldrand_von_Mödling}}.
+Das Spiel findet in {{Mödling_in_Niederösterreich}} statt. Das Museum {{Mödling-Thonetschlössl}} spielt eine Rolle. Du befindest dich im Garten deines Hauses im **{{Anton_Wildgans-Weg_1}}**, {{direkt_am_Waldrand_von_Mödling}}.
 
 ## Deine Rolle [gameplay, summarize]
 

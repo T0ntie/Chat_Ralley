@@ -48,8 +48,7 @@
           "onHotspot": "Museum",
           "invokeAction": "talk",
           "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]",
-          "conditions":
-          {
+          "conditions": {
             "knatterbachAtPolice": false
           }
         },
@@ -70,8 +69,7 @@
           "onHotspot": "Polizei",
           "invokeAction": "talk",
           "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]",
-          "conditions":
-          {
+          "conditions": {
             "knatterbachAtPolice": true
           }
         },
@@ -107,8 +105,7 @@
           "onMessageCount": 10,
           "invokeAction": "behave",
           "directive": "[Erinnere dich an das Besucherbuch]",
-          "conditions":
-          {
+          "conditions": {
             "knowsKrollsAddress": false
           }
         },
@@ -149,7 +146,8 @@
         {
           "onSignal": "ShowKirchengasse",
           "invokeAction": "showHotspot",
-          "hotspot": "{{Haus_Tschulli}}"
+          "hotspot": "{{Haus_Tschulli}}",
+          "notificiation": "Ein neuer Ort wurde auf der Karte markiert."
         }
       ]
     },
@@ -165,7 +163,11 @@
         {
           "onSignal": "BozziLead",
           "invokeAction": "moveAlong",
-          "path": "BonePath"
+          "path": "BonePath",
+          "notification": "Der Hund möchte dir etwas zeigen!",
+          "conditions": {
+            "item:Knochen": true
+          }
         },
         {
           "onSignal": "CallBozzi",
@@ -185,9 +187,29 @@
           "invokeAction": "stopMoving"
         },
         {
-          "onSignal": "bozziTalk",
-          "invokeAction": "talk",
-          "trigger": "[Der Spieler erscheint]"
+          "onSignal": "tailwag",
+          "invokeAction": "notify",
+          "notification": "Der Hund wackelt mit dem Schwanz"
+        },
+        {
+          "onSignal": "tailtuck",
+          "invokeAction": "notify",
+          "notification": "Der Hund zieht den Schwanz ein"
+        },
+        {
+          "onSignal": "nudge",
+          "invokeAction": "notify",
+          "notification": "Der Hund stupst dich an"
+        },
+        {
+          "onSignal": "growl",
+          "invokeAction": "notify",
+          "notification": "Der Hund knurrt dich an"
+        },
+        {
+          "onSignal": "headtilt",
+          "invokeAction": "notify",
+          "notification": "Der Hund hält den Kopf schief"
         }
       ]
     },
@@ -196,8 +218,18 @@
       "position": "TschulliPosition",
       "prompt": "tschulli-prompt.txt",
       "image": "images/tschulli.png",
-      "visible": true,
-      "revealed": true
+      "visible": false,
+      "revealed": false,
+      "actions": [
+        {
+          "onHotspot": "{{Haus_Tschulli}}",
+          "invokeAction": "appear"
+        },
+        {
+          "onSignal": "jölli",
+          "invokeAction": "appear"
+        }
+      ]
     }
   ],
   "hotspots": [
@@ -217,14 +249,14 @@
       "name": "{{Haus_Kroll}}",
       "position": "HausKrollPosition",
       "radius": 20,
-      "visible": true,
+      "visible": false,
       "revealed": false
     },
     {
       "name": "{{Haus_Tschulli}}",
       "position": "HausTschulliPosition",
       "radius": 20,
-      "visible": true
+      "visible": false
     }
   ],
   "items": [
@@ -234,6 +266,62 @@
       "owned": false,
       "useType": "radio",
       "targetNpc": "{{Kommissar_Knatterbach}}"
+    },
+    {
+      "name": "Knochen",
+      "icon": "icons/bone.svg",
+      "owned": true,
+      "useType": "radio",
+      "targetNpc": "bozzi"
+    },
+    {
+      "name": "Karotte",
+      "icon": "icons/carrot.svg",
+      "owned": true,
+      "useType": "radio",
+      "targetNpc": "bozzi"
+    },
+    {
+      "name": "Tibia",
+      "icon": "icons/tibia.svg",
+      "owned": false,
+      "useType": "radio",
+      "targetNpc": "bozzi"
+    },
+    {
+      "name": "ball",
+      "icon": "icons/ball.svg",
+      "owned": false,
+      "useType": "radio",
+      "targetNpc": "bozzi"
+    },
+    {
+      "name": "cookie",
+      "icon": "icons/cookie.svg",
+      "owned": false,
+      "useType": "radio",
+      "targetNpc": "bozzi"
+    },
+    {
+      "name": "meat",
+      "icon": "icons/meat.svg",
+      "owned": false,
+      "useType": "radio",
+      "targetNpc": "bozzi"
+    },
+    {
+      "name": "cheese",
+      "icon": "icons/cheese.svg",
+      "owned": false,
+      "useType": "radio",
+      "targetNpc": "bozzi"
+    },
+    {
+      "name": "steak",
+      "icon": "icons/steak.svg",
+      "owned": true,
+      "useType": "radio",
+      "targetNpc": "bozzi"
     }
   ],
   "flags": {

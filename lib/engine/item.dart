@@ -19,7 +19,7 @@ class Item {
     return npc;
   }
 
-  Item({required this.name, required this.isOwned, required this.iconAsset, required this.useType, required this.npcName} );
+  Item({required String name, required this.isOwned, required this.iconAsset, required this.useType, required this.npcName} ):this.name= name.norm;
 
   static Item fromJson(Map<String, dynamic> json) {
     return Item(

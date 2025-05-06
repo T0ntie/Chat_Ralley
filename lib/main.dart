@@ -309,40 +309,35 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_initializationError != null) {
       return Scaffold(
         //appBar: AppBar(title: Text(widget.title)),
-        appBar: AppBar(
-          backgroundColor: Colors.blueGrey.shade900,
-          elevation: 4,
-          foregroundColor: Colors.white,
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4,
-                    offset: Offset(1, 1),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.all(4.0),
-              child: Image.asset(
-                'assets/logo/StoryTrail.png',
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          title: Text(
-            "StoryTrail",
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
 
+          appBar: AppBar(
+            backgroundColor: Colors.blueGrey.shade900,
+            elevation: 4,
+            foregroundColor: Colors.white,
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white, // oder dein gewählter Hintergrund
+                  borderRadius: BorderRadius.circular(12), // 8–16 ist typisch für Android-Icons
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 4,
+                      offset: Offset(1, 1),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(4.0),
+                width: 40,
+                height: 40,
+                child: Image.asset(
+                  'assets/logo/StoryTrail.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
 
         body: Center(
           child: Padding(
@@ -384,20 +379,6 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
     final actionsByTrigger = GameEngine().getActionsGroupedByTrigger();
-/*
-    if (!_isSidePanelVisible) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (GameEngine().hasNewItems()) {
-          await Future.delayed(Duration(seconds: 3));
-          if (mounted) {
-            setState(() {
-              _isSidePanelVisible = true;
-            });
-          }
-        }
-      });
-    }
-*/
     return Scaffold(
 
       appBar: AppBar(
@@ -484,54 +465,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 
-
-
-/*
-      appBar: AppBar(
-        title: Text(widget.title),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.bug_report),
-            tooltip: "Test Actions",
-            onPressed: () {
-              setState(() {
-                showActionTestingPanel = !showActionTestingPanel;
-              });
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.sports_esports_outlined),
-            tooltip: "Simulate",
-            onPressed: () {
-              setState(() {
-                if (!_isSimulatingLocation) {
-                  _lastRealGpsPosition = _playerPosition;
-                } else {
-                  if (_lastRealGpsPosition != null) {
-                    _playerPosition = _lastRealGpsPosition!;
-                    _processNewLocation(_playerPosition);
-                  }
-                }
-                _isSimulatingLocation = !_isSimulatingLocation;
-              });
-            },
-          ),
-          Builder(
-            builder:
-                (context) => IconButton(
-                  icon: Icon(Icons.menu_open),
-                  tooltip: "Seitenleiste öffnen",
-                  onPressed: () {
-                    setState(() {
-                      _isSidePanelVisible = !_isSidePanelVisible;
-                      //GameEngine().markAllItemsAsSeen();
-                    });
-                  },
-                ),
-          ),
-        ],
-      ),
-*/
       body:
           !_initializationCompleted
               ? Center(

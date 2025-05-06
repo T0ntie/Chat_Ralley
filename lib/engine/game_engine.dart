@@ -51,7 +51,16 @@ class GameEngine {
   }
 
   Item? getItemByName(String itemName) {
-    return items.firstWhere((item) => item.name == itemName);
+    try {
+      return items.firstWhere((item) => item.name == itemName);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  bool ownsItem(String itemName) {
+    Item? item = getItemByName(itemName);
+    return item?.isOwned ?? false;
   }
 
   bool hasNewItems() {

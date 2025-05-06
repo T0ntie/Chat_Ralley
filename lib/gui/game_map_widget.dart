@@ -49,6 +49,9 @@ class GameMapWidget extends StatelessWidget {
             onSimulatedLocationChange!(point);
           }
         },
+        onTap: (tapPosition, point) {
+          print('Tapped on location: ${point.latitude}, ${point.longitude}');
+        },
       ),
       children: [
         TileLayer(
