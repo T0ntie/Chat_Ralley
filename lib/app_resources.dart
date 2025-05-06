@@ -1,4 +1,3 @@
-import 'package:flutter_svg/svg.dart';
 import 'package:hello_world/engine/npc.dart';
 import 'package:flutter/material.dart';
 
