@@ -76,7 +76,7 @@ class SnackBarService {
         backgroundColor: ResourceColors.errorSnack(context),
       ),
     );
-    print('message');
+    print('$message');
   }
 
 

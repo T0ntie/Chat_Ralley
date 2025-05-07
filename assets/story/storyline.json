@@ -226,8 +226,49 @@
           "invokeAction": "appear"
         },
         {
-          "onSignal": "jölli",
-          "invokeAction": "appear"
+          "onSignal": "TschulliDebut",
+          "invokeAction": "reveal"
+        },
+        {
+          "onSignal": "canTalk",
+          "invokeAction": "behave",
+          "promptTag": "canTalk"
+        },
+        {
+          "onSignal": "getBone",
+          "invokeAction": "addToInventory",
+          "item": "Knochen",
+          "notification": "Du hast einen Knochen erhalten."
+        },
+        {
+          "onSignal": "getCarrot",
+          "invokeAction": "addToInventory",
+          "item": "Karotte",
+          "notification": "Du hast eine Karotte erhalten."
+        },
+        {
+          "onSignal": "getBall",
+          "invokeAction": "addToInventory",
+          "item": "Ball",
+          "notification": "Du hast einen Ball erhalten."
+        },
+        {
+          "onSignal": "getMeat",
+          "invokeAction": "addToInventory",
+          "item": "Fleisch",
+          "notification": "Du hast ein Stück Fleisch erhalten."
+        },
+        {
+          "onSignal": "getCookie",
+          "invokeAction": "addToInventory",
+          "item": "Keks",
+          "notification": "Du hast ein Hundekeks erhalten."
+        },
+        {
+          "onSignal": "getSteak",
+          "invokeAction": "addToInventory",
+          "item": "Steak",
+          "notification": "Du hast ein Steak erhalten."
         }
       ]
     }
@@ -270,14 +311,14 @@
     {
       "name": "Knochen",
       "icon": "icons/bone.svg",
-      "owned": true,
+      "owned": false,
       "useType": "radio",
       "targetNpc": "bozzi"
     },
     {
-      "name": "Karotte",
+      "name": "Karrotte",
       "icon": "icons/carrot.svg",
-      "owned": true,
+      "owned": false,
       "useType": "radio",
       "targetNpc": "bozzi"
     },
@@ -289,37 +330,37 @@
       "targetNpc": "bozzi"
     },
     {
-      "name": "ball",
+      "name": "Ball",
       "icon": "icons/ball.svg",
       "owned": false,
       "useType": "radio",
       "targetNpc": "bozzi"
     },
     {
-      "name": "cookie",
+      "name": "Keks",
       "icon": "icons/cookie.svg",
       "owned": false,
       "useType": "radio",
       "targetNpc": "bozzi"
     },
     {
-      "name": "meat",
+      "name": "Fleisch",
       "icon": "icons/meat.svg",
       "owned": false,
       "useType": "radio",
       "targetNpc": "bozzi"
     },
     {
-      "name": "cheese",
+      "name": "Käse",
       "icon": "icons/cheese.svg",
       "owned": false,
       "useType": "radio",
       "targetNpc": "bozzi"
     },
     {
-      "name": "steak",
+      "name": "Steak",
       "icon": "icons/steak.svg",
-      "owned": true,
+      "owned": false,
       "useType": "radio",
       "targetNpc": "bozzi"
     }

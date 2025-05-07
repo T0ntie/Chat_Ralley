@@ -1,10 +1,20 @@
+import 'package:hello_world/engine/game_engine.dart';
+
 import 'npc_action.dart';
 import '../engine/npc.dart';
 
-class BehaveAction extends NpcAction{
+class BehaveAction extends NpcAction {
   String? directiveMessage;
   String? promptTag;
-  BehaveAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.directiveMessage, required this.promptTag});
+
+  BehaveAction({
+    required super.trigger,
+    required super.conditions,
+    super.notification,
+    super.defer,
+    required this.directiveMessage,
+    String? promptTag,
+  }): promptTag = promptTag?.norm;
 
   @override
   void excecute(Npc npc) {
@@ -16,16 +26,23 @@ class BehaveAction extends NpcAction{
     final directiveMessage = json['directive'] as String?;
     final promptTag = json['promptTag'] as String?;
     if (directiveMessage == null && promptTag == null) {
-      throw ArgumentError("Weder 'directive' noch 'promptTag' versorgt in BehaveAction at + ${json}");
+      throw ArgumentError(
+        "Weder 'directive' noch 'promptTag' versorgt in BehaveAction at + ${json}",
+      );
     }
-    final (trigger, conditions, notification, defer) = NpcAction.actionFieldsFromJson(json);
+    final (
+      trigger,
+      conditions,
+      notification,
+      defer,
+    ) = NpcAction.actionFieldsFromJson(json);
     return BehaveAction(
-        trigger: trigger,
-        conditions: conditions,
-        notification: notification,
-        defer: defer,
-        directiveMessage: directiveMessage,
-        promptTag: promptTag,
+      trigger: trigger,
+      conditions: conditions,
+      notification: notification,
+      defer: defer,
+      directiveMessage: directiveMessage,
+      promptTag: promptTag,
     );
   }
 

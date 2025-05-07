@@ -77,11 +77,12 @@ class _ChatPageState extends State<ChatPage> {
         _conversation.addAssistantMessage(response, medium);
       });
 
-    } catch (e) {
+    } catch (e, stackTrace) {
       SnackBarService.showErrorSnackBar(
         context,
         '❌ Kommunikation mit Chat GPT fehlgeschlagen.',
       );
+      print("Exception occured: $e : \n${stackTrace} ");
     } finally {
       if (!mounted) return;
       setState(() {
