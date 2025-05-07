@@ -47,7 +47,13 @@ class GameEngine {
   }
 
   Npc? getNpcByName(String npcName) {
-    return storyLine?.npcs.firstWhere((npc) => npc.name == npcName);
+    final npcs = storyLine?.npcs;
+    if (npcs == null) return null;
+
+    for (final npc in npcs) {
+      if (npc.name == npcName) return npc;
+    }
+    return null;
   }
 
   Item? getItemByName(String itemName) {

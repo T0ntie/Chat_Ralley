@@ -12,8 +12,8 @@ class AddToInventoryAction extends NpcAction {
     required super.conditions,
     super.notification,
     super.defer,
-    required String itemName,
-  }): itemName = itemName.norm;
+    required this.itemName,
+  });
 
   @override
   void excecute(Npc npc) {

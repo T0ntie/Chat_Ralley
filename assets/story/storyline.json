@@ -166,7 +166,7 @@
           "path": "BonePath",
           "notification": "Der Hund möchte dir etwas zeigen!",
           "conditions": {
-            "item:Knochen": true
+            "item:Karotte": true
           }
         },
         {
@@ -313,56 +313,56 @@
       "icon": "icons/bone.svg",
       "owned": false,
       "useType": "radio",
-      "targetNpc": "bozzi"
+      "targetNpc": "{{Bozzi}}"
     },
     {
       "name": "Karrotte",
       "icon": "icons/carrot.svg",
       "owned": false,
-      "useType": "radio",
-      "targetNpc": "bozzi"
+      "useType": "show",
+      "targetNpc": "{{Bozzi}}"
     },
     {
       "name": "Tibia",
       "icon": "icons/tibia.svg",
       "owned": false,
-      "useType": "radio",
-      "targetNpc": "bozzi"
+      "useType": "show",
+      "targetNpc": "{{Bozzi}}"
     },
     {
       "name": "Ball",
       "icon": "icons/ball.svg",
       "owned": false,
-      "useType": "radio",
-      "targetNpc": "bozzi"
+      "useType": "show",
+      "targetNpc": "{{Bozzi}}"
     },
     {
       "name": "Keks",
       "icon": "icons/cookie.svg",
       "owned": false,
-      "useType": "radio",
-      "targetNpc": "bozzi"
+      "useType": "show",
+      "targetNpc": "{{Bozzi}}"
     },
     {
       "name": "Fleisch",
       "icon": "icons/meat.svg",
       "owned": false,
-      "useType": "radio",
-      "targetNpc": "bozzi"
+      "useType": "show",
+      "targetNpc": "{{Bozzi}}"
     },
     {
       "name": "Käse",
       "icon": "icons/cheese.svg",
       "owned": false,
-      "useType": "radio",
-      "targetNpc": "bozzi"
+      "useType": "show",
+      "targetNpc": "{{Bozzi}}"
     },
     {
       "name": "Steak",
       "icon": "icons/steak.svg",
       "owned": false,
-      "useType": "radio",
-      "targetNpc": "bozzi"
+      "useType": "show",
+      "targetNpc": "{{Bozzi}}"
     }
   ],
   "flags": {

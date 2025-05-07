@@ -66,5 +66,29 @@ class ChatService {
       rethrow;
     }
   }
+
+  static Future<String> generateItemMessage(String npcName, String itemName) async {
+    final messages = [
+      {
+        "role": "system",
+        "content":
+        "Du bist ein Sprachassistent in einem deutschsprachigen Abenteuerspiel. Deine Aufgabe ist es, kurze, grammatikalisch korrekte Spielnachrichten zu erzeugen. Halte die Sätze einfach, direkt und spielnah. Verwende gelegentlich andere Verben oder Satzstrukturen, aber keine Erklärungen oder Zusatztexte.",
+      },
+      {
+        "role": "user",
+        "content": '''
+Formuliere folgenden Satz grammatikalisch korrekt auf Deutsch und gib **nur eine** Variante zurück:
+
+Satz: "Du zeigst [npcName] [itemName]."
+npcName: $npcName
+itemName: $itemName
+''',
+      },
+    ];
+
+    final response = await ChatService.processMessages(messages);
+    return response.trim();
+  }
+
 }
 

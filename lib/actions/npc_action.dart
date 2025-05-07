@@ -51,8 +51,6 @@ abstract class NpcAction{
 
   NpcAction({required this.trigger, required this.conditions, this.notification, this.defer = false});
 
-
-
   static final Map<String, NpcAction Function(Map<String, dynamic>)> _actionRegistry = {};
   static void registerAction(
       String type,
@@ -65,6 +63,7 @@ abstract class NpcAction{
   {
     Map<String, bool> flags = GameEngine().flags;
 
+/*
     print("Aktuelle Flags im GameEngine:");
     flags.forEach((key, value) {
       print("  $key: $value");
@@ -79,6 +78,7 @@ abstract class NpcAction{
     conditions.forEach((key, value) {
       print("  $key: $value");
     });
+*/
 
     bool allConditionsMet = conditions.entries.every((entry) {
       final key = entry.key;
