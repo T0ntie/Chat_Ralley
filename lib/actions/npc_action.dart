@@ -59,11 +59,10 @@ abstract class NpcAction{
     _actionRegistry[type] = factory;
   }
 
-  void invoke(Npc npc)
+  bool invoke(Npc npc)
   {
     Map<String, bool> flags = GameEngine().flags;
 
-/*
     print("Aktuelle Flags im GameEngine:");
     flags.forEach((key, value) {
       print("  $key: $value");
@@ -76,24 +75,23 @@ abstract class NpcAction{
 
     print("Conditions für Invoke:");
     conditions.forEach((key, value) {
-      print("  $key: $value");
+      print("-->  '$key': '$value'");
     });
-*/
 
     bool allConditionsMet = conditions.entries.every((entry) {
       final key = entry.key;
       final expected = entry.value;
 
       if (key.startsWith('flag:')) {
-        final flagName = key.substring(5).norm;
+        final flagName = key.substring(5);
         return GameEngine().checkFlag(flagName) == expected;
       } else if (key.startsWith('item:')) {
         final itemName = key.substring(5).trim();
-        print("item: $itemName ${GameEngine().ownsItem(itemName)} == ${expected}");
+        print("comparing item: $itemName ${GameEngine().ownsItem(itemName)} == ${expected}");
         return GameEngine().ownsItem(itemName) == expected;
       } else {
         // Rückwärtskompatibel für alte Keys ohne Präfix
-        return GameEngine().checkFlag(key.norm) == expected;
+        return GameEngine().checkFlag(key) == expected;
       }
     });
 
@@ -102,7 +100,9 @@ abstract class NpcAction{
       if (notification != null) {
         GameEngine().showNotification(notification!);
       }
+      return true;
     }
+    return false;
   }
 
   void excecute(Npc npc);
@@ -120,7 +120,7 @@ abstract class NpcAction{
       final rawConditions = (json['conditions'] as Map<String, dynamic>);
       return {
         for (final entry in rawConditions.entries)
-          entry.key.norm: entry.value as bool,
+          entry.key: entry.value as bool,
       };
     }    return {};
   }

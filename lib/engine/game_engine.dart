@@ -70,8 +70,9 @@ class GameEngine {
   }
 
   bool hasNewItems() {
-      return items.any((item) => item.isOwned && item.isNew);
+    return items.any((item) => item.isOwned && item.isNew);
   }
+
   void markAllItemsAsSeen() {
     for (final item in items) {
       if (item.isOwned && item.isNew) {
@@ -80,18 +81,29 @@ class GameEngine {
     }
   }
 
+  Map<String, List<(Npc, NpcAction)>>? _actionsGroupedByTrigger;
+
   Map<String, List<(Npc, NpcAction)>> getActionsGroupedByTrigger() {
+    if (_actionsGroupedByTrigger != null) {
+      return _actionsGroupedByTrigger!;
+    }
+
     final Map<String, List<(Npc, NpcAction)>> grouped = {};
 
-    for (var (trigger, npc, action) in getAllRegisteredActionEntries()) {
+    for (var (trigger, npc, action) in _getAllRegisteredActionEntries()) {
       grouped.putIfAbsent(trigger, () => []).add((npc, action));
     }
 
+    _actionsGroupedByTrigger = grouped;
     return grouped;
   }
 
   List<(String triggerType, Npc npc, NpcAction action)>
-  getAllRegisteredActionEntries() {
+  _getAllRegisteredActionEntries() {
+    print(
+      "getAllRegisteredActionEntries !!!!-----------------------------------------",
+    );
+
     final List<(String, Npc, NpcAction)> result = [];
 
     // Signal: Map<String, List<(Npc, NpcAction)>>
@@ -112,6 +124,7 @@ class GameEngine {
     for (var entry in _approachSubscriptions.entries) {
       for (var action in entry.value) {
         result.add(('approach', entry.key, action));
+        //print("Approach-Action added to registered Actions: ${action.runtimeType}");
       }
     }
 
@@ -209,30 +222,55 @@ class GameEngine {
     FlushBarService().showFlushbar(title: "Ereignis", message: notification);
   }
 
-  void registerApproach(Npc npc) {
-    final actions = _approachSubscriptions[npc];
+  void _runActions(Map<Npc, List<NpcAction>> map,
+      Npc npc, String logPrefix) {
+    final actions = map[npc];
+    final remaining = <NpcAction>[];
+
     if (actions != null) {
       for (final action in actions) {
-        print('👣 Executing action for NPC: ${npc.name}');
-        action.invoke(npc);
+        final didRun = action.invoke(npc);
+        print('$logPrefix ${action.runtimeType} for ${npc.name} executed: $didRun');
+        if (!didRun) remaining.add(action);
       }
-      _approachSubscriptions.remove(npc);
+      if (remaining.isEmpty) {
+        map.remove(npc);
+      } else {
+        map[npc] = remaining;
+      }
     } else {
-      print('👣 No approach actions registered for ${npc.name}');
+      print('$logPrefix No actions for ${npc.name}');
     }
   }
 
-  void registerInteraction(Npc npc) {
-    final actions = _interactionSubscriptions[npc];
-    if (actions != null) {
-      for (final action in actions) {
-        print('🗣️ Executing action for NPC: ${npc.name}');
-        action.invoke(npc);
-      }
-      _interactionSubscriptions.remove(npc);
-    } else {
-      print('🗣️ No interaction actions registered for ${npc.name}');
+  void _runHotspotActions(String hotspotName) {
+    final subscribers = _hotspotSubscriptions[hotspotName];
+    if (subscribers == null) {
+      print('🧿 No actions registered for hotspot $hotspotName');
+      return;
     }
+
+    final remaining = <(Npc, NpcAction)>[];
+
+    for (final (npc, action) in subscribers) {
+      final didRun = action.invoke(npc);
+      print('🧿 Action ${action.runtimeType} for ${npc.name} at $hotspotName: $didRun');
+      if (!didRun) remaining.add((npc, action));
+    }
+
+    if (remaining.isEmpty) {
+      _hotspotSubscriptions.remove(hotspotName);
+    } else {
+      _hotspotSubscriptions[hotspotName] = remaining;
+    }
+  }
+
+  void registerApproach(Npc npc) =>
+      _runActions(_approachSubscriptions, npc, '👣');
+  void registerInteraction(Npc npc) =>
+      _runActions(_interactionSubscriptions, npc, '🗣️');
+  void registerHotspot(Hotspot hotspot) {
+    _runHotspotActions(hotspot.name);
   }
 
   void registerInitialization() {
@@ -241,9 +279,10 @@ class GameEngine {
       final Npc npc = entry.key;
       final List<NpcAction> actions = entry.value;
       for (final action in actions) {
-        action.invoke(npc);
+        final didRun = action.invoke(npc);
+        print('🚀 Action ${action.runtimeType} for NPC: ${npc.name} executed: ${didRun}');
       }
-      print(' Excecuting action for NPC: ');
+      _initSubscriptions.remove(entry);
     }
   }
 
@@ -269,7 +308,9 @@ class GameEngine {
         print('⏸️ Verzögere Action ${action.runtimeType} für ${npc.name}');
         _deferredActions.add((npc: npc, action: action));
       } else {
-        print('▶️ Action ${action.runtimeType} für ${npc.name} wird ausgeführt');
+        print(
+          '▶️ Action ${action.runtimeType} für ${npc.name} wird ausgeführt',
+        );
         action.invoke(npc);
       }
     }
@@ -279,7 +320,9 @@ class GameEngine {
     print('🔁 Verarbeite ${_deferredActions.length} verzögerte Actions...');
     while (_deferredActions.isNotEmpty) {
       final entry = _deferredActions.removeFirst();
-      print('▶️ Action ${entry.action.runtimeType} für ${entry.npc.name} wird ausgeführt');
+      print(
+        '▶️ Action ${entry.action.runtimeType} für ${entry.npc.name} wird ausgeführt',
+      );
       entry.action.invoke(entry.npc);
     }
   }
@@ -291,21 +334,6 @@ class GameEngine {
           value; // Das Flag wird entweder hinzugefügt oder der Wert geändert
       print('🚩 Flag ${key.norm} set to ${value}');
     });
-  }
-
-  void registerHotspot(Hotspot hotspot) {
-    print('🧿 Hotspot registered: ${hotspot.name}');
-    final subscribers = _hotspotSubscriptions[hotspot.name];
-    if (subscribers == null) {
-      print('🧿 No subscribers for hotspot ${hotspot.name}');
-      return;
-    }
-    for (final (npc, action) in subscribers) {
-      print(
-        '🧿 Executing action for hotspot: ${hotspot.name} and npc: ${npc.name}',
-      );
-      action.invoke(npc);
-    }
   }
 
   void registerMessage(Npc npc, int count) {

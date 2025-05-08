@@ -29,7 +29,6 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    FlushBarService().setContext(context);
     _conversation = widget.npc.currentConversation;
     _conversation.onConversationFinished = _closeChatAfterDelay;
     GameEngine().registerInteraction(widget.npc);

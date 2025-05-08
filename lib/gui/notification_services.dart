@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:hello_world/app_resources.dart';
+import 'package:hello_world/main.dart';
 
 class FlushBarService {
   static final FlushBarService _instance = FlushBarService._internal();
@@ -9,29 +10,30 @@ class FlushBarService {
 
   FlushBarService._internal();
 
-  late BuildContext _context;
-
-  void setContext(BuildContext context) {
-    _context = context;
-  }
-
   void showFlushbar({
     required String title,
     required String message,
   }) {
-    //if (_context == null) return;
+
+    final context = navigatorKey.currentContext;
+
+    if (context == null) {
+      print('FlushBarService: currentContext is null, cannot show Flushbar.');
+      return;
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Flushbar(
         titleText: Text(
           title,
-          style: Theme.of(_context).textTheme.titleMedium?.copyWith(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
         messageText: Text(
           message,
-          style: Theme.of(_context).textTheme.bodyMedium?.copyWith(
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Colors.white70,
           ),
         ),
@@ -53,7 +55,7 @@ class FlushBarService {
         margin: EdgeInsets.all(12),
         flushbarPosition: FlushbarPosition.TOP,
         animationDuration: Duration(milliseconds: 500),
-      ).show(_context);
+      ).show(context);
 
     });
   }

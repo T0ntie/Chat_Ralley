@@ -32,6 +32,8 @@ void main() async {
   runApp(const MyApp());
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -41,6 +43,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: title,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: ResourceColors.seed),
@@ -231,12 +234,6 @@ class _MyHomePageState extends State<MyHomePage> {
     _initializeApp();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    FlushBarService().setContext(context);
-  }
-
   Positioned buildMapOrientationModeButton() {
     return (Positioned(
       top: 40, // Abstand vom oberen Rand
@@ -378,7 +375,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
     }
-    final actionsByTrigger = GameEngine().getActionsGroupedByTrigger();
+
     return Scaffold(
 
       appBar: AppBar(
@@ -506,7 +503,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   if (showActionTestingPanel)
                     ActionTestingPanel(
-                      actionsByTrigger: actionsByTrigger,
+                      actionsByTrigger: GameEngine().getActionsGroupedByTrigger(),
                       flags: GameEngine().flags,
                     ),
                   SidePanel(

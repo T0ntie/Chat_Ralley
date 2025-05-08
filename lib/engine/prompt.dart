@@ -6,7 +6,7 @@ class Prompt {
 
   static const String gamePromptFile = 'assets/story/prompts/game-prompt.txt';
   static const String compressPromptFile =
-      'assets/story/prompts/compress-prompt.txt';
+      'assets/story/prompts/summarize-prompt.txt';
   static const String promptAssetPath = 'assets/story/prompts/';
 
   late final String promptFile;

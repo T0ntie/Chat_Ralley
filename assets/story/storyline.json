@@ -187,6 +187,14 @@
           "invokeAction": "stopMoving"
         },
         {
+          "onApproach": null,
+          "invokeAction": "notify",
+          "notification": "Der Hund schnuppert an deiner Tasche",
+          "conditions": {
+            "item:Karotte": true
+          }
+        },
+        {
           "onSignal": "tailwag",
           "invokeAction": "notify",
           "notification": "Der Hund wackelt mit dem Schwanz"
@@ -316,7 +324,7 @@
       "targetNpc": "{{Bozzi}}"
     },
     {
-      "name": "Karrotte",
+      "name": "Karotte",
       "icon": "icons/carrot.svg",
       "owned": false,
       "useType": "show",
