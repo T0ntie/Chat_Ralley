@@ -188,8 +188,9 @@
         },
         {
           "onApproach": null,
-          "invokeAction": "notify",
-          "notification": "Der Hund schnuppert an deiner Tasche",
+          "invokeAction": "behave",
+          "promptTag": "reveal",
+          "notification": "Der Hund schnuppert interessiert an deiner Tasche",
           "conditions": {
             "item:Karotte": true
           }
@@ -207,7 +208,7 @@
         {
           "onSignal": "nudge",
           "invokeAction": "notify",
-          "notification": "Der Hund stupst dich an"
+          "notification": "Der Hund stupst dich auffordernd an"
         },
         {
           "onSignal": "growl",
@@ -218,6 +219,11 @@
           "onSignal": "headtilt",
           "invokeAction": "notify",
           "notification": "Der Hund hält den Kopf schief"
+        },
+        {
+          "onSignal": "turnaway",
+          "invokeAction": "notify",
+          "notification": "Der Hund dreht sich weg"
         }
       ]
     },
@@ -320,7 +326,7 @@
       "name": "Knochen",
       "icon": "icons/bone.svg",
       "owned": false,
-      "useType": "radio",
+      "useType": "show",
       "targetNpc": "{{Bozzi}}"
     },
     {

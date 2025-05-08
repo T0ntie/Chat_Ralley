@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:hello_world/engine/item.dart';
+import 'package:hello_world/engine/prompt.dart';
 import 'package:hello_world/gui/chat/radio_chat_page.dart';
 import 'package:hello_world/services/chat_service.dart';
+import 'package:hello_world/services/gpt_utilities.dart';
 
 typedef ItemUseCallback =
     Future<void> Function(BuildContext context, Item item);
@@ -23,11 +25,15 @@ class ItemCallbacks {
   }
 
   static Future<void> showItem(BuildContext context, Item item) async {
-    item.npc.behave(
+    item.npc.talk(
       "[Der Spieler zeigt dir folgenden Gegenstand: ${item.name}",
     );
-    String message = await ChatService.generateItemMessage(item.npcName, item.name);
+    String message = await GptUtilities.buildGrammaticalSentence(
+      subject: "Du",
+      predicate: "zeigst",
+      akkusativeObject: item.name,
+      dativeObject: item.npcName,
+    );
     GameEngine().showNotification(message);
   }
-
 }

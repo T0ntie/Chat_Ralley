@@ -98,11 +98,7 @@ class GameEngine {
     return grouped;
   }
 
-  List<(String triggerType, Npc npc, NpcAction action)>
-  _getAllRegisteredActionEntries() {
-    print(
-      "getAllRegisteredActionEntries !!!!-----------------------------------------",
-    );
+  List<(String triggerType, Npc npc, NpcAction action)> _getAllRegisteredActionEntries() {
 
     final List<(String, Npc, NpcAction)> result = [];
 

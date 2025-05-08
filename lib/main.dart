@@ -7,6 +7,7 @@ import 'package:hello_world/gui/item_button.dart';
 import 'package:hello_world/gui/joystick_overlay.dart';
 import 'package:hello_world/gui/notification_services.dart';
 import 'package:hello_world/gui/side_panel.dart';
+import 'package:hello_world/services/gpt_utilities.dart';
 import 'services/location_service.dart';
 import 'services/compass_service.dart';
 import 'engine/npc.dart';
@@ -23,6 +24,7 @@ import 'package:flutter/services.dart';
 void main() async {
   await dotenv.load(fileName: ".env"); // lädt die .env-Datei
   WidgetsFlutterBinding.ensureInitialized();
+  GptUtilities.init();
 
   // Nur Hochformat erlauben
   await SystemChrome.setPreferredOrientations([
