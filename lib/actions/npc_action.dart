@@ -1,5 +1,7 @@
 import 'package:hello_world/actions/add_to_inventory_action.dart';
 import 'package:hello_world/actions/behave_action.dart';
+import 'package:hello_world/actions/lead_action.dart';
+import 'package:hello_world/actions/lead_along_action.dart';
 import 'package:hello_world/actions/notify_action.dart';
 import 'package:hello_world/actions/set_flag_action.dart';
 import 'package:hello_world/actions/show_hotspot_action.dart';
@@ -151,5 +153,7 @@ abstract class NpcAction{
     SetFlagAction.register();
     AddToInventoryAction.register();
     NotifyAction.register();
+    LeadAction.register();
+    LeadAlongAction.register();
   }
 }

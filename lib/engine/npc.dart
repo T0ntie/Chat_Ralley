@@ -14,38 +14,31 @@ class Npc extends GameElement {
   final Prompt prompt;
   String imageAsset;
   static final String unknownImageAsset = "images/unknown.png";
-  //bool isRevealed;
-  bool isMoving = false;
-  bool isFollowing = false;
+
   bool hasSomethingToSay = false;
-  static final followingDistance = 5.0;
-  late LatLng toPosition;
-  List <LatLng> movementPath = [];
-  DateTime lastPositionUpdate = DateTime.now();
 
   List<NpcAction> actions = [];
 
-  //double currentDistance = double.infinity;
-  LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   late Conversation currentConversation;
 
-  double _speed;
-
-  double get speed =>
-      (GameEngine().isTestSimimulationOn ? 100.0 : _speed); //in m/s
+  final MovingBehavior movingBehavior;
 
   Npc({
     required super.name,
     required this.imageAsset,
     required this.prompt,
-    required super.position,
+    required super.position, //fixme
     required this.actions,
     required super.isVisible,
     required super.isRevealed,
-    required speed, //in km/h
-  }) : _speed = speed * 1000 / 3600 {
+    required speed, //in km/h /fixme
+  }) :movingBehavior = MovingBehavior(
+         currentBasePosition: position,
+         toPosition: position,
+         speedInKmh: speed,
+       )
+  {
     this.currentConversation = Conversation(this);
-    this.toPosition = position;
   }
 
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
@@ -79,61 +72,32 @@ class Npc extends GameElement {
   }
 
   void spawn(double distance) {
-    final random = Random();
+    movingBehavior.spawn(distance);
+  }
 
-    // Zufälliger Winkel (0–360 Grad in Radiant)
-    final angle = random.nextDouble() * 2 * pi;
 
-    // Umrechnung Meter → Grad
-    const metersPerDegreeLat = 111320.0;
-    final metersPerDegreeLng = metersPerDegreeLat * cos(playerPosition.latitude * pi / 180);
-
-    final deltaLat = (distance * cos(angle)) / metersPerDegreeLat;
-    final deltaLng = (distance * sin(angle)) / metersPerDegreeLng;
-
-    position = LatLng(
-      playerPosition.latitude + deltaLat,
-      playerPosition.longitude + deltaLng,
-    );
+  void leadTo(LatLng toPosition) {
+    movingBehavior.leadTo(toPosition);
   }
 
   void moveTo(LatLng toPosition) {
-    if (isMoving) {
-      position = currentPosition;
-    }
-    this.toPosition = toPosition;
-    isMoving = true;
-    isFollowing = false;
-    lastPositionUpdate = DateTime.now();
+    movingBehavior.moveTo(toPosition);
   }
 
   void moveAlong(List<LatLng> path) {
-    if (isMoving) {
-      position = currentPosition;
-    }
-    movementPath = List.from(path);
-    this.toPosition = movementPath.removeAt(0);
-    isMoving = true;
-    isFollowing = false;
-    lastPositionUpdate = DateTime.now();
+    movingBehavior.moveAlong(path);
+  }
+
+  void leadAlong(List<LatLng> path) {
+    movingBehavior.leadAlong(path);
   }
 
   void startFollowing() {
-    if (isMoving) {
-      position = currentPosition;
-    }
-    this.toPosition = playerPosition;
-    this.movementPath = [];
-    isFollowing = true;
-    isMoving = true;
-    lastPositionUpdate = DateTime.now();
+    movingBehavior.startFollowing();
   }
 
   void stopMoving() {
-    position = currentPosition;
-    isFollowing = false;
-    isMoving = false;
-    this.movementPath = [];
+    movingBehavior.stopMoving();
   }
 
   void stopTalking() {
@@ -155,7 +119,7 @@ class Npc extends GameElement {
   }
 
   double get currentDistance {
-    return Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
+    return movingBehavior.currentDistance;
   }
 
   String get displayImageAsset {
@@ -168,43 +132,7 @@ class Npc extends GameElement {
   }
 
   LatLng get currentPosition {
-    if (!isMoving) return position;
-    final now = DateTime.now();
-    final timeDiffSeconds = now
-        .difference(lastPositionUpdate)
-        .inMilliseconds / 1000.0;
-    final distanceToTravel = speed * timeDiffSeconds;
-    final distance = const Distance().as(
-        LengthUnit.Meter, position, toPosition);
-
-    if (distanceToTravel > distance) {
-      position = toPosition;
-      if (movementPath.isNotEmpty) {
-        toPosition = movementPath.removeAt(0);
-        lastPositionUpdate = now;
-        return currentPosition; //rekursiver Aufruf
-      }
-      isMoving = false;
-      return position;
-    }
-    final fraction = distanceToTravel / distance;
-    final newLat = position.latitude +
-        (toPosition.latitude - position.latitude) * fraction;
-    final newLng = position.longitude +
-        (toPosition.longitude - position.longitude) * fraction;
-    final interpolatedPosition = LatLng(newLat, newLng);
-
-    //wenn npc nahe genug beim player ist bleibt er stehen
-    if (isFollowing) {
-      final distanceToPlayer = const Distance().as(
-          LengthUnit.Meter, interpolatedPosition, playerPosition);
-      if (distanceToPlayer < followingDistance) {
-        isMoving = false;
-        position = interpolatedPosition;
-        return interpolatedPosition;
-      }
-    }
-    return interpolatedPosition;
+    return movingBehavior.currentPosition;
   }
 
   NPCIcon get icon {
@@ -225,20 +153,226 @@ class Npc extends GameElement {
   }
 
   bool canCommunicate() {
-    return (currentDistance < GameEngine.conversationDistance);
+    return (movingBehavior.currentDistance < GameEngine.conversationDistance);
   }
 
-  void updatePlayerPosition(LatLng playerPosition) {  //fixme der npc hüpft zurück bei following
-    this.playerPosition = playerPosition;
+  void updatePlayerPosition(LatLng playerPosition) {
+    movingBehavior.updatePlayerPosition(playerPosition);
+
+    if (movingBehavior.currentDistance < GameEngine.conversationDistance) {
+      GameEngine().registerApproach(this);
+    }
+  }
+}
+
+class MovingBehavior {
+  bool isMoving;
+  bool isFollowing;
+  bool isLeading;
+  //bool isWaiting;
+
+  DateTime movementStartTime;
+
+  LatLng currentBasePosition;
+  LatLng toPosition;
+  LatLng playerPosition = LatLng(51.5074, -0.1278); //London
+  List<LatLng> path;
+  double speedInKmh;
+  double speedInms;
+  static const followingDistance = 5.0;
+  static const waitDistance = 75.0;
+  static const continueDistance = 20.0;
+
+  MovingBehavior({
+    required this.currentBasePosition,
+    required this.toPosition,
+    required this.speedInKmh,
+  }) : isMoving = false,
+       isFollowing = false,
+       isLeading = false,
+       movementStartTime = DateTime.now(),
+       path = [],
+       speedInms = speedInKmh * 1000 / 3600;
+
+  double get currentDistance {
+    return Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
+  }
+
+  LatLng _interpolatePosition(LatLng from, LatLng to, double distanceToTravel) {
+    final totalDistance = Distance().as(LengthUnit.Meter, from, to);
+    if (totalDistance == 0 || distanceToTravel >= totalDistance) return to;
+
+    final fraction = distanceToTravel / totalDistance;
+    final newLat = from.latitude + (to.latitude - from.latitude) * fraction;
+    final newLng = from.longitude + (to.longitude - from.longitude) * fraction;
+    return LatLng(newLat, newLng);
+  }
+
+  LatLng get currentPosition {
+    if (!isMoving) return currentBasePosition;
+
+    final now = DateTime.now();
+    final timeDiffSeconds =
+        now.difference(movementStartTime).inMilliseconds / 1000.0;
+    final distanceToTravel = speedInms * timeDiffSeconds;
+    final distance = const Distance().as(
+      LengthUnit.Meter,
+      currentBasePosition,
+      toPosition,
+    );
+
+    if (distanceToTravel > distance) {
+      currentBasePosition = toPosition;
+      if (path.isNotEmpty) {
+        toPosition = path.removeAt(0);
+        movementStartTime = now;
+        return currentPosition; //rekursiver Aufruf
+      }
+      isMoving = false;
+      return currentBasePosition;
+    }
+
+    final interpolatedPosition = _interpolatePosition(
+      currentBasePosition,
+      toPosition,
+      distanceToTravel,
+    );
+
+    //wenn npc nahe genug beim player ist bleibt er stehen
+    if (isFollowing) {
+      final distanceToPlayer = const Distance().as(
+        LengthUnit.Meter,
+        interpolatedPosition,
+        playerPosition,
+      );
+      if (distanceToPlayer < followingDistance) {
+        isMoving = false;
+        currentBasePosition = interpolatedPosition;
+        return interpolatedPosition;
+      }
+    }
+
+    if (isLeading) {
+      final distanceToPlayer = const Distance().as(LengthUnit.Meter, interpolatedPosition, playerPosition);
+      if (distanceToPlayer > waitDistance) {
+        isMoving = false;
+        currentBasePosition = interpolatedPosition;
+        return interpolatedPosition;
+      }
+    }
+
+    return interpolatedPosition;
+  }
+
+  moveTo(LatLng toPosition) {
+    if (isMoving) {
+      currentBasePosition = currentPosition;
+    }
+    this.toPosition = toPosition;
+    this.path = [];
+    isMoving = true;
+    isFollowing = false;
+    isLeading = false;
+    movementStartTime = DateTime.now();
+  }
+
+  void moveAlong(List<LatLng> p) {
+    if (isMoving) {
+      currentBasePosition = currentPosition;
+    }
+    path = List.from(p);
+    this.toPosition = path.removeAt(0);
+    isMoving = true;
+    isFollowing = false;
+    isLeading = false;
+    movementStartTime = DateTime.now();
+  }
+
+  void leadAlong(List<LatLng> p) {
+    if (isMoving) {
+      currentBasePosition = currentPosition;
+    }
+    path = List.from(p);
+    this.toPosition = path.removeAt(0);
+    isMoving = true;
+    isFollowing = false;
+    isLeading = true;
+    movementStartTime = DateTime.now();
+  }
+
+  void startFollowing() {
+    if (isMoving) {
+      currentBasePosition = currentPosition;
+    }
+    this.toPosition = playerPosition;
+    this.path = [];
+    isFollowing = true;
+    isMoving = true;
+    isLeading = false;
+    movementStartTime = DateTime.now();
+  }
+
+  void leadTo(LatLng toPosition) {
+
+    if (isMoving) {
+      currentBasePosition = currentPosition;
+    }
+    this.toPosition = toPosition;
+    this.path = [];
+    isFollowing = false;
+    isLeading = true;
+    movementStartTime = DateTime.now();
+
+    // Prüfen ob er gleich starten darf
+    final distanceToPlayer = Distance().as(LengthUnit.Meter, currentBasePosition, playerPosition);
+    isMoving = distanceToPlayer < waitDistance;
+  }
+
+  void stopMoving() {
+    currentBasePosition = currentPosition;
+    isFollowing = false;
+    isMoving = false;
+    isLeading = false;
+    this.path = [];
+  }
+
+  void spawn(double distance) {
+    final random = Random();
+
+    // Zufälliger Winkel (0–360 Grad in Radiant)
+    final angle = random.nextDouble() * 2 * pi;
+
+    // Umrechnung Meter → Grad
+    const metersPerDegreeLat = 111320.0;
+    final metersPerDegreeLng =
+        metersPerDegreeLat * cos(playerPosition.latitude * pi / 180);
+
+    final deltaLat = (distance * cos(angle)) / metersPerDegreeLat;
+    final deltaLng = (distance * sin(angle)) / metersPerDegreeLng;
+
+    currentBasePosition = LatLng(
+      playerPosition.latitude + deltaLat,
+      playerPosition.longitude + deltaLng,
+    );
+    isMoving = false;
+    isFollowing = false;
+    isLeading = false;
+  }
+
+  void updatePlayerPosition(LatLng pos) {
+    playerPosition = pos;
     if (isFollowing) {
       if (currentDistance > followingDistance) {
-        lastPositionUpdate = DateTime.now();
-        toPosition = this.playerPosition;
+        movementStartTime = DateTime.now();
+        toPosition = playerPosition;
         isMoving = true;
       }
     }
-    if (currentDistance < GameEngine.conversationDistance) {
-      GameEngine().registerApproach(this);
+    if (isLeading) {
+      if (!isMoving && currentDistance < continueDistance) {
+        movementStartTime = DateTime.now();
+        isMoving = true;
+      }
     }
   }
 }

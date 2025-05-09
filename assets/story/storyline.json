@@ -162,7 +162,7 @@
       "actions": [
         {
           "onSignal": "BozziLead",
-          "invokeAction": "moveAlong",
+          "invokeAction": "leadAlong",
           "path": "BonePath",
           "notification": "Der Hund möchte dir etwas zeigen!",
           "conditions": {
