@@ -58,10 +58,10 @@ class ActionTestingPanel extends StatelessWidget {
 
                         final tileColor =
                             index.isEven
-                                ? ResourceColors.tile(context).withOpacity(0.08)
+                                ? ResourceColors.tile(context).withAlpha((0.08*255).toInt())
                                 : ResourceColors.tile(
                                   context,
-                                ).withOpacity(0.16);
+                                ).withAlpha((0.16*255).toInt());
 
                         return Container(
                           margin: const EdgeInsets.symmetric(

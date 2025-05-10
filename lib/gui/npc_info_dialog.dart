@@ -65,7 +65,7 @@ class NpcInfoDialog extends StatelessWidget
               'Entfernung: ${npc.currentDistance} Meter',
               style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
             ),
-            if (!npc.canCommunicate())
+            if (!npc.isInCommunicationDistance())
               Padding(
                 padding: const EdgeInsets.only(top: 10.0),
                 child: Text(
@@ -82,7 +82,7 @@ class NpcInfoDialog extends StatelessWidget
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton.icon(
-                  onPressed: npc.canCommunicate()
+                  onPressed: npc.isInCommunicationDistance()
                       ? () {
                     Navigator.of(context).pop();
                     onNpcChatRequested(npc);

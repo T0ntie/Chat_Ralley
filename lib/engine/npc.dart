@@ -138,12 +138,12 @@ class Npc extends GameElement {
   NPCIcon get icon {
     if (isVisible) {
       if (isRevealed) {
-        if (canCommunicate()) {
+        if (isInCommunicationDistance()) {
           return NPCIcon.nearby;
         } else
           return NPCIcon.identified;
       } else {
-        if (canCommunicate()) {
+        if (isInCommunicationDistance()) {
           return NPCIcon.unknown_nearby;
         } else
           return NPCIcon.unknown;
@@ -152,7 +152,7 @@ class Npc extends GameElement {
     return NPCIcon.unknown;
   }
 
-  bool canCommunicate() {
+  bool isInCommunicationDistance() {
     return (movingBehavior.currentDistance < GameEngine.conversationDistance);
   }
 
@@ -221,6 +221,7 @@ class MovingBehavior {
       toPosition,
     );
 
+    //Ziel bereits erreicht
     if (distanceToTravel > distance) {
       currentBasePosition = toPosition;
       if (path.isNotEmpty) {
@@ -252,6 +253,7 @@ class MovingBehavior {
       }
     }
 
+    //Wenn Spieler zu weit weg ist, bleibt er stehen.
     if (isLeading) {
       final distanceToPlayer = const Distance().as(LengthUnit.Meter, interpolatedPosition, playerPosition);
       if (distanceToPlayer > waitDistance) {

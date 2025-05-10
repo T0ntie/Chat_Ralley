@@ -101,7 +101,10 @@ class _ItemButtonState extends State<ItemButton>
               child: IconButton(
                 icon: SvgPicture.asset( //fixme icon classe die svg und png kann
                   'assets/story/${widget.item.iconAsset}',
-                  color: Colors.white,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
                   width: 24,
                   height: 24,
                 ),

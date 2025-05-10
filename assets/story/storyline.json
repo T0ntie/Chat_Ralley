@@ -170,13 +170,17 @@
           }
         },
         {
-          "onSignal": "CallBozzi",
+          "onSignal": "callBozzi",
           "invokeAction": "spawn",
           "notification": "Ein Hund erscheint"
         },
         {
-          "onSignal": "CallBozzi",
+          "onSignal": "callBozzi",
           "invokeAction": "appear"
+        },
+        {
+          "onSignal": "callBozzi",
+          "invokeAction": "reveal"
         },
         {
           "onSignal": "bozziFollow",

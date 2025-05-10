@@ -30,12 +30,12 @@ class MessageBubble extends StatelessWidget {
                 colors:
                     fromUser
                         ? [
-                          Colors.blueGrey.shade700.withOpacity(0.6),
-                          Colors.blueGrey.shade800.withOpacity(0.8),
+                          Colors.blueGrey.shade700.withAlpha((0.6*255).toInt()),
+                          Colors.blueGrey.shade800.withAlpha((0.8*255).toInt()),
                         ]
                         : [
-                          Colors.grey.shade700.withOpacity(0.6),
-                          Colors.grey.shade700.withOpacity(0.8),
+                          Colors.grey.shade700.withAlpha((0.6*255).toInt()),
+                          Colors.grey.shade700.withAlpha((0.8*255).toInt()),
                         ],
                 //[Colors.grey.shade700, Colors.grey.shade800],
                 begin: Alignment.topLeft,
