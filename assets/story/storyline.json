@@ -32,7 +32,7 @@
         {
           "onSignal": "ShowMuseum",
           "invokeAction": "showHotspot",
-          "hotspot": "Museum",
+          "hotspot": "{{Museum}}",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
@@ -45,7 +45,7 @@
           "invokeAction": "stopMoving"
         },
         {
-          "onHotspot": "Museum",
+          "onHotspot": "{{Museum}}",
           "invokeAction": "talk",
           "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]",
           "conditions": {
@@ -66,7 +66,7 @@
           "defer": true
         },
         {
-          "onHotspot": "Polizei",
+          "onHotspot": "{{Polizei}}",
           "invokeAction": "talk",
           "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]",
           "conditions": {
@@ -94,7 +94,7 @@
       "visible": false,
       "actions": [
         {
-          "onHotspot": "Museum",
+          "onHotspot": "{{Museum}}",
           "invokeAction": "appear"
         },
         {
@@ -183,14 +183,6 @@
           "invokeAction": "reveal"
         },
         {
-          "onSignal": "bozziFollow",
-          "invokeAction": "follow"
-        },
-        {
-          "onSignal": "bozziStop",
-          "invokeAction": "stopMoving"
-        },
-        {
           "onApproach": null,
           "invokeAction": "behave",
           "promptTag": "reveal",
@@ -200,12 +192,12 @@
           }
         },
         {
-          "onSignal": "tailwag",
+          "onSignal": "tailWag",
           "invokeAction": "notify",
           "notification": "Der Hund wackelt mit dem Schwanz"
         },
         {
-          "onSignal": "tailtuck",
+          "onSignal": "tailTuck",
           "invokeAction": "notify",
           "notification": "Der Hund zieht den Schwanz ein"
         },
@@ -220,7 +212,7 @@
           "notification": "Der Hund knurrt dich an"
         },
         {
-          "onSignal": "headtilt",
+          "onSignal": "headTilt",
           "invokeAction": "notify",
           "notification": "Der Hund hält den Kopf schief"
         },

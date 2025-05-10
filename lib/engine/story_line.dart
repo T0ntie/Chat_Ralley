@@ -86,7 +86,6 @@ class StoryLine {
     final p = json['path'];
     if (p is String && StoryLine._paths.containsKey(p)) {
       path = StoryLine._paths[p]!;
-      print("Found Path in Pathmap: $path");
     } else {
       path =
           p.map((e) {
@@ -122,15 +121,18 @@ class StoryLine {
 
   static LatLng positionFromJson(Map<String, dynamic> json) {
     //check vor valid position
-    final LatLng position;
     final pos = json['position'];
-    if (pos is String && StoryLine._positions.containsKey(pos)) {
-      position = StoryLine._positions[pos]!;
-      print("Found Position in Positionmap: $pos");
-    } else {
-      position = _latLngFromJson(pos);
+    if (pos is String) {
+      if (StoryLine._positions.containsKey(pos)) {
+        return StoryLine._positions[pos]!;
+      } else {
+        throw FormatException("❌ Position-Name '$pos' ist nicht in positions.json definiert.");
+      }
     }
-    return position;
+    if (pos is Map<String, dynamic>) {
+      return _latLngFromJson(pos);
+    }
+    throw FormatException("❌ Ungültiges Format für 'position': $pos");
   }
 
   static Future<StoryLine> fromJsonAsync(Map<String, dynamic> json) async {

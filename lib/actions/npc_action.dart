@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hello_world/actions/add_to_inventory_action.dart';
 import 'package:hello_world/actions/behave_action.dart';
 import 'package:hello_world/actions/lead_action.dart';
@@ -33,6 +34,9 @@ class NpcActionTrigger {
     'onHotspot': TriggerType.hotspot,
     'onMessageCount': TriggerType.message,
   };
+  @visibleForTesting
+  static Map<String, TriggerType> get stringToTriggerTypeForTest =>
+      Map.unmodifiable(_stringToTriggerType);
 
   NpcActionTrigger ({required this.type, required this.value});
 
@@ -54,6 +58,11 @@ abstract class NpcAction{
   NpcAction({required this.trigger, required this.conditions, this.notification, this.defer = false});
 
   static final Map<String, NpcAction Function(Map<String, dynamic>)> _actionRegistry = {};
+
+  @visibleForTesting
+  static Map<String, NpcAction Function(Map<String, dynamic>)> get actionRegistryForTest =>
+      Map.unmodifiable(_actionRegistry);
+
   static void registerAction(
       String type,
       NpcAction Function(Map<String, dynamic>) factory,
