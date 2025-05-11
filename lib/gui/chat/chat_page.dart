@@ -7,12 +7,22 @@ import '../../engine/npc.dart';
 import '../../engine/conversation.dart';
 
 class ChatPage extends StatefulWidget {
-
   final Npc npc;
   final Medium medium;
-  final VoidCallback? onDispose; // <-- NEU
+  final VoidCallback? onDispose;
+  final Widget? floatingActionButton; // Walkie-Talkie-Push-To-Talk Button
+  final TextEditingController? externalController;
+  final ChatPageController? chatPageController;
 
-  const ChatPage({super.key, required this.npc, this.medium = Medium.chat,  this.onDispose,});
+  const ChatPage({
+    super.key,
+    required this.npc,
+    this.medium = Medium.chat,
+    this.onDispose,
+    this.floatingActionButton,
+    this.externalController,
+    this.chatPageController,
+  });
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -20,15 +30,20 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   late final Conversation _conversation;
+  late final TextEditingController _controller;
 
-  final TextEditingController _controller = TextEditingController();
+  //final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+
   bool get isRadio => widget.medium == Medium.radio;
+
   Medium get medium => widget.medium;
 
   @override
   void initState() {
     super.initState();
+    _controller = widget.externalController ?? TextEditingController();
+    widget.chatPageController?.sendMessage = sendMessage;
     _conversation = widget.npc.currentConversation;
     _conversation.onConversationFinished = _closeChatAfterDelay;
     GameEngine().registerInteraction(widget.npc);
@@ -60,13 +75,15 @@ class _ChatPageState extends State<ChatPage> {
 
   bool _isSending = false;
 
-  void _sendMessage(String text) async {
+  void sendMessage(String text) async {
     if (text.trim().isEmpty) return;
 
     setState(() {
       _conversation.addUserMessage(text, medium);
       _isSending = true;
+      widget.chatPageController?.isSending.value = true;
     });
+
     try {
       String response = await _conversation.processConversation();
 
@@ -75,7 +92,6 @@ class _ChatPageState extends State<ChatPage> {
       setState(() {
         _conversation.addAssistantMessage(response, medium);
       });
-
     } catch (e, stackTrace) {
       SnackBarService.showErrorSnackBar(
         context,
@@ -86,6 +102,7 @@ class _ChatPageState extends State<ChatPage> {
       if (!mounted) return;
       setState(() {
         _isSending = false;
+        widget.chatPageController?.isSending.value = false;
       });
       _controller.clear();
     }
@@ -95,52 +112,46 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     final messages = _conversation.getVisibleMessages(medium);
     return Scaffold(
-      appBar:
-
-      AppBar(
-      backgroundColor: Colors.blueGrey.shade900,
-      elevation: 4,
-      foregroundColor: Colors.white,
-      title: isRadio
-          ? Row(
-        children: [
-          Icon(Icons.radio, size: 20, color: Colors.white70),
-          SizedBox(width: 8),
-          Text(
-            "Walkie Talkie",
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      )
-          : Text(
-        widget.npc.displayName,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
+      appBar: AppBar(
+        backgroundColor: Colors.blueGrey.shade900,
+        elevation: 4,
+        foregroundColor: Colors.white,
+        title:
+            isRadio
+                ? Row(
+                  children: [
+                    SizedBox(width: 8),
+                    Text(
+                      "Walkie Talkie",
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                )
+                : Text(
+                  widget.npc.displayName,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
       ),
-    ),
 
-
-
-
-
-
-    // AppBar(title: isRadio ? Text("Walkie Talkie"): Text(widget.npc.displayName)),
+      // AppBar(title: isRadio ? Text("Walkie Talkie"): Text(widget.npc.displayName)),
       body: Stack(
         children: [
           Positioned.fill(
             child: Opacity(
               opacity: 0.2,
-              child: isRadio ?
-              ResourceImages.walkieTakie(context) :
-              Image.asset(
-                'assets/story/${widget.npc.displayImageAsset}',
-                fit: BoxFit.cover,
-              ),
+              child:
+                  isRadio
+                      ? ResourceImages.walkieTakie(context)
+                      : Image.asset(
+                        'assets/story/${widget.npc.displayImageAsset}',
+                        fit: BoxFit.cover,
+                      ),
             ),
           ),
           Column(
@@ -161,22 +172,32 @@ class _ChatPageState extends State<ChatPage> {
                 controller: _controller,
                 scrollController: _scrollController,
                 isSending: _isSending,
-                onSendPressed: () => _sendMessage(_controller.text),
-              )
+                onSendPressed: () => sendMessage(_controller.text),
+              ),
             ],
           ),
           if (_isSending) SendingOverlay(),
         ],
       ),
+      floatingActionButton: widget.floatingActionButton,
     );
   }
 
   @override
   void dispose() {
+    if (widget.externalController == null) {
+      _controller.dispose();
+    }
     GameEngine().flushDeferredActions();
     widget.onDispose?.call();
-    _controller.dispose();
+    //_controller.dispose();
     _scrollController.dispose();
     super.dispose();
   }
+}
+
+class ChatPageController {
+  void Function(String text)? sendMessage;
+  //bool Function()? isSending;
+  final ValueNotifier<bool> isSending = ValueNotifier(false);
 }
