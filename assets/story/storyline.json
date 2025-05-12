@@ -222,7 +222,7 @@
           "notification": "Der Hund dreht sich weg"
         },
         {
-          "onSignal": "GetTibia",
+          "onHotspot": "TibiaVersteck",
           "invokeAction": "scanToInventory",
           "item": "Tibia",
           "notification": "Du hast ein T-Rex Tibia erhalten."
@@ -318,6 +318,15 @@
       "image": "images/haustschulli.png",
       "radius": 20,
       "visible": false
+    },
+    {
+      "name": "TibiaVersteck",
+      "radius": 5,
+      "position": {
+        "lat": 48.08465098939792,
+        "lng": 16.278219512071608
+      },
+      "visible": true
     }
   ],
   "items": [

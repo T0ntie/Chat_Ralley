@@ -20,7 +20,7 @@ class Hotspot extends GameElement{
     final LatLng position = StoryLine.positionFromJson(json);
     return Hotspot(
       name: json['name'],
-      radius: (json['radius'] as num).toDouble(),
+      radius: (json['radius'] as num?)?.toDouble() ?? 10.0,
       isVisible: json['visible'] as bool? ?? true,
       isRevealed: json['revealed'] as bool? ?? true,
       position: position,

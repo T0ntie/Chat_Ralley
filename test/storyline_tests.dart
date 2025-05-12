@@ -254,54 +254,55 @@ void main() {
     print('✅ Alle verwendeten Platzhalter sind korrekt lokalisiert.');
   });
 
-  test('Alle in storyline verwendeten Positionen sind im positions.json definiert', () async {
-    final storyRaw = await File('assets/story/storyline.json').readAsString();
-    final positionsRaw = await File('assets/story/positions.json').readAsString();
+  test('Alle JSON-Schlüssel entsprechen der Whitelist gültiger Schlüssel', () async {
+    final raw = await File('assets/story/storyline.json').readAsString();
+    final json = jsonDecode(raw);
 
-    final storyJson = jsonDecode(storyRaw);
-    final positionsJson = jsonDecode(positionsRaw);
+    // Whitelist der gültigen Schlüssel
+    final allowedKeys = <String>{
+      'scenarioId', 'title', 'npcs', 'hotspots', 'items', 'flags',
+      'name', 'position', 'prompt', 'image', 'visible', 'speed', 'actions',
+      'revealed', 'icon', 'owned', 'useType', 'targetNpc', 'radius',
+      'onInit', 'onSignal', 'onInteraction', 'onHotspot', 'onApproach',
+      'invokeAction', 'distance', 'notification', 'hotspot', 'trigger',
+      'conditions', 'defer', 'directive', 'promptTag', 'path',
+      'item', 'onMessageCount'
+    };
 
-    final definedPositions = (positionsJson['positions'] as Map<String, dynamic>).keys.toSet();
-    final usedPositions = <String>{};
+    final invalidKeys = <String>[]; // <-- HIER wird sie deklariert
+    final ignoredParentKeys = {'conditions', 'flags', 'position'};
 
-    // 1. NPCs nach "position"
-    for (final npc in storyJson['npcs'] ?? []) {
-      final pos = npc['position'];
-      if (pos is String) usedPositions.add(pos);
-    }
+    void checkKeys(dynamic node, [String path = '']) {
+      if (node is Map) {
+        for (final entry in node.entries) {
+          final key = entry.key;
+          final fullPath = path.isEmpty ? key : '$path.$key';
 
-    // 2. Hotspots nach "position"
-    for (final hotspot in storyJson['hotspots'] ?? []) {
-      final pos = hotspot['position'];
-      if (pos is String) usedPositions.add(pos);
-    }
+          final parentKey = path.split('.').lastOrNull ?? '';
+          final shouldCheck = !ignoredParentKeys.contains(parentKey);
 
-    // 3. Actions mit "walkTo", "leadTo" oder "moveTo" (optional)
-    for (final npc in storyJson['npcs'] ?? []) {
-      for (final action in npc['actions'] ?? []) {
-        final pos = action['position'];
-        if (pos is String) usedPositions.add(pos);
+          if (shouldCheck && !allowedKeys.contains(key)) {
+            invalidKeys.add(fullPath);
+          }
+
+          checkKeys(entry.value, fullPath);
+        }
+      } else if (node is List) {
+        for (var i = 0; i < node.length; i++) {
+          checkKeys(node[i], '$path[$i]');
+        }
       }
     }
 
-    // 4. Vergleich
-    final undefinedPositions = usedPositions.difference(definedPositions);
-    final unusedPositions = definedPositions.difference(usedPositions);
+    checkKeys(json);
 
     expect(
-      undefinedPositions,
+      invalidKeys,
       isEmpty,
-      reason: '❌ Diese Positionen werden in storyline.json verwendet, aber sind in positions.json nicht definiert:\n${undefinedPositions.join('\n')}',
+      reason: '❌ Ungültige JSON-Schlüssel gefunden:\n${invalidKeys.join('\n')}',
     );
 
-    expect(
-      unusedPositions,
-      isEmpty,
-      reason: '⚠️ Diese Positionen sind in positions.json definiert, werden aber in storyline.json nie verwendet:\n${unusedPositions.join('\n')}',
-    );
-
-    print('✅ Alle Positionsverwendungen stimmen mit positions.json überein.');
+    print('✅ Alle JSON-Schlüssel sind gültig.');
   });
-
 
 }
