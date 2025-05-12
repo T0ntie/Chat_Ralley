@@ -109,8 +109,10 @@ abstract class NpcAction{
 
     if (allConditionsMet) {
       excecute(npc);
+      print("executed for: ${npc.name} notification: $notification");
       if (notification != null) {
         GameEngine().showNotification(notification!);
+        print("notifcation shown");
       }
       return true;
     }

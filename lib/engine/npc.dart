@@ -12,8 +12,6 @@ enum NPCIcon { unknown, identified, nearby, unknown_nearby }
 
 class Npc extends GameElement {
   final Prompt prompt;
-  String imageAsset;
-  static final String unknownImageAsset = "images/unknown.png";
 
   bool hasSomethingToSay = false;
 
@@ -25,7 +23,7 @@ class Npc extends GameElement {
 
   Npc({
     required super.name,
-    required this.imageAsset,
+    required super.imageAsset,
     required this.prompt,
     required super.position, //fixme
     required this.actions,
@@ -45,7 +43,6 @@ class Npc extends GameElement {
     try {
       final promptFile = json['prompt'] as String;
       Prompt prompt = await Prompt.createPrompt(promptFile);
-      //String promptText = prompt.getGamplayPrompt();
       final actionsJson = json['actions'] as List? ?? [];
       final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
 
@@ -54,7 +51,7 @@ class Npc extends GameElement {
         name: json['name'],
         position: position,
         prompt: prompt,
-        imageAsset: json['image'] as String? ?? unknownImageAsset,
+        imageAsset: json['image'] as String? ?? GameElement.unknownImageAsset,
         isVisible: json['visible'] as bool? ?? true,
         isRevealed: json['revealed'] as bool? ?? false,
         speed: (json['speed'] as num?)?.toDouble() ?? 5.0,
@@ -120,11 +117,6 @@ class Npc extends GameElement {
 
   double get currentDistance {
     return movingBehavior.currentDistance;
-  }
-
-  String get displayImageAsset {
-    //return isRevealed ? imageAsset : unknownImageAsset;
-    return imageAsset;
   }
 
   String get displayName {

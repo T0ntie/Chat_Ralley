@@ -138,7 +138,15 @@ class GameMapWidget extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                print("🎯 Tapped on Hotspot ${hotspot.name}");
+                showDialog(
+                  context: context,
+                  builder: (ctx) => InfoDialog(
+                    title: hotspot.name,
+                    imageAssetPath: "assets/story/${hotspot.displayImageAsset}",
+                    distanceText: "Entfernung: ${hotspot.currentDistance} Meter",
+                    noteText: null,
+                    onPrimaryAction: null,),
+                );
               },
               child: Transform.rotate(
                 angle: _getRotationAngle(),
@@ -178,7 +186,12 @@ class GameMapWidget extends StatelessWidget {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (ctx) => NpcInfoDialog(npc: npc, onNpcChatRequested: onNpcChatRequested),
+                    builder: (ctx) => InfoDialog(
+                        title: npc.displayName,
+                        imageAssetPath: "assets/story/${npc.displayImageAsset}",
+                        distanceText: "Entfernung: ${npc.currentDistance} Meter",
+                        noteText: !(npc.isInCommunicationDistance()) ? "Komm näher, um mit ${npc.displayName} zu kommunizieren.": null,
+                        onPrimaryAction: npc.isInCommunicationDistance() ? () => onNpcChatRequested(npc): null,),
                   );
                 },
                 child: AppIcons.npc(context, npc.icon),

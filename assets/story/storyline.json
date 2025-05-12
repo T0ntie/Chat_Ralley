@@ -147,7 +147,7 @@
           "onSignal": "ShowKirchengasse",
           "invokeAction": "showHotspot",
           "hotspot": "{{Haus_Tschulli}}",
-          "notificiation": "Ein neuer Ort wurde auf der Karte markiert."
+          "notification": "Ein neuer Ort wurde auf der Karte markiert."
         }
       ]
     },
@@ -293,18 +293,21 @@
     {
       "name": "{{Museum}}",
       "position": "MuseumPosition",
+      "image": "images/museum.png",
       "radius": 20,
       "visible": false
     },
     {
       "name": "{{Polizei}}",
       "position": "PolizeiPosition",
+      "image": "images/polizei.png",
       "radius": 15,
       "visible": false
     },
     {
       "name": "{{Haus_Kroll}}",
       "position": "HausKrollPosition",
+      "image": "images/hauskroll.png",
       "radius": 20,
       "visible": false,
       "revealed": false
@@ -312,6 +315,7 @@
     {
       "name": "{{Haus_Tschulli}}",
       "position": "HausTschulliPosition",
+      "image": "images/haustschulli.png",
       "radius": 20,
       "visible": false
     }
