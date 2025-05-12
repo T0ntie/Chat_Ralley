@@ -8,6 +8,7 @@ import 'package:hello_world/gui/item_button.dart';
 import 'package:hello_world/gui/joystick_overlay.dart';
 import 'package:hello_world/gui/notification_services.dart';
 import 'package:hello_world/gui/side_panel.dart';
+import 'package:hello_world/gui/splash.dart';
 import 'package:hello_world/services/gpt_utilities.dart';
 import 'services/location_service.dart';
 import 'services/compass_service.dart';
@@ -36,10 +37,17 @@ void main() async {
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<MyHomePageState> homePageKey = GlobalKey<MyHomePageState>();
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   static const String title = 'StoryTrail';
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _showSplash = true;
 
   // This widget is the root of your application.
   @override
@@ -47,11 +55,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: navigatorKey,
       navigatorObservers: [ActionObserver()],
-      title: title,
+      title: MyApp.title,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: ResourceColors.seed),
       ),
-      home: MyHomePage(key: homePageKey, title: title),
+      home:
+          _showSplash
+              ? SplashScreen(
+                onContinue: () {
+                  setState(() {
+                    _showSplash = false;
+                  });
+                },
+              )
+              : MyHomePage(key: homePageKey, title: MyApp.title),
     );
   }
 }
@@ -93,6 +110,7 @@ class MyHomePageState extends State<MyHomePage> {
   bool _isMapHeadingBasedOrientation = false;
 
   bool get _isSimulatingLocation => GameEngine().isTestSimimulationOn;
+  bool _debuggingVisible = false;
 
   bool showActionTestingPanel = false;
 
@@ -134,19 +152,23 @@ class MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initializeLocationStream() async {
     await LocationService.initialize();
-    _positionSubscription =
-        LocationService.getPositionStream().listen((Position position,) {
-          if (!_isSimulatingLocation) {
-            GameEngine().playerPosition = LatLng(position.latitude, position.longitude);
-            //print("setting location to ${_location}");
-            //_processNewLocation(_playerPosition);
-          }
-          _locationServiceInitialized = true;
-          _checkIfInitializationCompleted();
-        });
+    _positionSubscription = LocationService.getPositionStream().listen((
+      Position position,
+    ) {
+      if (!_isSimulatingLocation) {
+        GameEngine().playerPosition = LatLng(
+          position.latitude,
+          position.longitude,
+        );
+        //print("setting location to ${_location}");
+        //_processNewLocation(_playerPosition);
+      }
+      _locationServiceInitialized = true;
+      _checkIfInitializationCompleted();
+    });
   }
 
-/*
+  /*
   void _processNewLocation(LatLng location) async {
     for (final npc in _npcs) {
       npc.updatePlayerPosition(_playerPosition);
@@ -175,22 +197,21 @@ class MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       rethrow;
     } //
-    _compassSubscription =
-        CompassService.getCompassDirection().listen((heading,) {
-          DateTime currentTime = DateTime.now();
-          if ((heading - _currentHeading).abs() >= 5 ||
-              currentTime
-                  .difference(_lastHeadingUpdateTime)
-                  .inSeconds >= 1) {
-            if (_isMapHeadingBasedOrientation) {
-              _mapController.rotate(-heading);
-            }
-            setState(() {
-              _currentHeading = heading;
-              _lastHeadingUpdateTime = currentTime;
-            });
-          }
+    _compassSubscription = CompassService.getCompassDirection().listen((
+      heading,
+    ) {
+      DateTime currentTime = DateTime.now();
+      if ((heading - _currentHeading).abs() >= 5 ||
+          currentTime.difference(_lastHeadingUpdateTime).inSeconds >= 1) {
+        if (_isMapHeadingBasedOrientation) {
+          _mapController.rotate(-heading);
+        }
+        setState(() {
+          _currentHeading = heading;
+          _lastHeadingUpdateTime = currentTime;
         });
+      }
+    });
   }
 
   void _initializeUpdateTimer() {
@@ -217,7 +238,7 @@ class MyHomePageState extends State<MyHomePage> {
       ]);
     } catch (e) {
       _initializationError =
-      '❌ Initialisieren der Standortbestimmung fehlgeschlagen.';
+          '❌ Initialisieren der Standortbestimmung fehlgeschlagen.';
       SnackBarService.showErrorSnackBar(context, _initializationError!);
       return;
     }
@@ -264,14 +285,14 @@ class MyHomePageState extends State<MyHomePage> {
     return (FloatingActionButton(
       heroTag: "CenterLocation_fab",
       onPressed:
-      _initializationCompleted
-          ? () {
-        setState(() {
-          // Wenn der Button gedrückt wird, zentrieren wir die Karte auf den aktuellen Standort
-          _centerMapOnCurrentLocation();
-        });
-      }
-          : null,
+          _initializationCompleted
+              ? () {
+                setState(() {
+                  // Wenn der Button gedrückt wird, zentrieren wir die Karte auf den aktuellen Standort
+                  _centerMapOnCurrentLocation();
+                });
+              }
+              : null,
       child: AppIcons.centerLocation(
         context,
       ), // Zeigt ein Symbol für den "Mein Standort"-Button
@@ -370,75 +391,81 @@ class MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
-
       appBar: AppBar(
         backgroundColor: Colors.blueGrey.shade900,
         elevation: 4,
         foregroundColor: Colors.white,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              // oder dein gewählter Hintergrund
-              borderRadius: BorderRadius.circular(12),
-              // 8–16 ist typisch für Android-Icons
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 4,
-                  offset: Offset(1, 1),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.all(4.0),
-            width: 40,
-            height: 40,
-            child: Image.asset(
-              'assets/logo/StoryTrail.png',
-              fit: BoxFit.contain,
+
+          child: GestureDetector(
+            onLongPress: () {
+              // Hier kannst du z. B. ein Debug-Panel sichtbar machen
+              setState(() {
+                _debuggingVisible = !_debuggingVisible; // Beispielzustand
+              });
+            },
+
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                // oder dein gewählter Hintergrund
+                borderRadius: BorderRadius.circular(12),
+                // 8–16 ist typisch für Android-Icons
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4,
+                    offset: Offset(1, 1),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(4.0),
+              width: 40,
+              height: 40,
+              child: Image.asset(
+                'assets/logo/StoryTrail.png',
+                fit: BoxFit.contain,
+              ),
             ),
           ),
         ),
-
         title: Text(
           "StoryTrail",
-          style: Theme
-              .of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.bug_report),
-            tooltip: "Test Actions",
-            onPressed: () {
-              setState(() {
-                showActionTestingPanel = !showActionTestingPanel;
-              });
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.sports_esports_outlined),
-            tooltip: "Simulate",
-            onPressed: () {
-              setState(() {
-                if (!_isSimulatingLocation) {
-                  _lastRealGpsPosition = GameEngine().playerPosition;
-                } else {
-                  if (_lastRealGpsPosition != null) {
-                    GameEngine().playerPosition = _lastRealGpsPosition!;
-                    //_processNewLocation(_playerPosition);
+          if (_debuggingVisible)
+            IconButton(
+              icon: Icon(Icons.bug_report),
+              tooltip: "Test Actions",
+              onPressed: () {
+                setState(() {
+                  showActionTestingPanel = !showActionTestingPanel;
+                });
+              },
+            ),
+          if (_debuggingVisible)
+            IconButton(
+              icon: Icon(Icons.sports_esports_outlined),
+              tooltip: "Simulate",
+              onPressed: () {
+                setState(() {
+                  if (!_isSimulatingLocation) {
+                    _lastRealGpsPosition = GameEngine().playerPosition;
+                  } else {
+                    if (_lastRealGpsPosition != null) {
+                      GameEngine().playerPosition = _lastRealGpsPosition!;
+                      //_processNewLocation(_playerPosition);
+                    }
                   }
-                }
-                _isSimulatingLocation = !_isSimulatingLocation;
-              });
-            },
-          ),
+                  _isSimulatingLocation = !_isSimulatingLocation;
+                });
+              },
+            ),
           IconButton(
             icon: Icon(Icons.menu_open),
             tooltip: "Seitenleiste öffnen",
@@ -448,88 +475,70 @@ class MyHomePageState extends State<MyHomePage> {
               });
             },
           ),
-/*
-          IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                setState(() {
-                  showDialog(
-                    context: context,
-                    builder: (context) =>
-                        ItemQRScanDialog(
-                          title: "Bozzi scharrt im Boden!",
-                          message: "Scanne den QR-Code in der Nähe, um zu sehen, was hier versteckt ist.",
-                          expectedQrCode: "Tibia",
-                        ),
-                  );
-                });
-              }
-          )
-*/
         ],
       ),
 
       body:
-      !_initializationCompleted
-          ? Center(
-        child: CircularProgressIndicator(),
-      ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist
-          : Stack(
-        children: [
-          //buildFlutterMap(),
-          GameMapWidget(
-            location: GameEngine().playerPosition,
-            mapController: _mapController,
-            currentHeading: _currentHeading,
-            currentMapRotation: _currentMapRotation,
-            isMapHeadingBasedOrientation: _isMapHeadingBasedOrientation,
-            isSimulatingLocation: _isSimulatingLocation,
-            onSimulatedLocationChange: (point) {
-              setState(() {
-                GameEngine().playerPosition = point;
-                //_processNewLocation(_playerPosition);
-              });
-            },
-            onNpcChatRequested: (npc) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) =>
-                      ChatPage(
-                        npc: npc,
-                        //onDispose: checkForNewItemsWithDelay,
-                      ),
-                ),
-              );
-            },
-          ),
-          buildMapOrientationModeButton(),
-          JoystickOverlay(
-            heading: _currentHeading,
-            onMove: (dx, dy) => _moveSimulatedLocation(dx, dy),
-            isVisible: _isSimulatingLocation,
-          ),
-          if (showActionTestingPanel)
-            ActionTestingPanel(
-              actionsByTrigger: GameEngine().getActionsGroupedByTrigger(),
-              flags: GameEngine().flags,
-            ),
-          SidePanel(
-            isVisible: (_isSidePanelVisible),
-            onClose: () {
-              setState(() {
-                _isSidePanelVisible = false;
-                GameEngine().markAllItemsAsSeen();
-              });
-            },
-            children: buildItems(),
-          ),
-        ],
-      ),
+          !_initializationCompleted
+              ? Center(
+                child: CircularProgressIndicator(),
+              ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist
+              : Stack(
+                children: [
+                  //buildFlutterMap(),
+                  GameMapWidget(
+                    location: GameEngine().playerPosition,
+                    mapController: _mapController,
+                    currentHeading: _currentHeading,
+                    currentMapRotation: _currentMapRotation,
+                    isMapHeadingBasedOrientation: _isMapHeadingBasedOrientation,
+                    isSimulatingLocation: _isSimulatingLocation,
+                    onSimulatedLocationChange: (point) {
+                      setState(() {
+                        GameEngine().playerPosition = point;
+                        //_processNewLocation(_playerPosition);
+                      });
+                    },
+                    onNpcChatRequested: (npc) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (_) => ChatPage(
+                                npc: npc,
+                                //onDispose: checkForNewItemsWithDelay,
+                              ),
+                        ),
+                      );
+                    },
+                  ),
+                  buildMapOrientationModeButton(),
+                  JoystickOverlay(
+                    heading: _currentHeading,
+                    onMove: (dx, dy) => _moveSimulatedLocation(dx, dy),
+                    isVisible: _isSimulatingLocation,
+                  ),
+                  if (showActionTestingPanel)
+                    ActionTestingPanel(
+                      actionsByTrigger:
+                          GameEngine().getActionsGroupedByTrigger(),
+                      flags: GameEngine().flags,
+                    ),
+                  SidePanel(
+                    isVisible: (_isSidePanelVisible),
+                    onClose: () {
+                      setState(() {
+                        _isSidePanelVisible = false;
+                        GameEngine().markAllItemsAsSeen();
+                      });
+                    },
+                    children: buildItems(),
+                  ),
+                ],
+              ),
       floatingActionButton: buildFloatingActionButton(),
     );
   }
-
 
   void checkForNewItemsWithDelay() async {
     print("👉 Check for new items triggered");
@@ -537,7 +546,8 @@ class MyHomePageState extends State<MyHomePage> {
     // Prüfen, ob neue Items vorhanden sind
     if (!_isSidePanelVisible && GameEngine().hasNewItems()) {
       await Future.delayed(
-          Duration(seconds: 3)); // Optional: sanfte Verzögerung
+        Duration(seconds: 3),
+      ); // Optional: sanfte Verzögerung
       if (!mounted) return;
       print("👉 New items found, opening side panel");
       setState(() {

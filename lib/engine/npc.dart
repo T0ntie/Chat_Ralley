@@ -12,6 +12,7 @@ enum NPCIcon { unknown, identified, nearby, unknown_nearby }
 
 class Npc extends GameElement {
   final Prompt prompt;
+  final String? iconAsset;
 
   bool hasSomethingToSay = false;
 
@@ -30,6 +31,7 @@ class Npc extends GameElement {
     required super.isVisible,
     required super.isRevealed,
     required speed, //in km/h /fixme
+    required this.iconAsset,
   }) :movingBehavior = MovingBehavior(
          currentBasePosition: position,
          toPosition: position,
@@ -55,6 +57,7 @@ class Npc extends GameElement {
         isVisible: json['visible'] as bool? ?? true,
         isRevealed: json['revealed'] as bool? ?? false,
         speed: (json['speed'] as num?)?.toDouble() ?? 5.0,
+        iconAsset: json['iconAsset'] as String?,
         actions: actions,
       );
     } catch (e, stack) {

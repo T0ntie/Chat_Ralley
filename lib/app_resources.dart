@@ -65,7 +65,7 @@ class ResourceColors {
       Theme.of(context).colorScheme.error;
 
   static Color successSnack(BuildContext context) =>
-      Color(0xFF00C853); //Theme.of(context).colorScheme.primaryContainer;
+      Color(0x680a9213); //Theme.of(context).colorScheme.primaryContainer;
   static Color errorMessage(BuildContext context) =>
       Theme.of(context).colorScheme.error;
 

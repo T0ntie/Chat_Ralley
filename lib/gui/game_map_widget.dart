@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hello_world/app_resources.dart';
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:hello_world/engine/npc.dart';
@@ -194,7 +195,10 @@ class GameMapWidget extends StatelessWidget {
                         onPrimaryAction: npc.isInCommunicationDistance() ? () => onNpcChatRequested(npc): null,),
                   );
                 },
-                child: AppIcons.npc(context, npc.icon),
+                //child: AppIcons.npc(context, npc.icon), //Image.asset('assets/story/icons/trex2.png'),
+                  child: npc.iconAsset == null
+                      ? AppIcons.npc(context, npc.icon)
+                      : Image.asset('assets/story/${npc.iconAsset}')
               ),
               if (npc.hasSomethingToSay)
                 Positioned(

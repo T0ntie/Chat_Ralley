@@ -66,6 +66,12 @@
           "defer": true
         },
         {
+          "onSignal": "KnatterbachToPolice",
+          "invokeAction": "showHotspot",
+          "hotspot": "{{Polizei}}",
+          "notification": "Ein neuer Ort wurde auf der Karte markiert."
+        },
+        {
           "onHotspot": "{{Polizei}}",
           "invokeAction": "talk",
           "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]",
