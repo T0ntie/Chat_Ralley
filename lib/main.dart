@@ -5,16 +5,13 @@ import 'package:hello_world/gui/chat/chat_page.dart';
 import 'package:hello_world/gui/debuging_panel.dart';
 import 'package:hello_world/gui/game_map_widget.dart';
 import 'package:hello_world/gui/item_button.dart';
-import 'package:hello_world/gui/item_qr_scan_dialog.dart';
 import 'package:hello_world/gui/joystick_overlay.dart';
 import 'package:hello_world/gui/notification_services.dart';
 import 'package:hello_world/gui/side_panel.dart';
 import 'package:hello_world/services/gpt_utilities.dart';
 import 'services/location_service.dart';
 import 'services/compass_service.dart';
-import 'engine/npc.dart';
 import 'engine/game_engine.dart';
-import 'engine/hotspot.dart';
 import 'app_resources.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -72,7 +69,7 @@ class MyHomePageState extends State<MyHomePage> {
   final _frameRate = Duration(milliseconds: 33);
 
   //final String title = "StoryTrail";
-  LatLng _playerPosition = LatLng(51.5074, -0.1278); // Beispiel für London
+  //LatLng _playerPosition = LatLng(51.5074, -0.1278); // Beispiel für London
   bool _locationServiceInitialized = false;
   bool _gameInitialized = false;
   String? _initializationError;
@@ -86,11 +83,11 @@ class MyHomePageState extends State<MyHomePage> {
   late final StreamSubscription<double> _compassSubscription;
   late final StreamSubscription<Position> _positionSubscription;
 
-  List<Npc> get _npcs => GameEngine().npcs;
+  //List<Npc> get _npcs => GameEngine().npcs;
 
   List<Item> get _items => GameEngine().items;
 
-  List<Hotspot> get _hotspots => GameEngine().hotspots;
+  //List<Hotspot> get _hotspots => GameEngine().hotspots;
   late final Timer _updateTimer;
 
   bool _isMapHeadingBasedOrientation = false;
@@ -108,7 +105,7 @@ class MyHomePageState extends State<MyHomePage> {
   bool _isSidePanelVisible = false; //fixme
 
   void _centerMapOnCurrentLocation() {
-    _mapController.move(_playerPosition, 16.0);
+    _mapController.move(GameEngine().playerPosition, 16.0);
   }
 
   void _switchMapOrientationMode() {
@@ -140,15 +137,16 @@ class MyHomePageState extends State<MyHomePage> {
     _positionSubscription =
         LocationService.getPositionStream().listen((Position position,) {
           if (!_isSimulatingLocation) {
-            _playerPosition = LatLng(position.latitude, position.longitude);
+            GameEngine().playerPosition = LatLng(position.latitude, position.longitude);
             //print("setting location to ${_location}");
-            _processNewLocation(_playerPosition);
+            //_processNewLocation(_playerPosition);
           }
           _locationServiceInitialized = true;
           _checkIfInitializationCompleted();
         });
   }
 
+/*
   void _processNewLocation(LatLng location) async {
     for (final npc in _npcs) {
       npc.updatePlayerPosition(_playerPosition);
@@ -159,6 +157,7 @@ class MyHomePageState extends State<MyHomePage> {
       }
     }
   }
+*/
 
   void _initializeMapController() {
     _mapControllerSubscription = _mapController.mapEventStream.listen((event) {
@@ -287,12 +286,12 @@ class MyHomePageState extends State<MyHomePage> {
 
   void _moveSimulatedLocation(double x, double y) {
     setState(() {
-      _playerPosition = LatLng(
-        _playerPosition.latitude + x,
-        _playerPosition.longitude + y,
+      GameEngine().playerPosition = LatLng(
+        GameEngine().playerPosition.latitude + x,
+        GameEngine().playerPosition.longitude + y,
       );
     });
-    _processNewLocation(_playerPosition);
+    //_processNewLocation(_playerPosition);
   }
 
   @override
@@ -429,11 +428,11 @@ class MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               setState(() {
                 if (!_isSimulatingLocation) {
-                  _lastRealGpsPosition = _playerPosition;
+                  _lastRealGpsPosition = GameEngine().playerPosition;
                 } else {
                   if (_lastRealGpsPosition != null) {
-                    _playerPosition = _lastRealGpsPosition!;
-                    _processNewLocation(_playerPosition);
+                    GameEngine().playerPosition = _lastRealGpsPosition!;
+                    //_processNewLocation(_playerPosition);
                   }
                 }
                 _isSimulatingLocation = !_isSimulatingLocation;
@@ -479,7 +478,7 @@ class MyHomePageState extends State<MyHomePage> {
         children: [
           //buildFlutterMap(),
           GameMapWidget(
-            location: _playerPosition,
+            location: GameEngine().playerPosition,
             mapController: _mapController,
             currentHeading: _currentHeading,
             currentMapRotation: _currentMapRotation,
@@ -487,8 +486,8 @@ class MyHomePageState extends State<MyHomePage> {
             isSimulatingLocation: _isSimulatingLocation,
             onSimulatedLocationChange: (point) {
               setState(() {
-                _playerPosition = point;
-                _processNewLocation(_playerPosition);
+                GameEngine().playerPosition = point;
+                //_processNewLocation(_playerPosition);
               });
             },
             onNpcChatRequested: (npc) {

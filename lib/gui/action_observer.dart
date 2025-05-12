@@ -67,7 +67,6 @@ class ActionObserver extends NavigatorObserver {
     isOnMainPage = (routeName == '/');
 
     if (routeName =='/' && route is PageRoute) {
-      final context = navigator!.context;
       WidgetsBinding.instance.addPostFrameCallback((_) async{
         print("flushing deferred Actions now");
         await GameEngine().flushDeferredActions(navigator!.context);

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:hello_world/gui/notification_services.dart';
-import '../engine/item.dart';
-import '../engine/game_engine.dart';
 
 class ItemQRScanDialog extends StatefulWidget {
   final String title;

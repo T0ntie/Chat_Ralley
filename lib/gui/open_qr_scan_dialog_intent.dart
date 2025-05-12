@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:hello_world/engine/item.dart';
 import 'package:hello_world/gui/item_qr_scan_dialog.dart';

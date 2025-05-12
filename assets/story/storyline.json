@@ -222,7 +222,7 @@
           "notification": "Der Hund dreht sich weg"
         },
         {
-          "onHotspot": "TibiaVersteck",
+          "onHotspot": "Versteck",
           "invokeAction": "scanToInventory",
           "item": "Tibia",
           "notification": "Du hast ein T-Rex Tibia erhalten."

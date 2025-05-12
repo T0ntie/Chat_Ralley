@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:hello_world/engine/item.dart';
 import 'package:hello_world/gui/notification_services.dart';
+import 'package:latlong2/latlong.dart';
 
 import 'story_line.dart';
 import 'npc.dart';
@@ -45,6 +46,24 @@ class GameEngine {
 
   Hotspot? getHotspotByName(String hotspotName) {
     return storyLine?.hotspotMap[hotspotName];
+  }
+
+  LatLng _playerPosition = LatLng(51.5074, -0.1278); // default
+  LatLng get playerPosition => _playerPosition;
+  set playerPosition(LatLng pos) {
+    _playerPosition = pos;
+
+    // Update aller NPCs
+    for (final npc in npcs) {
+      npc.updatePlayerPosition(pos);
+    }
+
+    // Update aller Hotspots
+    for (final hotspot in hotspots) {
+      if (hotspot.contains(pos)) {
+        registerHotspot(hotspot);
+      }
+    }
   }
 
   Npc? getNpcByName(String npcName) {
