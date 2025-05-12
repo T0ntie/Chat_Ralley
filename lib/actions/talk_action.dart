@@ -6,7 +6,7 @@ class TalkAction extends NpcAction{
   TalkAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.triggerMessage});
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     npc.talk(triggerMessage);
   }
 

@@ -4,6 +4,7 @@ import 'package:hello_world/actions/behave_action.dart';
 import 'package:hello_world/actions/lead_action.dart';
 import 'package:hello_world/actions/lead_along_action.dart';
 import 'package:hello_world/actions/notify_action.dart';
+import 'package:hello_world/actions/scan_to_inventory_action.dart';
 import 'package:hello_world/actions/set_flag_action.dart';
 import 'package:hello_world/actions/show_hotspot_action.dart';
 import 'package:hello_world/actions/reveal_hotspot_action.dart';
@@ -70,7 +71,7 @@ abstract class NpcAction{
     _actionRegistry[type] = factory;
   }
 
-  bool invoke(Npc npc)
+  Future<bool> invoke(Npc npc) async
   {
     Map<String, bool> flags = GameEngine().flags;
 
@@ -116,7 +117,7 @@ abstract class NpcAction{
     return false;
   }
 
-  void excecute(Npc npc);
+  Future <void> excecute(Npc npc);
 
   static  (NpcActionTrigger, Map<String, bool>, String?, bool) actionFieldsFromJson (Map<String, dynamic> json) {
     final trigger = NpcActionTrigger.npcActionTriggerfromJson(json);
@@ -164,5 +165,6 @@ abstract class NpcAction{
     NotifyAction.register();
     LeadAction.register();
     LeadAlongAction.register();
+    ScanToInventoryAction.register();
   }
 }

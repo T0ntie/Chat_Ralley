@@ -15,7 +15,7 @@ class SetFlagAction extends NpcAction {
   });
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     GameEngine().setFlags(flags);
   }
 

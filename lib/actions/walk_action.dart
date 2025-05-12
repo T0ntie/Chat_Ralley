@@ -18,7 +18,7 @@ class WalkAction extends NpcAction {
   });
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     print('${npc.name} starts walking to $lat, $lng');
     npc.moveTo(LatLng(lat, lng));
   }

@@ -1,13 +1,15 @@
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:hello_world/engine/item.dart';
+import 'package:hello_world/gui/open_qr_scan_dialog_intent.dart';
+import 'package:hello_world/gui/ui_intent.dart';
 
 import 'npc_action.dart';
 import '../engine/npc.dart';
 
-class AddToInventoryAction extends NpcAction {
+class ScanToInventoryAction extends NpcAction {
   final String itemName;
 
-  AddToInventoryAction({
+  ScanToInventoryAction({
     required super.trigger,
     required super.conditions,
     super.notification,
@@ -21,17 +23,27 @@ class AddToInventoryAction extends NpcAction {
     if (item == null) {
       throw Exception("Item '${itemName} nicht gefunden.");
     }
-    item.isOwned = true;
+
+    print ("itemname: ${item.name}");
+
+    dispatchUIIntent(
+      OpenScanDialogIntent(
+        title: "${npc.name} scharrt im Boden!",
+        message: "Scanne den QR-Code in der Nähe, um den Gegenstand zu erhalten.",
+        expectedItem: item,
+      ),
+    );
+    //show QR Code here
   }
 
-  static AddToInventoryAction actionFromJson(Map<String, dynamic> json) {
+  static ScanToInventoryAction actionFromJson(Map<String, dynamic> json) {
     final (
       trigger,
       conditions,
       notification,
       defer,
     ) = NpcAction.actionFieldsFromJson(json);
-    return AddToInventoryAction(
+    return ScanToInventoryAction(
       trigger: trigger,
       conditions: conditions,
       notification: notification,
@@ -42,8 +54,8 @@ class AddToInventoryAction extends NpcAction {
 
   static void register() {
     NpcAction.registerAction(
-      'addToInventory',
-      AddToInventoryAction.actionFromJson,
+      'scanToInventory',
+      ScanToInventoryAction.actionFromJson,
     );
   }
 }

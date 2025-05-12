@@ -100,7 +100,7 @@ class Npc extends GameElement {
     movingBehavior.stopMoving();
   }
 
-  void stopTalking() {
+  void stopTalking() async {
     currentConversation.finishConversation();
   }
 
@@ -156,11 +156,11 @@ class Npc extends GameElement {
     return (movingBehavior.currentDistance < GameEngine.conversationDistance);
   }
 
-  void updatePlayerPosition(LatLng playerPosition) {
+  void updatePlayerPosition(LatLng playerPosition) async {
     movingBehavior.updatePlayerPosition(playerPosition);
 
     if (movingBehavior.currentDistance < GameEngine.conversationDistance) {
-      GameEngine().registerApproach(this);
+      await GameEngine().registerApproach(this);
     }
   }
 }

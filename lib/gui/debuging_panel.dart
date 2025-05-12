@@ -83,7 +83,7 @@ class ActionTestingPanel extends StatelessWidget {
                                 "Trigger-Wert: ${action.trigger.value}",
                               ),
                               trailing: const Icon(Icons.play_arrow),
-                              onTap: () => action.invoke(npc),
+                              onTap: () async => await action.invoke(npc),
                               //tileColor: ResourceColors.tile(context),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(

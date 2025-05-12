@@ -190,12 +190,6 @@ class GameMapWidget extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       onNpcChatRequested.call(npc);
-                      /*
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => ChatPage(npc: npc)),
-                      );
-                      */
                     },
                     child: AppIcons.chatBubble(context),
                   ),

@@ -12,7 +12,7 @@ class Conversation {
 
   int messagesToKeep = 10;
 
-  void Function()? onConversationFinished;
+  Future <void> Function()? onConversationFinished;
 
   Conversation(this.npc) {
     addSystemMessage(npc.prompt.getGameplayPrompt());
@@ -26,9 +26,9 @@ class Conversation {
     }
   }
 
-  void finishConversation() {
+  void finishConversation() async{
     print("Schließe das chat fenster: conversation finished");
-    onConversationFinished?.call();
+    await onConversationFinished?.call();
   }
 
   List<ChatMessage> getMessages() {
@@ -52,7 +52,7 @@ class Conversation {
     GameEngine().registerMessage(npc, ++userMessageCount);
   }
 
-  void addAssistantMessage(String message, Medium medium) {
+  void addAssistantMessage(String message, Medium medium) async{
     final ChatMessage chatMessage = ChatMessage(
       rawText: message,
       chatRole: ChatRole.assistant,
@@ -60,7 +60,7 @@ class Conversation {
     );
     _messages.add(chatMessage);
     if (chatMessage.signalJson.isNotEmpty) {
-      GameEngine().registerSignal(chatMessage.signalJson);
+      await GameEngine().registerSignal(chatMessage.signalJson);
     }
   }
 

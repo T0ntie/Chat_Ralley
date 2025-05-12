@@ -17,7 +17,7 @@ class BehaveAction extends NpcAction {
   }): promptTag = promptTag?.norm;
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     if (promptTag case final tag?) npc.injectTaggedPrompts(tag);
     if (directiveMessage case final message?) npc.behave(message);
   }

@@ -16,7 +16,7 @@ class MoveAlongAction extends NpcAction {
   });
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     print('${npc.name} starts moving along a path');
     npc.moveAlong(path);
   }

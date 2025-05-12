@@ -6,7 +6,7 @@ class NotifyAction extends NpcAction{
   NotifyAction({required super.trigger, required super.conditions, super.notification, super.defer});
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     print('${npc.name} appears');
     npc.isVisible = true;
   }

@@ -16,7 +16,7 @@ class LeadAlongAction extends NpcAction {
   });
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     print('${npc.name} starts leading along a path');
     npc.leadAlong(path);
   }

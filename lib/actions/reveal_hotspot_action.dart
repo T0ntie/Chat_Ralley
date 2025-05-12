@@ -11,7 +11,7 @@ class RevealHotspotAction extends NpcAction{
   RevealHotspotAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.hotspotName});
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     print('$hotspotName revealed');
     Hotspot? spot = GameEngine().getHotspotByName(hotspotName);
     if (spot != null) {

@@ -6,7 +6,7 @@ class RevealAction extends NpcAction{
   RevealAction({required super.trigger, required super.conditions, super.defer, super.notification});
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     print('${npc.name} reveals');
     npc.reveal();
   }

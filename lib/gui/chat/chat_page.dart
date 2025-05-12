@@ -9,7 +9,7 @@ import '../../engine/conversation.dart';
 class ChatPage extends StatefulWidget {
   final Npc npc;
   final Medium medium;
-  final VoidCallback? onDispose;
+  //final VoidCallback? onDispose; //fixme not needed anymore
   final Widget? floatingActionButton; // Walkie-Talkie-Push-To-Talk Button
   final TextEditingController? externalController;
   final ChatPageController? chatPageController;
@@ -18,7 +18,7 @@ class ChatPage extends StatefulWidget {
     super.key,
     required this.npc,
     this.medium = Medium.chat,
-    this.onDispose,
+    //this.onDispose,
     this.floatingActionButton,
     this.externalController,
     this.chatPageController,
@@ -46,15 +46,21 @@ class _ChatPageState extends State<ChatPage> {
     widget.chatPageController?.sendMessage = sendMessage;
     _conversation = widget.npc.currentConversation;
     _conversation.onConversationFinished = _closeChatAfterDelay;
-    GameEngine().registerInteraction(widget.npc);
-    _handleTriggers();
-    widget.npc.hasSomethingToSay = false;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await GameEngine().registerInteraction(widget.npc);
+      _handleTriggers();
+      widget.npc.hasSomethingToSay = false;
+    });
   }
 
-  void _closeChatAfterDelay() {
-    Future.delayed(Duration(seconds: 2), () {
-      if (mounted) {
-        Navigator.of(context, rootNavigator: true).pop();
+  Future <void> _closeChatAfterDelay() async {
+    if (!mounted) return;
+    await Future.delayed(const Duration(seconds: 2));
+    // Sicherstellen, dass Navigator nach dem aktuellen Frame poppt
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
       }
     });
   }
@@ -188,8 +194,8 @@ class _ChatPageState extends State<ChatPage> {
     if (widget.externalController == null) {
       _controller.dispose();
     }
-    GameEngine().flushDeferredActions();
-    widget.onDispose?.call();
+    //GameEngine().flushDeferredActions();
+    //widget.onDispose?.call(); //fixme
     //_controller.dispose();
     _scrollController.dispose();
     super.dispose();

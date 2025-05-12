@@ -8,7 +8,7 @@ class SpawnAction extends NpcAction{
   SpawnAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.distance});
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     print('${npc.name} spawns');
     npc.spawn(distance);
   }

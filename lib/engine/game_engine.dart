@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/cupertino.dart';
 import 'package:hello_world/engine/item.dart';
 import 'package:hello_world/gui/notification_services.dart';
 
@@ -218,14 +219,14 @@ class GameEngine {
     FlushBarService().showFlushbar(title: "Ereignis", message: notification);
   }
 
-  void _runActions(Map<Npc, List<NpcAction>> map,
-      Npc npc, String logPrefix) {
+  Future <void> _runActions(Map<Npc, List<NpcAction>> map,
+      Npc npc, String logPrefix) async {
     final actions = map[npc];
     final remaining = <NpcAction>[];
 
     if (actions != null) {
       for (final action in actions) {
-        final didRun = action.invoke(npc);
+        final didRun = await action.invoke(npc);
         print('$logPrefix ${action.runtimeType} for ${npc.name} executed: $didRun');
         if (!didRun) remaining.add(action);
       }
@@ -239,7 +240,7 @@ class GameEngine {
     }
   }
 
-  void _runHotspotActions(String hotspotName) {
+  Future<void> _runHotspotActions(String hotspotName) async{
     final subscribers = _hotspotSubscriptions[hotspotName];
     if (subscribers == null) {
       print('🧿 No actions registered for hotspot $hotspotName');
@@ -249,7 +250,7 @@ class GameEngine {
     final remaining = <(Npc, NpcAction)>[];
 
     for (final (npc, action) in subscribers) {
-      final didRun = action.invoke(npc);
+      final didRun = await action.invoke(npc);
       print('🧿 Action ${action.runtimeType} for ${npc.name} at $hotspotName: $didRun');
       if (!didRun) remaining.add((npc, action));
     }
@@ -261,38 +262,38 @@ class GameEngine {
     }
   }
 
-  void registerApproach(Npc npc) =>
+  Future <void> registerApproach(Npc npc) =>
       _runActions(_approachSubscriptions, npc, '👣');
-  void registerInteraction(Npc npc) =>
+  Future<void> registerInteraction(Npc npc) =>
       _runActions(_interactionSubscriptions, npc, '🗣️');
-  void registerHotspot(Hotspot hotspot) {
-    _runHotspotActions(hotspot.name);
+  Future<void> registerHotspot(Hotspot hotspot) async {
+    await _runHotspotActions(hotspot.name);
   }
 
-  void registerInitialization() {
+  Future <void> registerInitialization() async {
     print('🚀 Initialization registered!');
     for (final entry in _initSubscriptions.entries) {
       final Npc npc = entry.key;
       final List<NpcAction> actions = entry.value;
       for (final action in actions) {
-        final didRun = action.invoke(npc);
+        final didRun = await action.invoke(npc);
         print('🚀 Action ${action.runtimeType} for NPC: ${npc.name} executed: ${didRun}');
       }
       _initSubscriptions.remove(entry);
     }
   }
 
-  void registerSignal(Map<String, dynamic> json) {
+  Future<void> registerSignal(Map<String, dynamic> json) async {
     print('Signal ${json} registered!');
     if (json.containsKey('signal')) {
-      _handleSignals(json);
+      await _handleSignals(json);
     }
     if (json.containsKey('flags')) {
       _handleFlags(json);
     }
   }
 
-  void _handleSignals(json) {
+  Future<void> _handleSignals(json) async {
     final signalString = json['signal'] as String;
     final subscribers = _signalSubscriptions[signalString];
     if (subscribers == null) {
@@ -307,19 +308,19 @@ class GameEngine {
         print(
           '▶️ Action ${action.runtimeType} für ${npc.name} wird ausgeführt',
         );
-        action.invoke(npc);
+        await action.invoke(npc);
       }
     }
   }
 
-  void flushDeferredActions() {
+  Future<void> flushDeferredActions(BuildContext context, {VoidCallback? onFlushed}) async {
     print('🔁 Verarbeite ${_deferredActions.length} verzögerte Actions...');
     while (_deferredActions.isNotEmpty) {
       final entry = _deferredActions.removeFirst();
       print(
         '▶️ Action ${entry.action.runtimeType} für ${entry.npc.name} wird ausgeführt',
       );
-      entry.action.invoke(entry.npc);
+      await entry.action.invoke(entry.npc);
     }
   }
 
@@ -332,7 +333,7 @@ class GameEngine {
     });
   }
 
-  void registerMessage(Npc npc, int count) {
+  void registerMessage(Npc npc, int count) async {
     print('💬 Message for ${npc.name} registered');
     for (final entry in _messageCountSubscriptions.entries) {
       final Npc npc = entry.key;
@@ -341,7 +342,7 @@ class GameEngine {
         final (NpcAction action, int messageCount) = actionEntry;
         if (messageCount == count) {
           print('💬 Executing action for ${npc.name}');
-          action.invoke(npc);
+          await action.invoke(npc);
         }
       }
     }

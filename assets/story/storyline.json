@@ -8,7 +8,7 @@
       "prompt": "knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
       "visible": true,
-      "speed": 15,
+      "speed": 150,
       "actions": [
         {
           "onInit": null,
@@ -220,6 +220,12 @@
           "onSignal": "turnaway",
           "invokeAction": "notify",
           "notification": "Der Hund dreht sich weg"
+        },
+        {
+          "onSignal": "GetTibia",
+          "invokeAction": "scanToInventory",
+          "item": "Tibia",
+          "notification": "Du hast ein T-Rex Tibia erhalten."
         }
       ]
     },
@@ -337,7 +343,7 @@
       "icon": "icons/tibia.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "{{Bozzi}}"
+      "targetNpc": "{{Professor_Dr._Theobald_Knöchelbein}}"
     },
     {
       "name": "Ball",

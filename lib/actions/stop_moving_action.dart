@@ -6,7 +6,7 @@ class StopMovingAction extends NpcAction{
   StopMovingAction({required super.trigger, required super.conditions, super.notification, super.defer});
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     print('${npc.name} stops');
     npc.stopMoving();
   }

@@ -20,7 +20,7 @@ class LeadAction extends NpcAction {
   });
 
   @override
-  void excecute(Npc npc) {
+  Future<void> excecute(Npc npc) async {
     print('${npc.name} starts leading to $lat, $lng');
     npc.leadTo(LatLng(lat, lng));
   }
