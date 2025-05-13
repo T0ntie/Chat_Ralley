@@ -120,6 +120,19 @@
           "invokeAction": "showHotspot",
           "hotspot": "{{Haus_Kroll}}",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
+        },
+        {
+          "onSignal": "TibiaReturned",
+          "invokeAction": "endGame",
+          "defer": true
+        },
+        {
+          "onHotspot": "{{Museum}}",
+          "invokeAction": "behave",
+          "promptTag": "tibia",
+          "conditions": {
+          "item:Tibia": true
+          }
         }
       ]
     },
@@ -228,7 +241,7 @@
           "notification": "Der Hund dreht sich weg"
         },
         {
-          "onHotspot": "Versteck",
+          "onHotspot": "TibiaVersteck",
           "invokeAction": "scanToInventory",
           "item": "Tibia",
           "notification": "Du hast ein T-Rex Tibia erhalten."

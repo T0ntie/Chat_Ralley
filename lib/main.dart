@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hello_world/engine/item.dart';
 import 'package:hello_world/gui/action_observer.dart';
 import 'package:hello_world/gui/chat/chat_page.dart';
+import 'package:hello_world/gui/credits_screen.dart';
 import 'package:hello_world/gui/debuging_panel.dart';
 import 'package:hello_world/gui/game_map_widget.dart';
 import 'package:hello_world/gui/item_button.dart';
@@ -46,12 +47,36 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+enum AppScreen { splash, home, credits }
+
 class _MyAppState extends State<MyApp> {
+  AppScreen _currentScreen = AppScreen.splash;
   bool _showSplash = true;
+
+  //bool _showCredits = true;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Widget screen;
+    switch (_currentScreen) {
+      case AppScreen.splash:
+        screen = SplashScreen(
+          onContinue: () {
+            setState(() {
+              _currentScreen = AppScreen.home;
+            });
+          },
+        );
+        break;
+      case AppScreen.home:
+        screen = MyHomePage(key: homePageKey, title: MyApp.title);
+        break;
+      case AppScreen.credits:
+        screen = CreditsScreen();
+        break;
+    }
+
     return MaterialApp(
       navigatorKey: navigatorKey,
       navigatorObservers: [ActionObserver()],
@@ -59,16 +84,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: ResourceColors.seed),
       ),
-      home:
-          _showSplash
-              ? SplashScreen(
-                onContinue: () {
-                  setState(() {
-                    _showSplash = false;
-                  });
-                },
-              )
-              : MyHomePage(key: homePageKey, title: MyApp.title),
+      home: screen,
     );
   }
 }
@@ -466,6 +482,17 @@ class MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
+          IconButton(
+            icon: Icon(Icons.access_alarm),
+            tooltip: "Credits",
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CreditsScreen(),
+                  ),
+              );
+            },
+          ),
           IconButton(
             icon: Icon(Icons.menu_open),
             tooltip: "Seitenleiste öffnen",
