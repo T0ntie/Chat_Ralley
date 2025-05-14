@@ -9,7 +9,8 @@ class FollowAction extends NpcAction{
   @override
   Future<void> excecute(Npc npc) async {
     print('${npc.name} starts following you');
-    npc.startFollowing();
+    npc.startFollowing(); //fixme Wenn sich die PlayerPosition während dem folgen ändert, hüpft der NPC zurück
+    log("${npc.name} folgt dem Spieler");
   }
 
   static FollowAction actionFromJson(Map<String, dynamic> json) {

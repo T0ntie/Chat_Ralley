@@ -7,8 +7,10 @@ class NotifyAction extends NpcAction{
 
   @override
   Future<void> excecute(Npc npc) async {
+/*
     print('${npc.name} appears');
     npc.isVisible = true;
+*/
   }
 
   static NotifyAction actionFromJson(Map<String, dynamic> json) {

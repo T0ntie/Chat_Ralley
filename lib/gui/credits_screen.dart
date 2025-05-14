@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:hello_world/engine/story_journal.dart';
+import 'package:hello_world/services/gpt_utilities.dart';
 
 class CreditsScreen extends StatefulWidget {
   const CreditsScreen({super.key});
@@ -11,28 +15,29 @@ class _CreditsScreenState extends State<CreditsScreen> {
   final ScrollController _scrollController = ScrollController();
   final double pixelsPerSecond = 50;
 
+  String _story = "";
   final String _creditsText = '''
-StoryTrail präsentiert
+Herzliche Gratulation !!
 
-Der Fall der verschwundenen Tibia
+Du hast den Fall gelöst den Knochen gefunden und Knöcherich Beißbert ist wieder hergestellt!
 
-Ein interaktives Abenteuer von:
-Max Mustermann
-Erika Beispiel
-Lara Langtext
-...
-
-Spezialdank an:
-Die Geduldigen Tester
-Kaffee und Mate
-
-© 2025 StoryTrail
-Alle Rechte vorbehalten.
+Hier folgt deine Geschichte: 
 ''';
 
   @override
   void initState() {
     super.initState();
+    //WidgetsBinding.instance.addPostFrameCallback((_) => _startScrolling());
+    _loadStoryAndStartScrolling();
+  }
+
+  Future<void> _loadStoryAndStartScrolling() async{
+    final story = await GptUtilities.buildCreditsStory(StoryJournal().toStory());
+    if (!mounted) return;
+    setState(() {
+      _story = story;
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _startScrolling());
   }
 
@@ -85,7 +90,7 @@ Alle Rechte vorbehalten.
                   children: [
                     SizedBox(height: screenHeight),
                     Text(
-                      _creditsText,
+                      _creditsText + " " + _story,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,

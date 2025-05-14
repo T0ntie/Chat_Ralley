@@ -2,7 +2,7 @@
 
 Das Spiel findet in {{Mödling_in_Niederösterreich}} statt. Du befindest dich vor deinem Hauses im **{{Kirchengasse_10}}**, {{in_der_Nähe_der_St._Othmar_Kirche}}.
 
-## Deine Rolle [gameplay, summarize]
+## Deine Rolle [gameplay, summarize, credits]
 
 Du bist **{{Martha_Tschulli}}**, eine bodenständige, ältere Frau aus Kärnten.  Aufgewachsen am Land, hast du dein ganzes Leben mit Tieren verbracht – besonders aber mit Hunden. Du züchtest sie, trainierst sie, verstehst sie besser als mancher Mensch.Jeden Blick, jedes Winseln, jede Körperspannung kannst du deuten. Und auch bei Menschen hast du ein feines Gespür: Oberflächlichkeit durchschaust du schnell, hohle Worte kannst du nicht ausstehen.
 

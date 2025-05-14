@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world/engine/item.dart';
+import 'package:hello_world/engine/story_journal.dart';
 import 'package:hello_world/gui/item_qr_scan_dialog.dart';
 import 'package:hello_world/main.dart';
 import 'ui_intent.dart';
@@ -30,6 +31,7 @@ class OpenScanDialogIntent extends UIIntent {
 
     if (result == expectedItem.name) {
       expectedItem.isOwned = true;
+      StoryJournal().logAction("Spieler hat folgenden Gegenstand gefunden: ${expectedItem.name}");
       print ("homPage: ${homePageKey.currentState}");
       homePageKey.currentState?.checkForNewItemsWithDelay();
     }

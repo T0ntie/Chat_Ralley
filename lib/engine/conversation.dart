@@ -1,5 +1,6 @@
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:hello_world/engine/prompt.dart';
+import 'package:hello_world/engine/story_journal.dart';
 
 import '../services/chat_service.dart';
 import 'npc.dart';
@@ -12,7 +13,7 @@ class Conversation {
 
   int messagesToKeep = 10;
 
-  Future <void> Function()? onConversationFinished;
+  Future<void> Function()? onConversationFinished;
 
   Conversation(this.npc) {
     addSystemMessage(npc.prompt.getGameplayPrompt());
@@ -26,7 +27,7 @@ class Conversation {
     }
   }
 
-  void finishConversation() async{
+  void finishConversation() async {
     print("Schließe das chat fenster: conversation finished");
     await onConversationFinished?.call();
   }
@@ -37,28 +38,41 @@ class Conversation {
 
   List<ChatMessage> getVisibleMessages(Medium medium) {
     return List.unmodifiable(
-      _messages.where((msg) => (!msg.fromSystem && !msg.isTrigger && msg.medium == medium)),
+      _messages.where(
+        (msg) => (!msg.fromSystem && !msg.isTrigger && msg.medium == medium),
+      ),
     );
   }
 
   void addTriggerMessage(String message) {
     _messages.add(
-      ChatMessage(rawText: message, chatRole: ChatRole.user, medium: Medium.trigger),
+      ChatMessage(
+        rawText: message,
+        chatRole: ChatRole.user,
+        medium: Medium.trigger,
+      ),
     );
+    _log();
   }
 
   void addUserMessage(String message, Medium medium) {
-    _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.user, medium: medium));
+    _messages.add(
+      ChatMessage(rawText: message, chatRole: ChatRole.user, medium: medium),
+    );
+    _log();
     GameEngine().registerMessage(npc, ++userMessageCount);
   }
 
-  void addAssistantMessage(String message, Medium medium) async{
+
+  void addAssistantMessage(String message, Medium medium) async {
     final ChatMessage chatMessage = ChatMessage(
       rawText: message,
       chatRole: ChatRole.assistant,
       medium: medium,
     );
     _messages.add(chatMessage);
+    _log();
+
     if (chatMessage.signalJson.isNotEmpty) {
       await GameEngine().registerSignal(chatMessage.signalJson);
     }
@@ -66,6 +80,7 @@ class Conversation {
 
   void addSystemMessage(String message) {
     _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.system));
+    _log();
   }
 
   Future<void> _compressConversation() async {
@@ -74,11 +89,12 @@ class Conversation {
     // 1) --- Listen vorbereiten -----------------------------------------------
 
     final initialPrompt = _messages.firstWhere(
-          (m) => m.fromSystem,
-      orElse: () =>
-          ChatMessage(
-              rawText: npc.prompt.getGameplayPrompt(),
-              chatRole: ChatRole.system),
+      (m) => m.fromSystem,
+      orElse:
+          () => ChatMessage(
+            rawText: npc.prompt.getGameplayPrompt(),
+            chatRole: ChatRole.system,
+          ),
     );
 
     final List<ChatMessage> laterSystem = [];
@@ -152,10 +168,23 @@ class Conversation {
         .map((msg) => {'role': msg.getRoleString(), 'content': msg.rawText})
         .toList();
   }
+
+  void _log() {
+    if (_messages.isNotEmpty) {
+      ChatMessage cm = _messages.last;
+      if(_messages.length == 1 && cm.chatRole == ChatRole.system){
+        print("Prompt-message detected:");
+        StoryJournal().logPrompt(npc.name, npc.prompt.getCreditsPrompt());
+      }
+
+      StoryJournal().logMessage(cm.medium, cm.chatRole, npc.name, cm.filteredText);
+    }
+  }
 }
 
 enum ChatRole { user, assistant, system }
-enum Medium {chat, radio, trigger}
+
+enum Medium { chat, radio, trigger }
 
 class ChatMessage {
   static const userRole = "user";
@@ -171,6 +200,7 @@ class ChatMessage {
   bool get isTrigger => medium == Medium.trigger;
   final ChatRole chatRole;
   final Medium medium;
+  final DateTime timeStamp;
 
   ChatMessage({
     required this.rawText,
@@ -179,7 +209,8 @@ class ChatMessage {
     this.medium = Medium.chat,
   }) : filteredText = _filterMessage(rawText),
        signalJson =
-           (chatRole == ChatRole.assistant) ? _extractSignal(rawText) : {} {
+           (chatRole == ChatRole.assistant) ? _extractSignal(rawText) : {},
+       timeStamp = DateTime.now() {
     if (chatRole == ChatRole.assistant && signalJson.isNotEmpty) {
       print("✅ Signal gefunden: $signalJson");
     }

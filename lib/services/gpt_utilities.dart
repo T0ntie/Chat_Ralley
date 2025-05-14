@@ -5,15 +5,40 @@ class GptUtilities {
   static const String utilityPromptFile =
       "assets/story/prompts/utility-prompt.txt";
 
+  static const String creditsPromptFile =
+      "assets/story/prompts/credits-prompt.txt";
+
   static String? utilityPrompt;
+  static String? creditsPrompt;
 
   static Future<void> init() async {
     try {
       utilityPrompt = await rootBundle.loadString(utilityPromptFile);
+      creditsPrompt = await rootBundle.loadString(creditsPromptFile);
     } catch (e, stack) {
-      print('❌ Failed to load prompt files $utilityPrompt\n$e\n$stack');
+      print('❌ Failed to load prompt files\n$e\n$stack');
       rethrow;
     }
+  }
+
+  static Future<String> buildCreditsStory(String journal) async{
+    if (creditsPrompt == null) {
+      throw Exception(
+        "❌ GPT Utilities not initialized, no creditPrompt available",
+      );
+    }
+    final messages = [
+      {"role": "system", "content": creditsPrompt!},
+      {
+        "role": "system", "content": journal,
+      },
+      {
+        "role": "user", "content": "Bitte beschreibe den Spielverlauf",
+      }
+    ];
+    final response = await ChatService.processMessages(messages);
+    return response.trim();
+
   }
 
   static Future<String> buildGrammaticalSentence({

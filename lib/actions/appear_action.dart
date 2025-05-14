@@ -9,6 +9,7 @@ class AppearAction extends NpcAction{
   Future<void> excecute(Npc npc) async {
     print('${npc.name} appears');
     npc.isVisible = true;
+    log("${npc.name} ist erschienen.");
   }
 
   static AppearAction actionFromJson(Map<String, dynamic> json) {

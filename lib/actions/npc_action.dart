@@ -14,6 +14,7 @@ import 'package:hello_world/actions/stop_moving_action.dart';
 import 'package:hello_world/actions/stop_talking_action.dart';
 import 'package:hello_world/actions/talk_action.dart';
 import 'package:hello_world/engine/game_engine.dart';
+import 'package:hello_world/engine/story_journal.dart';
 
 import 'walk_action.dart';
 import 'appear_action.dart';
@@ -22,7 +23,7 @@ import 'follow_action.dart';
 import 'move_along_action.dart';
 import '../engine/npc.dart';
 
-enum TriggerType {signal, interaction, approach, init, hotspot, message}
+enum TriggerType { signal, interaction, approach, init, hotspot, message }
 
 class NpcActionTrigger {
   final TriggerType type;
@@ -36,11 +37,12 @@ class NpcActionTrigger {
     'onHotspot': TriggerType.hotspot,
     'onMessageCount': TriggerType.message,
   };
+
   @visibleForTesting
   static Map<String, TriggerType> get stringToTriggerTypeForTest =>
       Map.unmodifiable(_stringToTriggerType);
 
-  NpcActionTrigger ({required this.type, required this.value});
+  NpcActionTrigger({required this.type, required this.value});
 
   static NpcActionTrigger npcActionTriggerfromJson(Map<String, dynamic> json) {
     for (final entry in _stringToTriggerType.entries) {
@@ -49,31 +51,37 @@ class NpcActionTrigger {
       }
     }
     throw FormatException('❌ Unbekannter Action Trigger in: $json');
-  }}
+  }
+}
 
-abstract class NpcAction{
+abstract class NpcAction {
   final NpcActionTrigger trigger;
   final Map<String, bool> conditions;
   final String? notification;
   final bool defer;
 
-  NpcAction({required this.trigger, required this.conditions, this.notification, this.defer = false});
+  NpcAction({
+    required this.trigger,
+    required this.conditions,
+    this.notification,
+    this.defer = false,
+  });
 
-  static final Map<String, NpcAction Function(Map<String, dynamic>)> _actionRegistry = {};
+  static final Map<String, NpcAction Function(Map<String, dynamic>)>
+  _actionRegistry = {};
 
   @visibleForTesting
-  static Map<String, NpcAction Function(Map<String, dynamic>)> get actionRegistryForTest =>
-      Map.unmodifiable(_actionRegistry);
+  static Map<String, NpcAction Function(Map<String, dynamic>)>
+  get actionRegistryForTest => Map.unmodifiable(_actionRegistry);
 
   static void registerAction(
-      String type,
-      NpcAction Function(Map<String, dynamic>) factory,
-      ) {
+    String type,
+    NpcAction Function(Map<String, dynamic>) factory,
+  ) {
     _actionRegistry[type] = factory;
   }
 
-  Future<bool> invoke(Npc npc) async
-  {
+  Future<bool> invoke(Npc npc) async {
     Map<String, bool> flags = GameEngine().flags;
 
     print("Aktuelle Flags im GameEngine:");
@@ -100,7 +108,9 @@ abstract class NpcAction{
         return GameEngine().checkFlag(flagName) == expected;
       } else if (key.startsWith('item:')) {
         final itemName = key.substring(5).trim();
-        print("comparing item: $itemName ${GameEngine().ownsItem(itemName)} == ${expected}");
+        print(
+          "comparing item: $itemName ${GameEngine().ownsItem(itemName)} == ${expected}",
+        );
         return GameEngine().ownsItem(itemName) == expected;
       } else {
         // Rückwärtskompatibel für alte Keys ohne Präfix
@@ -120,12 +130,20 @@ abstract class NpcAction{
     return false;
   }
 
-  Future <void> excecute(Npc npc);
+  Future<void> excecute(Npc npc);
 
-  static  (NpcActionTrigger, Map<String, bool>, String?, bool) actionFieldsFromJson (Map<String, dynamic> json) {
+  void log(String message) {
+    StoryJournal().logAction(message);
+  }
+
+  static (NpcActionTrigger, Map<String, bool>, String?, bool)
+  actionFieldsFromJson(Map<String, dynamic> json) {
     final trigger = NpcActionTrigger.npcActionTriggerfromJson(json);
     final conditions = conditionsFromJson(json);
-    final notification = json.containsKey('notification') ? json['notification'] as String : null;
+    final notification =
+        json.containsKey('notification')
+            ? json['notification'] as String
+            : null;
     final defer = json['defer'] == true;
     return (trigger, conditions, notification, defer);
   }
@@ -137,9 +155,10 @@ abstract class NpcAction{
         for (final entry in rawConditions.entries)
           entry.key: entry.value as bool,
       };
-    }    return {};
+    }
+    return {};
   }
-  
+
   static NpcAction fromJson(Map<String, dynamic> json) {
     final actionType = json['invokeAction'];
     final factory = _actionRegistry[actionType];

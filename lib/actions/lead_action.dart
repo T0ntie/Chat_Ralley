@@ -23,6 +23,7 @@ class LeadAction extends NpcAction {
   Future<void> excecute(Npc npc) async {
     print('${npc.name} starts leading to $lat, $lng');
     npc.leadTo(LatLng(lat, lng));
+    log("${npc.name} führt den Spieler an einem bestimmten Ort.");
   }
 
   static LeadAction actionFromJson(Map<String, dynamic> json) {

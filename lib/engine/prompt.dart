@@ -16,6 +16,7 @@ class Prompt {
 
   static const String gamePlayTag = "gameplay";
   static const String summarizeTag = "summarize";
+  static const String creditsTag = "credits";
 
   static const String summarizeCommand = "[Fasse zusammen]";
 
@@ -25,6 +26,10 @@ class Prompt {
 
   String getSummarizePrompt() {
     return getTaggedPrompt(summarizeTag);
+  }
+
+  String getCreditsPrompt() {
+    return getTaggedPrompt(creditsTag);
   }
 
   String getTaggedPrompt(String tag) {

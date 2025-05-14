@@ -9,6 +9,7 @@ class RevealAction extends NpcAction{
   Future<void> excecute(Npc npc) async {
     print('${npc.name} reveals');
     npc.reveal();
+    log("${npc.name} stellt sich vor.");
   }
 
   static RevealAction actionFromJson(Map<String, dynamic> json) {
