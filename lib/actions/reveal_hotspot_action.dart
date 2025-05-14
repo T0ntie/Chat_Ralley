@@ -11,13 +11,14 @@ class RevealHotspotAction extends NpcAction{
   RevealHotspotAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.hotspotName});
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     print('$hotspotName revealed');
     Hotspot? spot = GameEngine().getHotspotByName(hotspotName);
     if (spot != null) {
       spot.isVisible = true;
       spot.isRevealed = true;
     }
+    return true;
   }
 
   static RevealHotspotAction actionFromJson(Map<String, dynamic> json) {

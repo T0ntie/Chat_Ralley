@@ -93,7 +93,15 @@ class GameEngine {
     return items.any((item) => item.isOwned && item.isNew);
   }
 
-  void markAllItemsAsSeen() {
+  bool hasScannableItems() {
+    return items.any((item) => item.isScannable);
+  }
+
+  List<Item> getScannableItems() {
+    return items.where((item) => item.isScannable).toList();
+  }
+
+  void markAllItemsAsSeen() { //fixme sinnvoll?
     for (final item in items) {
       if (item.isOwned && item.isNew) {
         item.isNew = false;

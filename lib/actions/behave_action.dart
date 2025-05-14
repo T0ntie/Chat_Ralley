@@ -17,9 +17,10 @@ class BehaveAction extends NpcAction {
   }): promptTag = promptTag?.norm;
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     if (promptTag case final tag?) npc.injectTaggedPrompts(tag);
     if (directiveMessage case final message?) npc.behave(message);
+    return true;
   }
 
   static BehaveAction actionFromJson(Map<String, dynamic> json) {

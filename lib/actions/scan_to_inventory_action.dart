@@ -18,7 +18,7 @@ class ScanToInventoryAction extends NpcAction {
   });
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     Item? item = GameEngine().getItemByName(itemName);
     if (item == null) {
       throw Exception("Item '${itemName} nicht gefunden.");
@@ -29,10 +29,10 @@ class ScanToInventoryAction extends NpcAction {
     dispatchUIIntent(
       OpenScanDialogIntent(
         title: "${npc.name} scharrt im Boden!",
-        message: "Scanne den QR-Code in der Nähe, um den Gegenstand zu erhalten.",
-        expectedItem: item,
+        expectedItems: [item],
       ),
     );
+    return(item.isOwned);
     //show QR Code here
   }
 

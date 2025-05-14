@@ -16,10 +16,11 @@ class LeadAlongAction extends NpcAction {
   });
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     print('${npc.name} starts leading along a path');
     npc.leadAlong(path);
     log("${npc.name} führt den Spieler an einem bestimmten Ort.");//fixme bei dem Punkt anfangen, der am nächsten liegt?
+    return true;
   }
 
   static LeadAlongAction actionFromJson(Map<String, dynamic> json) {

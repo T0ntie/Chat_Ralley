@@ -8,6 +8,7 @@ import 'package:hello_world/gui/game_map_widget.dart';
 import 'package:hello_world/gui/item_button.dart';
 import 'package:hello_world/gui/joystick_overlay.dart';
 import 'package:hello_world/gui/notification_services.dart';
+import 'package:hello_world/gui/open_qr_scan_dialog_intent.dart';
 import 'package:hello_world/gui/side_panel.dart';
 import 'package:hello_world/gui/splash.dart';
 import 'package:hello_world/services/gpt_utilities.dart';
@@ -486,16 +487,14 @@ class MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.access_alarm),
             tooltip: "Credits",
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => CreditsScreen(),
-                  ),
-              );
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (context) => CreditsScreen()));
             },
           ),
           IconButton(
             icon: Icon(Icons.menu_open),
-            tooltip: "Seitenleiste öffnen",
+            tooltip: "Inventar öffnen",
             onPressed: () {
               setState(() {
                 _isSidePanelVisible = !_isSidePanelVisible;
@@ -559,6 +558,16 @@ class MyHomePageState extends State<MyHomePage> {
                         GameEngine().markAllItemsAsSeen();
                       });
                     },
+                    onScan: () {
+                      setState(() {
+                        print("text");
+                        OpenScanDialogIntent(
+                          title: "Fund erfassen",
+                          expectedItems: GameEngine().getScannableItems(),
+                        ).call(context);
+                      });
+                    },
+
                     children: buildItems(),
                   ),
                 ],
@@ -572,9 +581,7 @@ class MyHomePageState extends State<MyHomePage> {
 
     // Prüfen, ob neue Items vorhanden sind
     if (!_isSidePanelVisible && GameEngine().hasNewItems()) {
-      await Future.delayed(
-        Duration(seconds: 3),
-      ); // Optional: sanfte Verzögerung
+      await Future.delayed(Duration(seconds: 3));
       if (!mounted) return;
       print("👉 New items found, opening side panel");
       setState(() {

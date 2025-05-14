@@ -16,9 +16,10 @@ class MoveAlongAction extends NpcAction {
   });
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     print('${npc.name} starts moving along a path');
     npc.moveAlong(path);
+    return true;
   }
 
   static MoveAlongAction actionFromJson(Map<String, dynamic> json) {

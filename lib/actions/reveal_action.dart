@@ -6,10 +6,11 @@ class RevealAction extends NpcAction{
   RevealAction({required super.trigger, required super.conditions, super.defer, super.notification});
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     print('${npc.name} reveals');
     npc.reveal();
     log("${npc.name} stellt sich vor.");
+    return true;
   }
 
   static RevealAction actionFromJson(Map<String, dynamic> json) {

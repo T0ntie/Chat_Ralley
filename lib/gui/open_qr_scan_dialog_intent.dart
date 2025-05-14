@@ -8,33 +8,45 @@ import 'ui_intent.dart';
 class OpenScanDialogIntent extends UIIntent {
   final String title;
   final String message;
-  final Item expectedItem;
+  static const defaultMessage =
+      "Entdecke den Gegenstand – QR-Code scannen, um ihn zu bergen";
+  final List<Item> expectedItems;
+
+  List<String> get expectedItemNames =>
+      expectedItems.map((item) => item.name).toList();
 
   OpenScanDialogIntent({
     required this.title,
-    required this.message,
-    required this.expectedItem
-  });
+    String? message,
+    required this.expectedItems,
+  }) : message = message ?? defaultMessage;
 
   @override
   Future<void> call(BuildContext context) async {
-
     final result = await showDialog<String>(
       context: context,
-      builder: (_) => ItemQRScanDialog(
-        title: title,
-        message: message,
-        expectedQrCode: expectedItem.name,
-      ),
+      builder:
+          (_) => ItemQRScanDialog(
+            title: title,
+            message: message,
+            expectedQrCodes: expectedItemNames,
+          ),
     );
     print("ShowDialog ist fertig. Result: ${result}");
 
-    if (result == expectedItem.name) {
-      expectedItem.isOwned = true;
-      StoryJournal().logAction("Spieler hat folgenden Gegenstand gefunden: ${expectedItem.name}");
-      print ("homPage: ${homePageKey.currentState}");
+    bool exists = expectedItems.any((item) => item.name == result);
+
+    if (exists) {
+      Item selectedItem = expectedItems.firstWhere(
+        (item) => item.name == result,
+      );
+      selectedItem.isOwned = true;
+      selectedItem.isNew = true;
+      StoryJournal().logAction(
+        "Spieler hat folgenden Gegenstand gefunden: ${selectedItem.name}",
+      );
+      print("homPage: ${homePageKey.currentState}");
       homePageKey.currentState?.checkForNewItemsWithDelay();
     }
-
   }
 }

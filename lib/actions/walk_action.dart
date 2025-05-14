@@ -18,9 +18,10 @@ class WalkAction extends NpcAction {
   });
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     print('${npc.name} starts walking to $lat, $lng');
     npc.moveTo(LatLng(lat, lng));
+    return true;
   }
 
   static WalkAction actionFromJson(Map<String, dynamic> json) {

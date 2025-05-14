@@ -6,9 +6,10 @@ class StopMovingAction extends NpcAction{
   StopMovingAction({required super.trigger, required super.conditions, super.notification, super.defer});
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     print('${npc.name} stops');
     npc.stopMoving();
+    return true;
   }
 
   static StopMovingAction actionFromJson(Map<String, dynamic> json) {

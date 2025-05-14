@@ -15,8 +15,9 @@ class SetFlagAction extends NpcAction {
   });
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     GameEngine().setFlags(flags);
+    return true;
   }
 
   static SetFlagAction actionFromJson(Map<String, dynamic> json) {

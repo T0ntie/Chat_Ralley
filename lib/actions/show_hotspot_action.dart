@@ -11,12 +11,13 @@ class ShowHotspotAction extends NpcAction{
   ShowHotspotAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.hotspotName});
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     print('$hotspotName appears');
     Hotspot? spot = GameEngine().getHotspotByName(hotspotName);
     if (spot != null) {
       spot.isVisible = true;
     }
+    return true;
   }
 
   static ShowHotspotAction actionFromJson(Map<String, dynamic> json) {

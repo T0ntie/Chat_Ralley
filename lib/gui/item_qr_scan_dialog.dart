@@ -5,13 +5,13 @@ import 'package:hello_world/gui/notification_services.dart';
 class ItemQRScanDialog extends StatefulWidget {
   final String title;
   final String message;
-  final String expectedQrCode;
+  final List<String> expectedQrCodes;
 
   const ItemQRScanDialog({
     super.key,
     required this.title,
     required this.message,
-    required this.expectedQrCode,
+    required this.expectedQrCodes,
   });
 
   @override
@@ -24,29 +24,13 @@ class _ItemQRScanDialogState extends State<ItemQRScanDialog> {
     print("in handle Barcode");
     print("Code scanned: $code");
 
-    if (code == widget.expectedQrCode) {
+    if (widget.expectedQrCodes.contains(code)) {
       Navigator.of(context).pop(code); // ✅ Richtiger Code – zurückgeben
     } else {
       SnackBarService.showErrorSnackBar(context, "🚫 Falscher Code. Versuche es nochmal.");
       // ❌ Falscher Code – nicht schließen
     }
 
-/*
-    if (code == widget.expectedQrCode) {
-
-      final item = null;//GameEngine().getItemByQrCode(code);
-      if (item != null && !item.isOwned) {
-        item.isOwned = true;
-        //GameEngine().markItemAsNew(item);
-        SnackBarService.showSuccessSnackBar(context, "🎉 Du hast ${item.name} gefunden!");
-      } else {
-        //SnackBarService.showInfoSnackBar(context, "🔁 Du hast dieses Item bereits.");
-      }
-    } else {
-      SnackBarService.showErrorSnackBar(context, "🚫 Falscher Code. Versuche es nochmal.");
-    }
-*/
-    //Navigator.of(context).pop();
   }
 
   @override

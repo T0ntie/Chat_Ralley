@@ -6,9 +6,10 @@ class StopTalkingAction extends NpcAction{
   StopTalkingAction({required super.trigger, required super.conditions, super.notification, super.defer});
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     print('${npc.name} stops talking');
     npc.stopTalking();//fixme der Chat dialog schließt sich nicht
+    return true;
   }
 
   static StopTalkingAction actionFromJson(Map<String, dynamic> json) {

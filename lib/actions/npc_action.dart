@@ -84,6 +84,7 @@ abstract class NpcAction {
   Future<bool> invoke(Npc npc) async {
     Map<String, bool> flags = GameEngine().flags;
 
+/*
     print("Aktuelle Flags im GameEngine:");
     flags.forEach((key, value) {
       print("  $key: $value");
@@ -98,6 +99,7 @@ abstract class NpcAction {
     conditions.forEach((key, value) {
       print("-->  '$key': '$value'");
     });
+*/
 
     bool allConditionsMet = conditions.entries.every((entry) {
       final key = entry.key;
@@ -119,18 +121,18 @@ abstract class NpcAction {
     });
 
     if (allConditionsMet) {
-      excecute(npc);
+      bool result = await excecute(npc);
       print("executed for: ${npc.name} notification: $notification");
-      if (notification != null) {
+      if (result && notification != null) {
         GameEngine().showNotification(notification!);
         print("notifcation shown");
       }
-      return true;
+      return result;
     }
     return false;
   }
 
-  Future<void> excecute(Npc npc);
+  Future<bool> excecute(Npc npc);
 
   void log(String message) {
     StoryJournal().logAction(message);

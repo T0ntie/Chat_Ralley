@@ -6,10 +6,11 @@ class AppearAction extends NpcAction{
   AppearAction({required super.trigger, required super.conditions, super.notification, super.defer});
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     print('${npc.name} appears');
     npc.isVisible = true;
     log("${npc.name} ist erschienen.");
+    return npc.isVisible;
   }
 
   static AppearAction actionFromJson(Map<String, dynamic> json) {

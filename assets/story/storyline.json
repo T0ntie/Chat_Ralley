@@ -74,7 +74,7 @@
         {
           "onHotspot": "{{Polizei}}",
           "invokeAction": "talk",
-          "trigger": "[Der Sieler kommt hilfesuchend in die Polizeistation]",
+          "trigger": "[Der Spieler kommt hilfesuchend in die Polizeistation]",
           "conditions": {
             "knatterbachAtPolice": true
           }

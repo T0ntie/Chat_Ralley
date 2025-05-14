@@ -6,8 +6,9 @@ class TalkAction extends NpcAction{
   TalkAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.triggerMessage});
 
   @override
-  Future<void> excecute(Npc npc) async {
-    npc.talk(triggerMessage);
+  Future<bool> excecute(Npc npc) async {
+    npc.talk(triggerMessage); //fixme gehört hier ein await?
+    return true;
   }
 
   static TalkAction actionFromJson(Map<String, dynamic> json) {

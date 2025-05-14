@@ -4,17 +4,34 @@ import 'package:flutter/material.dart';
 class SidePanel extends StatelessWidget {
   final bool isVisible;
   final VoidCallback onClose;
+  final VoidCallback onScan;
   final List<Widget> children;
 
   const SidePanel({
     super.key,
     required this.isVisible,
     required this.onClose,
+    required this.onScan,
     required this.children,
   });
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> itemSlotPlaceholders = List.generate(
+      2,
+      (_) => Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Container(
+          width: 24,
+          height: 24,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.white24),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+      ),
+    );
+
     return AnimatedAlign(
       alignment: Alignment.centerRight,
       duration: Duration(milliseconds: 900),
@@ -48,14 +65,31 @@ class SidePanel extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ...children.map(
-                          (child) => Theme(
-                        data: Theme.of(context).copyWith(
-                          iconTheme: IconThemeData(color: Colors.white),
+                    if (children.isEmpty)
+                      ...itemSlotPlaceholders
+                    else
+                      ...children.map(
+                        (child) => Theme(
+                          data: Theme.of(context).copyWith(
+                            iconTheme: IconThemeData(color: Colors.white),
+                          ),
+                          child: child,
                         ),
-                        child: child,
                       ),
+
+                    const Divider(
+                      color: Colors.white54,
+                      thickness: 1.5,
+                      height: 20,
+                      indent: 12,
+                      endIndent: 8,
                     ),
+                    IconButton(
+                      icon: Icon(Icons.center_focus_strong_sharp, color: Colors.white),
+                      tooltip: "Nach Items suchen",
+                      onPressed: onScan,
+                    ),
+
                     IconButton(
                       icon: Icon(Icons.close, color: Colors.white),
                       tooltip: "Schließen",

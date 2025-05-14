@@ -8,9 +8,10 @@ class SpawnAction extends NpcAction{
   SpawnAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.distance});
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
     print('${npc.name} spawns');
     npc.spawn(distance);
+    return true;
   }
 
   static SpawnAction actionFromJson(Map<String, dynamic> json) {

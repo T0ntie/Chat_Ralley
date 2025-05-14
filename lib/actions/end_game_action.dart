@@ -14,14 +14,14 @@ class EndGameAction extends NpcAction {
   });
 
   @override
-  Future<void> excecute(Npc npc) async {
+  Future<bool> excecute(Npc npc) async {
 
     print("Trying to end the game");
 
     dispatchUIIntent(
       CreditsIntent(),
     );
-    //show QR Code here
+    return true;
   }
 
   static EndGameAction actionFromJson(Map<String, dynamic> json) {

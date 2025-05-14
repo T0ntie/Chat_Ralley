@@ -6,7 +6,8 @@ import 'package:hello_world/gui/item-call-backs.dart';
 class Item {
   final String name;
   bool isOwned;
-  bool isNew = true; //fixme
+  bool isNew;
+  bool isScannable;
   final String iconAsset;
   final String useType;
   final String npcName;
@@ -22,6 +23,8 @@ class Item {
   Item({
     required this.name,
     required this.isOwned,
+    required this.isNew,
+    required this.isScannable,
     required this.iconAsset,
     required this.useType,
     required this.npcName,
@@ -31,6 +34,8 @@ class Item {
     return Item(
       name: json['name'],
       isOwned: json['owned'] as bool? ?? false,
+      isNew: json['new'] as bool? ?? false,
+      isScannable: json['scannable'] as bool? ?? false,
       iconAsset: json['icon'],
       useType: json['useType'],
       npcName: json['targetNpc'],
