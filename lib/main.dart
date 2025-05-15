@@ -53,9 +53,6 @@ class _MyAppState extends State<MyApp> {
   AppScreen _currentScreen = AppScreen.splash;
   bool _showSplash = true;
 
-  //bool _showCredits = true;
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     Widget screen;
@@ -116,11 +113,8 @@ class MyHomePageState extends State<MyHomePage> {
   late final StreamSubscription<double> _compassSubscription;
   late final StreamSubscription<Position> _positionSubscription;
 
-  //List<Npc> get _npcs => GameEngine().npcs;
-
   List<Item> get _items => GameEngine().items;
 
-  //List<Hotspot> get _hotspots => GameEngine().hotspots;
   late final Timer _updateTimer;
 
   bool _isMapHeadingBasedOrientation = false;
@@ -176,26 +170,11 @@ class MyHomePageState extends State<MyHomePage> {
           position.latitude,
           position.longitude,
         );
-        //print("setting location to ${_location}");
-        //_processNewLocation(_playerPosition);
       }
       _locationServiceInitialized = true;
       _checkIfInitializationCompleted();
     });
   }
-
-  /*
-  void _processNewLocation(LatLng location) async {
-    for (final npc in _npcs) {
-      npc.updatePlayerPosition(_playerPosition);
-    }
-    for (final hotspot in _hotspots) {
-      if (hotspot.contains(_playerPosition)) {
-        await GameEngine().registerHotspot(hotspot);
-      }
-    }
-  }
-*/
 
   void _initializeMapController() {
     _mapControllerSubscription = _mapController.mapEventStream.listen((event) {
@@ -416,7 +395,6 @@ class MyHomePageState extends State<MyHomePage> {
 
           child: GestureDetector(
             onLongPress: () {
-              // Hier kannst du z. B. ein Debug-Panel sichtbar machen
               setState(() {
                 _debuggingVisible = !_debuggingVisible; // Beispielzustand
               });
@@ -510,7 +488,6 @@ class MyHomePageState extends State<MyHomePage> {
               ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist
               : Stack(
                 children: [
-                  //buildFlutterMap(),
                   GameMapWidget(
                     location: GameEngine().playerPosition,
                     mapController: _mapController,
@@ -531,7 +508,6 @@ class MyHomePageState extends State<MyHomePage> {
                           builder:
                               (_) => ChatPage(
                                 npc: npc,
-                                //onDispose: checkForNewItemsWithDelay,
                               ),
                         ),
                       );
@@ -581,7 +557,6 @@ class MyHomePageState extends State<MyHomePage> {
       setState(() {
         _isSidePanelVisible = true;
       });
-      //GameEngine().markAllItemsAsSeen(); // Nicht vergessen: als "gesehen" markieren
     }
   }
 

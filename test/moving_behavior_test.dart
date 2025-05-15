@@ -1,15 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hello_world/engine/moving_behavior.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:hello_world/engine/npc.dart'; // Importiere deine MovingBehavior-Klasse
 
 void main() {
   group('MovingBehavior', () {
-    late MovingBehavior behavior;
+    late NPCMovementController behavior;
     final start = LatLng(51.5074, -0.1278); // London
     final end = LatLng(51.5101, -0.1278); // ≈ 300 m nördlich
 
     setUp(() {
-      behavior = MovingBehavior(
+      behavior = NPCMovementController(
         currentBasePosition: start,
         toPosition: end,
         speedInKmh: 3.6, // 1 m/s
