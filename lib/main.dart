@@ -212,6 +212,7 @@ class MyHomePageState extends State<MyHomePage> {
   void _initializeUpdateTimer() {
     _updateTimer = Timer.periodic(_frameRate, (timer) {
       if (_initializationCompleted) {
+        GameEngine().updateAllNpcPositions();
         setState(() {});
       }
     });

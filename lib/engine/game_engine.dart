@@ -66,6 +66,12 @@ class GameEngine {
     }
   }
 
+  void updateAllNpcPositions() {
+    for (final npc in npcs) {
+      npc.movingController.updatePosition();
+    }
+  }
+
   Npc? getNpcByName(String npcName) {
     final npcs = storyLine?.npcs;
     if (npcs == null) return null;

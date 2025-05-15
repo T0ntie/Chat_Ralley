@@ -84,7 +84,7 @@ class NPCMovementController extends EntityMovementController{
     }
   }
 
-  void checkForStopOrWait()
+  /*void checkForStopOrWait()
   {
     if (!isMoving) return;
 
@@ -153,7 +153,7 @@ class NPCMovementController extends EntityMovementController{
         return;
       }
     }
-  }
+  }*/
 
   double _getDistanceToTravelSince(DateTime startTime) {
     final now = DateTime.now();
@@ -161,17 +161,64 @@ class NPCMovementController extends EntityMovementController{
     return speedInms * timeDiffSeconds;
   }
 
-  LatLng get currentPosition {
+  @override
+  LatLng get currentPosition => currentBasePosition;
+
+  LatLng updatePosition() {
     if (!isMoving) return currentBasePosition;
 
+    final now = DateTime.now();
     var distanceToTravel = _getDistanceToTravelSince(movementStartTime);
-    final distance = const Distance().as(
-      LengthUnit.Meter,
-      currentBasePosition,
-      toPosition,
-    );
 
-    checkForStopOrWait();
+    while(true) {
+      final distance = const Distance().as(
+        LengthUnit.Meter,
+        currentBasePosition,
+        toPosition,
+      );
+
+    if (distanceToTravel < distance) {
+      final interpolated = interpolatePosition(
+        currentBasePosition,
+        toPosition,
+        distanceToTravel,
+      );
+
+      final distanceToPlayer = Distance().as(
+        LengthUnit.Meter,
+        interpolated,
+        playerPosition,
+      );
+      if (isFollowing && distanceToPlayer < followingDistance) {
+        isMoving = false;
+        currentBasePosition = interpolated;
+        return interpolated;
+      }
+      if (isLeading && distanceToPlayer > waitDistance) {
+        isMoving = false;
+        currentBasePosition = interpolated;
+        return interpolated;
+      }
+
+      // Normale Fortbewegung
+      currentBasePosition = interpolated;
+      movementStartTime = now;
+      return interpolated;
+    }
+      // Ziel erreicht, gehe zum nächsten Wegpunkt
+      currentBasePosition = toPosition;
+      distanceToTravel -= distance;
+
+      if (path.isNotEmpty) {
+        toPosition = path.removeAt(0);
+        final restMillis = (1000 * distanceToTravel / speedInms).round();
+        movementStartTime = now.subtract(Duration(milliseconds: restMillis));
+      } else {
+        isMoving = false;
+        return currentBasePosition;
+      }
+    }
+    /*checkForStopOrWait();
 
     if (!isMoving) return currentBasePosition;
 
@@ -184,6 +231,8 @@ class NPCMovementController extends EntityMovementController{
     );
 
     return interpolatedPosition;
+
+     */
   }
 
   void moveAlong(List<LatLng> p) {
