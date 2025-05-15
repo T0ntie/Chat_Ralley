@@ -6,7 +6,6 @@ import 'package:hello_world/gui/credits_screen.dart';
 import 'package:hello_world/gui/debuging_panel.dart';
 import 'package:hello_world/gui/game_map_widget.dart';
 import 'package:hello_world/gui/item_button.dart';
-import 'package:hello_world/gui/joystick_overlay.dart';
 import 'package:hello_world/gui/notification_services.dart';
 import 'package:hello_world/gui/open_qr_scan_dialog_intent.dart';
 import 'package:hello_world/gui/side_panel.dart';
@@ -126,13 +125,13 @@ class MyHomePageState extends State<MyHomePage> {
 
   bool _isMapHeadingBasedOrientation = false;
 
-  bool get _isSimulatingLocation => GameEngine().isTestSimimulationOn;
+  bool get _isSimulatingLocation => GameEngine().isGPSSimulating;
   bool _debuggingVisible = false;
 
   bool showActionTestingPanel = false;
 
   set _isSimulatingLocation(bool value) {
-    GameEngine().isTestSimimulationOn = value;
+    GameEngine().isGPSSimulating = value;
   }
 
   LatLng? _lastRealGpsPosition = null;
@@ -539,11 +538,6 @@ class MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                   buildMapOrientationModeButton(),
-                  JoystickOverlay(
-                    heading: _currentHeading,
-                    onMove: (dx, dy) => _moveSimulatedLocation(dx, dy),
-                    isVisible: _isSimulatingLocation,
-                  ),
                   if (showActionTestingPanel)
                     ActionTestingPanel(
                       actionsByTrigger:

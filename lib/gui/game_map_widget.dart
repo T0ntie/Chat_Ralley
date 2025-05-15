@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hello_world/app_resources.dart';
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:hello_world/engine/npc.dart';
@@ -28,7 +27,6 @@ class GameMapWidget extends StatelessWidget {
     this.onSimulatedLocationChange,
     required this.onNpcChatRequested,
   });
-
 
   double _getRotationAngle() {
     return (isMapHeadingBasedOrientation
@@ -115,7 +113,7 @@ class GameMapWidget extends StatelessWidget {
               point: location,
               child: Transform.rotate(
                 angle: currentHeading *(pi / 180), //_getRotationAngle(),
-                child: AppIcons.playerPosition,
+                child: GameEngine().isGPSSimulating ? Icon(Icons.my_location, color: Color(0xFF6A0DAD), size: 40,) :  AppIcons.playerPosition,
               ),
             ),
             ..._buildHotspotMarkers(context),

@@ -23,7 +23,7 @@ class GameEngine {
 
   static const double conversationDistance = 50.0;
 
-  bool isTestSimimulationOn = false;
+  bool isGPSSimulating = false;
 
   StoryLine? storyLine;
 
