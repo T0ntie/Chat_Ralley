@@ -111,9 +111,13 @@ class GameMapWidget extends StatelessWidget {
           markers: [
             Marker(
               point: location,
+              width: 40,
+              height: 40,
               child: Transform.rotate(
-                angle: currentHeading *(pi / 180), //_getRotationAngle(),
-                child: GameEngine().isGPSSimulating ? Icon(Icons.my_location, color: Color(0xFF6A0DAD), size: 40,) :  AppIcons.playerPosition,
+                angle: currentHeading * (pi / 180),
+                child: GameEngine().isGPSSimulating
+                    ? Icon(Icons.my_location, color: Color(0xFF6A0DAD), size: 40)
+                    : AppIcons.playerPosition,
               ),
             ),
             ..._buildHotspotMarkers(context),
