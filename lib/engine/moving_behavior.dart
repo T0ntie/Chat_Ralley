@@ -250,6 +250,7 @@ class NPCMovementController extends EntityMovementController {
 
 class PlayerMovementController extends EntityMovementController {
   static const durationInSeconds = 5.0;
+  static const simHome = LatLng(48.09048048682252, 16.296859109639993);
 
   PlayerMovementController({required LatLng startPosition})
     : super(
@@ -262,6 +263,10 @@ class PlayerMovementController extends EntityMovementController {
   LatLng get currentPosition => currentBasePosition;
 
   late LatLng _movementStartPosition;
+
+  void teleportHome() {
+    teleportTo(simHome);
+  }
 
   void teleportTo(LatLng newPosition) {
     currentBasePosition = newPosition;

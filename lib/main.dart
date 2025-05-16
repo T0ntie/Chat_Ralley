@@ -280,9 +280,34 @@ class MyHomePageState extends State<MyHomePage> {
     ));
   }
 
-  FloatingActionButton buildFloatingActionButton() {
-    return (FloatingActionButton(
+  Widget buildFloatingActionButton() {
+    return GestureDetector(
+      onTap:
+          _initializationCompleted
+              ? () {
+                setState(() {
+                  _centerMapOnCurrentLocation();
+                });
+              }
+              : null,
+      onLongPress:
+          _initializationCompleted && _isSimulatingLocation
+              ? () {
+                GameEngine().playerMovementController!.teleportHome();
+                _centerMapOnCurrentLocation();
+              }
+              : null,
+      child: FloatingActionButton(
+        heroTag: "CenterLocation_fab",
+        onPressed: null, // wichtig, damit GestureDetector alles übernimmt
+        child: AppIcons.centerLocation(context),
+      ),
+    );
+  }
+
+  /*return (FloatingActionButton(
       heroTag: "CenterLocation_fab",
+
       onPressed:
           _initializationCompleted
               ? () {
@@ -295,8 +320,8 @@ class MyHomePageState extends State<MyHomePage> {
       child: AppIcons.centerLocation(
         context,
       ), // Zeigt ein Symbol für den "Mein Standort"-Button
-    ));
-  }
+    ));*/
+  //}
 
   List<ItemButton> buildItems() {
     return _items.where((i) => i.isOwned).map((item) {
@@ -454,10 +479,14 @@ class MyHomePageState extends State<MyHomePage> {
                 setState(() {
                   if (!_isSimulatingLocation) {
                     _lastRealGpsPosition = GameEngine().playerPosition;
-                    GameEngine().playerMovementController?.teleportTo(_lastRealGpsPosition!);
+                    GameEngine().playerMovementController?.teleportTo(
+                      _lastRealGpsPosition!,
+                    );
                   } else {
                     if (_lastRealGpsPosition != null) {
-                      GameEngine().setRealGpsPositionAndNotify(_lastRealGpsPosition!);
+                      GameEngine().setRealGpsPositionAndNotify(
+                        _lastRealGpsPosition!,
+                      );
                     }
                   }
                   _isSimulatingLocation = !_isSimulatingLocation;
@@ -508,12 +537,7 @@ class MyHomePageState extends State<MyHomePage> {
                     onNpcChatRequested: (npc) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder:
-                              (_) => ChatPage(
-                                npc: npc,
-                              ),
-                        ),
+                        MaterialPageRoute(builder: (_) => ChatPage(npc: npc)),
                       );
                     },
                   ),
