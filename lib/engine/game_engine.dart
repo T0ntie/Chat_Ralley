@@ -25,6 +25,7 @@ class GameEngine {
   static const double conversationDistance = 50.0;
 
   bool isGPSSimulating = false;
+  LatLng? _lastSimulatedPosition;
 
   final PlayerMovementController _playerMovementController =
       PlayerMovementController(startPosition: LatLng(51.5074, -0.1278));
@@ -97,26 +98,14 @@ class GameEngine {
 
   late LatLng GpsPosition;
 
-  /*
-  set playerPosition(LatLng pos) {
-    _playerPosition = pos;
-
-    // Update aller NPCs
-    for (final npc in npcs) {
-      npc.updatePlayerPosition(pos);
-    }
-
-    // Update aller Hotspots
-    for (final hotspot in hotspots) {
-      if (hotspot.contains(pos)) {
-        registerHotspot(hotspot);
-      }
-    }
-  }
-*/
   void updatePlayerPositionSimulated() {
     if (!isGPSSimulating) return;
     final newPosition = _playerMovementController.updatePosition();
+
+    if (_lastSimulatedPosition == newPosition) {
+      return;
+    }
+    _lastSimulatedPosition = newPosition;
     _playerPositionUpdated(newPosition);
   }
 
