@@ -114,6 +114,13 @@ class GameEngine {
     for (var npc in npcs) {
       npc.updatePlayerPosition(newPosition);
     }
+
+    print("hotstpots");
+    for (final hotspot in hotspots) {
+      if (hotspot.contains(newPosition)) {
+        registerHotspot(hotspot);
+      }
+    }
   }
 
   void updateAllNpcPositions() {
