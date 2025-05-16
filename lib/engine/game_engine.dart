@@ -26,7 +26,9 @@ class GameEngine {
 
   bool isGPSSimulating = false;
 
-  final PlayerMovementController _playerMovementController = PlayerMovementController(startPosition: LatLng(51.5074, -0.1278));
+  final PlayerMovementController _playerMovementController =
+      PlayerMovementController(startPosition: LatLng(51.5074, -0.1278));
+
   PlayerMovementController? get playerMovementController =>
       _playerMovementController;
 
@@ -62,6 +64,18 @@ class GameEngine {
         : _realGpsPosition;
   }
 
+  void setRealGpsPositionAndNotify(LatLng pos) {
+    _realGpsPosition = pos;
+    for (final npc in npcs) {
+      npc.updatePlayerPosition(pos);
+    }
+    for (final hotspot in hotspots) {
+      if (hotspot.contains(pos)) {
+        registerHotspot(hotspot);
+      }
+    }
+  }
+
   set playerPosition(LatLng value) {
     if (isGPSSimulating) {
       _playerMovementController.teleportTo(value);
@@ -83,7 +97,7 @@ class GameEngine {
 
   late LatLng GpsPosition;
 
-/*
+  /*
   set playerPosition(LatLng pos) {
     _playerPosition = pos;
 
@@ -112,6 +126,7 @@ class GameEngine {
       npc.updatePlayerPosition(newPosition);
     }
   }
+
   void updateAllNpcPositions() {
     for (final npc in npcs) {
       npc.movingController.updatePosition();
@@ -153,7 +168,8 @@ class GameEngine {
     return items.where((item) => item.isScannable).toList();
   }
 
-  void markAllItemsAsSeen() { //fixme sinnvoll?
+  void markAllItemsAsSeen() {
+    //fixme sinnvoll?
     for (final item in items) {
       if (item.isOwned && item.isNew) {
         item.isNew = false;
@@ -178,8 +194,8 @@ class GameEngine {
     return grouped;
   }
 
-  List<(String triggerType, Npc npc, NpcAction action)> _getAllRegisteredActionEntries() {
-
+  List<(String triggerType, Npc npc, NpcAction action)>
+  _getAllRegisteredActionEntries() {
     final List<(String, Npc, NpcAction)> result = [];
 
     // Signal: Map<String, List<(Npc, NpcAction)>>
@@ -298,15 +314,20 @@ class GameEngine {
     FlushBarService().showFlushbar(title: "Ereignis", message: notification);
   }
 
-  Future <void> _runActions(Map<Npc, List<NpcAction>> map,
-      Npc npc, String logPrefix) async {
+  Future<void> _runActions(
+    Map<Npc, List<NpcAction>> map,
+    Npc npc,
+    String logPrefix,
+  ) async {
     final actions = map[npc];
     final remaining = <NpcAction>[];
 
     if (actions != null) {
       for (final action in actions) {
         final didRun = await action.invoke(npc);
-        print('$logPrefix ${action.runtimeType} for ${npc.name} executed: $didRun');
+        print(
+          '$logPrefix ${action.runtimeType} for ${npc.name} executed: $didRun',
+        );
         if (!didRun) remaining.add(action);
       }
       if (remaining.isEmpty) {
@@ -319,7 +340,7 @@ class GameEngine {
     }
   }
 
-  Future<void> _runHotspotActions(String hotspotName) async{
+  Future<void> _runHotspotActions(String hotspotName) async {
     final subscribers = _hotspotSubscriptions[hotspotName];
     if (subscribers == null) {
       print('🧿 No actions registered for hotspot $hotspotName');
@@ -330,7 +351,9 @@ class GameEngine {
 
     for (final (npc, action) in subscribers) {
       final didRun = await action.invoke(npc);
-      print('🧿 Action ${action.runtimeType} for ${npc.name} at $hotspotName: $didRun');
+      print(
+        '🧿 Action ${action.runtimeType} for ${npc.name} at $hotspotName: $didRun',
+      );
       if (!didRun) remaining.add((npc, action));
     }
 
@@ -341,22 +364,26 @@ class GameEngine {
     }
   }
 
-  Future <void> registerApproach(Npc npc) =>
+  Future<void> registerApproach(Npc npc) =>
       _runActions(_approachSubscriptions, npc, '👣');
+
   Future<void> registerInteraction(Npc npc) =>
       _runActions(_interactionSubscriptions, npc, '🗣️');
+
   Future<void> registerHotspot(Hotspot hotspot) async {
     await _runHotspotActions(hotspot.name);
   }
 
-  Future <void> registerInitialization() async {
+  Future<void> registerInitialization() async {
     print('🚀 Initialization registered!');
     for (final entry in _initSubscriptions.entries) {
       final Npc npc = entry.key;
       final List<NpcAction> actions = entry.value;
       for (final action in actions) {
         final didRun = await action.invoke(npc);
-        print('🚀 Action ${action.runtimeType} for NPC: ${npc.name} executed: ${didRun}');
+        print(
+          '🚀 Action ${action.runtimeType} for NPC: ${npc.name} executed: ${didRun}',
+        );
       }
       _initSubscriptions.remove(entry);
     }
@@ -392,7 +419,10 @@ class GameEngine {
     }
   }
 
-  Future<void> flushDeferredActions(BuildContext context, {VoidCallback? onFlushed}) async {
+  Future<void> flushDeferredActions(
+    BuildContext context, {
+    VoidCallback? onFlushed,
+  }) async {
     print('🔁 Verarbeite ${_deferredActions.length} verzögerte Actions...');
     while (_deferredActions.isNotEmpty) {
       final entry = _deferredActions.removeFirst();

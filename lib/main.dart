@@ -457,7 +457,7 @@ class MyHomePageState extends State<MyHomePage> {
                     GameEngine().playerMovementController?.teleportTo(_lastRealGpsPosition!);
                   } else {
                     if (_lastRealGpsPosition != null) {
-                      GameEngine().playerPosition = _lastRealGpsPosition!;
+                      GameEngine().setRealGpsPositionAndNotify(_lastRealGpsPosition!);
                     }
                   }
                   _isSimulatingLocation = !_isSimulatingLocation;
