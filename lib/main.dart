@@ -212,6 +212,9 @@ class MyHomePageState extends State<MyHomePage> {
   void _initializeUpdateTimer() {
     _updateTimer = Timer.periodic(_frameRate, (timer) {
       if (_initializationCompleted) {
+        if (GameEngine().isGPSSimulating) {
+          GameEngine().updatePlayerPositionSimulated();
+        }
         GameEngine().updateAllNpcPositions();
         setState(() {});
       }
@@ -451,10 +454,10 @@ class MyHomePageState extends State<MyHomePage> {
                 setState(() {
                   if (!_isSimulatingLocation) {
                     _lastRealGpsPosition = GameEngine().playerPosition;
+                    GameEngine().playerMovementController?.teleportTo(_lastRealGpsPosition!);
                   } else {
                     if (_lastRealGpsPosition != null) {
                       GameEngine().playerPosition = _lastRealGpsPosition!;
-                      //_processNewLocation(_playerPosition);
                     }
                   }
                   _isSimulatingLocation = !_isSimulatingLocation;

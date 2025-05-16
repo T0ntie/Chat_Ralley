@@ -43,13 +43,18 @@ class GameMapWidget extends StatelessWidget {
       options: MapOptions(
         initialCenter: location,
         initialZoom: 16.0,
-        onLongPress: (tapPosition, point) {
-          if (isSimulatingLocation && onSimulatedLocationChange != null) {
-            onSimulatedLocationChange!(point);
+
+        onTap: (tapPosition, point) {
+          if (isSimulatingLocation) {
+            GameEngine().playerMovementController?.moveTo(point);
           }
         },
-        onTap: (tapPosition, point) {
+
+        onLongPress: (tapPosition, point) {
           print('Tapped on location: ${point.latitude}, ${point.longitude}');
+          if (isSimulatingLocation) {
+            GameEngine().playerMovementController?.teleportTo(point);
+          }
         },
       ),
       children: [

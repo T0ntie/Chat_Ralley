@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hello_world/engine/item.dart';
+import 'package:hello_world/engine/moving_behavior.dart';
 import 'package:hello_world/gui/notification_services.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -24,6 +25,10 @@ class GameEngine {
   static const double conversationDistance = 50.0;
 
   bool isGPSSimulating = false;
+
+  final PlayerMovementController _playerMovementController = PlayerMovementController(startPosition: LatLng(51.5074, -0.1278));
+  PlayerMovementController? get playerMovementController =>
+      _playerMovementController;
 
   StoryLine? storyLine;
 
@@ -48,8 +53,37 @@ class GameEngine {
     return storyLine?.hotspotMap[hotspotName];
   }
 
+  late LatLng _realGpsPosition = LatLng(51.5074, -0.1278); //fixme
   LatLng _playerPosition = LatLng(51.5074, -0.1278); // default
-  LatLng get playerPosition => _playerPosition;
+  //LatLng get playerPosition => _playerPosition;
+  LatLng get playerPosition {
+    return isGPSSimulating
+        ? _playerMovementController.currentPosition
+        : _realGpsPosition;
+  }
+
+  set playerPosition(LatLng value) {
+    if (isGPSSimulating) {
+      _playerMovementController.teleportTo(value);
+    } else {
+      _realGpsPosition = value;
+
+      // NPCs und Hotspots benachrichtigen
+      for (final npc in npcs) {
+        npc.updatePlayerPosition(value);
+      }
+
+      for (final hotspot in hotspots) {
+        if (hotspot.contains(value)) {
+          registerHotspot(hotspot);
+        }
+      }
+    }
+  }
+
+  late LatLng GpsPosition;
+
+/*
   set playerPosition(LatLng pos) {
     _playerPosition = pos;
 
@@ -65,7 +99,19 @@ class GameEngine {
       }
     }
   }
+*/
+  void updatePlayerPositionSimulated() {
+    if (!isGPSSimulating) return;
+    final newPosition = _playerMovementController.updatePosition();
+    _playerPositionUpdated(newPosition);
+  }
 
+  void _playerPositionUpdated(LatLng newPosition) {
+    // Notifiziere alle NPCs über Spielerposition
+    for (var npc in npcs) {
+      npc.updatePlayerPosition(newPosition);
+    }
+  }
   void updateAllNpcPositions() {
     for (final npc in npcs) {
       npc.movingController.updatePosition();
