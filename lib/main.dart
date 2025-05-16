@@ -473,7 +473,7 @@ class MyHomePageState extends State<MyHomePage> {
             ),
           if (_debuggingVisible)
             IconButton(
-              icon: Icon(Icons.sports_esports_outlined),
+              icon: Icon(Icons.gps_off),
               tooltip: "Simulate",
               onPressed: () {
                 setState(() {
