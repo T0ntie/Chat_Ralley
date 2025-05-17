@@ -315,6 +315,39 @@
           "invokeAction": "stopMoving"
         }
       ]
+    },
+    {
+      "name": "Beißbert",
+      "position": "MuseumPosition",
+      "prompt": "beissbert-prompt.txt",
+      "image": "images/trex.png",
+      "visible": false,
+      "revealed": false,
+      "iconAsset": "icons/trex.png",
+      "actions": [
+        {
+          "onSignal": "TibiaReturned",
+          "invokeAction": "appear",
+          "defer": true
+        },
+        {
+          "onSignal": "TibiaReturned",
+          "invokeAction": "reveal",
+          "defer": true
+        },
+        {
+          "onSignal": "TibiaReturned",
+          "invokeAction": "follow",
+          "defer": true
+        },
+        {
+          "onSignal": "TibiaReturned",
+          "invokeAction": "talk",
+          "trigger": "[Du siehst ein schmackhaftes Steak auf zwei Beinen vor dir]",
+          "defer": true
+        }
+
+      ]
     }
   ],
   "hotspots": [
