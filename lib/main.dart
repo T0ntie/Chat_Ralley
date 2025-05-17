@@ -493,13 +493,12 @@ class MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
-          IconButton(
-            icon: Icon(Icons.access_alarm),
-            tooltip: "Credits",
+          if (_debuggingVisible)
+            IconButton(
+            icon: Icon(Icons.restart_alt),
+            tooltip: "Restart",
             onPressed: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (context) => CreditsScreen()));
+              _initializeGame();
             },
           ),
           IconButton(
