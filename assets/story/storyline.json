@@ -3,7 +3,7 @@
   "title": "Der Fall der verschwundenen Fossilie",
   "npcs": [
     {
-      "name": "{{Kommissar_Knatterbach}}",
+      "name": "Kommissar Knatterbach",
       "position": "KnatterbachPosition",
       "prompt": "knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
@@ -32,20 +32,20 @@
         {
           "onSignal": "ShowMuseum",
           "invokeAction": "showHotspot",
-          "hotspot": "{{Museum}}",
+          "hotspot": "Museum",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
           "onSignal": "KnatterbachFollow",
           "invokeAction": "follow",
-          "notification": "{{Kommissar_Knatterbach}} folgt dir jetzt."
+          "notification": "Kommissar Knatterbach folgt dir jetzt."
         },
         {
           "onSignal": "KnatterbachStop",
           "invokeAction": "stopMoving"
         },
         {
-          "onHotspot": "{{Museum}}",
+          "onHotspot": "Museum",
           "invokeAction": "talk",
           "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]",
           "conditions": {
@@ -68,11 +68,11 @@
         {
           "onSignal": "KnatterbachToPolice",
           "invokeAction": "showHotspot",
-          "hotspot": "{{Polizei}}",
+          "hotspot": "Polizei",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
-          "onHotspot": "{{Polizei}}",
+          "onHotspot": "Polizei",
           "invokeAction": "talk",
           "trigger": "[Der Spieler kommt hilfesuchend in die Polizeistation]",
           "conditions": {
@@ -93,14 +93,14 @@
       ]
     },
     {
-      "name": "{{Professor_Dr._Theobald_Knöchelbein}}",
+      "name": "Professor Dr. Theobald Knöchelbein",
       "position": "KnöchelbeinPosition",
       "prompt": "knöchelbein-prompt.txt",
       "image": "images/knöchelbein.png",
       "visible": false,
       "actions": [
         {
-          "onHotspot": "{{Museum}}",
+          "onHotspot": "Museum",
           "invokeAction": "appear"
         },
         {
@@ -118,7 +118,7 @@
         {
           "onSignal": "ShowKroll",
           "invokeAction": "showHotspot",
-          "hotspot": "{{Haus_Kroll}}",
+          "hotspot": "Haus Kroll",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
@@ -127,17 +127,17 @@
           "defer": true
         },
         {
-          "onHotspot": "{{Museum}}",
+          "onHotspot": "Museum",
           "invokeAction": "behave",
           "promptTag": "tibia",
           "conditions": {
-          "item:Tibia": true
+            "item:Tibia": true
           }
         }
       ]
     },
     {
-      "name": "{{Dieter_Kroll}}",
+      "name": "Dieter Kroll",
       "position": "KrollPosition",
       "prompt": "kroll-prompt.txt",
       "image": "images/kroll.png",
@@ -145,7 +145,7 @@
       "revealed": false,
       "actions": [
         {
-          "onHotspot": "{{Haus_Kroll}}",
+          "onHotspot": "Haus Kroll",
           "invokeAction": "appear"
         },
         {
@@ -160,18 +160,18 @@
         {
           "onSignal": "KrollDebut",
           "invokeAction": "revealHotspot",
-          "hotspot": "{{Haus_Kroll}}"
+          "hotspot": "Haus Kroll"
         },
         {
           "onSignal": "ShowKirchengasse",
           "invokeAction": "showHotspot",
-          "hotspot": "{{Haus_Tschulli}}",
+          "hotspot": "Haus Tschulli",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         }
       ]
     },
     {
-      "name": "{{Bozzi}}",
+      "name": "Bozzi",
       "position": "BozziPosition",
       "prompt": "bozzi-prompt.txt",
       "image": "images/bozzi.png",
@@ -249,7 +249,7 @@
       ]
     },
     {
-      "name": "{{Martha_Tschulli}}",
+      "name": "Martha Tschulli",
       "position": "TschulliPosition",
       "prompt": "tschulli-prompt.txt",
       "image": "images/tschulli.png",
@@ -257,7 +257,7 @@
       "revealed": false,
       "actions": [
         {
-          "onHotspot": "{{Haus_Tschulli}}",
+          "onHotspot": "Haus Tschulli",
           "invokeAction": "appear"
         },
         {
@@ -319,21 +319,21 @@
   ],
   "hotspots": [
     {
-      "name": "{{Museum}}",
+      "name": "Museum",
       "position": "MuseumPosition",
       "image": "images/museum.png",
       "radius": 20,
       "visible": false
     },
     {
-      "name": "{{Polizei}}",
+      "name": "Polizei",
       "position": "PolizeiPosition",
       "image": "images/polizei.png",
       "radius": 15,
       "visible": false
     },
     {
-      "name": "{{Haus_Kroll}}",
+      "name": "Haus Kroll",
       "position": "HausKrollPosition",
       "image": "images/hauskroll.png",
       "radius": 20,
@@ -341,7 +341,7 @@
       "revealed": false
     },
     {
-      "name": "{{Haus_Tschulli}}",
+      "name": "Haus Tschulli",
       "position": "HausTschulliPosition",
       "image": "images/haustschulli.png",
       "radius": 20,
@@ -363,63 +363,63 @@
       "icon": "icons/walkie-talkie.svg",
       "owned": false,
       "useType": "radio",
-      "targetNpc": "{{Kommissar_Knatterbach}}"
+      "targetNpc": "Kommissar Knatterbach"
     },
     {
       "name": "Knochen",
       "icon": "icons/bone.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "{{Bozzi}}"
+      "targetNpc": "Bozzi"
     },
     {
       "name": "Karotte",
       "icon": "icons/carrot.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "{{Bozzi}}"
+      "targetNpc": "Bozzi"
     },
     {
       "name": "Tibia",
       "icon": "icons/tibia.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "{{Professor_Dr._Theobald_Knöchelbein}}"
+      "targetNpc": "Professor Dr. Theobald Knöchelbein"
     },
     {
       "name": "Ball",
       "icon": "icons/ball.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "{{Bozzi}}"
+      "targetNpc": "Bozzi"
     },
     {
       "name": "Keks",
       "icon": "icons/cookie.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "{{Bozzi}}"
+      "targetNpc": "Bozzi"
     },
     {
       "name": "Fleisch",
       "icon": "icons/meat.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "{{Bozzi}}"
+      "targetNpc": "Bozzi"
     },
     {
       "name": "Käse",
       "icon": "icons/cheese.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "{{Bozzi}}"
+      "targetNpc": "Bozzi"
     },
     {
       "name": "Steak",
       "icon": "icons/steak.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "{{Bozzi}}"
+      "targetNpc": "Bozzi"
     }
   ],
   "flags": {

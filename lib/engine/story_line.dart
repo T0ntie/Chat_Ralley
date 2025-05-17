@@ -17,11 +17,9 @@ class StoryLine {
   final List<Item> items;
   static final Map<String, LatLng> _positions = {};
   static final Map<String, List<LatLng>> _paths = {};
-  static final Map<String, String> _localizations = {};
 
   static const storyLineAsset = 'assets/story/storyline.json';
   static const positionsAsset = 'assets/story/positions.json';
-  static const localizationsAsset = 'assets/story/localizations.json';
 
   StoryLine({
     required this.scenarioId,
@@ -97,28 +95,6 @@ class StoryLine {
     return path;
   }
 
-  static Map<String, String> localizationsFromJson(Map<String, dynamic> json){
-    return json.map((key, value) => MapEntry(key.toString(), value.toString()));
-  }
-
-  static String localizeString(String templateString) {
-    String localizedString = templateString;
-    _localizations.forEach((key, value) {
-      localizedString = localizedString.replaceAll('{{$key}}', value);
-    });
-
-    //just checking for remaining {{varibles}} in the prompt
-    final RegExp remainingPlaceholder = RegExp(r'\{\{[^}]+\}\}');
-    final matches = remainingPlaceholder.allMatches(localizedString);
-
-    if (matches.isNotEmpty) {
-      final missingKeys = matches.map((match) => match.group(0)).join(', ');
-      throw Exception('Unbekannte Platzhalter im Tempate gefunden: $missingKeys');
-    }
-
-    return localizedString;
-  }
-
   static LatLng positionFromJson(Map<String, dynamic> json) {
     //check vor valid position
     final pos = json['position'];
@@ -164,17 +140,6 @@ class StoryLine {
 
   static Future<StoryLine> loadStoryLine() async {
     try {
-      final localizationsJsonString = await rootBundle.loadString(
-          localizationsAsset);
-      final localizationsJson = json.decode(localizationsJsonString);
-      _localizations.addAll(StoryLine.localizationsFromJson(localizationsJson));
-
-    } catch (e, stack) {
-      print(
-        '❌ Fehler beim Laden der Localizations from $localizationsAsset:\n$e\n$stack',
-      );
-    }
-    try {
       final positionsJsonString = await rootBundle.loadString(positionsAsset);
       final positionsJson = json.decode(positionsJsonString);
       _positions.addAll(StoryLine._namedPositionsFromJson(positionsJson));
@@ -187,7 +152,6 @@ class StoryLine {
     }
     try {
       String storyLineJsonString = await rootBundle.loadString(storyLineAsset);
-      storyLineJsonString = localizeString(storyLineJsonString);
       final storLineJson = json.decode(storyLineJsonString);
       return await StoryLine.fromJsonAsync(storLineJson);
     } catch (e, stack) {
