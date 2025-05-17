@@ -1,4 +1,4 @@
-import 'package:hello_world/engine/hotspot.dart';
+  import 'package:hello_world/engine/hotspot.dart';
 import 'package:hello_world/engine/item.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:hello_world/engine/game_engine.dart';
@@ -142,7 +142,9 @@ class StoryLine {
     try {
       final positionsJsonString = await rootBundle.loadString(positionsAsset);
       final positionsJson = json.decode(positionsJsonString);
+      _positions.clear();
       _positions.addAll(StoryLine._namedPositionsFromJson(positionsJson));
+      _paths.clear();
       _paths.addAll(StoryLine._namedPathsFromJson(positionsJson));
     } catch (e, stack) {
       print(

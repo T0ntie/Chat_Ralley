@@ -384,6 +384,19 @@ class GameEngine {
       }
     }
   }
+
+  void reset() {
+    _signalSubscriptions.clear();
+    _interactionSubscriptions.clear();
+    _approachSubscriptions.clear();
+    _initSubscriptions.clear();
+    _hotspotSubscriptions.clear();
+    _messageCountSubscriptions.clear();
+    _deferredActions.clear();
+    storyLine = null;
+    _lastSimulatedPosition = null;
+  }
+
 }
 
 class GameEngineDebugger {

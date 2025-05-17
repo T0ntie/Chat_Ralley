@@ -499,8 +499,12 @@ class MyHomePageState extends State<MyHomePage> {
             IconButton(
             icon: Icon(Icons.restart_alt),
             tooltip: "Restart",
-            onPressed: () {
-              _initializeGame();
+            onPressed: () async {
+              GameEngine().reset();
+              await GameEngine().initializeGame();
+              final currentPosition = GameEngine().playerPosition;
+              GameEngine().setRealGpsPositionAndNotify(currentPosition);
+              GameEngine().registerInitialization();
             },
           ),
           IconButton(
