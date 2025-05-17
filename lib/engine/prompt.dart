@@ -79,9 +79,7 @@ class Prompt {
       final String npcPrompt = await rootBundle.loadString(
         promptAssetPath + promptFile,
       );
-      String prompt = StoryLine.localizeString(
-        gamePrompt + npcPrompt + compressPrompt,
-      );
+      String prompt = gamePrompt + npcPrompt + compressPrompt;
       try {
         parsePromptSections(prompt, promptSectionMap, tagToSections);
       } catch (e) {
