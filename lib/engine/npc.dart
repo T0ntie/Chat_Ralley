@@ -7,8 +7,6 @@ import 'package:hello_world/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 import 'conversation.dart';
 
-import 'dart:math';
-
 enum NPCIcon { unknown, identified, nearby, unknown_nearby }
 
 class Npc extends GameElement {

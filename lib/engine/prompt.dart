@@ -1,5 +1,4 @@
 import 'package:flutter/services.dart';
-import 'package:hello_world/engine/story_line.dart';
 
 class Prompt {
   Prompt._();

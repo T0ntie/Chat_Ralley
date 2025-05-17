@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hello_world/engine/story_journal.dart';
@@ -44,7 +43,7 @@ Hier folgt deine Geschichte:
   void _startScrolling() {
     if (!mounted) return;
     final scrollableHeight = _scrollController.position.maxScrollExtent;
-    final screenHeight = MediaQuery.of(context).size.height;
+    //final screenHeight = MediaQuery.of(context).size.height;
 
     // ⏱️ Rechne zusätzliche Scrollhöhe für "ganz raus scrollen"
     final pixelsToScroll = scrollableHeight;

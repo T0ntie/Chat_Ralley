@@ -82,9 +82,10 @@ abstract class NpcAction {
   }
 
   Future<bool> invoke(Npc npc) async {
+/*
     Map<String, bool> flags = GameEngine().flags;
 
-/*
+
     print("Aktuelle Flags im GameEngine:");
     flags.forEach((key, value) {
       print("  $key: $value");

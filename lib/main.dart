@@ -51,7 +51,7 @@ enum AppScreen { splash, home, credits }
 
 class _MyAppState extends State<MyApp> {
   AppScreen _currentScreen = AppScreen.splash;
-  bool _showSplash = true;
+  //bool _showSplash = true;
 
   @override
   Widget build(BuildContext context) {
@@ -329,6 +329,7 @@ class MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
+/*
   void _moveSimulatedLocation(double x, double y) {
     setState(() {
       GameEngine().playerPosition = LatLng(
@@ -338,6 +339,7 @@ class MyHomePageState extends State<MyHomePage> {
     });
     //_processNewLocation(_playerPosition);
   }
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -544,7 +546,7 @@ class MyHomePageState extends State<MyHomePage> {
                   if (showActionTestingPanel)
                     ActionTestingPanel(
                       actionsByTrigger:
-                          GameEngine().getActionsGroupedByTrigger(),
+                          GameEngineDebugger.getActionsGroupedByTrigger(),
                       flags: GameEngine().flags,
                     ),
                   SidePanel(

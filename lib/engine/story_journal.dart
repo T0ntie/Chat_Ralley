@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:hello_world/engine/conversation.dart';
-import 'package:hello_world/engine/game_engine.dart';
 
 class StoryJournal {
   static final StoryJournal _instance = StoryJournal._internal();
@@ -22,6 +19,7 @@ class StoryJournal {
   void logPrompt(String npc, String prompt)
   {
     JournalEntry entry = new PromptJournalEntry(npc: npc, prompt: prompt);
+    _entries.add(entry);
   }
 
   void logMessage(Medium medium, ChatRole role, String npc, String message)
