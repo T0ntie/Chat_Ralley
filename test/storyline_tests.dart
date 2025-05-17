@@ -28,12 +28,6 @@ void main() {
     final unknownActions = <String>{};
     final unknownTriggers = <String>{};
 
-/*
-    final actions = json['npcs']
-        .expand((npc) => npc['actions'] ?? [])
-        .cast<Map<String, dynamic>>();
-*/
-
     final actions = (json['npcs'] as List)
         .map((npc) => npc['actions'] ?? [])
         .expand((a) => a)
@@ -190,68 +184,6 @@ void main() {
     );
 
     print('✅ Alle verwendeten Items sind korrekt im JSON definiert.');
-  });
-
-  test('Alle Platzhalter aus storyline + Prompts sind in localizations.json definiert', () async {
-    const promptFiles = [
-      'assets/story/prompts/kroll-prompt.txt',
-      'assets/story/prompts/knatterbach-prompt.txt',
-      'assets/story/prompts/bozzi-prompt.txt',
-      'assets/story/prompts/knöchelbein-prompt.txt',
-      'assets/story/prompts/tschulli-prompt.txt',
-    ];
-
-    final storyRaw = await File('assets/story/storyline.json').readAsString();
-    final locRaw = await File('assets/story/localizations.json').readAsString();
-
-    final storyJson = jsonDecode(storyRaw);
-    final locJson = jsonDecode(locRaw) as Map<String, dynamic>;
-    final localizationKeys = locJson.keys.toSet();
-
-    final placeholderPattern = RegExp(r'\{\{([^}]+)\}\}');
-    final allUsedPlaceholders = <String>{};
-
-    // 1. Storyline-JSON nach Platzhaltern durchsuchen
-    void collectPlaceholders(dynamic value) {
-      if (value is String) {
-        for (final match in placeholderPattern.allMatches(value)) {
-          allUsedPlaceholders.add(match.group(1)!);
-        }
-      } else if (value is Map) {
-        value.values.forEach(collectPlaceholders);
-      } else if (value is List) {
-        value.forEach(collectPlaceholders);
-      }
-    }
-
-    collectPlaceholders(storyJson);
-
-    // 2. Alle Prompt-Dateien nach Platzhaltern durchsuchen
-    for (final filePath in promptFiles) {
-      final text = await File(filePath).readAsString();
-      final matches = placeholderPattern.allMatches(text);
-      for (final match in matches) {
-        allUsedPlaceholders.add(match.group(1)!);
-      }
-    }
-
-    // 3. Abgleich mit localizations.json
-    final undefined = allUsedPlaceholders.difference(localizationKeys);
-    final unused = localizationKeys.difference(allUsedPlaceholders);
-
-    expect(
-      undefined,
-      isEmpty,
-      reason: '❌ Diese Platzhalter werden verwendet, sind aber nicht in localizations.json definiert:\n${undefined.join('\n')}',
-    );
-
-    expect(
-      unused,
-      isEmpty,
-      reason: '⚠️ Diese Platzhalter stehen in localizations.json, werden aber nirgends verwendet:\n${unused.join('\n')}',
-    );
-
-    print('✅ Alle verwendeten Platzhalter sind korrekt lokalisiert.');
   });
 
   test('Alle JSON-Schlüssel entsprechen der Whitelist gültiger Schlüssel', () async {

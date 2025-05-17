@@ -311,7 +311,7 @@
           "notification": "Martha folgt dir jetzt."
         },
         {
-          "onHotspot": "{{Haus_Kroll}}",
+          "onHotspot": "Haus Kroll",
           "invokeAction": "stopMoving"
         }
       ]
