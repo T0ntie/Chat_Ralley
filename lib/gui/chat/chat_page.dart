@@ -9,7 +9,6 @@ import '../../engine/conversation.dart';
 class ChatPage extends StatefulWidget {
   final Npc npc;
   final Medium medium;
-  //final VoidCallback? onDispose; //fixme not needed anymore
   final Widget? floatingActionButton; // Walkie-Talkie-Push-To-Talk Button
   final TextEditingController? externalController;
   final ChatPageController? chatPageController;
@@ -32,7 +31,6 @@ class _ChatPageState extends State<ChatPage> {
   late final Conversation _conversation;
   late final TextEditingController _controller;
 
-  //final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
   bool get isRadio => widget.medium == Medium.radio;
@@ -59,9 +57,9 @@ class _ChatPageState extends State<ChatPage> {
     await Future.delayed(const Duration(seconds: 2));
     // Sicherstellen, dass Navigator nach dem aktuellen Frame poppt
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
+      final route = ModalRoute.of(context);
+      Navigator.of(context).pop();
+      //Navigator.of(context, rootNavigator: true).pop();
     });
   }
 
@@ -145,7 +143,6 @@ class _ChatPageState extends State<ChatPage> {
                 ),
       ),
 
-      // AppBar(title: isRadio ? Text("Walkie Talkie"): Text(widget.npc.displayName)),
       body: Stack(
         children: [
           Positioned.fill(
@@ -194,9 +191,6 @@ class _ChatPageState extends State<ChatPage> {
     if (widget.externalController == null) {
       _controller.dispose();
     }
-    //GameEngine().flushDeferredActions();
-    //widget.onDispose?.call(); //fixme
-    //_controller.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -204,6 +198,5 @@ class _ChatPageState extends State<ChatPage> {
 
 class ChatPageController {
   void Function(String text)? sendMessage;
-  //bool Function()? isSending;
   final ValueNotifier<bool> isSending = ValueNotifier(false);
 }

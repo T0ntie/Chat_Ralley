@@ -19,7 +19,7 @@ class LeadAlongAction extends NpcAction {
   Future<bool> excecute(Npc npc) async {
     print('${npc.name} starts leading along a path');
     npc.leadAlong(path);
-    log("${npc.name} führt den Spieler an einem bestimmten Ort.");//fixme bei dem Punkt anfangen, der am nächsten liegt?
+    log("${npc.name} führt den Spieler an einem bestimmten Ort.");
     return true;
   }
 

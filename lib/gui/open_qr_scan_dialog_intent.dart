@@ -36,7 +36,7 @@ class OpenScanDialogIntent extends UIIntent {
 
     bool exists = expectedItems.any((item) => item.name == result);
 
-    if (exists) {  //fixme fehlermeldung kommt ständig bei falschem code
+    if (exists) {
       Item selectedItem = expectedItems.firstWhere(
         (item) => item.name == result,
       );

@@ -99,8 +99,8 @@ class Npc extends GameElement {
     movingController.stopMoving();
   }
 
-  void stopTalking() async {
-    currentConversation.finishConversation();
+  Future<void> stopTalking() async {
+    await currentConversation.finishConversation();
   }
 
   void talk(String repsondTo) async {

@@ -19,18 +19,25 @@ class ItemQRScanDialog extends StatefulWidget {
 }
 
 class _ItemQRScanDialogState extends State<ItemQRScanDialog> {
+  bool _isProcessing = false;
 
   void _handleBarcode(String code) {
-    print("in handle Barcode");
-    print("Code scanned: $code");
+    if (_isProcessing) return;
+    _isProcessing = true;
+
+    print("handlingBarcodes");
 
     if (widget.expectedQrCodes.contains(code)) {
       Navigator.of(context).pop(code); // ✅ Richtiger Code – zurückgeben
     } else {
-      SnackBarService.showErrorSnackBar(context, "🚫 Falscher Code. Versuche es nochmal.");
-      // ❌ Falscher Code – nicht schließen
+      SnackBarService.showErrorSnackBar(
+        context,
+        "🚫 Falscher Code. Versuche es nochmal.",
+      );
+      Future.delayed(const Duration(seconds: 3), () {
+        _isProcessing = false;
+      });
     }
-
   }
 
   @override
@@ -38,9 +45,7 @@ class _ItemQRScanDialogState extends State<ItemQRScanDialog> {
     final theme = Theme.of(context);
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 8,
       backgroundColor: Colors.transparent,
       child: Container(
@@ -106,10 +111,7 @@ class _ItemQRScanDialogState extends State<ItemQRScanDialog> {
             const SizedBox(height: 16),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'Abbrechen',
-                style: TextStyle(color: Colors.white70),
-              ),
+              child: Text('Abbrechen', style: TextStyle(color: Colors.white70)),
             ),
           ],
         ),

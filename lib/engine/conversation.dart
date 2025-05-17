@@ -27,8 +27,7 @@ class Conversation {
     }
   }
 
-  void finishConversation() async {
-    print("Schließe das chat fenster: conversation finished");
+  Future<void> finishConversation() async {
     await onConversationFinished?.call();
   }
 
@@ -62,7 +61,6 @@ class Conversation {
     _log();
     GameEngine().registerMessage(npc, ++userMessageCount);
   }
-
 
   void addAssistantMessage(String message, Medium medium) async {
     final ChatMessage chatMessage = ChatMessage(

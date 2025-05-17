@@ -8,7 +8,7 @@ class StopTalkingAction extends NpcAction{
   @override
   Future<bool> excecute(Npc npc) async {
     print('${npc.name} stops talking');
-    npc.stopTalking();//fixme der Chat dialog schließt sich nicht
+    await npc.stopTalking();
     return true;
   }
 
