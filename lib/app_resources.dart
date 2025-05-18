@@ -126,7 +126,7 @@ class AppIcons {
           color: ResourceColors.nearbyNpc,
           size: ResourceSizes.npcIconSize,
         );
-      case NPCIcon.unknown_nearby:
+      case NPCIcon.unknownNearby:
         return buildIcon(
           ResourceIcons.unknown,
           color: ResourceColors.nearbyNpc,

@@ -128,7 +128,7 @@ class MyHomePageState extends State<MyHomePage> {
     GameEngine().isGPSSimulating = value;
   }
 
-  LatLng? _lastRealGpsPosition = null;
+  LatLng? _lastRealGpsPosition;
 
   bool _isSidePanelVisible = false; //fixme
 

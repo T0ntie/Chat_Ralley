@@ -1,4 +1,4 @@
-  import 'package:hello_world/engine/hotspot.dart';
+import 'package:hello_world/engine/hotspot.dart';
 import 'package:hello_world/engine/item.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:hello_world/engine/game_engine.dart';
@@ -28,11 +28,7 @@ class StoryLine {
     required this.hotspotsList,
     required this.flags,
     required this.items,
-  }) : hotspotMap = Map<String, Hotspot>.fromIterable(
-    hotspotsList,
-    key: (hotspot) => hotspot.name,
-    value: (hotspot) => hotspot,
-  );
+  }) : hotspotMap = {for (final hotspot in hotspotsList) hotspot.name: hotspot};
 
   static LatLng _latLngFromJson(Map<String, dynamic> json) {
     if (json.containsKey('lat') && json.containsKey('lng')) {
@@ -102,7 +98,9 @@ class StoryLine {
       if (StoryLine._positions.containsKey(pos)) {
         return StoryLine._positions[pos]!;
       } else {
-        throw FormatException("❌ Position-Name '$pos' ist nicht in positions.json definiert.");
+        throw FormatException(
+          "❌ Position-Name '$pos' ist nicht in positions.json definiert.",
+        );
       }
     }
     if (pos is Map<String, dynamic>) {
@@ -123,7 +121,8 @@ class StoryLine {
           entry.key.norm: entry.value as bool,
       };
 
-      final items = (json['items'] as List).map((e) => Item.fromJson(e)).toList();
+      final items =
+          (json['items'] as List).map((e) => Item.fromJson(e)).toList();
       return StoryLine(
         scenarioId: json['scenarioId'],
         title: json['title'],

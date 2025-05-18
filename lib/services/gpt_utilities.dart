@@ -54,12 +54,12 @@ class GptUtilities {
     }
 
     final pattern = "{{Subjekt}} {{Prädikat}} {{Akkusativobjekt}} {{Dativobjekt}}.";
-    final content = "-Subjekt: ${subject}\n-Prädikat: ${predicate}\n-Akkusativobjekt: ${akkusativeObject}\n-Dativobjekt: ${dativeObject}";
+    final content = "-Subjekt: $subject\n-Prädikat: $predicate\n-Akkusativobjekt: $akkusativeObject\n-Dativobjekt: $dativeObject";
 
     final messages = [
       {"role": "system", "content": utilityPrompt!},
       {
-        "role": "user",  "content": "${pattern}\n${content}",
+        "role": "user",  "content": "$pattern\n$content",
       },
     ];
     final response = await ChatService.processMessages(messages);

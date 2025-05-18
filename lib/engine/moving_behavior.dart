@@ -208,6 +208,7 @@ class NPCMovementController extends EntityMovementController {
     isMoving = distanceToPlayer < waitDistance;
   }
 
+  @override
   void stopMoving() {
     currentBasePosition = currentPosition;
     isFollowing = false;
@@ -274,7 +275,8 @@ class PlayerMovementController extends EntityMovementController {
     isMoving = false;
   }
 
-  void moveTo(LatLng destination) {
+  @override
+  void moveTo(LatLng toP) {
 
     _movementStartPosition = currentBasePosition;
 
@@ -285,7 +287,7 @@ class PlayerMovementController extends EntityMovementController {
     final distance = Distance().as(
       LengthUnit.Meter,
       currentBasePosition,
-      destination,
+      toP,
     );
     if (distance == 0) {
       // Kein Ziel gesetzt
@@ -293,7 +295,7 @@ class PlayerMovementController extends EntityMovementController {
     }
 
     speedInms = distance / durationInSeconds;
-    toPosition = destination;
+    toPosition = toP;
     movementStartTime = DateTime.now();
     isMoving = true;
   }

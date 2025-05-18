@@ -32,7 +32,7 @@ class OpenScanDialogIntent extends UIIntent {
             expectedQrCodes: expectedItemNames,
           ),
     );
-    print("ShowDialog ist fertig. Result: ${result}");
+    print("ShowDialog ist fertig. Result: $result");
 
     bool exists = expectedItems.any((item) => item.name == result);
 

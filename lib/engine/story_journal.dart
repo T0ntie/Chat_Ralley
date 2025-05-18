@@ -12,31 +12,30 @@ class StoryJournal {
   String toStory()
   {
     final story= _entries.map((entry) => entry.toStory()).join("\n");
-    print ("--------${story}");
     return story;
   }
 
   void logPrompt(String npc, String prompt)
   {
-    JournalEntry entry = new PromptJournalEntry(npc: npc, prompt: prompt);
+    final entry = PromptJournalEntry(npc: npc, prompt: prompt);
     _entries.add(entry);
   }
 
   void logMessage(Medium medium, ChatRole role, String npc, String message)
   {
-    JournalEntry entry = new DialogJournalEntry(medium: medium, role: role, npc: npc, message: message);
-    print (" 🐱‍👤 Journal Entry : " + _shorten(entry.toStory()));
+    final entry = DialogJournalEntry(medium: medium, role: role, npc: npc, message: message);
+    print (" 🐱‍👤 Journal Entry : ${_shorten(entry.toStory())}");
     _entries.add(entry);
   }
 
   void logAction(String action) {
-    JournalEntry entry = new ActionJournalEntry(action: action);
-    print (" 🐱‍👤 Journal Entry : " + _shorten(entry.toStory()));
+    final entry = ActionJournalEntry(action: action);
+    print (" 🐱‍👤 Journal Entry : ${_shorten(entry.toStory())}");
     _entries.add(entry);
   }
 
   String _shorten (String message) {
-    return  message.length > 100 ? message.substring(0, 100) + "..." : message;
+    return  message.length > 100 ? "${message.substring(0, 100)}..." : message;
   }
 }
 
@@ -54,18 +53,20 @@ abstract class JournalEntry {
 class PromptJournalEntry extends JournalEntry {
   final String prompt;
   final String npc;
-  PromptJournalEntry({required this.npc, required this.prompt, DateTime? timestamp}): super(timestamp: timestamp);
+  PromptJournalEntry({super.timestamp, required this.npc, required this.prompt});
 
+  @override
   String toStory()
   {
-    return ("## Die Beschreibung von **${npc}**: \n\n ${prompt}");
+    return ("## Die Beschreibung von **$npc**: \n\n $prompt");
   }
 }
 
 class ActionJournalEntry extends JournalEntry {
   final String action;
-  ActionJournalEntry ({required this.action, DateTime? timestamp}): super(timestamp: timestamp);
+  ActionJournalEntry ({super.timestamp, required this.action});
 
+  @override
   String toStory() {
     return action;
   }
@@ -82,12 +83,12 @@ class DialogJournalEntry extends JournalEntry {
     required this.npc,
     required this.message,
     required this.medium,
-    DateTime? timestamp,
-  }) : super(timestamp: timestamp);
+    super.timestamp,
+  });
 
   String _commVerb()
   {
-    if (message == Medium.chat){
+    if (medium == Medium.chat){
       return "sendet per Funk:";
     }
     return "sagt:";
@@ -96,13 +97,13 @@ class DialogJournalEntry extends JournalEntry {
   @override
   String toStory() {
     if (medium == Medium.trigger) {
-      return "- Es geschieht folgendes: ${message}\n\n";
+      return "- Es geschieht folgendes: $message\n\n";
     }
     if (role == ChatRole.assistant) {
-      return "- ${npc} " + _commVerb() + " ${message}\n\n";
+      return "- $npc ${_commVerb()} $message\n\n";
     }
     if (role == ChatRole.user) {
-      return "- der Spieler " + _commVerb() + " ${message}\n\n";
+      return "- der Spieler ${_commVerb()} $message\n\n";
     }
 
     print("folgende message wird ignoriert: $message ");

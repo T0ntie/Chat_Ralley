@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
 
         Container(
-          color: Colors.black.withOpacity(0.3), // dunkler Filter
+          color: Colors.black.withAlpha((0.3 * 255).toInt()), // dunkler Filter
         ),
         Center(
           child: Column(

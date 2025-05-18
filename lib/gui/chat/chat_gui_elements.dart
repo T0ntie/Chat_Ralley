@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hello_world/app_resources.dart';
 import 'package:hello_world/engine/conversation.dart';
 
@@ -8,7 +7,7 @@ class MessageBubble extends StatelessWidget {
 
   //final BuildContext context;
 
-  const MessageBubble({required this.message});
+  const MessageBubble({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +89,7 @@ class InputBar extends StatelessWidget {
   final VoidCallback onSendPressed;
 
   const InputBar({
+    super.key,
     required this.controller,
     required this.scrollController,
     required this.isSending,

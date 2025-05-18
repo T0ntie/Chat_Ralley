@@ -104,8 +104,9 @@ class Conversation {
       (m.fromSystem ? laterSystem : userAssist).add(m);
     }
 
-    if (userAssist.length <= keep && laterSystem.isEmpty)
+    if (userAssist.length <= keep && laterSystem.isEmpty) {
       return; // nichts zu tun
+    }
 
     // 2) --- bestimmen, was behalten / zusammengefasst wird -------------------
     final userAssistToKeep = userAssist.sublist(

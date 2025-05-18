@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world/engine/npc.dart';
-import 'package:hello_world/gui/chat/radio-transmission-overlay.dart';
+import 'package:hello_world/gui/chat/radio_transmission_overlay.dart';
 import 'chat_page.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../engine/conversation.dart';

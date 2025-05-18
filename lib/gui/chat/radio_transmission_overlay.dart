@@ -8,16 +8,16 @@ class RadioTransmissionOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned.fill(
       child: Container(
-        color: Colors.black.withOpacity(0.6),
+        color: Colors.black.withAlpha((0.6 * 255).toInt()),
         child: Center(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
             decoration: BoxDecoration(
-              color: Colors.blueGrey.shade900.withOpacity(0.85),
+              color: Colors.blueGrey.shade900.withAlpha((0.85 * 255).toInt()),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withAlpha((0.5 * 255).toInt()),
                   blurRadius: 12,
                   offset: const Offset(0, 6),
                 ),

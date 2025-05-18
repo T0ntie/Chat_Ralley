@@ -79,7 +79,7 @@ Hier folgt deine Geschichte:
         fit: StackFit.expand,
         children: [
           Image.asset('assets/logo/credits.png', fit: BoxFit.cover),
-          Container(color: Colors.black.withOpacity(0.5)),
+          Container(color: Colors.black.withAlpha((0.5 * 255).toInt())),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: IgnorePointer(
@@ -89,7 +89,7 @@ Hier folgt deine Geschichte:
                   children: [
                     SizedBox(height: screenHeight),
                     Text(
-                      _creditsText + " " + _story,
+                      "$_creditsText $_story",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,

@@ -52,12 +52,10 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  Future <void> _closeChatAfterDelay() async {
+  Future<void> _closeChatAfterDelay() async {
     if (!mounted) return;
     await Future.delayed(const Duration(seconds: 2));
-    // Sicherstellen, dass Navigator nach dem aktuellen Frame poppt
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final route = ModalRoute.of(context);
       Navigator.of(context).pop();
       //Navigator.of(context, rootNavigator: true).pop();
     });
@@ -101,7 +99,7 @@ class _ChatPageState extends State<ChatPage> {
         context,
         '❌ Kommunikation mit Chat GPT fehlgeschlagen.',
       );
-      print("Exception occured: $e : \n${stackTrace} ");
+      print("Exception occured: $e : \n$stackTrace ");
     } finally {
       if (!mounted) return;
       setState(() {

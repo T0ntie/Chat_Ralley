@@ -96,7 +96,7 @@ class GameEngine {
     }
   }
 
-  late LatLng GpsPosition;
+  late LatLng gpsPosition;
 
   void updatePlayerPositionSimulated() {
     if (!isGPSSimulating) return;
@@ -204,7 +204,7 @@ class GameEngine {
               npc,
               action,
             ));
-            print('🧿 Registered hotspot action for ${hotspotName}');
+            print('🧿 Registered hotspot action for $hotspotName');
             break;
           case TriggerType.message:
             final messageCount = action.trigger.value as int;
@@ -310,15 +310,15 @@ class GameEngine {
       for (final action in actions) {
         final didRun = await action.invoke(npc);
         print(
-          '🚀 Action ${action.runtimeType} for NPC: ${npc.name} executed: ${didRun}',
+          '🚀 Action ${action.runtimeType} for NPC: ${npc.name} executed: $didRun',
         );
       }
-      _initSubscriptions.remove(entry);
+      _initSubscriptions.remove(entry.key);
     }
   }
 
   Future<void> registerSignal(Map<String, dynamic> json) async {
-    print('Signal ${json} registered!');
+    print('Signal $json registered!');
     if (json.containsKey('signal')) {
       await _handleSignals(json);
     }
@@ -366,7 +366,7 @@ class GameEngine {
     newFlags.forEach((key, value) {
       flags[key.norm] =
           value; // Das Flag wird entweder hinzugefügt oder der Wert geändert
-      print('🚩 Flag ${key.norm} set to ${value}');
+      print('🚩 Flag ${key.norm} set to $value');
     });
   }
 

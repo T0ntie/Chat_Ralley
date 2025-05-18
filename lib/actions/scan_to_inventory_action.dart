@@ -21,7 +21,7 @@ class ScanToInventoryAction extends NpcAction {
   Future<bool> excecute(Npc npc) async {
     Item? item = GameEngine().getItemByName(itemName);
     if (item == null) {
-      throw Exception("Item '${itemName} nicht gefunden.");
+      throw Exception("Item '$itemName nicht gefunden.");
     }
 
     print ("itemname: ${item.name}"); //fixme funktioniert nur genau einmal, muss wiederholbar werden

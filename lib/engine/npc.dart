@@ -7,7 +7,7 @@ import 'package:hello_world/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 import 'conversation.dart';
 
-enum NPCIcon { unknown, identified, nearby, unknown_nearby }
+enum NPCIcon { unknown, identified, nearby, unknownNearby }
 
 class Npc extends GameElement {
   final Prompt prompt;
@@ -37,7 +37,7 @@ class Npc extends GameElement {
          speedInKmh: speed,
        )
   {
-    this.currentConversation = Conversation(this);
+    currentConversation = Conversation(this);
   }
 
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
@@ -134,13 +134,15 @@ class Npc extends GameElement {
       if (isRevealed) {
         if (isInCommunicationDistance()) {
           return NPCIcon.nearby;
-        } else
+        } else {
           return NPCIcon.identified;
+        }
       } else {
         if (isInCommunicationDistance()) {
-          return NPCIcon.unknown_nearby;
-        } else
+          return NPCIcon.unknownNearby;
+        } else {
           return NPCIcon.unknown;
+        }
       }
     }
     return NPCIcon.unknown;

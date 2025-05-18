@@ -19,11 +19,11 @@ class AddToInventoryAction extends NpcAction {
   Future<bool> excecute(Npc npc) async {
     Item? item = GameEngine().getItemByName(itemName);
     if (item == null) {
-      throw Exception("Item '${itemName} nicht gefunden."); //fixme isNew funktioniert nicht immer. die Items bleiben neu auch wenn man sie gesehen hat
+      throw Exception("Item '$itemName nicht gefunden."); //fixme isNew funktioniert nicht immer. die Items bleiben neu auch wenn man sie gesehen hat
     }
     item.isOwned = true;
     item.isNew = true;
-    log("${npc.name} hat dem Spieler folgenden Gegenstand gegeben: ${itemName}");
+    log("${npc.name} hat dem Spieler folgenden Gegenstand gegeben: $itemName");
     return item.isOwned;
   }
 

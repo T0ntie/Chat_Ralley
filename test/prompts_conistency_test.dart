@@ -25,7 +25,7 @@ void main() {
         final documentedSignals = extractSignalsFromSignaleSection(promptText);
 
         expect(usedSignals, equals(documentedSignals),
-            reason: 'Used signals and documented signals must match in ${filePath}');
+            reason: 'Used signals and documented signals must match in $filePath');
       });
 
       test('Full signal tags match documented signal tags in $filePath', () async {

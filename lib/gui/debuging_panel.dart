@@ -7,10 +7,10 @@ class ActionTestingPanel extends StatefulWidget {
   final Map<String, bool> flags;
 
   const ActionTestingPanel({
-    Key? key,
+    super.key,
     required this.actionsByTrigger,
     required this.flags,
-  }) : super(key: key);
+  });
 
   @override
   State<ActionTestingPanel> createState() => _ActionTestingPanelState();
@@ -143,8 +143,7 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                               margin: const EdgeInsets.symmetric(
                                   vertical: 4, horizontal: 4),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(
-                                    0.08 + (index.isEven ? 0.0 : 0.05)),
+                                color: Colors.white.withAlpha((0.08 + (index.isEven ? 0.0 : 0.05) * 255).toInt()),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: ListTile(
@@ -168,7 +167,7 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                           }).toList(),
                         ),
                       );
-                    }).toList(),
+                    }),
                     const SizedBox(height: 12),
                     const Text(
                       "Aktuelle Flags",
@@ -189,7 +188,7 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.05),
+                          color: Colors.white.withAlpha((0.05 * 255).toInt()),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Row(
@@ -211,7 +210,7 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                           ],
                         ),
                       );
-                    }).toList(),
+                    }),
                     const SizedBox(height: 16),
                   ],
                 ),

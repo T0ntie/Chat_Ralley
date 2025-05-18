@@ -112,7 +112,7 @@ abstract class NpcAction {
       } else if (key.startsWith('item:')) {
         final itemName = key.substring(5).trim();
         print(
-          "comparing item: $itemName ${GameEngine().ownsItem(itemName)} == ${expected}",
+          "comparing item: $itemName ${GameEngine().ownsItem(itemName)} == $expected",
         );
         return GameEngine().ownsItem(itemName) == expected;
       } else {

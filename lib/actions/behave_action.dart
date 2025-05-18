@@ -28,7 +28,7 @@ class BehaveAction extends NpcAction {
     final promptTag = json['promptTag'] as String?;
     if (directiveMessage == null && promptTag == null) {
       throw ArgumentError(
-        "Weder 'directive' noch 'promptTag' versorgt in BehaveAction at + ${json}",
+        "Weder 'directive' noch 'promptTag' versorgt in BehaveAction at + $json",
       );
     }
     final (

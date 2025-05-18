@@ -34,9 +34,7 @@ class LocationService {
     );
 
     try {
-      if (_locationStream == null) {
-        _locationStream =  Geolocator.getPositionStream(locationSettings: locationSettings);
-      }
+      _locationStream ??= Geolocator.getPositionStream(locationSettings: locationSettings);
     } catch (e, stack) {
       print('❌ Fehler beim Geolocator initialisieren:\n$e\n$stack');
       rethrow;

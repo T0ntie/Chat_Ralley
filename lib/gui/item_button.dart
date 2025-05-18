@@ -19,7 +19,7 @@ class _ItemButtonState extends State<ItemButton>
   late final Animation<double> _scaleAnimation;
   late final Animation<Color?> _glowAnimation;
 
-  bool _showGlow = true;
+  final bool _showGlow = true;
 
   @override
   void initState() {
