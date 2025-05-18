@@ -4,114 +4,121 @@ import 'package:latlong2/latlong.dart';
 
 void main() {
   group('NPCMovementController', () {
-    late NPCMovementController behavior;
+    late NPCMovementController movementController;
     final start = LatLng(51.5074, -0.1278); // London
     final end = LatLng(51.5101, -0.1278); // ≈ 300 m nördlich
 
     setUp(() {
-      behavior = NPCMovementController(
+      movementController = NPCMovementController(
         currentBasePosition: start,
         toPosition: end,
         speedInKmh: 3.6,
         onExitRange: () => {},
         onEnterRange: () => {},
+        getPlayerPosition: () => LatLng(51.5074, -0.1278),
+
       );
     });
 
     test('initial position is currentBasePosition', () {
       expect(
-        behavior.currentPosition.latitude,
+        movementController.currentPosition.latitude,
         closeTo(start.latitude, 0.00001),
       );
       expect(
-        behavior.currentPosition.longitude,
+        movementController.currentPosition.longitude,
         closeTo(start.longitude, 0.00001),
       );
     });
 
     test('moves toward target over time', () {
-      behavior.moveTo(end);
-      behavior.movementStartTime = DateTime.now().subtract(
+      movementController.moveTo(end);
+      movementController.movementStartTime = DateTime.now().subtract(
         Duration(seconds: 10),
       );
 
-      final pos = behavior.updatePosition();
+      final pos = movementController.updatePosition();
 
       // Sollte sich merklich in Richtung Ziel bewegt haben, aber noch nicht angekommen sein
       expect(pos.latitude, greaterThan(start.latitude));
       expect(pos.latitude, lessThan(end.latitude));
-      expect(behavior.isMoving, isTrue);
+      expect(movementController.isMoving, isTrue);
     });
 
     test('reaches target after enough time', () {
-      behavior.moveTo(end);
-      behavior.movementStartTime = DateTime.now().subtract(
+      movementController.moveTo(end);
+      movementController.movementStartTime = DateTime.now().subtract(
         Duration(minutes: 10),
       );
 
-      final pos = behavior.updatePosition();
+      final pos = movementController.updatePosition();
 
       expect(pos.latitude, closeTo(end.latitude, 0.00001));
       expect(pos.longitude, closeTo(end.longitude, 0.00001));
-      expect(behavior.isMoving, isFalse);
+      expect(movementController.isMoving, isFalse);
     });
 
     test('moveTo disables following and leading mode', () {
-      behavior.isFollowing = true;
-      behavior.isLeading = true;
+      movementController.isFollowing = true;
+      movementController.isLeading = true;
 
-      behavior.moveTo(end);
+      movementController.moveTo(end);
 
-      expect(behavior.isFollowing, isFalse);
-      expect(behavior.isLeading, isFalse);
-      expect(behavior.isMoving, isTrue);
-      expect(behavior.toPosition, end);
+      expect(movementController.isFollowing, isFalse);
+      expect(movementController.isLeading, isFalse);
+      expect(movementController.isMoving, isTrue);
+      expect(movementController.toPosition, end);
     });
 
     test('moveTo does not overwrite toPosition with playerPosition if was following before', () {
-      behavior.startFollowing();
-      behavior.playerPosition = LatLng(51.5000, -0.1278); // weiter weg
+      movementController.startFollowing();
+      //movementController.playerPosition = LatLng(51.5000, -0.1278); // weiter weg
+      movementController.getPlayerPosition = () => LatLng(51.5000, -0.1278);
+
+
       final customTarget = end;
 
-      behavior.moveTo(customTarget);
-      behavior.movementStartTime = DateTime.now().subtract(Duration(seconds: 2));
+      movementController.moveTo(customTarget);
+      movementController.movementStartTime = DateTime.now().subtract(Duration(seconds: 2));
 
-      final pos = behavior.updatePosition();
+      final pos = movementController.updatePosition();
 
       // NPC sollte sich in Richtung `end` bewegen, nicht zum Spieler
       expect(pos.latitude, greaterThan(start.latitude));
       expect(pos.latitude, lessThan(customTarget.latitude));
-      expect(behavior.toPosition, customTarget);
-      expect(behavior.isFollowing, isFalse);
+      expect(movementController.toPosition, customTarget);
+      expect(movementController.isFollowing, isFalse);
     });
 
     test('stops following when close to player', () {
-      behavior.startFollowing();
-      behavior.playerPosition = end;
-      behavior.currentBasePosition = end;
-      behavior.movementStartTime = DateTime.now().subtract(
+      movementController.startFollowing();
+      //movementController.playerPosition = end;
+      movementController.getPlayerPosition = () => end;
+      movementController.currentBasePosition = end;
+      movementController.movementStartTime = DateTime.now().subtract(
         Duration(seconds: 1),
       );
 
       // simulate movement update
-      final pos = behavior.updatePosition();
+      final pos = movementController.updatePosition();
 
-      expect(behavior.isMoving, isFalse);
+      expect(movementController.isMoving, isFalse);
       expect(pos.latitude, closeTo(end.latitude, 0.00001));
     });
 
     test('leads and waits if player is too far behind', () {
-      behavior.leadTo(end);
-      behavior.playerPosition = start;
-      behavior.movementStartTime = DateTime.now().subtract(
+      movementController.leadTo(end);
+      //movementController.playerPosition = start;
+      movementController.getPlayerPosition = () => start;
+      movementController.movementStartTime = DateTime.now().subtract(
         Duration(seconds: 80),
       );
 
-      final pos = behavior.updatePosition();
+      final pos = movementController.updatePosition();
 
       expect(pos.latitude, greaterThan(start.latitude));
       expect(pos.latitude, lessThan(end.latitude));
-      expect(behavior.isMoving, isFalse);
+      expect(movementController.isMoving, isFalse);
     });
   });
 
@@ -201,7 +208,7 @@ void main() {
   });
 
   group('NPCMovementController Path Navigation', () {
-    late NPCMovementController npc;
+    late NPCMovementController movementController;
     final start = LatLng(51.5074, -0.1278); // London
     final wp1 = LatLng(51.5078, -0.1278); // ≈ 44m nördlich
     final wp2 = LatLng(51.5082, -0.1278); // ≈ 44m nördlich
@@ -209,66 +216,68 @@ void main() {
     final end = wp3;
 
     setUp(() {
-      npc = NPCMovementController(
+      movementController = NPCMovementController(
         currentBasePosition: start,
         toPosition: start,
         speedInKmh: 3.6, // 1 m/s
         onExitRange: () => {},
         onEnterRange: () => {},
+        getPlayerPosition: () => LatLng(51.5074, -0.1278),
       );
     });
 
     test('moveAlong sets path and starts movement', () {
-      npc.moveAlong([wp1, wp2, wp3]);
+      movementController.moveAlong([wp1, wp2, wp3]);
 
-      expect(npc.isMoving, isTrue);
-      expect(npc.toPosition, wp1);
-      expect(npc.path.length, 2); // wp2, wp3 noch übrig
+      expect(movementController.isMoving, isTrue);
+      expect(movementController.toPosition, wp1);
+      expect(movementController.path.length, 2); // wp2, wp3 noch übrig
     });
 
     test('updatePosition progresses through multiple waypoints', () {
-      npc.moveAlong([wp1, wp2, wp3]);
+      movementController.moveAlong([wp1, wp2, wp3]);
 
       // Simuliere sehr lange vergangene Zeit
-      npc.movementStartTime = DateTime.now().subtract(Duration(seconds: 300));
+      movementController.movementStartTime = DateTime.now().subtract(Duration(seconds: 300));
 
       // Wiederholt Bewegung durchführen bis fertig
-      while (npc.isMoving) {
-        npc.updatePosition();
+      while (movementController.isMoving) {
+        movementController.updatePosition();
       }
 
-      final pos = npc.currentPosition;
+      final pos = movementController.currentPosition;
 
       expect(pos.latitude, closeTo(end.latitude, 0.0001));
       expect(pos.longitude, closeTo(end.longitude, 0.0001));
-      expect(npc.path.isEmpty, isTrue);
-      expect(npc.isMoving, isFalse);
+      expect(movementController.path.isEmpty, isTrue);
+      expect(movementController.isMoving, isFalse);
     });
 
     test('leadAlong behaves like moveAlong and sets isLeading', () {
-      npc.leadAlong([wp1, wp2]);
+      movementController.leadAlong([wp1, wp2]);
 
-      expect(npc.isMoving, isTrue);
-      expect(npc.isLeading, isTrue);
-      expect(npc.isFollowing, isFalse);
-      expect(npc.toPosition, wp1);
-      expect(npc.path.length, 1); // wp2
+      expect(movementController.isMoving, isTrue);
+      expect(movementController.isLeading, isTrue);
+      expect(movementController.isFollowing, isFalse);
+      expect(movementController.toPosition, wp1);
+      expect(movementController.path.length, 1); // wp2
     });
 
     test('stops when player is too far behind while leading', () {
-      npc.leadAlong([wp1, wp2, wp3]);
-      npc.playerPosition = start;
+      movementController.leadAlong([wp1, wp2, wp3]);
+      //npc.playerPosition = start;
+      movementController.getPlayerPosition = () => start;
 
-      npc.movementStartTime = DateTime.now().subtract(Duration(seconds: 80));
+      movementController.movementStartTime = DateTime.now().subtract(Duration(seconds: 80));
 
       // Bewegung fortsetzen, bis NPC stehen bleibt
-      while (npc.isMoving) {
-        npc.updatePosition();
+      while (movementController.isMoving) {
+        movementController.updatePosition();
       }
 
-      final pos = npc.currentPosition;
+      final pos = movementController.currentPosition;
 
-      expect(npc.isMoving, isFalse);
+      expect(movementController.isMoving, isFalse);
       expect(pos.latitude, greaterThan(start.latitude));
       expect(pos.latitude, lessThan(wp3.latitude)); // nicht ganz angekommen
     });

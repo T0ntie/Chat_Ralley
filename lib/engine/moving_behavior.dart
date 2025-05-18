@@ -51,7 +51,8 @@ abstract class EntityMovementController {
 class NPCMovementController extends EntityMovementController {
   bool isFollowing;
   bool isLeading;
-  LatLng playerPosition = LatLng(51.5074, -0.1278); //London
+
+  //LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   List<LatLng> path;
   static const followingDistance = 5.0;
   static const waitDistance = 75.0;
@@ -59,6 +60,7 @@ class NPCMovementController extends EntityMovementController {
 
   final VoidCallback onEnterRange;
   final VoidCallback onExitRange;
+  LatLng Function()? getPlayerPosition;
 
   NPCMovementController({
     required super.currentBasePosition,
@@ -66,6 +68,7 @@ class NPCMovementController extends EntityMovementController {
     required super.speedInKmh,
     required this.onEnterRange,
     required this.onExitRange,
+    required this.getPlayerPosition,
   }) : isFollowing = false,
        isLeading = false,
        path = [];
@@ -74,15 +77,15 @@ class NPCMovementController extends EntityMovementController {
     return Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
   }
 
+  LatLng get playerPosition =>
+      getPlayerPosition?.call() ?? LatLng(51.5074, -0.1278); //London
+
   bool get isInCommunicationDistance =>
       currentDistance < GameEngine.conversationDistance;
 
   bool _wasInRange = false;
 
-  void checkProximityToPlayer({
-    required VoidCallback onEnterRange,
-    required VoidCallback onExitRange,
-  }) {
+  void checkProximityToPlayer() {
     final inRange = isInCommunicationDistance;
 
     if (inRange && !_wasInRange) {
@@ -94,29 +97,6 @@ class NPCMovementController extends EntityMovementController {
     _wasInRange = inRange;
   }
 
-  _runProximityCheck() {
-      checkProximityToPlayer(
-        onEnterRange: onEnterRange,
-        onExitRange: onExitRange,
-      );
-  }
-
-  void checkForContinue() {
-    if (isFollowing) {
-      if (!isMoving && currentDistance > followingDistance) {
-        movementStartTime = DateTime.now();
-        toPosition = playerPosition;
-        isMoving = true;
-      }
-    }
-    if (isLeading) {
-      if (!isMoving && currentDistance < continueDistance) {
-        movementStartTime = DateTime.now();
-        isMoving = true;
-      }
-    }
-  }
-
   double _getDistanceToTravelSince(DateTime startTime) {
     final now = DateTime.now();
     final timeDiffSeconds = now.difference(startTime).inMilliseconds / 1000.0;
@@ -126,8 +106,27 @@ class NPCMovementController extends EntityMovementController {
   @override
   LatLng get currentPosition => currentBasePosition;
 
+  void maybeStartFollowing() {
+    if (isFollowing && !isMoving && currentDistance > followingDistance) {
+      toPosition = playerPosition;
+      movementStartTime = DateTime.now();
+      isMoving = true;
+    }
+  }
+
+  void maybeResumeLeading() {
+    if (isLeading && !isMoving && currentDistance < continueDistance) {
+      movementStartTime = DateTime.now();
+      isMoving = true;
+    }
+  }
+
   LatLng updatePosition() {
-    if (!isMoving) return currentBasePosition;
+    if (!isMoving) {
+      maybeStartFollowing();
+      maybeResumeLeading();
+      return currentBasePosition;
+    }
 
     if (isFollowing) {
       toPosition = playerPosition;
@@ -169,7 +168,7 @@ class NPCMovementController extends EntityMovementController {
         // Normale Fortbewegung
         currentBasePosition = interpolated;
         movementStartTime = now;
-        _runProximityCheck();
+        checkProximityToPlayer();
         return interpolated;
       }
       // Ziel erreicht, gehe zum nächsten Wegpunkt
@@ -182,7 +181,7 @@ class NPCMovementController extends EntityMovementController {
         movementStartTime = now.subtract(Duration(milliseconds: restMillis));
       } else {
         isMoving = false;
-        _runProximityCheck();
+        checkProximityToPlayer();
         return currentBasePosition;
       }
     }
@@ -287,13 +286,15 @@ class NPCMovementController extends EntityMovementController {
     isLeading = false;
   }
 
+  /*
   void updatePlayerPosition(LatLng pos) {
     if (isMoving) {
       currentBasePosition = currentPosition;
     }
-    playerPosition = pos;
+    //playerPosition = pos;
     checkForContinue();
   }
+*/
 }
 
 class PlayerMovementController extends EntityMovementController {

@@ -68,7 +68,7 @@ class GameEngine {
   void setRealGpsPositionAndNotify(LatLng pos) {
     _realGpsPosition = pos;
     for (final npc in npcs) {
-      npc.updatePlayerPosition(pos);
+      npc.checkProximityToPlayer();
     }
     for (final hotspot in hotspots) {
       if (hotspot.contains(pos)) {
@@ -77,22 +77,13 @@ class GameEngine {
     }
   }
 
-  set playerPosition(LatLng value) {
+  set playerPosition(LatLng newPosition) {
     if (isGPSSimulating) {
-      _playerMovementController.teleportTo(value);
+      _playerMovementController.teleportTo(newPosition);
     } else {
-      _realGpsPosition = value;
+      _realGpsPosition = newPosition;
 
-      // NPCs und Hotspots benachrichtigen
-      for (final npc in npcs) {
-        npc.updatePlayerPosition(value);
-      }
-
-      for (final hotspot in hotspots) {
-        if (hotspot.contains(value)) {
-          registerHotspot(hotspot);
-        }
-      }
+      _playerPositionUpdated(newPosition);
     }
   }
 
@@ -110,9 +101,9 @@ class GameEngine {
   }
 
   void _playerPositionUpdated(LatLng newPosition) {
-    // Notifiziere alle NPCs über Spielerposition
-    for (var npc in npcs) {
-      npc.updatePlayerPosition(newPosition);
+    // NPCs und Hotspots benachrichtigen
+    for (final npc in npcs) {
+      npc.checkProximityToPlayer();
     }
 
     for (final hotspot in hotspots) {

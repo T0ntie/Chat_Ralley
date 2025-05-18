@@ -38,6 +38,7 @@ class Npc extends GameElement {
       speedInKmh: speed,
       onEnterRange: () => GameEngine().registerApproach(this),
       onExitRange: () => print("Range lost."),
+      getPlayerPosition: () => GameEngine().playerPosition,
     );
     currentConversation = Conversation(this);
   }
@@ -130,6 +131,10 @@ class Npc extends GameElement {
     return movementController.currentPosition;
   }
 
+  void checkProximityToPlayer() {
+    movementController.checkProximityToPlayer();
+  }
+
   NPCIcon get icon {
     if (isVisible) {
       if (isRevealed) {
@@ -151,7 +156,9 @@ class Npc extends GameElement {
 
   bool get isInCommunicationDistance => movementController.isInCommunicationDistance;
 
+/*
   void updatePlayerPosition(LatLng playerPosition) async {
     movementController.updatePlayerPosition(playerPosition);
   }
+*/
 }
