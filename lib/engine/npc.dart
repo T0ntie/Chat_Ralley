@@ -19,7 +19,7 @@ class Npc extends GameElement {
 
   late Conversation currentConversation;
 
-  final NPCMovementController movementController;
+  late final NPCMovementController movementController;
 
   Npc({
     required super.name,
@@ -31,11 +31,14 @@ class Npc extends GameElement {
     required super.isRevealed,
     required speed, //in km/h /fixme
     required this.iconAsset,
-  }) : movementController = NPCMovementController(
-         currentBasePosition: position,
-         toPosition: position,
-         speedInKmh: speed,
-       ) {
+  }){
+    movementController = NPCMovementController(
+      currentBasePosition: position,
+      toPosition: position,
+      speedInKmh: speed,
+      onEnterRange: () => GameEngine().registerApproach(this),
+      onExitRange: () => print("Range lost."),
+    );
     currentConversation = Conversation(this);
   }
 
@@ -148,14 +151,7 @@ class Npc extends GameElement {
 
   bool get isInCommunicationDistance => movementController.isInCommunicationDistance;
 
-  //bool _hasTriggeredApproach = false;
-
   void updatePlayerPosition(LatLng playerPosition) async {
     movementController.updatePlayerPosition(playerPosition);
-
-    movementController.checkProximityToPlayer(
-      onEnterRange: () => GameEngine().registerApproach(this),
-      onExitRange: () => print('$name ist außer Reichweite'),
-    );
   }
 }

@@ -6,6 +6,9 @@ import 'package:hello_world/gui/notification_services.dart';
 import '../../engine/npc.dart';
 import '../../engine/conversation.dart';
 
+//fixme eingabefeld disabeln während es lädt
+//fixme tastatur ausblenden, wenn sie nicht gebraucht wird
+
 class ChatPage extends StatefulWidget {
   final Npc npc;
   final Medium medium;

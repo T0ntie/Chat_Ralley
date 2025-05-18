@@ -57,10 +57,15 @@ class NPCMovementController extends EntityMovementController {
   static const waitDistance = 75.0;
   static const continueDistance = 20.0;
 
+  final VoidCallback onEnterRange;
+  final VoidCallback onExitRange;
+
   NPCMovementController({
     required super.currentBasePosition,
     required super.toPosition,
     required super.speedInKmh,
+    required this.onEnterRange,
+    required this.onExitRange,
   }) : isFollowing = false,
        isLeading = false,
        path = [];
@@ -87,6 +92,13 @@ class NPCMovementController extends EntityMovementController {
     }
 
     _wasInRange = inRange;
+  }
+
+  _runProximityCheck() {
+      checkProximityToPlayer(
+        onEnterRange: onEnterRange,
+        onExitRange: onExitRange,
+      );
   }
 
   void checkForContinue() {
@@ -117,7 +129,6 @@ class NPCMovementController extends EntityMovementController {
   LatLng updatePosition() {
     if (!isMoving) return currentBasePosition;
 
-    //fimxe nur ein experiment
     if (isFollowing) {
       toPosition = playerPosition;
     }
@@ -158,6 +169,7 @@ class NPCMovementController extends EntityMovementController {
         // Normale Fortbewegung
         currentBasePosition = interpolated;
         movementStartTime = now;
+        _runProximityCheck();
         return interpolated;
       }
       // Ziel erreicht, gehe zum nächsten Wegpunkt
@@ -170,6 +182,7 @@ class NPCMovementController extends EntityMovementController {
         movementStartTime = now.subtract(Duration(milliseconds: restMillis));
       } else {
         isMoving = false;
+        _runProximityCheck();
         return currentBasePosition;
       }
     }

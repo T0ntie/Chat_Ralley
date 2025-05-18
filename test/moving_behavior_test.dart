@@ -12,7 +12,9 @@ void main() {
       behavior = NPCMovementController(
         currentBasePosition: start,
         toPosition: end,
-        speedInKmh: 3.6, // 1 m/s
+        speedInKmh: 3.6,
+        onExitRange: () => {},
+        onEnterRange: () => {},
       );
     });
 
@@ -211,6 +213,8 @@ void main() {
         currentBasePosition: start,
         toPosition: start,
         speedInKmh: 3.6, // 1 m/s
+        onExitRange: () => {},
+        onEnterRange: () => {},
       );
     });
 
