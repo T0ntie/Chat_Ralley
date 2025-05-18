@@ -31,12 +31,11 @@ class Npc extends GameElement {
     required super.isRevealed,
     required speed, //in km/h /fixme
     required this.iconAsset,
-  }) :movingController = NPCMovementController(
+  }) : movingController = NPCMovementController(
          currentBasePosition: position,
          toPosition: position,
          speedInKmh: speed,
-       )
-  {
+       ) {
     currentConversation = Conversation(this);
   }
 
@@ -73,7 +72,6 @@ class Npc extends GameElement {
   void spawn(double distance) {
     movingController.spawn(distance);
   }
-
 
   void leadTo(LatLng toPosition) {
     movingController.leadTo(toPosition);
@@ -152,11 +150,18 @@ class Npc extends GameElement {
     return (movingController.currentDistance < GameEngine.conversationDistance);
   }
 
+  bool _hasTriggeredApproach = false;
+
   void updatePlayerPosition(LatLng playerPosition) async {
     movingController.updatePlayerPosition(playerPosition);
 
-    if (movingController.currentDistance < GameEngine.conversationDistance) {
+    bool inRange =
+        (movingController.currentDistance < GameEngine.conversationDistance);
+    if (inRange && !_hasTriggeredApproach) {
+      _hasTriggeredApproach = true;
       await GameEngine().registerApproach(this);
+    } else if (!inRange && _hasTriggeredApproach) {
+      _hasTriggeredApproach = false;
     }
   }
 }
