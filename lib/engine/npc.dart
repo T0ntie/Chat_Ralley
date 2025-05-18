@@ -148,18 +148,14 @@ class Npc extends GameElement {
 
   bool get isInCommunicationDistance => movementController.isInCommunicationDistance;
 
-  bool _hasTriggeredApproach = false;
+  //bool _hasTriggeredApproach = false;
 
   void updatePlayerPosition(LatLng playerPosition) async {
     movementController.updatePlayerPosition(playerPosition);
 
-    bool inRange =
-        (movementController.currentDistance < GameEngine.conversationDistance);
-    if (inRange && !_hasTriggeredApproach) {
-      _hasTriggeredApproach = true;
-      await GameEngine().registerApproach(this);
-    } else if (!inRange && _hasTriggeredApproach) {
-      _hasTriggeredApproach = false;
-    }
+    movementController.checkProximityToPlayer(
+      onEnterRange: () => GameEngine().registerApproach(this),
+      onExitRange: () => print('$name ist außer Reichweite'),
+    );
   }
 }

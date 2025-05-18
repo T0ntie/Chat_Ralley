@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:hello_world/engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
@@ -68,8 +69,25 @@ class NPCMovementController extends EntityMovementController {
     return Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
   }
 
-  bool get isInCommunicationDistance => currentDistance < GameEngine.conversationDistance;
+  bool get isInCommunicationDistance =>
+      currentDistance < GameEngine.conversationDistance;
 
+  bool _wasInRange = false;
+
+  void checkProximityToPlayer({
+    required VoidCallback onEnterRange,
+    required VoidCallback onExitRange,
+  }) {
+    final inRange = isInCommunicationDistance;
+
+    if (inRange && !_wasInRange) {
+      onEnterRange();
+    } else if (!inRange && _wasInRange) {
+      onExitRange();
+    }
+
+    _wasInRange = inRange;
+  }
 
   void checkForContinue() {
     if (isFollowing) {
@@ -293,18 +311,13 @@ class PlayerMovementController extends EntityMovementController {
 
   @override
   void moveTo(LatLng toP) {
-
     _movementStartPosition = currentBasePosition;
 
     //fixme brauchen wir das wirklich?
     if (isMoving) {
       currentBasePosition = currentPosition; // 👈 Das hast du bisher NICHT!
     }
-    final distance = Distance().as(
-      LengthUnit.Meter,
-      currentBasePosition,
-      toP,
-    );
+    final distance = Distance().as(LengthUnit.Meter, currentBasePosition, toP);
     if (distance == 0) {
       // Kein Ziel gesetzt
       return;
@@ -322,7 +335,11 @@ class PlayerMovementController extends EntityMovementController {
     final now = DateTime.now();
     final timeElapsed =
         now.difference(movementStartTime).inMilliseconds / 1000.0;
-    final totalDistance = Distance().as(LengthUnit.Meter, _movementStartPosition, toPosition);
+    final totalDistance = Distance().as(
+      LengthUnit.Meter,
+      _movementStartPosition,
+      toPosition,
+    );
     final distanceToTravel = speedInms * timeElapsed;
 
     if (distanceToTravel >= totalDistance) {
