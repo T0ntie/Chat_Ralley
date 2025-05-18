@@ -212,9 +212,7 @@ class GameMapWidget extends StatelessWidget {
                   top: 5,
                   right: 40,
                   child: GestureDetector(
-                    onTap: () {
-                      onNpcChatRequested.call(npc);
-                    },
+                    onTap: npc.isInCommunicationDistance ? () => onNpcChatRequested(npc): null,
                     child: AppIcons.chatBubble(context),
                   ),
                 ),
