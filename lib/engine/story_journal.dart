@@ -88,7 +88,7 @@ class DialogJournalEntry extends JournalEntry {
 
   String _commVerb()
   {
-    if (medium == Medium.chat){
+    if (medium == Medium.radio){
       return "sendet per Funk:";
     }
     return "sagt:";
