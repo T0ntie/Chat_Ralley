@@ -23,7 +23,7 @@ class ItemCallbacks {
   }
 
   static Future<void> showItem(BuildContext context, Item item) async {
-    if (item.npc.isInCommunicationDistance()) {
+    if (item.npc.isInCommunicationDistance) {
       item.npc.talk(
         "[Der Spieler zeigt dir folgenden Gegenstand: ${item.name}",
       );

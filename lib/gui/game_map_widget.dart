@@ -198,8 +198,8 @@ class GameMapWidget extends StatelessWidget {
                         title: npc.displayName,
                         imageAssetPath: "assets/story/${npc.displayImageAsset}",
                         distanceText: "Entfernung: ${npc.currentDistance} Meter",
-                        noteText: !(npc.isInCommunicationDistance()) ? "Komm näher, um mit ${npc.displayName} zu kommunizieren.": null,
-                        onPrimaryAction: npc.isInCommunicationDistance() ? () => onNpcChatRequested(npc): null,),
+                        noteText: !(npc.isInCommunicationDistance) ? "Komm näher, um mit ${npc.displayName} zu kommunizieren.": null,
+                        onPrimaryAction: npc.isInCommunicationDistance ? () => onNpcChatRequested(npc): null,),
                   );
                 },
                 //child: AppIcons.npc(context, npc.icon), //Image.asset('assets/story/icons/trex2.png'),

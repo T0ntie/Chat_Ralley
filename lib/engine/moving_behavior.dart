@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:hello_world/engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
 
 abstract class EntityMovementController {
@@ -66,6 +67,9 @@ class NPCMovementController extends EntityMovementController {
   double get currentDistance {
     return Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
   }
+
+  bool get isInCommunicationDistance => currentDistance < GameEngine.conversationDistance;
+
 
   void checkForContinue() {
     if (isFollowing) {

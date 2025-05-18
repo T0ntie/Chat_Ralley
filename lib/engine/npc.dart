@@ -19,7 +19,7 @@ class Npc extends GameElement {
 
   late Conversation currentConversation;
 
-  final NPCMovementController movingController;
+  final NPCMovementController movementController;
 
   Npc({
     required super.name,
@@ -31,7 +31,7 @@ class Npc extends GameElement {
     required super.isRevealed,
     required speed, //in km/h /fixme
     required this.iconAsset,
-  }) : movingController = NPCMovementController(
+  }) : movementController = NPCMovementController(
          currentBasePosition: position,
          toPosition: position,
          speedInKmh: speed,
@@ -70,31 +70,31 @@ class Npc extends GameElement {
   }
 
   void spawn(double distance) {
-    movingController.spawn(distance);
+    movementController.spawn(distance);
   }
 
   void leadTo(LatLng toPosition) {
-    movingController.leadTo(toPosition);
+    movementController.leadTo(toPosition);
   }
 
   void moveTo(LatLng toPosition) {
-    movingController.moveTo(toPosition);
+    movementController.moveTo(toPosition);
   }
 
   void moveAlong(List<LatLng> path) {
-    movingController.moveAlong(path);
+    movementController.moveAlong(path);
   }
 
   void leadAlong(List<LatLng> path) {
-    movingController.leadAlong(path);
+    movementController.leadAlong(path);
   }
 
   void startFollowing() {
-    movingController.startFollowing();
+    movementController.startFollowing();
   }
 
   void stopMoving() {
-    movingController.stopMoving();
+    movementController.stopMoving();
   }
 
   Future<void> stopTalking() async {
@@ -116,7 +116,7 @@ class Npc extends GameElement {
   }
 
   double get currentDistance {
-    return movingController.currentDistance;
+    return movementController.currentDistance;
   }
 
   String get displayName {
@@ -124,19 +124,19 @@ class Npc extends GameElement {
   }
 
   LatLng get currentPosition {
-    return movingController.currentPosition;
+    return movementController.currentPosition;
   }
 
   NPCIcon get icon {
     if (isVisible) {
       if (isRevealed) {
-        if (isInCommunicationDistance()) {
+        if (isInCommunicationDistance) {
           return NPCIcon.nearby;
         } else {
           return NPCIcon.identified;
         }
       } else {
-        if (isInCommunicationDistance()) {
+        if (isInCommunicationDistance) {
           return NPCIcon.unknownNearby;
         } else {
           return NPCIcon.unknown;
@@ -146,17 +146,15 @@ class Npc extends GameElement {
     return NPCIcon.unknown;
   }
 
-  bool isInCommunicationDistance() {
-    return (movingController.currentDistance < GameEngine.conversationDistance);
-  }
+  bool get isInCommunicationDistance => movementController.isInCommunicationDistance;
 
   bool _hasTriggeredApproach = false;
 
   void updatePlayerPosition(LatLng playerPosition) async {
-    movingController.updatePlayerPosition(playerPosition);
+    movementController.updatePlayerPosition(playerPosition);
 
     bool inRange =
-        (movingController.currentDistance < GameEngine.conversationDistance);
+        (movementController.currentDistance < GameEngine.conversationDistance);
     if (inRange && !_hasTriggeredApproach) {
       _hasTriggeredApproach = true;
       await GameEngine().registerApproach(this);

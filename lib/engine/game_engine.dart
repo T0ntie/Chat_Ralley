@@ -124,7 +124,7 @@ class GameEngine {
 
   void updateAllNpcPositions() {
     for (final npc in npcs) {
-      npc.movingController.updatePosition();
+      npc.movementController.updatePosition();
     }
   }
 
