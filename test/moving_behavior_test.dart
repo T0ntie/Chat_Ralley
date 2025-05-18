@@ -54,6 +54,35 @@ void main() {
       expect(behavior.isMoving, isFalse);
     });
 
+    test('moveTo disables following and leading mode', () {
+      behavior.isFollowing = true;
+      behavior.isLeading = true;
+
+      behavior.moveTo(end);
+
+      expect(behavior.isFollowing, isFalse);
+      expect(behavior.isLeading, isFalse);
+      expect(behavior.isMoving, isTrue);
+      expect(behavior.toPosition, end);
+    });
+
+    test('moveTo does not overwrite toPosition with playerPosition if was following before', () {
+      behavior.startFollowing();
+      behavior.playerPosition = LatLng(51.5000, -0.1278); // weiter weg
+      final customTarget = end;
+
+      behavior.moveTo(customTarget);
+      behavior.movementStartTime = DateTime.now().subtract(Duration(seconds: 2));
+
+      final pos = behavior.updatePosition();
+
+      // NPC sollte sich in Richtung `end` bewegen, nicht zum Spieler
+      expect(pos.latitude, greaterThan(start.latitude));
+      expect(pos.latitude, lessThan(customTarget.latitude));
+      expect(behavior.toPosition, customTarget);
+      expect(behavior.isFollowing, isFalse);
+    });
+
     test('stops following when close to player', () {
       behavior.startFollowing();
       behavior.playerPosition = end;
@@ -239,5 +268,8 @@ void main() {
       expect(pos.latitude, greaterThan(start.latitude));
       expect(pos.latitude, lessThan(wp3.latitude)); // nicht ganz angekommen
     });
+
   });
+
+
 }
