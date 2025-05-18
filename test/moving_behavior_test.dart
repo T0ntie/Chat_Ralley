@@ -120,6 +120,96 @@ void main() {
       expect(pos.latitude, lessThan(end.latitude));
       expect(movementController.isMoving, isFalse);
     });
+
+    test('onEnterRange is triggered when NPC comes into range', () {
+      bool triggered = false;
+
+      movementController = NPCMovementController(
+        currentBasePosition: LatLng(51.5070, -0.1278),
+        toPosition: LatLng(51.5075, -0.1278), // läuft Richtung Spieler
+        speedInKmh: 3.6,
+        onEnterRange: () => triggered = true,
+        onExitRange: () {},
+        getPlayerPosition: () => LatLng(51.5074, -0.1278),
+      );
+
+      movementController.moveTo(LatLng(51.5075, -0.1278));
+      movementController.movementStartTime = DateTime.now().subtract(Duration(seconds: 10));
+
+      movementController.updatePosition();
+
+      expect(triggered, isTrue);
+    });
+
+    test('onExitRange is triggered when NPC leaves range', () {
+      bool exited = false;
+
+      movementController = NPCMovementController(
+        currentBasePosition: LatLng(51.5074, -0.1278),
+        toPosition: LatLng(51.5150, -0.1278), // weiter weg als conversationDistance
+        speedInKmh: 3.6,
+        onEnterRange: () {},
+        onExitRange: () => exited = true,
+        getPlayerPosition: () => LatLng(51.5074, -0.1278), // Spieler bleibt
+      );
+
+      movementController.moveTo(movementController.toPosition);
+      movementController.checkProximityToPlayer(); // jetzt: inRange
+      movementController.movementStartTime = DateTime.now().subtract(Duration(minutes: 3));
+      movementController.updatePosition();
+
+      expect(exited, isTrue);
+    });
+
+
+    test('NPC starts following if player gets too far away', () {
+      final playerStart = LatLng(51.5074, -0.1278);
+      final farPlayer = LatLng(51.5090, -0.1278); // > 5m entfernt
+
+      movementController = NPCMovementController(
+        currentBasePosition: playerStart,
+        toPosition: playerStart,
+        speedInKmh: 3.6,
+        onEnterRange: () {},
+        onExitRange: () {},
+        getPlayerPosition: () => farPlayer,
+      );
+
+      movementController.startFollowing(); // setzt isFollowing = true
+      movementController.isMoving = false; // Stoppen erzwingen
+
+      final posBefore = movementController.currentPosition;
+
+      movementController.updatePosition();
+
+      expect(movementController.isMoving, isTrue);
+      expect(movementController.toPosition.latitude, farPlayer.latitude);
+      expect(movementController.currentPosition.latitude, posBefore.latitude); // noch nicht bewegt
+    });
+
+    test('NPC stops following when close enough to player', () {
+      final player = LatLng(51.5074, -0.1278);
+
+      movementController = NPCMovementController(
+        currentBasePosition: LatLng(51.5070, -0.1278),
+        toPosition: player,
+        speedInKmh: 3.6, // 1 m/s
+        onEnterRange: () {},
+        onExitRange: () {},
+        getPlayerPosition: () => player,
+      );
+
+      movementController.startFollowing();
+      movementController.movementStartTime = DateTime.now().subtract(Duration(seconds: 50));
+
+      final pos = movementController.updatePosition();
+
+      print('Distance to player: ${movementController.currentDistance}');
+      print('isMoving: ${movementController.isMoving}');
+
+      expect(movementController.isMoving, isFalse);
+      expect(pos.latitude, closeTo(player.latitude, 0.0001));
+    });
   });
 
   group('PlayerMovementController', () {
