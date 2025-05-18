@@ -153,6 +153,12 @@ class NPCMovementController extends EntityMovementController {
     }
   }
 
+  @override
+  void moveTo(LatLng toP) {
+    resetMovementModes();
+    super.moveTo(toP);
+  }
+
   void moveAlong(List<LatLng> p) {
     if (isMoving) {
       currentBasePosition = currentPosition;
@@ -213,6 +219,12 @@ class NPCMovementController extends EntityMovementController {
     currentBasePosition = currentPosition;
     isFollowing = false;
     isMoving = false;
+    isLeading = false;
+    path = [];
+  }
+
+  void resetMovementModes() {
+    isFollowing = false;
     isLeading = false;
     path = [];
   }
