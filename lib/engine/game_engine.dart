@@ -304,7 +304,7 @@ class GameEngine {
 
   Future<void> registerInitialization() async {
     print('🚀 Initialization registered!');
-    for (final entry in _initSubscriptions.entries) {
+    for (final entry in _initSubscriptions.entries.toList()) {
       final Npc npc = entry.key;
       final List<NpcAction> actions = entry.value;
       for (final action in actions) {
@@ -313,7 +313,7 @@ class GameEngine {
           '🚀 Action ${action.runtimeType} for NPC: ${npc.name} executed: $didRun',
         );
       }
-      _initSubscriptions.remove(entry.key);
+      _initSubscriptions.remove(entry.key); // ✅ funktioniert jetzt
     }
   }
 
@@ -372,7 +372,7 @@ class GameEngine {
 
   void registerMessage(Npc npc, int count) async {
     print('💬 Message for ${npc.name} registered');
-    for (final entry in _messageCountSubscriptions.entries) {
+    for (final entry in _messageCountSubscriptions.entries.toList()) {
       final Npc npc = entry.key;
       final List<(NpcAction, int)> actionsEntries = entry.value;
       for (final actionEntry in actionsEntries) {

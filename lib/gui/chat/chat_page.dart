@@ -101,12 +101,13 @@ class _ChatPageState extends State<ChatPage> {
       );
       print("Exception occured: $e : \n$stackTrace ");
     } finally {
-      if (!mounted) return;
-      setState(() {
-        _isSending = false;
-        widget.chatPageController?.isSending.value = false;
-      });
-      _controller.clear();
+      if (mounted) {
+        setState(() {
+          _isSending = false;
+          widget.chatPageController?.isSending.value = false;
+        });
+        _controller.clear();
+      }
     }
   }
 
