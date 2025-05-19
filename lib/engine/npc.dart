@@ -9,7 +9,7 @@ import 'conversation.dart';
 
 enum NPCIcon { unknown, identified, nearby, unknownNearby }
 
-class Npc extends GameElement {
+class Npc extends GameElement implements ProximityAware{
   final Prompt prompt;
   final String? iconAsset;
 
@@ -131,9 +131,11 @@ class Npc extends GameElement {
     return movementController.currentPosition;
   }
 
+/*
   void checkProximityToPlayer() {
     movementController.checkProximityToPlayer();
   }
+*/
 
   NPCIcon get icon {
     if (isVisible) {
@@ -156,9 +158,8 @@ class Npc extends GameElement {
 
   bool get isInCommunicationDistance => movementController.isInCommunicationDistance;
 
-/*
-  void updatePlayerPosition(LatLng playerPosition) async {
-    movementController.updatePlayerPosition(playerPosition);
+  @override
+  void updateProximity(LatLng playerPosition) {
+    movementController.checkProximityToPlayer();
   }
-*/
 }

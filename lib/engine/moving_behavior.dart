@@ -85,6 +85,18 @@ class NPCMovementController extends EntityMovementController {
 
   bool _wasInRange = false;
 
+  void updateProximity(LatLng playerPosition) {
+    final distance = Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
+    final inRange = distance < GameEngine.conversationDistance;
+
+    if (inRange && !_wasInRange) {
+      onEnterRange();
+    } else if (!inRange && _wasInRange) {
+      onExitRange();
+    }
+
+    _wasInRange = inRange;
+  }
   void checkProximityToPlayer() {
     final inRange = isInCommunicationDistance;
 

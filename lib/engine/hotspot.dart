@@ -1,11 +1,15 @@
+import 'dart:ui';
+
 import 'package:hello_world/engine/game_element.dart';
+import 'package:hello_world/engine/game_engine.dart';
 import 'package:hello_world/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 
 
-class Hotspot extends GameElement{
+class Hotspot extends GameElement implements ProximityAware {
   double radius;
-  LatLng playerPosition = LatLng(51.5074, -0.1278); //London;
+  final VoidCallback onEnter;
+  final VoidCallback onExit;
 
   Hotspot({
     required super.name,
@@ -14,26 +18,43 @@ class Hotspot extends GameElement{
     required this.radius,
     required super.isVisible,
     required super.isRevealed,
+    required this.onEnter,
+    required this.onExit,
   });
 
   static Hotspot fromJson(Map<String, dynamic> json) {
     final LatLng position = StoryLine.positionFromJson(json);
+    String name = json['name'] as String;
     return Hotspot(
-      name: json['name'],
+      name: name,
       radius: (json['radius'] as num?)?.toDouble() ?? 10.0,
       isVisible: json['visible'] as bool? ?? true,
       isRevealed: json['revealed'] as bool? ?? true,
       position: position,
       imageAsset: json['image'] as String? ?? GameElement.unknownImageAsset,
+      onEnter: () => GameEngine().registerHotspot(name),
+      onExit: () => print("Player left Hotspot $name."),
     );
   }
-  double get currentDistance {
-    return Distance().as(LengthUnit.Meter, position, playerPosition);
+
+  double _distanceTo(LatLng point) {
+    return const Distance().as(LengthUnit.Meter, position, point);
   }
 
-  bool contains(LatLng point) { //fixme implizite PlayerPosition
-    playerPosition = point;
-    double distance = const Distance().as(LengthUnit.Meter, position, point);
-    return distance <= radius;
+  double get currentDistance {
+    return _distanceTo(GameEngine().playerPosition);
+  }
+
+  bool _wasInRange = false;
+  void updateProximity(LatLng playerPosition) {
+    final inRange = _distanceTo(playerPosition) <= radius;
+
+    if (inRange && !_wasInRange) {
+      onEnter?.call();
+    } else if (!inRange && _wasInRange) {
+      onExit?.call();
+    }
+
+    _wasInRange = inRange;
   }
 }

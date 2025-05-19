@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
+import 'package:hello_world/engine/game_element.dart';
 import 'package:hello_world/engine/item.dart';
 import 'package:hello_world/engine/moving_behavior.dart';
 import 'package:hello_world/gui/notification_services.dart';
@@ -63,16 +64,9 @@ class GameEngine {
         : _realGpsPosition;
   }
 
-  void setRealGpsPositionAndNotify(LatLng pos) {
-    _realGpsPosition = pos;
-    for (final npc in npcs) {
-      npc.checkProximityToPlayer();
-    }
-    for (final hotspot in hotspots) {
-      if (hotspot.contains(pos)) {
-        registerHotspot(hotspot);
-      }
-    }
+  void setRealGpsPositionAndNotify(LatLng newPosition) {
+    _realGpsPosition = newPosition;
+    _playerPositionUpdated(newPosition);
   }
 
   set playerPosition(LatLng newPosition) {
@@ -99,15 +93,13 @@ class GameEngine {
   }
 
   void _playerPositionUpdated(LatLng newPosition) {
-    // NPCs und Hotspots benachrichtigen
-    for (final npc in npcs) {
-      npc.checkProximityToPlayer();
-    }
+    final allProximityAware = <ProximityAware>[
+      ...npcs,
+      ...hotspots,
+    ];
 
-    for (final hotspot in hotspots) {
-      if (hotspot.contains(newPosition)) {
-        registerHotspot(hotspot);
-      }
+    for (final entity in allProximityAware) {
+      entity.updateProximity(newPosition);
     }
   }
 
@@ -286,8 +278,8 @@ class GameEngine {
   Future<void> registerInteraction(Npc npc) =>
       _runActions(_interactionSubscriptions, npc, '🗣️');
 
-  Future<void> registerHotspot(Hotspot hotspot) async {
-    await _runHotspotActions(hotspot.name);
+  Future<void> registerHotspot(String hotspot) async {
+    await _runHotspotActions(hotspot);
   }
 
   Future<void> registerInitialization() async {
@@ -384,7 +376,6 @@ class GameEngine {
     storyLine = null;
     _lastSimulatedPosition = null;
   }
-
 }
 
 class GameEngineDebugger {
