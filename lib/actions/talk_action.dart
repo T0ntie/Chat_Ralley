@@ -7,7 +7,7 @@ class TalkAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    npc.talk(triggerMessage); //fixme gehört hier ein await?
+    await npc.talk(triggerMessage);
     return true;
   }
 

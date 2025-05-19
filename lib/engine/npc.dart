@@ -105,7 +105,7 @@ class Npc extends GameElement {
     await currentConversation.finishConversation();
   }
 
-  void talk(String repsondTo) async {
+  Future <void> talk(String repsondTo) async {
     hasSomethingToSay = true;
     currentConversation.addTriggerMessage(repsondTo);
   }

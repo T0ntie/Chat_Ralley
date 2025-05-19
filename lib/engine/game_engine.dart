@@ -56,9 +56,7 @@ class GameEngine {
     return storyLine?.hotspotMap[hotspotName];
   }
 
-  late LatLng _realGpsPosition = LatLng(51.5074, -0.1278); //fixme
-  //LatLng _playerPosition = LatLng(51.5074, -0.1278); // default
-  //LatLng get playerPosition => _playerPosition;
+    late LatLng _realGpsPosition = PlayerMovementController.simHome; //just a initilizer
   LatLng get playerPosition {
     return isGPSSimulating
         ? _playerMovementController.currentPosition
@@ -155,7 +153,6 @@ class GameEngine {
   }
 
   void markAllItemsAsSeen() {
-    //fixme sinnvoll?
     for (final item in items) {
       if (item.isOwned && item.isNew) {
         item.isNew = false;
