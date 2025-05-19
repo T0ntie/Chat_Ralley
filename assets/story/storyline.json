@@ -167,7 +167,24 @@
           "invokeAction": "showHotspot",
           "hotspot": "Haus Tschulli",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "talk",
+          "trigger": "[Spieler streichelt deinen Hund]",
+          "conditions": {
+            "flag:friendlyToBozzi": true
+          }
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "talk",
+          "trigger": "[Spieler ist grob zu deinem Hund]",
+          "conditions": {
+            "flag:unfriendlyToBozzi": true
+          }
         }
+
       ]
     },
     {
@@ -457,7 +474,7 @@
   ],
   "flags": {
     "friendlyToBozzi": false,
-    "unfriendlyToBozzi": true,
+    "unfriendlyToBozzi": false,
     "knowsKrollsAddress": false,
     "knatterbachAtPolice": false
   }
