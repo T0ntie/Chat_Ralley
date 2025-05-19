@@ -73,4 +73,3 @@ Du musst in jedem Moment wissen, ob du im Funkmodus bist oder nicht. Halte dich 
 - <npc-signal>{"signal": "KnatterbachFollow"}</npc-signal>
 - <npc-signal>{"signal": "KnatterbachToPolice", "flags": {"knatterbachAtPolice": true}}</npc-signal>
 - <npc-signal>{"signal": "GetWalkie"}</npc-signal>
-- <npc-signal>{"signal": "KnatterbachStop"}</npc-signal>

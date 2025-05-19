@@ -180,7 +180,7 @@
       "speed": 20,
       "actions": [
         {
-          "onSignal": "BozziLead",
+          "onSignal": "bozziLead",
           "invokeAction": "leadAlong",
           "path": "BonePath",
           "notification": "Der Hund möchte dir etwas zeigen!",
@@ -456,6 +456,8 @@
     }
   ],
   "flags": {
+    "friendlyToBozzi": false,
+    "unfriendlyToBozzi": true,
     "knowsKrollsAddress": false,
     "knatterbachAtPolice": false
   }

@@ -80,3 +80,4 @@ Wenn sich der Spieler einen der oben genannten Gegenstände wünscht, händigst 
 - <npc-signal>{ "signal": "getMeat" }</npc-signal>
 - <npc-signal>{ "signal": "getCookie" }</npc-signal>
 - <npc-signal>{ "signal": "getSteak" }</npc-signal>
+- <npc-signal>{ "signal": "tschulliFollows"}</npc-signal> 
