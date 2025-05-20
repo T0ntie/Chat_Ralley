@@ -65,16 +65,22 @@ class GameMapWidget extends StatelessWidget {
           circles: [
             // 🟢 Hotspot-Radien (nur bei Simulation)
             if (isSimulatingLocation)
-              ...GameEngine().hotspots.where((h) => h.isVisible).map(
+              ...GameEngine().hotspots
+                  .where((h) => h.isVisible)
+                  .map(
                     (hotspot) => CircleMarker(
-                  point: hotspot.position,
-                  radius: hotspot.radius,
-                  useRadiusInMeter: true,
-                  color: ResourceColors.hotspotCircle.withAlpha((0.1 * 255).toInt()),
-                  borderColor: ResourceColors.hotspotCircle.withAlpha((0.5 * 255).toInt()),
-                  borderStrokeWidth: 2,
-                ),
-              ),
+                      point: hotspot.position,
+                      radius: hotspot.radius,
+                      useRadiusInMeter: true,
+                      color: ResourceColors.hotspotCircle.withAlpha(
+                        (0.1 * 255).toInt(),
+                      ),
+                      borderColor: ResourceColors.hotspotCircle.withAlpha(
+                        (0.5 * 255).toInt(),
+                      ),
+                      borderStrokeWidth: 2,
+                    ),
+                  ),
             // 🔵 Puls-Kreis (immer sichtbar)
             CircleMarker(
               point: location,
@@ -120,9 +126,14 @@ class GameMapWidget extends StatelessWidget {
               height: 40,
               child: Transform.rotate(
                 angle: currentHeading * (pi / 180),
-                child: GameEngine().isGPSSimulating
-                    ? Icon(Icons.my_location, color: Color(0xFF6A0DAD), size: 40)
-                    : AppIcons.playerPosition,
+                child:
+                    GameEngine().isGPSSimulating
+                        ? Icon(
+                          Icons.my_location,
+                          color: Color(0xFF6A0DAD),
+                          size: 40,
+                        )
+                        : AppIcons.playerPosition,
               ),
             ),
             ..._buildHotspotMarkers(context),
@@ -141,37 +152,41 @@ class GameMapWidget extends StatelessWidget {
         point: hotspot.position,
         width: 60,
         height: 80,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => InfoDialog(
-                    title: hotspot.name,
-                    imageAssetPath: "assets/story/${hotspot.displayImageAsset}",
-                    distanceText: "Entfernung: ${hotspot.currentDistance} Meter",
-                    noteText: null,
-                    onPrimaryAction: null,),
-                );
-              },
-              child: Transform.rotate(
-                angle: _getRotationAngle(),
+        child: Transform.rotate(
+          angle: _getRotationAngle(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder:
+                        (ctx) => InfoDialog(
+                          title: hotspot.name,
+                          imageAssetPath:
+                              "assets/story/${hotspot.displayImageAsset}",
+                          distanceText:
+                              "Entfernung: ${hotspot.currentDistance} Meter",
+                          noteText: null,
+                          onPrimaryAction: null,
+                        ),
+                  );
+                },
                 child: AppIcons.hotspot(context),
               ),
-            ),
-            const SizedBox(height: 4),
-            if (hotspot.isRevealed)
-              Text(
-                hotspot.name,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: ResourceColors.npcName,
-                  fontWeight: FontWeight.bold,
+              const SizedBox(height: 4),
+              if (hotspot.isRevealed)
+                Text(
+                  hotspot.name,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: ResourceColors.npcName,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       );
     }).toList();
@@ -194,25 +209,39 @@ class GameMapWidget extends StatelessWidget {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (ctx) => InfoDialog(
-                        title: npc.displayName,
-                        imageAssetPath: "assets/story/${npc.displayImageAsset}",
-                        distanceText: "Entfernung: ${npc.currentDistance} Meter",
-                        noteText: !(npc.isInCommunicationDistance) ? "Komm näher, um mit ${npc.displayName} zu kommunizieren.": null,
-                        onPrimaryAction: npc.isInCommunicationDistance ? () => onNpcChatRequested(npc): null,),
+                    builder:
+                        (ctx) => InfoDialog(
+                          title: npc.displayName,
+                          imageAssetPath:
+                              "assets/story/${npc.displayImageAsset}",
+                          distanceText:
+                              "Entfernung: ${npc.currentDistance} Meter",
+                          noteText:
+                              !(npc.isInCommunicationDistance)
+                                  ? "Komm näher, um mit ${npc.displayName} zu kommunizieren."
+                                  : null,
+                          onPrimaryAction:
+                              npc.isInCommunicationDistance
+                                  ? () => onNpcChatRequested(npc)
+                                  : null,
+                        ),
                   );
                 },
                 //child: AppIcons.npc(context, npc.icon), //Image.asset('assets/story/icons/trex2.png'),
-                  child: npc.iconAsset == null
-                      ? AppIcons.npc(context, npc.icon)
-                      : Image.asset('assets/story/${npc.iconAsset}')
+                child:
+                    npc.iconAsset == null
+                        ? AppIcons.npc(context, npc.icon)
+                        : Image.asset('assets/story/${npc.iconAsset}'),
               ),
               if (npc.hasSomethingToSay)
                 Positioned(
                   top: 5,
                   right: 40,
                   child: GestureDetector(
-                    onTap: npc.isInCommunicationDistance ? () => onNpcChatRequested(npc): null,
+                    onTap:
+                        npc.isInCommunicationDistance
+                            ? () => onNpcChatRequested(npc)
+                            : null,
                     child: AppIcons.chatBubble(context),
                   ),
                 ),

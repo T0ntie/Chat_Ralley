@@ -25,11 +25,11 @@ class Npc extends GameElement implements ProximityAware{
     required super.name,
     required super.imageAsset,
     required this.prompt,
-    required super.position, //fixme
+    required super.position,
     required this.actions,
     required super.isVisible,
     required super.isRevealed,
-    required speed, //in km/h /fixme
+    required speed, //in km/h
     required this.iconAsset,
   }){
     movementController = NPCMovementController(

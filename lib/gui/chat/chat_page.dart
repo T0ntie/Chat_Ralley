@@ -6,9 +6,6 @@ import 'package:hello_world/gui/notification_services.dart';
 import '../../engine/npc.dart';
 import '../../engine/conversation.dart';
 
-//fixme eingabefeld disabeln während es lädt
-//fixme tastatur ausblenden, wenn sie nicht gebraucht wird
-
 class ChatPage extends StatefulWidget {
   final Npc npc;
   final Medium medium;
@@ -145,44 +142,58 @@ class _ChatPageState extends State<ChatPage> {
                 ),
       ),
 
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.2,
-              child:
-                  isRadio
-                      ? ResourceImages.walkieTakie(context)
-                      : Image.asset(
-                        'assets/story/${widget.npc.displayImageAsset}',
-                        fit: BoxFit.cover,
-                      ),
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Opacity(
+                opacity: 0.2,
+                child:
+                    isRadio
+                        ? ResourceImages.walkieTakie(context)
+                        : Image.asset(
+                          'assets/story/${widget.npc.displayImageAsset}',
+                          fit: BoxFit.cover,
+                        ),
+              ),
             ),
-          ),
-          Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  reverse: true,
-                  padding: EdgeInsets.all(8),
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    final reversedIndex = messages.length - 1 - index;
-                    return MessageBubble(message: messages[reversedIndex]);
-                  },
+            Column(
+              children: [
+                Expanded(
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (notification) {
+                      if (notification is UserScrollNotification ||
+                          notification is ScrollStartNotification) {
+                        FocusScope.of(
+                          context,
+                        ).unfocus(); // Tastatur schließen beim Scroll
+                      }
+                      return false; // Event nicht stoppen
+                    },
+                    child: ListView.builder(
+                      reverse: true,
+                      padding: EdgeInsets.all(8),
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final reversedIndex = messages.length - 1 - index;
+                        return MessageBubble(message: messages[reversedIndex]);
+                      },
+                    ),
+                  ),
                 ),
-              ),
-              Divider(height: 1),
-              InputBar(
-                controller: _controller,
-                scrollController: _scrollController,
-                isSending: _isSending,
-                onSendPressed: () => sendMessage(_controller.text),
-              ),
-            ],
-          ),
-          if (_isSending) SendingOverlay(),
-        ],
+                Divider(height: 1),
+                InputBar(
+                  controller: _controller,
+                  scrollController: _scrollController,
+                  isSending: _isSending,
+                  onSendPressed: () => sendMessage(_controller.text),
+                ),
+              ],
+            ),
+            if (_isSending) SendingOverlay(),
+          ],
+        ),
       ),
       floatingActionButton: widget.floatingActionButton,
     );

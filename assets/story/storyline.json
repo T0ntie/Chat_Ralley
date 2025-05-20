@@ -89,7 +89,15 @@
           "onSignal": "GetWalkie",
           "invokeAction": "behave",
           "promptTag": "radio"
-        }
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "behave",
+          "promptTag": "tibia",
+            "conditions": {
+              "item:Tibia": true
+            }
+          }
       ]
     },
     {

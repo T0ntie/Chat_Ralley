@@ -339,9 +339,8 @@ class PlayerMovementController extends EntityMovementController {
   void moveTo(LatLng toP) {
     _movementStartPosition = currentBasePosition;
 
-    //fixme brauchen wir das wirklich?
     if (isMoving) {
-      currentBasePosition = currentPosition; // 👈 Das hast du bisher NICHT!
+      currentBasePosition = currentPosition;
     }
     final distance = Distance().as(LengthUnit.Meter, currentBasePosition, toP);
     if (distance == 0) {

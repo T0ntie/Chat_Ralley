@@ -46,13 +46,14 @@ class Hotspot extends GameElement implements ProximityAware {
   }
 
   bool _wasInRange = false;
+  @override
   void updateProximity(LatLng playerPosition) {
     final inRange = _distanceTo(playerPosition) <= radius;
 
     if (inRange && !_wasInRange) {
-      onEnter?.call();
+      onEnter.call();
     } else if (!inRange && _wasInRange) {
-      onExit?.call();
+      onExit.call();
     }
 
     _wasInRange = inRange;

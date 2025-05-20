@@ -122,7 +122,8 @@ class InputBar extends StatelessWidget {
               maxLines: 5,
               keyboardType: TextInputType.multiline,
               textInputAction: TextInputAction.newline,
-              style: TextStyle(color: Colors.black87),
+              enabled: !isSending,
+              style: TextStyle(color: isSending ? Colors.black26 : Colors.black87,),
               decoration: InputDecoration(
                 hintText: "Nachricht schreiben...",
                 hintStyle: TextStyle(color: Colors.black38),

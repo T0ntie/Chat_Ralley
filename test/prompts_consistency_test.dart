@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hello_world/actions/npc_action.dart';
-import 'package:hello_world/engine/story_line.dart';
 
 const List<String> promptFiles = [
   'assets/story/prompts/kroll-prompt.txt',
@@ -92,7 +90,7 @@ void main() {
             usedSignals,
             equals(documentedSignals),
             reason:
-                'Used signals and documented signals must match in ${filePath}',
+                'Used signals and documented signals must match in $filePath',
           );
         },
       );

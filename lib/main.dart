@@ -130,7 +130,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   LatLng? _lastRealGpsPosition;
 
-  bool _isSidePanelVisible = false; //fixme
+  bool _isSidePanelVisible = false;
 
   void _centerMapOnCurrentLocation() {
     _mapController.move(GameEngine().playerPosition, 16.0);
