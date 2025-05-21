@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:hello_world/engine/game_element.dart';
 import 'package:hello_world/engine/item.dart';
-import 'package:hello_world/engine/moving_behavior.dart';
+import 'package:hello_world/engine/moving_controller.dart';
 import 'package:hello_world/gui/notification_services.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -23,13 +23,13 @@ class GameEngine {
 
   GameEngine._internal();
 
-  static const double conversationDistance = 50.0;
+  static const double conversationDistance = 25.0;
 
   bool isGPSSimulating = false;
   LatLng? _lastSimulatedPosition;
 
   final PlayerMovementController _playerMovementController =
-      PlayerMovementController(startPosition: LatLng(51.5074, -0.1278));
+      PlayerMovementController(startPosition: PlayerMovementController.simHome);
 
   PlayerMovementController? get playerMovementController =>
       _playerMovementController;

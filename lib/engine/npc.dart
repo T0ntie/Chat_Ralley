@@ -1,7 +1,7 @@
 import 'package:hello_world/actions/npc_action.dart';
 import 'package:hello_world/engine/game_element.dart';
 import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/engine/moving_behavior.dart';
+import 'package:hello_world/engine/moving_controller.dart';
 import 'package:hello_world/engine/prompt.dart';
 import 'package:hello_world/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
@@ -160,6 +160,6 @@ class Npc extends GameElement implements ProximityAware{
 
   @override
   void updateProximity(LatLng playerPosition) {
-    movementController.checkProximityToPlayer();
+    movementController.updatePlayerProximity();
   }
 }

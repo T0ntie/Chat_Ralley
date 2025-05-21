@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hello_world/engine/moving_behavior.dart';
+import 'package:hello_world/engine/moving_controller.dart';
 import 'package:latlong2/latlong.dart';
 
 void main() {
@@ -154,7 +154,7 @@ void main() {
       );
 
       movementController.moveTo(movementController.toPosition);
-      movementController.checkProximityToPlayer(); // jetzt: inRange
+      movementController.updatePlayerProximity(); // jetzt: inRange
       movementController.movementStartTime = DateTime.now().subtract(Duration(minutes: 3));
       movementController.updatePosition();
 

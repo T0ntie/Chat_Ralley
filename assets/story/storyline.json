@@ -8,7 +8,7 @@
       "prompt": "knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
       "visible": true,
-      "speed": 150,
+      "speed":20,
       "actions": [
         {
           "onInit": null,
@@ -202,7 +202,7 @@
       "image": "images/bozzi.png",
       "visible": false,
       "revealed": false,
-      "speed": 20,
+      "speed": 25,
       "actions": [
         {
           "onSignal": "bozziLead",
@@ -280,6 +280,7 @@
       "image": "images/tschulli.png",
       "visible": false,
       "revealed": false,
+      "speed": 10,
       "actions": [
         {
           "onHotspot": "Haus Tschulli",
@@ -394,9 +395,8 @@
       "name": "Haus Kroll",
       "position": "HausKrollPosition",
       "image": "images/hauskroll.png",
-      "radius": 20,
-      "visible": false,
-      "revealed": false
+      "radius": 30,
+      "visible": false
     },
     {
       "name": "Haus Tschulli",
@@ -412,7 +412,7 @@
         "lat": 48.08465098939792,
         "lng": 16.278219512071608
       },
-      "visible": true
+      "visible": false
     }
   ],
   "items": [
