@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:hello_world/app_resources.dart';
-import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/engine/npc.dart';
-import 'package:hello_world/gui/npc_info_dialog.dart';
+import '../app_resources.dart';
+import '../engine/game_engine.dart';
+import '../engine/npc.dart';
+import '../gui/npc_info_dialog.dart';
 import 'package:latlong2/latlong.dart';
 
 class GameMapWidget extends StatelessWidget {

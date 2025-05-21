@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/engine/npc.dart';
-import 'package:hello_world/gui/item_call_backs.dart';
+import '../engine/game_engine.dart';
+import '../engine/npc.dart';
+import '../gui/item_call_backs.dart';
 
 class Item {
   final String name;

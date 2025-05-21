@@ -1,6 +1,6 @@
-import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/engine/prompt.dart';
-import 'package:hello_world/engine/story_journal.dart';
+import '../engine/game_engine.dart';
+import '../engine/prompt.dart';
+import '../engine/story_journal.dart';
 
 import '../services/chat_service.dart';
 import 'npc.dart';

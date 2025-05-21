@@ -1,4 +1,4 @@
-import 'package:hello_world/engine/conversation.dart';
+import '../engine/conversation.dart';
 
 class StoryJournal {
   static final StoryJournal _instance = StoryJournal._internal();

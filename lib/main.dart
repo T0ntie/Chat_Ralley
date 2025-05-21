@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/engine/item.dart';
-import 'package:hello_world/gui/action_observer.dart';
-import 'package:hello_world/gui/chat/chat_page.dart';
-import 'package:hello_world/gui/credits_screen.dart';
-import 'package:hello_world/gui/debuging_panel.dart';
-import 'package:hello_world/gui/game_map_widget.dart';
-import 'package:hello_world/gui/item_button.dart';
-import 'package:hello_world/gui/notification_services.dart';
-import 'package:hello_world/gui/open_qr_scan_dialog_intent.dart';
-import 'package:hello_world/gui/side_panel.dart';
-import 'package:hello_world/gui/splash.dart';
-import 'package:hello_world/services/gpt_utilities.dart';
+import '../engine/item.dart';
+import '../gui/action_observer.dart';
+import '../gui/chat/chat_page.dart';
+import '../gui/credits_screen.dart';
+import '../gui/debuging_panel.dart';
+import '../gui/game_map_widget.dart';
+import '../gui/item_button.dart';
+import '../gui/notification_services.dart';
+import '../gui/open_qr_scan_dialog_intent.dart';
+import '../gui/side_panel.dart';
+import '../gui/splash.dart';
+import '../services/gpt_utilities.dart';
 import 'services/location_service.dart';
 import 'services/compass_service.dart';
 import 'engine/game_engine.dart';
@@ -21,10 +21,20 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env"); // lädt die .env-Datei
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await Firebase.initializeApp();
+    print("✅ Firebase erfolgreich initialisiert");
+  } catch (e) {
+    print("❌ Firebase Fehler: $e");
+    rethrow;
+  }
+
   GptUtilities.init();
 
   // Nur Hochformat erlauben

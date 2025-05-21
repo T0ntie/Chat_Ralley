@@ -1,5 +1,5 @@
-import 'package:hello_world/engine/game_element.dart';
-import 'package:hello_world/engine/story_line.dart';
+import '../engine/game_element.dart';
+import '../engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 
 

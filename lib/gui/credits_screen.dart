@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:hello_world/engine/story_journal.dart';
-import 'package:hello_world/services/gpt_utilities.dart';
+import '../engine/story_journal.dart';
+import '../services/gpt_utilities.dart';
 
 class CreditsScreen extends StatefulWidget {
   const CreditsScreen({super.key});

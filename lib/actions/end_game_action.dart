@@ -1,5 +1,5 @@
-import 'package:hello_world/gui/credits_intent.dart';
-import 'package:hello_world/gui/ui_intent.dart';
+import '../gui/credits_intent.dart';
+import '../gui/ui_intent.dart';
 
 import 'npc_action.dart';
 import '../engine/npc.dart';

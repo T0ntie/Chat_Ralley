@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/actions/npc_action.dart';
+import '../actions/npc_action.dart';
 import '../engine/npc.dart';
 
 class ActionTestingPanel extends StatefulWidget {

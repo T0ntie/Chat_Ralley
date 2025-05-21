@@ -1,5 +1,5 @@
-import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/engine/item.dart';
+import '../engine/game_engine.dart';
+import '../engine/item.dart';
 
 import 'npc_action.dart';
 import '../engine/npc.dart';

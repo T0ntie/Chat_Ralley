@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:hello_world/services/chat_service.dart';
+import '../services/chat_service.dart';
 
 class GptUtilities {
   static const String utilityPromptFile =

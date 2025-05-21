@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/app_resources.dart';
-import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/gui/chat/chat_gui_elements.dart';
-import 'package:hello_world/gui/notification_services.dart';
+import '../../app_resources.dart';
+import '../../engine/game_engine.dart';
+import '../../gui/chat/chat_gui_elements.dart';
+import '../../gui/notification_services.dart';
 import '../../engine/npc.dart';
 import '../../engine/conversation.dart';
 

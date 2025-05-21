@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hello_world/actions/npc_action.dart';
-import 'package:hello_world/engine/story_line.dart';
+import '../lib/actions/npc_action.dart';
+import '../lib/engine/story_line.dart';
 
 final RegExp signalTagPattern = RegExp(
   r'<npc-signal>\s*\{\s*"signal"\s*:\s*"([^"]+)"[\s\S]*?\}\s*</npc-signal>',

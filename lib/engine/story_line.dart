@@ -1,7 +1,7 @@
-import 'package:hello_world/engine/hotspot.dart';
-import 'package:hello_world/engine/item.dart';
+import '../engine/hotspot.dart';
+import '../engine/item.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:hello_world/engine/game_engine.dart';
+import '../engine/game_engine.dart';
 
 import 'npc.dart';
 import 'package:flutter/services.dart' show rootBundle;

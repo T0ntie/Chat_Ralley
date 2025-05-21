@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/main.dart';
+import '../engine/game_engine.dart';
+import '../main.dart';
 
 class ActionObserver extends NavigatorObserver {
 

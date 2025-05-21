@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/gui/credits_screen.dart';
-import 'package:hello_world/main.dart';
+import '../gui/credits_screen.dart';
+import '../main.dart';
 import 'ui_intent.dart';
 
 class CreditsIntent extends UIIntent {

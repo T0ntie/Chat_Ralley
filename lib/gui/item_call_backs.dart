@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/engine/item.dart';
-import 'package:hello_world/gui/chat/radio_chat_page.dart';
-import 'package:hello_world/services/gpt_utilities.dart';
+import '../engine/game_engine.dart';
+import '../engine/item.dart';
+import '../gui/chat/radio_chat_page.dart';
+import '../services/gpt_utilities.dart';
 
 typedef ItemUseCallback =
     Future<void> Function(BuildContext context, Item item);

@@ -1,7 +1,7 @@
-import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/engine/item.dart';
-import 'package:hello_world/gui/open_qr_scan_dialog_intent.dart';
-import 'package:hello_world/gui/ui_intent.dart';
+import '../engine/game_engine.dart';
+import '../engine/item.dart';
+import '../gui/open_qr_scan_dialog_intent.dart';
+import '../gui/ui_intent.dart';
 
 import 'npc_action.dart';
 import '../engine/npc.dart';

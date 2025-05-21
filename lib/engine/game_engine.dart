@@ -1,9 +1,9 @@
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
-import 'package:hello_world/engine/item.dart';
-import 'package:hello_world/engine/moving_behavior.dart';
-import 'package:hello_world/gui/notification_services.dart';
+import '../engine/item.dart';
+import '../engine/moving_behavior.dart';
+import '../gui/notification_services.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'story_line.dart';

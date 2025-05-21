@@ -1,9 +1,9 @@
-import 'package:hello_world/actions/npc_action.dart';
-import 'package:hello_world/engine/game_element.dart';
-import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/engine/moving_behavior.dart';
-import 'package:hello_world/engine/prompt.dart';
-import 'package:hello_world/engine/story_line.dart';
+import '../actions/npc_action.dart';
+import '../engine/game_element.dart';
+import '../engine/game_engine.dart';
+import '../engine/moving_behavior.dart';
+import '../engine/prompt.dart';
+import '../engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 import 'conversation.dart';
 

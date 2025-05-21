@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "488263226965",
+    "project_id": "storytrail-e3bf7",
+    "storage_bucket": "storytrail-e3bf7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:488263226965:android:0ee597b5649620df2ba6dc",
+        "android_client_info": {
+          "package_name": "com.storytrail.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM9GcKiGemXpbZZjyyFIc0igvvEViHvZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

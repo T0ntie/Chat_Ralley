@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hello_world/actions/npc_action.dart';
-import 'package:hello_world/engine/story_line.dart';
+import '../lib/actions/npc_action.dart';
+import '../lib/engine/story_line.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

@@ -1,4 +1,4 @@
-import 'package:hello_world/engine/story_line.dart';
+import '../engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'npc_action.dart';

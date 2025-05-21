@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
-import 'package:hello_world/app_resources.dart';
-import 'package:hello_world/main.dart';
+import '../app_resources.dart';
+import '../main.dart';
 
 class FlushBarService {
   static final FlushBarService _instance = FlushBarService._internal();

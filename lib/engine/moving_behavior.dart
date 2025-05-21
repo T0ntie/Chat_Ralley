@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:hello_world/engine/game_engine.dart';
+import '../engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
 
 abstract class EntityMovementController {

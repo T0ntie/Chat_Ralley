@@ -1,5 +1,5 @@
-import 'package:hello_world/engine/game_engine.dart';
-import 'package:hello_world/engine/hotspot.dart';
+import '../engine/game_engine.dart';
+import '../engine/hotspot.dart';
 
 import 'npc_action.dart';
 import '../engine/npc.dart';

@@ -1,4 +1,4 @@
-import 'package:hello_world/engine/npc.dart';
+import '../engine/npc.dart';
 import 'package:flutter/material.dart';
 
 class ResourceIcons {

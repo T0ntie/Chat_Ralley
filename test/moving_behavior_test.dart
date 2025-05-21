@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hello_world/engine/moving_behavior.dart';
+import '../lib/engine/moving_behavior.dart';
 import 'package:latlong2/latlong.dart';
 
 void main() {

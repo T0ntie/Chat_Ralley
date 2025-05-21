@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hello_world/app_resources.dart';
-import 'package:hello_world/engine/game_engine.dart';
+import '../app_resources.dart';
+import '../engine/game_engine.dart';
 import '../engine/item.dart';
 
 class ItemButton extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:hello_world/gui/action_observer.dart';
-import 'package:hello_world/main.dart';
+import '../gui/action_observer.dart';
+import '../main.dart';
 
 abstract class UIIntent {
   Future<void> call(BuildContext context);
