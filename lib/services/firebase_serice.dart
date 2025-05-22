@@ -7,7 +7,7 @@ class JsonLoader {
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = json.decode(response.body);
+        final Map<String, dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes));
         return jsonData;
       } else {
         throw Exception('Fehler beim Laden [$url]: HTTP ${response.statusCode}');

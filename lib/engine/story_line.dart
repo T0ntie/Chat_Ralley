@@ -1,3 +1,5 @@
+import 'package:storytrail/services/firebase_serice.dart';
+
 import '../engine/hotspot.dart';
 import '../engine/item.dart';
 import 'package:latlong2/latlong.dart';
@@ -19,6 +21,7 @@ class StoryLine {
   static final Map<String, List<LatLng>> _paths = {};
 
   static const storyLineAsset = 'assets/story/storyline.json';
+  static const storyLineURI = 'https://storytrail-e3bf7.web.app/tibia/storyline.json';
   static const positionsAsset = 'assets/story/positions.json';
 
   StoryLine({
@@ -152,8 +155,8 @@ class StoryLine {
       rethrow;
     }
     try {
-      String storyLineJsonString = await rootBundle.loadString(storyLineAsset);
-      final storLineJson = json.decode(storyLineJsonString);
+      //String storyLineJsonString = await rootBundle.loadString(storyLineAsset);
+      final storLineJson = await JsonLoader.loadJsonFromUrl(storyLineURI);
       return await StoryLine.fromJsonAsync(storLineJson);
     } catch (e, stack) {
       print(
