@@ -20,9 +20,10 @@ class StoryLine {
   static final Map<String, LatLng> _positions = {};
   static final Map<String, List<LatLng>> _paths = {};
 
-  static const storyLineAsset = 'assets/story/storyline.json';
+  //static const storyLineAsset = 'assets/story/storyline.json';
   static const storyLineURI = 'https://storytrail-e3bf7.web.app/tibia/storyline.json';
-  static const positionsAsset = 'assets/story/positions.json';
+  static const positionsURI = 'https://storytrail-e3bf7.web.app/tibia/positions.json';
+  //static const positionsAsset = 'assets/story/positions.json';
 
   StoryLine({
     required this.scenarioId,
@@ -56,7 +57,7 @@ class StoryLine {
         return MapEntry(key, path);
       });
     } catch (e, stack) {
-      print('❌ Fehler beim parsen der paths in $positionsAsset:\n$e\n$stack');
+      print('❌ Fehler beim parsen der paths in $positionsURI:\n$e\n$stack');
       rethrow;
     }
   }
@@ -72,7 +73,7 @@ class StoryLine {
       });
     } catch (e, stack) {
       print(
-        '❌ Fehler beim parsen der positions in $positionsAsset:\n$e\n$stack',
+        '❌ Fehler beim parsen der positions in $positionsURI:\n$e\n$stack',
       );
       rethrow;
     }
@@ -142,15 +143,16 @@ class StoryLine {
 
   static Future<StoryLine> loadStoryLine() async {
     try {
-      final positionsJsonString = await rootBundle.loadString(positionsAsset);
-      final positionsJson = json.decode(positionsJsonString);
+      //final positionsJsonString = await rootBundle.loadString(positionsAsset);
+      //final positionsJson = json.decode(positionsJsonString);
+      final positionsJson = await JsonLoader.loadJsonFromUrl(positionsURI);
       _positions.clear();
       _positions.addAll(StoryLine._namedPositionsFromJson(positionsJson));
       _paths.clear();
       _paths.addAll(StoryLine._namedPathsFromJson(positionsJson));
     } catch (e, stack) {
       print(
-        '❌ Fehler beim Laden der Positions from $positionsAsset:\n$e\n$stack',
+        '❌ Fehler beim Laden der Positions from $positionsURI:\n$e\n$stack',
       );
       rethrow;
     }
@@ -160,7 +162,7 @@ class StoryLine {
       return await StoryLine.fromJsonAsync(storLineJson);
     } catch (e, stack) {
       print(
-        '❌ Fehler beim Laden der Storyline from $storyLineAsset:\n$e\n$stack',
+        '❌ Fehler beim Laden der Storyline from $storyLineURI:\n$e\n$stack',
       );
       rethrow;
     }

@@ -1,19 +1,42 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import { onRequest } from "firebase-functions/v2/https";
+export const callGPT = onRequest({ region: "us-central1" }, async (req, res) => {
+  const apiKey = process.env.OPENAI_API_KEY;
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+  if (!apiKey) {
+    console.error("❌ OPENAI_API_KEY nicht gesetzt!");
+    res.status(500).json({ error: "API key fehlt" });
+    return;
+  }
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+  const { messages, model = "gpt-4" } = req.body;
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+  if (!messages || !Array.isArray(messages)) {
+    res.status(400).json({ error: "Invalid request body" });
+    return;
+  }
+
+  try {
+    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ model, messages }),
+    });
+
+    const data = await openaiRes.json();
+
+    if (data.error) {
+      console.error("OpenAI error:", data.error);
+      res.status(500).json({ error: data.error.message });
+      return;
+    }
+
+    const reply = data.choices?.[0]?.message?.content ?? "Keine Antwort";
+    res.status(200).json({ reply });
+  } catch (err) {
+    console.error("Fehler bei GPT:", err);
+    res.status(500).json({ error: "Interner Fehler" });
+  }
+});

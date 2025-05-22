@@ -30,6 +30,35 @@ class ChatService {
     return tokenCount;
   }
 
+  static const _firebaseFunctionUrl = 'https://callgpt-erqoo6fo7q-uc.a.run.app';
+  static Future<String> processMessages(List<Map<String, String>> messages) async {
+    try {
+      final response = await http.post(
+        Uri.parse(_firebaseFunctionUrl),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'messages': messages,
+          'model': _model, // optional, falls du mehrere Modelle verwenden willst
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+        return decoded['reply'];
+      } else {
+        throw Exception('Fehler: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e, stack) {
+      print('❌ Fehler beim Aufruf der Firebase Function:\n$e\n$stack');
+      rethrow;
+    }
+  }
+
+
+
+/*
   static Future<String> processMessages(List<Map<String, String>> messages) async
   {
     try {
@@ -66,6 +95,7 @@ class ChatService {
       rethrow;
     }
   }
+*/
 
   static Future<String> generateItemMessage(String npcName, String itemName) async {
     final messages = [
