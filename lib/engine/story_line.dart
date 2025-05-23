@@ -21,8 +21,8 @@ class StoryLine {
   static final Map<String, List<LatLng>> _paths = {};
 
   //static const storyLineAsset = 'assets/story/storyline.json';
-  static const storyLineURI = 'https://storytrail-e3bf7.web.app/tibia/storyline.json';
-  static const positionsURI = 'https://storytrail-e3bf7.web.app/tibia/positions.json';
+  static const storyLineURI = 'tibia/storyline.json';
+  static const positionsURI = 'tibia/positions.json';
   //static const positionsAsset = 'assets/story/positions.json';
 
   StoryLine({
@@ -145,7 +145,7 @@ class StoryLine {
     try {
       //final positionsJsonString = await rootBundle.loadString(positionsAsset);
       //final positionsJson = json.decode(positionsJsonString);
-      final positionsJson = await JsonLoader.loadJsonFromUrl(positionsURI);
+      final positionsJson = await FirebaseHosting.loadJsonFromUrl(positionsURI);
       _positions.clear();
       _positions.addAll(StoryLine._namedPositionsFromJson(positionsJson));
       _paths.clear();
@@ -158,7 +158,7 @@ class StoryLine {
     }
     try {
       //String storyLineJsonString = await rootBundle.loadString(storyLineAsset);
-      final storLineJson = await JsonLoader.loadJsonFromUrl(storyLineURI);
+      final storLineJson = await FirebaseHosting.loadJsonFromUrl(storyLineURI);
       return await StoryLine.fromJsonAsync(storLineJson);
     } catch (e, stack) {
       print(

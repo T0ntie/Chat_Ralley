@@ -1,0 +1,26 @@
+firebase init
+firebase login
+
+C:\Users\gerno\StudioProjects\storytrail> firebase deploy --only functions
+firebase deploy --only hosting
+
+C:\Users\gerno\StudioProjects\storytrail> gcloud run services list --region=us-central1
+
+C:\Dev\Android\AndroidStudio\jbr\bin>keytool.exe -list -v -keystore %USERPROFILE%\.android\debug.keystore -alias androiddebugkey -storepass android -keypass android
+Aliasname: androiddebugkey
+Erstellungsdatum: 09.04.2025
+Eintragstyp: PrivateKeyEntry
+Zertifikatskettenlänge: 1
+Zertifikat[1]:
+Eigentümer: C=US, O=Android, CN=Android Debug
+Aussteller: C=US, O=Android, CN=Android Debug
+Seriennummer: 1
+Gültig von: Wed Apr 09 19:57:51 CEST 2025 bis: Fri Apr 02 19:57:51 CEST 2055
+Zertifikatsfingerprints:
+         SHA1: 62:C6:54:F4:23:3B:D3:B7:CF:B9:AA:2E:27:5A:AC:02:55:97:92:9C
+         SHA256: B2:40:CB:36:58:03:E5:4C:4A:D0:AA:BB:4C:70:DC:17:64:75:E0:36:95:9D:D9:1B:99:95:35:F2:72:66:F8:27
+Signaturalgorithmusname: SHA256withRSA
+Public-Key-Algorithmus von Subject: 2048-Bit-RSA-Schlüssel
+Version: 1
+
+Enter this debug secret into the allow list in the Firebase Console for your project: c5c94203-da3f-42d4-9068-f960bb4aa22e

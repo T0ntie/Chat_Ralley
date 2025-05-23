@@ -5,7 +5,7 @@ import 'package:tiktoken/tiktoken.dart';
 
 
 class ChatService {
-  static const _url = 'https://api.openai.com/v1/chat/completions';
+  //static const _url = 'https://api.openai.com/v1/chat/completions';
   static const _model = 'gpt-4.1';
   static const _encodingModel = 'gpt-4';
   static const tokenLimit = 1000000;
@@ -40,7 +40,7 @@ class ChatService {
         },
         body: jsonEncode({
           'messages': messages,
-          'model': _model, // optional, falls du mehrere Modelle verwenden willst
+          'model': _model,
         }),
       );
 
@@ -96,7 +96,7 @@ class ChatService {
     }
   }
 */
-
+/*
   static Future<String> generateItemMessage(String npcName, String itemName) async {
     final messages = [
       {
@@ -119,6 +119,8 @@ itemName: $itemName
     final response = await ChatService.processMessages(messages);
     return response.trim();
   }
+*/
+
 
 }
 

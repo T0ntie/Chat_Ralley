@@ -22,9 +22,11 @@ import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
-  await dotenv.load(fileName: ".env"); // lädt die .env-Datei
+  //await dotenv.load(fileName: ".env"); // lädt die .env-Datei
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
@@ -33,6 +35,25 @@ void main() async {
   } catch (e) {
     print("❌ Firebase Fehler: $e");
     rethrow;
+  }
+
+
+  if (kDebugMode) {
+    // Wenn wir im Debug-Modus sind, aktiviere App Check mit dem Debug Provider.
+    // Dies generiert das Token im Logcat/Konsole, das du registrieren musst.
+    print("⚠️ App Check: Debug Provider wird initialisiert...");
+    await FirebaseAppCheck.instance.activate(
+      androidProvider: AndroidProvider.debug,
+      appleProvider: AppleProvider.debug,
+    );
+    print("✅ App Check Debug Provider aktiviert.");
+
+  } else {
+    await FirebaseAppCheck.instance.activate(
+      androidProvider: AndroidProvider.playIntegrity,
+      appleProvider: AppleProvider.appAttest,
+    );
+    print("✅ App Check Production Provider aktiviert.");
   }
 
   GptUtilities.init();
@@ -61,6 +82,7 @@ enum AppScreen { splash, home, credits }
 
 class _MyAppState extends State<MyApp> {
   AppScreen _currentScreen = AppScreen.splash;
+
   //bool _showSplash = true;
 
   @override
@@ -172,18 +194,17 @@ class MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initializeLocationStream() async {
     await LocationService.initialize();
-    _positionSubscription = LocationService.getPositionStream().listen((
-      Position position,
-    ) {
-      if (!_isSimulatingLocation) {
-        GameEngine().playerPosition = LatLng(
-          position.latitude,
-          position.longitude,
-        );
-      }
-      _locationServiceInitialized = true;
-      _checkIfInitializationCompleted();
-    });
+    _positionSubscription =
+        LocationService.getPositionStream().listen((Position position,) {
+          if (!_isSimulatingLocation) {
+            GameEngine().playerPosition = LatLng(
+              position.latitude,
+              position.longitude,
+            );
+          }
+          _locationServiceInitialized = true;
+          _checkIfInitializationCompleted();
+        });
   }
 
   void _initializeMapController() {
@@ -202,21 +223,22 @@ class MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       rethrow;
     } //
-    _compassSubscription = CompassService.getCompassDirection().listen((
-      heading,
-    ) {
-      DateTime currentTime = DateTime.now();
-      if ((heading - _currentHeading).abs() >= 5 ||
-          currentTime.difference(_lastHeadingUpdateTime).inSeconds >= 1) {
-        if (_isMapHeadingBasedOrientation) {
-          _mapController.rotate(-heading);
-        }
-        setState(() {
-          _currentHeading = heading;
-          _lastHeadingUpdateTime = currentTime;
+    _compassSubscription =
+        CompassService.getCompassDirection().listen((heading,) {
+          DateTime currentTime = DateTime.now();
+          if ((heading - _currentHeading).abs() >= 5 ||
+              currentTime
+                  .difference(_lastHeadingUpdateTime)
+                  .inSeconds >= 1) {
+            if (_isMapHeadingBasedOrientation) {
+              _mapController.rotate(-heading);
+            }
+            setState(() {
+              _currentHeading = heading;
+              _lastHeadingUpdateTime = currentTime;
+            });
+          }
         });
-      }
-    });
   }
 
   void _initializeUpdateTimer() {
@@ -247,7 +269,7 @@ class MyHomePageState extends State<MyHomePage> {
       ]);
     } catch (e) {
       _initializationError =
-          '❌ Initialisieren der Standortbestimmung fehlgeschlagen.';
+      '❌ Initialisieren der Standortbestimmung fehlgeschlagen.';
       SnackBarService.showErrorSnackBar(context, _initializationError!);
       return;
     }
@@ -293,20 +315,20 @@ class MyHomePageState extends State<MyHomePage> {
   Widget buildFloatingActionButton() {
     return GestureDetector(
       onTap:
-          _initializationCompleted
-              ? () {
-                setState(() {
-                  _centerMapOnCurrentLocation();
-                });
-              }
-              : null,
+      _initializationCompleted
+          ? () {
+        setState(() {
+          _centerMapOnCurrentLocation();
+        });
+      }
+          : null,
       onLongPress:
-          _initializationCompleted && _isSimulatingLocation
-              ? () {
-                GameEngine().playerMovementController!.teleportHome();
-                _centerMapOnCurrentLocation();
-              }
-              : null,
+      _initializationCompleted && _isSimulatingLocation
+          ? () {
+        GameEngine().playerMovementController!.teleportHome();
+        _centerMapOnCurrentLocation();
+      }
+          : null,
       child: FloatingActionButton(
         heroTag: "CenterLocation_fab",
         onPressed: null, // wichtig, damit GestureDetector alles übernimmt
@@ -467,7 +489,11 @@ class MyHomePageState extends State<MyHomePage> {
         ),
         title: Text(
           "StoryTrail",
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          style: Theme
+              .of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -507,16 +533,16 @@ class MyHomePageState extends State<MyHomePage> {
             ),
           if (_debuggingVisible)
             IconButton(
-            icon: Icon(Icons.restart_alt),
-            tooltip: "Restart",
-            onPressed: () async {
-              GameEngine().reset();
-              await GameEngine().initializeGame();
-              final currentPosition = GameEngine().playerPosition;
-              GameEngine().setRealGpsPositionAndNotify(currentPosition);
-              GameEngine().registerInitialization();
-            },
-          ),
+              icon: Icon(Icons.restart_alt),
+              tooltip: "Restart",
+              onPressed: () async {
+                GameEngine().reset();
+                await GameEngine().initializeGame();
+                final currentPosition = GameEngine().playerPosition;
+                GameEngine().setRealGpsPositionAndNotify(currentPosition);
+                GameEngine().registerInitialization();
+              },
+            ),
           IconButton(
             icon: Icon(Icons.menu_open),
             tooltip: "Inventar öffnen",
@@ -530,61 +556,61 @@ class MyHomePageState extends State<MyHomePage> {
       ),
 
       body:
-          !_initializationCompleted
-              ? Center(
-                child: CircularProgressIndicator(),
-              ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist
-              : Stack(
-                children: [
-                  GameMapWidget(
-                    location: GameEngine().playerPosition,
-                    mapController: _mapController,
-                    currentHeading: _currentHeading,
-                    currentMapRotation: _currentMapRotation,
-                    isMapHeadingBasedOrientation: _isMapHeadingBasedOrientation,
-                    isSimulatingLocation: _isSimulatingLocation,
-                    onSimulatedLocationChange: (point) {
-                      setState(() {
-                        GameEngine().playerPosition = point;
-                        //_processNewLocation(_playerPosition);
-                      });
-                    },
-                    onNpcChatRequested: (npc) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => ChatPage(npc: npc)),
-                      );
-                    },
-                  ),
-                  buildMapOrientationModeButton(),
-                  if (showActionTestingPanel)
-                    ActionTestingPanel(
-                      actionsByTrigger:
-                          GameEngineDebugger.getActionsGroupedByTrigger(),
-                      flags: GameEngine().flags,
-                    ),
-                  SidePanel(
-                    isVisible: (_isSidePanelVisible),
-                    onClose: () {
-                      setState(() {
-                        _isSidePanelVisible = false;
-                        GameEngine().markAllItemsAsSeen();
-                      });
-                    },
-                    onScan: () {
-                      setState(() {
-                        print("text");
-                        OpenScanDialogIntent(
-                          title: "Fund erfassen",
-                          expectedItems: GameEngine().getScannableItems(),
-                        ).call(context);
-                      });
-                    },
+      !_initializationCompleted
+          ? Center(
+        child: CircularProgressIndicator(),
+      ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist
+          : Stack(
+        children: [
+          GameMapWidget(
+            location: GameEngine().playerPosition,
+            mapController: _mapController,
+            currentHeading: _currentHeading,
+            currentMapRotation: _currentMapRotation,
+            isMapHeadingBasedOrientation: _isMapHeadingBasedOrientation,
+            isSimulatingLocation: _isSimulatingLocation,
+            onSimulatedLocationChange: (point) {
+              setState(() {
+                GameEngine().playerPosition = point;
+                //_processNewLocation(_playerPosition);
+              });
+            },
+            onNpcChatRequested: (npc) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ChatPage(npc: npc)),
+              );
+            },
+          ),
+          buildMapOrientationModeButton(),
+          if (showActionTestingPanel)
+            ActionTestingPanel(
+              actionsByTrigger:
+              GameEngineDebugger.getActionsGroupedByTrigger(),
+              flags: GameEngine().flags,
+            ),
+          SidePanel(
+            isVisible: (_isSidePanelVisible),
+            onClose: () {
+              setState(() {
+                _isSidePanelVisible = false;
+                GameEngine().markAllItemsAsSeen();
+              });
+            },
+            onScan: () {
+              setState(() {
+                print("text");
+                OpenScanDialogIntent(
+                  title: "Fund erfassen",
+                  expectedItems: GameEngine().getScannableItems(),
+                ).call(context);
+              });
+            },
 
-                    children: buildItems(),
-                  ),
-                ],
-              ),
+            children: buildItems(),
+          ),
+        ],
+      ),
       floatingActionButton: buildFloatingActionButton(),
     );
   }
