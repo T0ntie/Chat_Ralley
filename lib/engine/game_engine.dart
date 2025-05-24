@@ -33,6 +33,8 @@ class GameEngine {
   PlayerMovementController? get playerMovementController =>
       _playerMovementController;
 
+  String? trailId; //fixme
+
   StoryLine? storyLine;
 
   List<Npc> get npcs => storyLine?.npcs ?? [];
@@ -129,6 +131,14 @@ class GameEngine {
     return null;
   }
 
+  String npcImagePath(Npc npc) {
+    return "$trailId/${npc.displayImageAsset}";
+  }
+
+  String hotspotImagePath(Hotspot hotspot) {
+    return "$trailId/${hotspot.displayImageAsset}";
+  }
+
   Item? getItemByName(String itemName) {
     try {
       return items.firstWhere((item) => item.name == itemName);
@@ -163,9 +173,10 @@ class GameEngine {
     }
   }
 
-  Future<void> initializeGame() async {
+  Future<void> initializeGame(String trailId) async {
+    this.trailId = trailId;
     NpcAction.registerAllNpcActions();
-    storyLine = await StoryLine.loadStoryLine();
+    storyLine = await StoryLine.loadStoryLine(trailId);
     for (final npc in npcs) {
       for (final action in npc.actions) {
         switch (action.trigger.type) {

@@ -3,7 +3,7 @@ import 'package:storytrail/services/firebase_serice.dart';
 
 class InfoDialog extends StatelessWidget {
   final String title;
-  final String imageAssetPath;
+  //final String imageAssetPath;
   final String imageUriPath;
   final String distanceText;
   final String? noteText;
@@ -13,7 +13,7 @@ class InfoDialog extends StatelessWidget {
   const InfoDialog({
     super.key,
     required this.title,
-    required this.imageAssetPath,
+    //required this.imageAssetPath,
     required this.imageUriPath,
     required this.distanceText,
     this.noteText,

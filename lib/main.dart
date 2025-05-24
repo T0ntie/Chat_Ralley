@@ -175,7 +175,7 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _initializeGame() async {
-    await GameEngine().initializeGame();
+    await GameEngine().initializeGame("tibia"); //fixme
     _gameInitialized = true;
     _checkIfInitializationCompleted();
     SnackBarService.showSuccessSnackBar(context, "✔️ Alle Spieldaten geladen");
@@ -537,7 +537,7 @@ class MyHomePageState extends State<MyHomePage> {
               tooltip: "Restart",
               onPressed: () async {
                 GameEngine().reset();
-                await GameEngine().initializeGame();
+                await GameEngine().initializeGame("tiba"); //fixme
                 final currentPosition = GameEngine().playerPosition;
                 GameEngine().setRealGpsPositionAndNotify(currentPosition);
                 GameEngine().registerInitialization();

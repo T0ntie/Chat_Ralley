@@ -10,7 +10,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 
 class StoryLine {
-  final String scenarioId;
+  final String trailId;
   final String title;
   final List<Npc> npcs;
   final List<Hotspot> hotspotsList;
@@ -20,13 +20,11 @@ class StoryLine {
   static final Map<String, LatLng> _positions = {};
   static final Map<String, List<LatLng>> _paths = {};
 
-  //static const storyLineAsset = 'assets/story/storyline.json';
-  static const storyLineURI = 'tibia/storyline.json';
-  static const positionsURI = 'tibia/positions.json';
-  //static const positionsAsset = 'assets/story/positions.json';
+  static const storyLineURI = 'storyline.json';
+  static const positionsURI = 'positions.json';
 
   StoryLine({
-    required this.scenarioId,
+    required this.trailId,
     required this.title,
     required this.npcs,
     required this.hotspotsList,
@@ -128,7 +126,7 @@ class StoryLine {
       final items =
           (json['items'] as List).map((e) => Item.fromJson(e)).toList();
       return StoryLine(
-        scenarioId: json['scenarioId'],
+        trailId: json['trailId'],
         title: json['title'],
         npcs: npcs,
         hotspotsList: hotspots,
@@ -141,28 +139,28 @@ class StoryLine {
     }
   }
 
-  static Future<StoryLine> loadStoryLine() async {
-    try {
-      //final positionsJsonString = await rootBundle.loadString(positionsAsset);
-      //final positionsJson = json.decode(positionsJsonString);
-      final positionsJson = await FirebaseHosting.loadJsonFromUrl(positionsURI);
+  static Future<StoryLine> loadStoryLine(String trail) async {
+   final positionsUrl = "${trail}/${positionsURI}";
+   final storyLineUrl = "${trail}/${storyLineURI}";
+  try {
+      final positionsJson = await FirebaseHosting.loadJsonFromUrl(positionsUrl);
       _positions.clear();
       _positions.addAll(StoryLine._namedPositionsFromJson(positionsJson));
       _paths.clear();
       _paths.addAll(StoryLine._namedPathsFromJson(positionsJson));
     } catch (e, stack) {
       print(
-        '❌ Fehler beim Laden der Positions from $positionsURI:\n$e\n$stack',
+        '❌ Fehler beim Laden der Positions from $positionsUrl:\n$e\n$stack',
       );
       rethrow;
     }
     try {
       //String storyLineJsonString = await rootBundle.loadString(storyLineAsset);
-      final storLineJson = await FirebaseHosting.loadJsonFromUrl(storyLineURI);
+      final storLineJson = await FirebaseHosting.loadJsonFromUrl(storyLineUrl);
       return await StoryLine.fromJsonAsync(storLineJson);
     } catch (e, stack) {
       print(
-        '❌ Fehler beim Laden der Storyline from $storyLineURI:\n$e\n$stack',
+        '❌ Fehler beim Laden der Storyline from $storyLineUrl:\n$e\n$stack',
       );
       rethrow;
     }

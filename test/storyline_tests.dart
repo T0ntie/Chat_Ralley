@@ -11,9 +11,9 @@ void main() {
   test('parses real storyline.json without throwing', () async {
     try {
       NpcAction.registerAllNpcActions();
-      final storyline = await StoryLine.loadStoryLine();
+      final storyline = await StoryLine.loadStoryLine("tibia");
 
-      expect(storyline.scenarioId.isNotEmpty, isTrue);
+      expect(storyline.trailId.isNotEmpty, isTrue);
       expect(storyline.title.isNotEmpty, isTrue);
       print('✅ Storyline geladen: ${storyline.title}');
     } catch (e, stack) {
@@ -52,7 +52,7 @@ void main() {
   });
 
   test('Alle in storyline referenzierten Prompt-Dateien existieren', () async {
-    final storyline = await StoryLine.loadStoryLine();
+    final storyline = await StoryLine.loadStoryLine("tibia");
     final missingFiles = <String>[];
 
     for (final npc in storyline.npcs) {

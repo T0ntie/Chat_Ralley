@@ -32,9 +32,9 @@ void main() {
   test('All prompt signals match scenario-defined onSignal values', () async {
     try {
       NpcAction.registerAllNpcActions();
-      final storyline = await StoryLine.loadStoryLine();
+      final storyline = await StoryLine.loadStoryLine("tibia");
 
-      expect(storyline.scenarioId.isNotEmpty, isTrue);
+      expect(storyline.trailId.isNotEmpty, isTrue);
       expect(storyline.title.isNotEmpty, isTrue);
       print('✅ Storyline geladen: ${storyline.title}');
 

@@ -1,0 +1,19 @@
+[
+  {
+    "trailId": "tibia",
+    "baseLocation": {
+      "lat": 48.08654208326306,
+      "lng": 16.287920962933388
+    },
+    "title": "Der Fall der verschwundenen Tibia"
+  },
+  {
+    "trailId": "drno",
+    "baseLocation": {
+      "lat": 48.02654208326306,
+      "lng": 16.187920962933388
+    },
+    "title": "notexisting"
+  }
+
+]
