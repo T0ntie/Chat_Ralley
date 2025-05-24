@@ -151,6 +151,7 @@ class GameMapWidget extends StatelessWidget {
                   builder: (ctx) => InfoDialog(
                     title: hotspot.name,
                     imageAssetPath: "assets/story/${hotspot.displayImageAsset}",
+                    imageUriPath: "tibia/" + hotspot.displayImageAsset,
                     distanceText: "Entfernung: ${hotspot.currentDistance} Meter",
                     noteText: null,
                     onPrimaryAction: null,),
@@ -197,6 +198,7 @@ class GameMapWidget extends StatelessWidget {
                     builder: (ctx) => InfoDialog(
                         title: npc.displayName,
                         imageAssetPath: "assets/story/${npc.displayImageAsset}",
+                        imageUriPath: "tibia/" + npc.displayImageAsset,
                         distanceText: "Entfernung: ${npc.currentDistance} Meter",
                         noteText: !(npc.isInCommunicationDistance) ? "Komm näher, um mit ${npc.displayName} zu kommunizieren.": null,
                         onPrimaryAction: npc.isInCommunicationDistance ? () => onNpcChatRequested(npc): null,),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:storytrail/services/firebase_serice.dart';
 
 class InfoDialog extends StatelessWidget {
   final String title;
   final String imageAssetPath;
+  final String imageUriPath;
   final String distanceText;
   final String? noteText;
   final void Function()? onPrimaryAction;
@@ -12,6 +14,7 @@ class InfoDialog extends StatelessWidget {
     super.key,
     required this.title,
     required this.imageAssetPath,
+    required this.imageUriPath,
     required this.distanceText,
     this.noteText,
     this.onPrimaryAction,
@@ -58,11 +61,14 @@ class InfoDialog extends StatelessWidget {
                 aspectRatio: 2 / 3,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
+                  child: FirebaseHosting.loadImageWidget(imageUriPath, fit: BoxFit.cover),
+/*
                   child: Image.asset(
                     imageAssetPath,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, color: Colors.white70),
                   ),
+*/
                 ),
               ),
             ),
