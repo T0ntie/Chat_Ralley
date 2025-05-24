@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:storytrail/engine/trail.dart';
 
 class SplashScreen extends StatefulWidget {
-  final VoidCallback onContinue;
+  final List<Trail> availableTrails;
+  final void Function(String trailId) onTrailSelected;
 
-  const SplashScreen({super.key, required this.onContinue});
+  const SplashScreen({
+    super.key,
+    required this.availableTrails,
+    required this.onTrailSelected,
+  });
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String? _selectedTrailId;
+
   @override
   void initState() {
     super.initState();
+    if (widget.availableTrails.isNotEmpty) {
+      _selectedTrailId = widget.availableTrails.first.trailId;
+    }
   }
 
   @override
@@ -20,10 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.asset(
-          'assets/logo/splash.png',
-          fit: BoxFit.fitWidth,
-        ),
+        Image.asset('assets/logo/splash.png', fit: BoxFit.fitWidth),
         Positioned(
           top: 60,
           left: 25,
@@ -32,9 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
-                // oder dein gewählter Hintergrund
                 borderRadius: BorderRadius.circular(12),
-                // 8–16 ist typisch für Android-Icons
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black26,
@@ -53,51 +59,117 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
         ),
-
-        Container(
-          color: Colors.black.withAlpha((0.3 * 255).toInt()), // dunkler Filter
-        ),
+        Container(color: Colors.black.withAlpha((0.3 * 255).toInt())),
         Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(flex: 15),
-              Padding(
-                padding: const EdgeInsets.all(32.0),
-                child:
-                Text(
-                  'Der Fall der verschwundenen Tibia',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily:'Times new Roman',
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.none,
-                    shadows: [
-                      Shadow(
-                        offset: Offset(2, 2),
-                        blurRadius: 4,
-                        color: Colors.black54,
+          child: SingleChildScrollView(
+            child: Material(
+              // <-- Das hier ist neu
+              color: Colors.transparent,
+              // damit dein dunkler Hintergrund durchscheint
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 120),
+                  Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Text(
+                      'Der Fall der verschwundenen Tibia',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Times new Roman',
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(2, 2),
+                            blurRadius: 4,
+                            color: Colors.black54,
+                          ),
+                        ],
                       ),
-                    ],
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: DropdownButtonFormField<String>(
+                      dropdownColor: Colors.grey[900],
+                      // Hintergrund der Dropdown-Liste
+                      style: TextStyle(color: Colors.white),
+                      // Textfarbe der Auswahl
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.black.withOpacity(0.5),
+                        // Dropdown-Feld-Hintergrund
+                        labelText: 'Verfügbare Trails',
+                        labelStyle: TextStyle(
+                          color: Colors.orangeAccent.shade200,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Colors.orangeAccent.shade200,
+                            width: 1.5,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Colors.orangeAccent.shade100,
+                            width: 1.0,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Colors.orangeAccent,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      value: _selectedTrailId,
+                      items:
+                          widget.availableTrails.map((trail) {
+                            return DropdownMenuItem<String>(
+                              value: trail.trailId,
+                              child: Text("${trail.trailId} ${trail.currentDistance}m entfernt"),
+                            );
+                          }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedTrailId = value;
+                        });
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: 40),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          _selectedTrailId == null
+                              ? Colors
+                                  .grey
+                                  .shade700 // Farbe für deaktivierten Zustand
+                              : Colors.orangeAccent.shade200,
+                      foregroundColor: Colors.black87,
+                      disabledBackgroundColor: Colors.grey.shade700,
+                      disabledForegroundColor: Colors.white70,
+                    ),
+                    onPressed:
+                        _selectedTrailId == null
+                            ? null
+                            : () => widget.onTrailSelected(_selectedTrailId!),
+                    icon: Icon(Icons.play_arrow),
+                    label: Text('Los geht’s'),
+                  ),
+                  const SizedBox(height: 60),
+                ],
               ),
-              const Spacer(flex: 5),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orangeAccent.shade200,
-                  foregroundColor: Colors.black87,
-                ),
-                onPressed: widget.onContinue,
-                icon: Icon(Icons.play_arrow),
-                label: Text('Los geht’s'),
-              ),
-              SizedBox(height: 60),
-            ],
+            ),
           ),
-        )
+        ),
       ],
     );
   }

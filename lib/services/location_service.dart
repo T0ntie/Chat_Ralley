@@ -30,7 +30,7 @@ class LocationService {
 
     LocationSettings locationSettings = LocationSettings(
       accuracy: LocationAccuracy.high,
-      distanceFilter: 5, // liefert nur Updates bei >10m Bewegung
+      distanceFilter: 5, // liefert nur Updates bei >5m Bewegung
     );
 
     try {
@@ -40,7 +40,7 @@ class LocationService {
       rethrow;
     }
   }
-// Stream, um die Kompassrichtung zu abonnieren
+
   static Stream<Position> getPositionStream() {
     if (_locationStream == null) {
       print('❌ Kein LocationStream vorhanden');

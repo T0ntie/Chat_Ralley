@@ -19,14 +19,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/foundation.dart';
 
 void main() async {
-  //await dotenv.load(fileName: ".env"); // lädt die .env-Datei
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
@@ -47,7 +45,6 @@ void main() async {
       appleProvider: AppleProvider.debug,
     );
     print("✅ App Check Debug Provider aktiviert.");
-
   } else {
     await FirebaseAppCheck.instance.activate(
       androidProvider: AndroidProvider.playIntegrity,
@@ -63,6 +60,10 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  await GameEngine().loadTrails();
+  print("✅ trails should be loaded");
+
   runApp(const MyApp());
 }
 
@@ -78,31 +79,101 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-enum AppScreen { splash, home, credits }
+enum AppScreen { loading, splash, home, credits, error }
 
 class _MyAppState extends State<MyApp> {
-  AppScreen _currentScreen = AppScreen.splash;
+  AppScreen _currentScreen = AppScreen.loading;
+  String? _errorMessage;
 
-  //bool _showSplash = true;
+  @override
+  void initState() {
+    super.initState();
+    //_currentScreen = AppScreen.loading;
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    try {
+      await Future.wait([
+        LocationService.initialize(),
+      ]);
+      Position pos = await Geolocator.getCurrentPosition();
+      GameEngine().playerPosition = LatLng(pos.latitude, pos.longitude);
+
+      setState(() {
+        _currentScreen = AppScreen.splash;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = '❌ Fehler beim Initialisieren: $e';
+        _currentScreen = AppScreen.error;
+      });
+    }
+  }
+
+  String? _selectedTrailId;
 
   @override
   Widget build(BuildContext context) {
     Widget screen;
     switch (_currentScreen) {
+      case AppScreen.loading:
+        screen = const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+        break;
       case AppScreen.splash:
         screen = SplashScreen(
-          onContinue: () {
+
+          onTrailSelected: (String trailId) {
             setState(() {
+              _selectedTrailId = trailId;
               _currentScreen = AppScreen.home;
             });
           },
+          availableTrails: GameEngine().trailsList,
+
         );
         break;
       case AppScreen.home:
-        screen = MyHomePage(key: homePageKey, title: MyApp.title);
+        screen = MyHomePage(key: homePageKey,
+            title: MyApp.title,
+            trailId: _selectedTrailId!,
+            onFatalError: (error) {
+              setState(() {
+                _errorMessage = error;
+                _currentScreen = AppScreen.error;
+              });
+            });
+            break;
+            case AppScreen.credits:
+            screen = CreditsScreen();
         break;
-      case AppScreen.credits:
-        screen = CreditsScreen();
+      case AppScreen.error:
+        screen = Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error, color: Colors.red, size: 64),
+                const SizedBox(height: 16),
+                Text(_errorMessage ?? 'Unbekannter Fehler'),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _currentScreen = AppScreen.loading;
+                      _errorMessage = null;
+                    });
+                    _initializeApp();
+                  },
+                  icon: Icon(Icons.refresh),
+                  label: Text('Erneut versuchen'),
+                ),
+              ],
+            ),
+          ),
+        );
         break;
     }
 
@@ -119,9 +190,12 @@ class _MyAppState extends State<MyApp> {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.trailId, this.onFatalError,});
 
   final String title;
+  final String trailId;
+  final void Function(String error)? onFatalError;
+
 
   @override
   State<MyHomePage> createState() => MyHomePageState();
@@ -132,9 +206,10 @@ class MyHomePageState extends State<MyHomePage> {
 
   //final String title = "StoryTrail";
   //LatLng _playerPosition = LatLng(51.5074, -0.1278); // Beispiel für London
-  bool _locationServiceInitialized = false;
+  //bool _locationServiceInitialized = false;
   bool _gameInitialized = false;
-  String? _initializationError;
+
+  //String? _initializationError;
   bool _initializationCompleted = false;
 
   double _currentHeading = 0.0;
@@ -175,15 +250,17 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _initializeGame() async {
-    await GameEngine().initializeGame("tibia"); //fixme
+    await GameEngine().loadSelectedTrail("tibia"); //fixme
     _gameInitialized = true;
     _checkIfInitializationCompleted();
     SnackBarService.showSuccessSnackBar(context, "✔️ Alle Spieldaten geladen");
   }
 
   void _checkIfInitializationCompleted() {
+    print(
+        "checking Initializaion: $_gameInitialized $_initializationCompleted");
     if (_gameInitialized &&
-        _locationServiceInitialized &&
+        //_locationServiceInitialized &&
         !_initializationCompleted) {
       setState(() {
         _initializationCompleted = true;
@@ -192,6 +269,7 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
+/*
   Future<void> _initializeLocationStream() async {
     await LocationService.initialize();
     _positionSubscription =
@@ -202,10 +280,11 @@ class MyHomePageState extends State<MyHomePage> {
               position.longitude,
             );
           }
-          _locationServiceInitialized = true;
+          //_locationServiceInitialized = true;
           _checkIfInitializationCompleted();
         });
   }
+*/
 
   void _initializeMapController() {
     _mapControllerSubscription = _mapController.mapEventStream.listen((event) {
@@ -253,32 +332,21 @@ class MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> _initializeApp() async {
-    try {
-      await _initializeGame();
-    } catch (e) {
-      _initializationError = '❌ Initialisierung der Spieldaten fehlgeschlagen.';
-      SnackBarService.showErrorSnackBar(context, _initializationError!);
-      return;
-    }
-
+  Future<void> _initializeGameUI() async {
     try {
       await Future.wait([
         _initializeCompassStream(),
-        _initializeLocationStream(),
       ]);
     } catch (e) {
-      _initializationError =
-      '❌ Initialisieren der Standortbestimmung fehlgeschlagen.';
-      SnackBarService.showErrorSnackBar(context, _initializationError!);
+
+      widget.onFatalError?.call('❌ Initialisierung des Kompass fehlgeschlagen.' );
       return;
     }
 
     try {
       _initializeMapController();
     } catch (e) {
-      _initializationError = '❌ Initialisieren der Karte fehlgeschlagen.';
-      SnackBarService.showErrorSnackBar(context, _initializationError!);
+      widget.onFatalError?.call('❌ Initialisierung der Karte fehlgeschlagen.' );
       return;
     }
 
@@ -288,7 +356,8 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _initializeApp();
+    _initializeGameUI();
+    _initializeGame();
   }
 
   Positioned buildMapOrientationModeButton() {
@@ -375,6 +444,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+/*
     if (_initializationError != null) {
       return Scaffold(
         appBar: AppBar(
@@ -431,7 +501,7 @@ class MyHomePageState extends State<MyHomePage> {
                 ElevatedButton.icon(
                   onPressed: () {
                     setState(() {
-                      _initializationError = null;
+                      //_initializationError = null;
                       _initializationCompleted = false;
                       _gameInitialized = false;
                       _locationServiceInitialized = false;
@@ -447,6 +517,7 @@ class MyHomePageState extends State<MyHomePage> {
         ),
       );
     }
+*/
 
     return Scaffold(
       appBar: AppBar(
@@ -537,7 +608,7 @@ class MyHomePageState extends State<MyHomePage> {
               tooltip: "Restart",
               onPressed: () async {
                 GameEngine().reset();
-                await GameEngine().initializeGame("tiba"); //fixme
+                await GameEngine().loadSelectedTrail("tiba"); //fixme
                 final currentPosition = GameEngine().playerPosition;
                 GameEngine().setRealGpsPositionAndNotify(currentPosition);
                 GameEngine().registerInitialization();

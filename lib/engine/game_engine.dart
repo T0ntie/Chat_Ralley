@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
+import 'package:storytrail/engine/trail.dart';
+import 'package:storytrail/services/firebase_serice.dart';
 import '../engine/item.dart';
 import '../engine/moving_behavior.dart';
 import '../gui/notification_services.dart';
@@ -34,6 +36,7 @@ class GameEngine {
       _playerMovementController;
 
   String? trailId; //fixme
+  List<Trail> trailsList = [];
 
   StoryLine? storyLine;
 
@@ -59,8 +62,6 @@ class GameEngine {
   }
 
   late LatLng _realGpsPosition = LatLng(51.5074, -0.1278); //fixme
-  //LatLng _playerPosition = LatLng(51.5074, -0.1278); // default
-  //LatLng get playerPosition => _playerPosition;
   LatLng get playerPosition {
     return isGPSSimulating
         ? _playerMovementController.currentPosition
@@ -165,7 +166,6 @@ class GameEngine {
   }
 
   void markAllItemsAsSeen() {
-    //fixme sinnvoll?
     for (final item in items) {
       if (item.isOwned && item.isNew) {
         item.isNew = false;
@@ -173,7 +173,17 @@ class GameEngine {
     }
   }
 
-  Future<void> initializeGame(String trailId) async {
+  Future<void> loadTrails() async {
+    final json = await FirebaseHosting.loadJsonFromUrl("trails.json");
+    final List<dynamic> list = json['trails']; // <=== Zugriff auf die Liste
+    trailsList =
+        list
+            .cast<Map<String, dynamic>>() // typisieren
+            .map((e) => Trail.fromJson(e)) // umwandeln
+            .toList(); // Liste erzeugen
+  }
+
+  Future<void> loadSelectedTrail(String trailId) async {
     this.trailId = trailId;
     NpcAction.registerAllNpcActions();
     storyLine = await StoryLine.loadStoryLine(trailId);
@@ -398,11 +408,9 @@ class GameEngine {
     storyLine = null;
     _lastSimulatedPosition = null;
   }
-
 }
 
 class GameEngineDebugger {
-
   static Map<String, List<(Npc, NpcAction)>>? _actionsGroupedByTrigger;
 
   static Map<String, List<(Npc, NpcAction)>> getActionsGroupedByTrigger() {
