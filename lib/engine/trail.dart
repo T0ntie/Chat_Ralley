@@ -4,16 +4,26 @@ import 'package:storytrail/engine/game_engine.dart';
 class Trail {
   final String trailId;
   final String title;
+  final String label;
   final LatLng baseLocation;
-  final double distance = 12.3; //fixme
+  final String coverImage;
 
-  Trail({required this.trailId, required this.title, required this.baseLocation});
+  Trail({
+    required this.trailId,
+    required this.title,
+    required this.label,
+    required this.baseLocation,
+    required this.coverImage,
+  });
 
   static Trail fromJson(Map<String, dynamic> json) {
     return Trail(
-        trailId: json['trailId'],
-        title: json['title'],
-        baseLocation: _latLngFromJson(json['baseLocation']),);
+      trailId: json['trailId'],
+      label: json['label'],
+      title: json['title'],
+      coverImage: json['coverImage'],
+      baseLocation: _latLngFromJson(json['baseLocation']),
+    );
   }
 
   static LatLng _latLngFromJson(Map<String, dynamic> json) {
@@ -27,6 +37,10 @@ class Trail {
   }
 
   double get currentDistance {
-    return Distance().as(LengthUnit.Meter, baseLocation, GameEngine().playerPosition);
+    return Distance().as(
+      LengthUnit.Meter,
+      baseLocation,
+      GameEngine().playerPosition,
+    );
   }
 }

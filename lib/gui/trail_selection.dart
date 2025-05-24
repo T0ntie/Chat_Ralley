@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:storytrail/engine/trail.dart';
+import 'package:storytrail/services/firebase_serice.dart';
 
-class SplashScreen extends StatefulWidget {
+class TrailSelectionScreen extends StatefulWidget {
   final List<Trail> availableTrails;
   final void Function(String trailId) onTrailSelected;
 
-  const SplashScreen({
+  const TrailSelectionScreen({
     super.key,
     required this.availableTrails,
     required this.onTrailSelected,
   });
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<TrailSelectionScreen> createState() => _TrailSelectionScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
   String? _selectedTrailId;
+
+  Trail? get selectedTrail {
+    return widget.availableTrails
+        .where((trail) => trail.trailId == _selectedTrailId)
+        .cast<Trail?>()
+        .firstOrNull;
+  }
 
   @override
   void initState() {
@@ -31,7 +39,12 @@ class _SplashScreenState extends State<SplashScreen> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.asset('assets/logo/splash.png', fit: BoxFit.fitWidth),
+        selectedTrail != null ?
+        FirebaseHosting.loadImageWidget(
+          "images/${selectedTrail!.coverImage}",
+          fit: BoxFit.fitWidth,
+        ): Image.asset("assets/images/cover.png", fit: BoxFit.fitWidth),
+        //Image.asset('assets/logo/splash.png', fit: BoxFit.fitWidth),
         Positioned(
           top: 60,
           left: 25,
@@ -63,7 +76,6 @@ class _SplashScreenState extends State<SplashScreen> {
         Center(
           child: SingleChildScrollView(
             child: Material(
-              // <-- Das hier ist neu
               color: Colors.transparent,
               // damit dein dunkler Hintergrund durchscheint
               child: Column(
@@ -73,7 +85,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   Padding(
                     padding: const EdgeInsets.all(32.0),
                     child: Text(
-                      'Der Fall der verschwundenen Tibia',
+                      //'Der Fall der verschwundenen Tibia',
+                      selectedTrail?.title ?? 'Kein Trail verfügbar',
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Times new Roman',
@@ -133,7 +146,33 @@ class _SplashScreenState extends State<SplashScreen> {
                           widget.availableTrails.map((trail) {
                             return DropdownMenuItem<String>(
                               value: trail.trailId,
-                              child: Text("${trail.trailId} ${trail.currentDistance}m entfernt"),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.alphabetic,
+                                // wichtig für Baseline-Ausrichtung!
+                                children: [
+                                  Flexible(
+                                    fit: FlexFit.loose,
+                                    child: Text(
+                                      trail.label,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16, // optional anpassen
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    "(${trail.currentDistance >= 1000 ? "${(trail.currentDistance / 1000).toStringAsFixed(1)} km" : "${trail.currentDistance.round()} m"} entfernt)",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             );
                           }).toList(),
                       onChanged: (value) {
