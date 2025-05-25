@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:storytrail/engine/trail.dart';
 import 'package:storytrail/services/firebase_serice.dart';
 import '../engine/item.dart';
-import '../engine/moving_behavior.dart';
+import '../engine/moving_controller.dart';
 import '../gui/notification_services.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -30,7 +30,7 @@ class GameEngine {
   LatLng? _lastSimulatedPosition;
 
   final PlayerMovementController _playerMovementController =
-      PlayerMovementController(startPosition: LatLng(51.5074, -0.1278));
+      PlayerMovementController(startPosition: PlayerMovementController.simHome);
 
   PlayerMovementController? get playerMovementController =>
       _playerMovementController;
@@ -62,23 +62,16 @@ class GameEngine {
     return storyLine?.hotspotMap[hotspotName];
   }
 
-  late LatLng _realGpsPosition = LatLng(51.5074, -0.1278); //fixme
+    late LatLng _realGpsPosition = PlayerMovementController.simHome; //just a initilizer
   LatLng get playerPosition {
     return isGPSSimulating
         ? _playerMovementController.currentPosition
         : _realGpsPosition;
   }
 
-  void setRealGpsPositionAndNotify(LatLng pos) {
-    _realGpsPosition = pos;
-    for (final npc in npcs) {
-      npc.checkProximityToPlayer();
-    }
-    for (final hotspot in hotspots) {
-      if (hotspot.contains(pos)) {
-        registerHotspot(hotspot);
-      }
-    }
+  void setRealGpsPositionAndNotify(LatLng newPosition) {
+    _realGpsPosition = newPosition;
+    _playerPositionUpdated(newPosition);
   }
 
   set playerPosition(LatLng newPosition) {
@@ -105,15 +98,13 @@ class GameEngine {
   }
 
   void _playerPositionUpdated(LatLng newPosition) {
-    // NPCs und Hotspots benachrichtigen
-    for (final npc in npcs) {
-      npc.checkProximityToPlayer();
-    }
+    final allProximityAware = <ProximityAware>[
+      ...npcs,
+      ...hotspots,
+    ];
 
-    for (final hotspot in hotspots) {
-      if (hotspot.contains(newPosition)) {
-        registerHotspot(hotspot);
-      }
+    for (final entity in allProximityAware) {
+      entity.updateProximity(newPosition);
     }
   }
 
@@ -323,8 +314,8 @@ class GameEngine {
   Future<void> registerInteraction(Npc npc) =>
       _runActions(_interactionSubscriptions, npc, '🗣️');
 
-  Future<void> registerHotspot(Hotspot hotspot) async {
-    await _runHotspotActions(hotspot.name);
+  Future<void> registerHotspot(String hotspot) async {
+    await _runHotspotActions(hotspot);
   }
 
   Future<void> registerInitialization() async {

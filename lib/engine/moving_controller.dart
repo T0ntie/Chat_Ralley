@@ -11,15 +11,15 @@ abstract class EntityMovementController {
   LatLng currentBasePosition;
   LatLng toPosition;
   double speedInKmh;
-  double speedInms;
+
+  double get speedInms => speedInKmh * 1000 / 3600;
 
   EntityMovementController({
     required this.currentBasePosition,
     required this.toPosition,
     required this.speedInKmh,
   }) : isMoving = false,
-       movementStartTime = DateTime.now(),
-       speedInms = speedInKmh * 1000 / 3600;
+       movementStartTime = DateTime.now();
 
   LatLng interpolatePosition(LatLng from, LatLng to, double distanceToTravel) {
     final totalDistance = Distance().as(LengthUnit.Meter, from, to);
@@ -54,13 +54,16 @@ class NPCMovementController extends EntityMovementController {
 
   //LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   List<LatLng> path;
-  static const followingDistance = 5.0;
-  static const waitDistance = 75.0;
+  static const followingDistance = 10.0;
+  static const waitDistance = 50.0;
   static const continueDistance = 20.0;
 
   final VoidCallback onEnterRange;
   final VoidCallback onExitRange;
   LatLng Function()? getPlayerPosition;
+
+  @override
+  double get speedInms => (GameEngine().isGPSSimulating ? 150: speedInKmh * 1000 / 3600);
 
   NPCMovementController({
     required super.currentBasePosition,
@@ -78,14 +81,27 @@ class NPCMovementController extends EntityMovementController {
   }
 
   LatLng get playerPosition =>
-      getPlayerPosition?.call() ?? LatLng(51.5074, -0.1278); //London
+      getPlayerPosition?.call() ?? PlayerMovementController.simHome;
 
   bool get isInCommunicationDistance =>
       currentDistance < GameEngine.conversationDistance;
 
   bool _wasInRange = false;
 
-  void checkProximityToPlayer() {
+ /* void updateProximity(LatLng playerPosition) {
+    final distance = Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
+    final inRange = distance < GameEngine.conversationDistance;
+
+    if (inRange && !_wasInRange) {
+      onEnterRange();
+    } else if (!inRange && _wasInRange) {
+      onExitRange();
+    }
+
+    _wasInRange = inRange;
+  }*/
+
+  void updatePlayerProximity() {
     final inRange = isInCommunicationDistance;
 
     if (inRange && !_wasInRange) {
@@ -168,7 +184,7 @@ class NPCMovementController extends EntityMovementController {
         // Normale Fortbewegung
         currentBasePosition = interpolated;
         movementStartTime = now;
-        checkProximityToPlayer();
+        updatePlayerProximity();
         return interpolated;
       }
       // Ziel erreicht, gehe zum nächsten Wegpunkt
@@ -181,7 +197,7 @@ class NPCMovementController extends EntityMovementController {
         movementStartTime = now.subtract(Duration(milliseconds: restMillis));
       } else {
         isMoving = false;
-        checkProximityToPlayer();
+        updatePlayerProximity();
         return currentBasePosition;
       }
     }
@@ -285,16 +301,6 @@ class NPCMovementController extends EntityMovementController {
     isFollowing = false;
     isLeading = false;
   }
-
-  /*
-  void updatePlayerPosition(LatLng pos) {
-    if (isMoving) {
-      currentBasePosition = currentPosition;
-    }
-    //playerPosition = pos;
-    checkForContinue();
-  }
-*/
 }
 
 class PlayerMovementController extends EntityMovementController {
@@ -307,6 +313,17 @@ class PlayerMovementController extends EntityMovementController {
         toPosition: startPosition,
         speedInKmh: 0,
       );
+
+  @override
+  double get speedInms {
+    final totalDistance = Distance().as(
+      LengthUnit.Meter,
+      _movementStartPosition,
+      toPosition,
+    );
+    return totalDistance / durationInSeconds;
+  }
+
 
   @override
   LatLng get currentPosition => currentBasePosition;
@@ -327,9 +344,8 @@ class PlayerMovementController extends EntityMovementController {
   void moveTo(LatLng toP) {
     _movementStartPosition = currentBasePosition;
 
-    //fixme brauchen wir das wirklich?
     if (isMoving) {
-      currentBasePosition = currentPosition; // 👈 Das hast du bisher NICHT!
+      currentBasePosition = currentPosition;
     }
     final distance = Distance().as(LengthUnit.Meter, currentBasePosition, toP);
     if (distance == 0) {
@@ -337,7 +353,7 @@ class PlayerMovementController extends EntityMovementController {
       return;
     }
 
-    speedInms = distance / durationInSeconds;
+    //speedInms = distance / durationInSeconds;
     toPosition = toP;
     movementStartTime = DateTime.now();
     isMoving = true;

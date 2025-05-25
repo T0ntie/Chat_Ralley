@@ -91,7 +91,15 @@
           "onSignal": "GetWalkie",
           "invokeAction": "behave",
           "promptTag": "radio"
-        }
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "behave",
+          "promptTag": "tibia",
+            "conditions": {
+              "item:Tibia": true
+            }
+          }
       ]
     },
     {
@@ -169,7 +177,24 @@
           "invokeAction": "showHotspot",
           "hotspot": "Haus Tschulli",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "talk",
+          "trigger": "[Spieler streichelt deinen Hund]",
+          "conditions": {
+            "flag:friendlyToBozzi": true
+          }
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "talk",
+          "trigger": "[Spieler ist grob zu deinem Hund]",
+          "conditions": {
+            "flag:unfriendlyToBozzi": true
+          }
         }
+
       ]
     },
     {
@@ -179,10 +204,10 @@
       "image": "images/bozzi.png",
       "visible": false,
       "revealed": false,
-      "speed": 20,
+      "speed": 25,
       "actions": [
         {
-          "onSignal": "BozziLead",
+          "onSignal": "bozziLead",
           "invokeAction": "leadAlong",
           "path": "BonePath",
           "notification": "Der Hund möchte dir etwas zeigen!",
@@ -257,6 +282,7 @@
       "image": "images/tschulli.png",
       "visible": false,
       "revealed": false,
+      "speed": 10,
       "actions": [
         {
           "onHotspot": "Haus Tschulli",
@@ -389,7 +415,7 @@
         "lat": 48.08465098939792,
         "lng": 16.278219512071608
       },
-      "visible": true
+      "visible": false
     }
   ],
   "items": [
@@ -458,6 +484,8 @@
     }
   ],
   "flags": {
+    "friendlyToBozzi": false,
+    "unfriendlyToBozzi": false,
     "knowsKrollsAddress": false,
     "knatterbachAtPolice": false
   }

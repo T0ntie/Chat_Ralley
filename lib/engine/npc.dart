@@ -1,7 +1,7 @@
 import '../actions/npc_action.dart';
 import '../engine/game_element.dart';
 import '../engine/game_engine.dart';
-import '../engine/moving_behavior.dart';
+import '../engine/moving_controller.dart';
 import '../engine/prompt.dart';
 import '../engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
@@ -9,7 +9,7 @@ import 'conversation.dart';
 
 enum NPCIcon { unknown, identified, nearby, unknownNearby }
 
-class Npc extends GameElement {
+class Npc extends GameElement implements ProximityAware{
   final Prompt prompt;
   final String? iconAsset;
 
@@ -25,11 +25,11 @@ class Npc extends GameElement {
     required super.name,
     required super.imageAsset,
     required this.prompt,
-    required super.position, //fixme
+    required super.position,
     required this.actions,
     required super.isVisible,
     required super.isRevealed,
-    required speed, //in km/h /fixme
+    required speed, //in km/h
     required this.iconAsset,
   }){
     movementController = NPCMovementController(
@@ -105,7 +105,7 @@ class Npc extends GameElement {
     await currentConversation.finishConversation();
   }
 
-  void talk(String repsondTo) async {
+  Future <void> talk(String repsondTo) async {
     hasSomethingToSay = true;
     currentConversation.addTriggerMessage(repsondTo);
   }
@@ -131,9 +131,11 @@ class Npc extends GameElement {
     return movementController.currentPosition;
   }
 
+/*
   void checkProximityToPlayer() {
     movementController.checkProximityToPlayer();
   }
+*/
 
   NPCIcon get icon {
     if (isVisible) {
@@ -156,9 +158,8 @@ class Npc extends GameElement {
 
   bool get isInCommunicationDistance => movementController.isInCommunicationDistance;
 
-/*
-  void updatePlayerPosition(LatLng playerPosition) async {
-    movementController.updatePlayerPosition(playerPosition);
+  @override
+  void updateProximity(LatLng playerPosition) {
+    movementController.updatePlayerProximity();
   }
-*/
 }

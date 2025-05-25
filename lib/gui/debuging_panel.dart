@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../actions/npc_action.dart';
+import '../engine/game_engine.dart';
 import '../engine/npc.dart';
 
 class ActionTestingPanel extends StatefulWidget {
@@ -18,10 +19,9 @@ class ActionTestingPanel extends StatefulWidget {
 
 class _ActionTestingPanelState extends State<ActionTestingPanel> {
   final DraggableScrollableController _controller =
-  DraggableScrollableController();
+      DraggableScrollableController();
   ScrollController? _lastScrollController;
   bool _isExpanded = false;
-
 
   void _shrinkPanel() {
     _controller.animateTo(
@@ -71,13 +71,14 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                   gradient: LinearGradient(
                     colors: [
                       Colors.blueGrey.shade700,
-                      Colors.blueGrey.shade900
+                      Colors.blueGrey.shade900,
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(16)),
+                    top: Radius.circular(16),
+                  ),
                   boxShadow: const [
                     BoxShadow(
                       color: Colors.black38,
@@ -87,7 +88,9 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                   ],
                 ),
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 8),
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 child: ListView(
                   controller: scrollController,
                   children: [
@@ -132,39 +135,48 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                           ),
                           iconColor: Colors.white,
                           collapsedIconColor: Colors.white70,
-                          children: actions
-                              .asMap()
-                              .entries
-                              .map((actionEntry) {
-                            final index = actionEntry.key;
-                            final (npc, action) = actionEntry.value;
+                          children:
+                              actions.asMap().entries.map((actionEntry) {
+                                final index = actionEntry.key;
+                                final (npc, action) = actionEntry.value;
 
-                            return Container(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withAlpha((0.08 + (index.isEven ? 0.0 : 0.05) * 255).toInt()),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: ListTile(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                title: Text(
-                                  "${npc.name} → ${action.runtimeType}",
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                                subtitle: Text(
-                                  "Trigger-Wert: ${action.trigger.value}",
-                                  style: const TextStyle(
-                                      color: Colors.white70, fontSize: 12),
-                                ),
-                                trailing: const Icon(
-                                    Icons.play_arrow, color: Colors.white70),
-                                onTap: () async => await action.invoke(npc),
-                              ),
-                            );
-                          }).toList(),
+                                return Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 4,
+                                    horizontal: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withAlpha(
+                                      (0.08 + (index.isEven ? 0.0 : 0.05) * 255)
+                                          .toInt(),
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: ListTile(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    title: Text(
+                                      "${npc.name} → ${action.runtimeType}",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      "Trigger-Wert: ${action.trigger.value}",
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    trailing: const Icon(
+                                      Icons.play_arrow,
+                                      color: Colors.white70,
+                                    ),
+                                    onTap: () async => await action.invoke(npc),
+                                  ),
+                                );
+                              }).toList(),
                         ),
                       );
                     }),
@@ -184,30 +196,42 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
 
                       return Container(
                         margin: const EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 4),
+                          vertical: 2,
+                          horizontal: 4,
+                        ),
                         padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 12),
+                          vertical: 8,
+                          horizontal: 12,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white.withAlpha((0.05 * 255).toInt()),
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              flagName,
-                              style: const TextStyle(
-                                  fontSize: 16, color: Colors.white),
-                            ),
-                            Text(
-                              flagValue ? "true" : "false",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: flagValue ? Colors.green : Colors.red,
-                                fontWeight: FontWeight.bold,
+                        child: GestureDetector(
+                          onTap: () {
+                            // Handle Tap
+                            GameEngine().setFlag(flagName, !flagValue);
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                flagName,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                          ],
+                              Text(
+                                flagValue ? "true" : "false",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: flagValue ? Colors.green : Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     }),

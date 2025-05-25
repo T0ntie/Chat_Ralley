@@ -27,3 +27,7 @@ class GameElement {
     isVisible = true;
   }
 }
+
+abstract class ProximityAware {
+  void updateProximity(LatLng playerPosition);
+}

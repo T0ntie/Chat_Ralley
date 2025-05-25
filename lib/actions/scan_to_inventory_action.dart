@@ -24,8 +24,6 @@ class ScanToInventoryAction extends NpcAction {
       throw Exception("Item '$itemName nicht gefunden.");
     }
 
-    print ("itemname: ${item.name}"); //fixme funktioniert nur genau einmal, muss wiederholbar werden
-
     dispatchUIIntent(
       OpenScanDialogIntent(
         title: "${npc.name} scharrt im Boden!",

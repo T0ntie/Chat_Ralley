@@ -198,7 +198,7 @@ void main() {
       'onInit', 'onSignal', 'onInteraction', 'onHotspot', 'onApproach',
       'invokeAction', 'distance', 'notification', 'hotspot', 'trigger',
       'conditions', 'defer', 'directive', 'promptTag', 'path',
-      'item', 'onMessageCount'
+      'item', 'onMessageCount', 'iconAsset'
     };
 
     final invalidKeys = <String>[]; // <-- HIER wird sie deklariert
