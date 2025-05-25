@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:storytrail/gui/game_screen.dart';
-import '../gui/action_observer.dart';
 import '../gui/credits_screen.dart';
 import '../gui/trail_selection.dart';
 import '../services/gpt_utilities.dart';
@@ -187,7 +186,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       navigatorKey: navigatorKey,
-      navigatorObservers: [routeObserver, ActionObserver()],
+      navigatorObservers: [routeObserver],
       title: MyApp.title,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: ResourceColors.seed),
