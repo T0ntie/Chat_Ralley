@@ -24,7 +24,7 @@ class GameEngine {
 
   GameEngine._internal();
 
-  static const double conversationDistance = 50.0;
+  static const double conversationDistance = 5.0;
 
   bool isGPSSimulating = false;
   LatLng? _lastSimulatedPosition;

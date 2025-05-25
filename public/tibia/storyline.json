@@ -10,12 +10,12 @@
       "prompt": "knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
       "visible": true,
-      "speed": 150,
+      "speed": 5,
       "actions": [
         {
           "onInit": null,
           "invokeAction": "spawn",
-          "distance": 100,
+          "distance": 150,
           "notification": "Jemand kommt auf dich zu"
         },
         {
@@ -215,7 +215,7 @@
         {
           "onSignal": "tailWag",
           "invokeAction": "notify",
-          "notification": "Der Hund wackelt mit dem Schwanz"
+          "notification": "Der Hund wedelt mit dem Schwanz"
         },
         {
           "onSignal": "tailTuck",
@@ -371,7 +371,7 @@
       "name": "Haus Kroll",
       "position": "HausKrollPosition",
       "image": "images/hauskroll.png",
-      "radius": 20,
+      "radius": 30,
       "visible": false,
       "revealed": false
     },
