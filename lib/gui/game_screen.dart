@@ -16,6 +16,7 @@ import 'package:storytrail/gui/notification_services.dart';
 import 'package:storytrail/gui/open_qr_scan_dialog_intent.dart';
 import 'package:storytrail/gui/side_panel.dart';
 import 'package:storytrail/services/compass_service.dart';
+import 'package:storytrail/services/location_service.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key, required this.title, required this.trailId, this.onFatalError,});
@@ -33,7 +34,7 @@ class GameScreenState extends State<GameScreen> {
   final _frameRate = Duration(milliseconds: 33);
 
   bool _gameInitialized = false;
-
+  bool _locationServiceInitialized = false;
   bool _initializationCompleted = false;
 
   double _currentHeading = 0.0;
@@ -108,6 +109,22 @@ class GameScreenState extends State<GameScreen> {
     });
   }
 
+  Future<void> _initializeLocationStream() async {
+    await LocationService.initialize();
+    _positionSubscription =
+        LocationService.getPositionStream().listen((Position position,) {
+          if (!_isSimulatingLocation) {
+            GameEngine().playerPosition = LatLng(
+              position.latitude,
+              position.longitude,
+            );
+          }
+          _locationServiceInitialized = true;
+          _checkIfInitializationCompleted();
+        });
+  }
+
+
   Future<void> _initializeCompassStream() async {
     try {
       CompassService.initialize();
@@ -147,6 +164,7 @@ class GameScreenState extends State<GameScreen> {
   Future<void> _initializeGameUI() async {
     try {
       await Future.wait([
+        _initializeLocationStream(),
         _initializeCompassStream(),
       ]);
     } catch (e) {
