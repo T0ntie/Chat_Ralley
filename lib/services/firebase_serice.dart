@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 import 'dart:convert';
@@ -14,9 +15,28 @@ class FirebaseHosting {
 
     return CachedNetworkImage(
       imageUrl: fullUrl,
-      placeholder: (context, _) => const Center(child: CircularProgressIndicator()),
-      errorWidget: (context, _, __) => const Icon(Icons.broken_image, color: Colors.white70),
+      placeholder:
+          (context, _) => const Center(child: CircularProgressIndicator()),
+      errorWidget:
+          (context, _, __) =>
+              const Icon(Icons.broken_image, color: Colors.white70),
       fit: fit,
+    );
+  }
+
+  static Widget loadSvgWidget(
+    String url, {
+    ColorFilter? colorFilter,
+    double width = 24,
+    double height = 24,
+  }) {
+    final fullUrl = '$FireBaseHostingURI$url';
+    return SvgPicture.network(
+      fullUrl,
+      colorFilter: colorFilter,
+      placeholderBuilder: (context) => const CircularProgressIndicator(),
+      width: width,
+      height: height,
     );
   }
 

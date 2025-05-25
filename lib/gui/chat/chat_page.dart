@@ -152,11 +152,13 @@ class _ChatPageState extends State<ChatPage> {
               opacity: 0.2,
               child:
                   isRadio
-                      ? ResourceImages.walkieTakie(context)
-                      : /*Image.asset(
-                        'assets/story/${widget.npc.displayImageAsset}',
-                        fit: BoxFit.cover,*/
-                        FirebaseHosting.loadImageWidget(GameEngine().npcImagePath(widget.npc), fit: BoxFit.cover,
+                      ? Image.asset(
+                        'assets/story/images/walkie-talkie.png',
+                        fit: BoxFit.cover,
+                      )
+                      : FirebaseHosting.loadImageWidget(
+                        GameEngine().npcImagePath(widget.npc),
+                        fit: BoxFit.cover,
                       ),
             ),
           ),

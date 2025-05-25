@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:storytrail/services/firebase_serice.dart';
 import '../app_resources.dart';
 import '../engine/game_engine.dart';
 import '../engine/item.dart';
@@ -44,14 +45,6 @@ class _ItemButtonState extends State<ItemButton>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.item.isNew && mounted) {
         _controller.repeat(reverse: true);
-        /*Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) {
-            setState(() {
-              _controller.stop();
-              _showGlow = false;
-            });
-          }
-        });*/
       }
     });
   }
@@ -83,35 +76,37 @@ class _ItemButtonState extends State<ItemButton>
           child: Container(
             margin: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: (widget.item.isNew && !_showGlow) ? ResourceColors.newItemBackground(context): Colors.transparent,
+              color: (widget.item.isNew && !_showGlow) ? ResourceColors
+                  .newItemBackground(context) : Colors.transparent,
               shape: BoxShape.circle, // <<< Macht die Glow-Fläche rund
               boxShadow:
-                  (widget.item.isNew && _showGlow)
-                      ? [
-                        BoxShadow(
-                          color: _glowAnimation.value ?? Colors.transparent,
-                          blurRadius: 8,
-                          spreadRadius: 2,
-                        ),
-                      ]
-                      : [],
+              (widget.item.isNew && _showGlow)
+                  ? [
+                BoxShadow(
+                  color: _glowAnimation.value ?? Colors.transparent,
+                  blurRadius: 8,
+                  spreadRadius: 2,
+                ),
+              ]
+                  : [],
             ),
             child: ClipOval(
               // <<< Damit auch das Icon nicht überlappt
               child: IconButton(
-                icon: SvgPicture.asset( //fixme icon classe die svg und png kann
-                  'assets/story/${widget.item.iconAsset}',
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  ),
-                  width: 24,
-                  height: 24,
-                ),
-                onPressed: _onPressed,
+                icon: FirebaseHosting.loadSvgWidget(
+                    GameEngine().itemIconPath(widget.item),
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                width: 24,
+                height: 24,
               ),
+              onPressed: _onPressed,
             ),
           ),
+        )
+        ,
         );
       },
     );

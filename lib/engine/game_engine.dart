@@ -137,6 +137,10 @@ class GameEngine {
     return "$trailId/${npc.displayImageAsset}";
   }
 
+  String itemIconPath(Item item){
+    return "$trailId/${item.iconAsset}";
+  }
+
   String creditsImagePath() {
     return "$trailId/${storyLine?.creditsImage}";
   }

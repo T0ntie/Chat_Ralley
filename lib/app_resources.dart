@@ -85,11 +85,6 @@ class ResourceSizes {
 }
 
 
-class ResourceImages {
-  static Image walkieTakie(BuildContext context) =>
-      Image.asset('assets/story/images/walkie-talkie.png', fit: BoxFit.cover);
-}
-
 Icon buildIcon(
   IconData iconData, {
   Color color = Colors.black,
