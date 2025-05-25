@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../app_resources.dart';
 import '../../engine/conversation.dart';
 
 class MessageBubble extends StatelessWidget {
@@ -199,9 +198,7 @@ class SendingOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned.fill(
       child: Container(
-        color: ResourceColors.messageDialogBackground(
-          context,
-        ).withAlpha((0.6 * 255).toInt()),
+        color: Theme.of(context).colorScheme.surface.withAlpha((0.6 * 255).toInt()),
         child: const Center(child: CircularProgressIndicator()),
       ),
     );

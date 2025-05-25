@@ -32,46 +32,15 @@ class ResourceColors {
   static Color mapHeading(BuildContext context) =>
       Theme.of(context).colorScheme.onSurface;
 
-  static Color notification(BuildContext context) =>
-      Theme.of(context).colorScheme.onTertiaryContainer;
-
-  static Color notificationBackground(BuildContext context) =>
-      Theme.of(context).colorScheme.secondaryContainer;
-
-  static Color notificationMessage(BuildContext context) =>
-      Theme.of(context).colorScheme.onPrimaryContainer;
-
-  static Color notificationTitle(BuildContext context) =>
-      Theme.of(context).colorScheme.onPrimaryFixedVariant;
-
-  //chatpage
-  static Color messageFieldBackground(BuildContext context) =>
-      Theme.of(context).colorScheme.surface;
-
-  static Color userChatBubble(BuildContext context) =>
-      Theme.of(context).colorScheme.primaryContainer;
-
-  static Color assistantChatBubble(BuildContext context) =>
-      Theme.of(context).colorScheme.tertiaryContainer;
-
-  static Color messageSendButton(BuildContext context) =>
-      Theme.of(context).colorScheme.primary;
-
-  static Color messageDialogBackground(BuildContext context) =>
-      Theme.of(context).colorScheme.surface;
-
-  //snackbar
+//snackbar
   static Color errorSnack(BuildContext context) =>
       Theme.of(context).colorScheme.error;
 
   static Color successSnack(BuildContext context) =>
       Color(0x680a9213); //Theme.of(context).colorScheme.primaryContainer;
+
   static Color errorMessage(BuildContext context) =>
       Theme.of(context).colorScheme.error;
-
-  //ActionTestingPanel
-  static Color tile(BuildContext context) =>
-      Theme.of(context).colorScheme.primaryContainer;
 
   //newIconGlow
   static Color glow = Color(0xFFFFB300);
@@ -93,13 +62,6 @@ Icon buildIcon(
   return Icon(iconData, color: color, size: size);
 }
 
-/*
-
-SvgPicture buildSVGIcon({required String assetName, double width = 24.0, double height = 24.0}) {
-  return SvgPicture.asset(assetName, width: width, height: height);
-}
-
-*/
 class AppIcons {
   static Icon npc(BuildContext context, NPCIcon type) {
     switch (type) {
@@ -159,19 +121,4 @@ class AppIcons {
     size: ResourceSizes.playerPositionSize,
   );
 
-  static Icon notification(BuildContext context) => buildIcon(
-    ResourceIcons.notification,
-    color: ResourceColors.notification(context),
-    size: 40,
-  );
-
-  static Icon error(BuildContext context) => buildIcon(
-    ResourceIcons.error,
-    color: ResourceColors.errorMessage(context),
-    size: 64,
-  );
-
-  static Icon retry(BuildContext context) => buildIcon(ResourceIcons.retry);
-
-  //  static SvgPicture walkie(BuildContext context) => buildSVGIcon(assetName: "assets/story/icons/walkie-talkie.svg");
 }

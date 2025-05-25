@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:storytrail/services/firebase_serice.dart';
 import '../app_resources.dart';
 import '../engine/game_engine.dart';

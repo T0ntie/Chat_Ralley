@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:storytrail/services/firebase_serice.dart';
 
 class Prompt {

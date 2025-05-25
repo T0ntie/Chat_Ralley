@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:storytrail/services/firebase_serice.dart';
-import '../../app_resources.dart';
 import '../../engine/game_engine.dart';
 import '../../gui/chat/chat_gui_elements.dart';
 import '../../gui/notification_services.dart';

@@ -6,8 +6,6 @@ import 'package:latlong2/latlong.dart';
 import '../engine/game_engine.dart';
 
 import 'npc.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'dart:convert';
 
 class StoryLine {
   final String trailId;
