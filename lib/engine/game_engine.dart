@@ -35,8 +35,9 @@ class GameEngine {
   PlayerMovementController? get playerMovementController =>
       _playerMovementController;
 
-  String? trailId; //fixme
+  String? trailId;
   List<Trail> trailsList = [];
+
 
   StoryLine? storyLine;
 
@@ -134,6 +135,14 @@ class GameEngine {
 
   String npcImagePath(Npc npc) {
     return "$trailId/${npc.displayImageAsset}";
+  }
+
+  String creditsImagePath() {
+    return "$trailId/${storyLine?.creditsImage}";
+  }
+
+  String creditsTextPath() {
+    return "$trailId/${storyLine?.creditsText}";
   }
 
   String hotspotImagePath(Hotspot hotspot) {

@@ -32,12 +32,8 @@ class GameScreen extends StatefulWidget {
 class GameScreenState extends State<GameScreen> {
   final _frameRate = Duration(milliseconds: 33);
 
-  //final String title = "StoryTrail";
-  //LatLng _playerPosition = LatLng(51.5074, -0.1278); // Beispiel für London
-  //bool _locationServiceInitialized = false;
   bool _gameInitialized = false;
 
-  //String? _initializationError;
   bool _initializationCompleted = false;
 
   double _currentHeading = 0.0;
@@ -78,7 +74,12 @@ class GameScreenState extends State<GameScreen> {
   }
 
   Future<void> _initializeGame() async {
-    await GameEngine().loadSelectedTrail("tibia"); //fixme
+    try {
+      await GameEngine().loadSelectedTrail(widget.trailId);
+    } catch(e) {
+      widget.onFatalError?.call('❌ Laden des StoryTrails fehlgeschlagen.' );
+      return;
+    }
     _gameInitialized = true;
     _checkIfInitializationCompleted();
     SnackBarService.showSuccessSnackBar(context, "✔️ Alle Spieldaten geladen");

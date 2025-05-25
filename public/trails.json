@@ -3,7 +3,7 @@
     {
       "trailId": "tibia",
       "label": "Der Fall Tibia",
-      "coverImage": "tibia.png",
+      "coverImage": "tibia/images/cover.png",
       "baseLocation": {
         "lat": 48.08654208326306,
         "lng": 16.287920962933388
@@ -13,7 +13,7 @@
     {
       "trailId": "drno",
       "label": "Dr Unexist",
-      "coverImage": "drno.png",
+      "coverImage": "drno/cover.png",
       "baseLocation": {
         "lat": 48.02654208326306,
         "lng": 16.187920962933388

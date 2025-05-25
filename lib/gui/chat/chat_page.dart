@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storytrail/services/firebase_serice.dart';
 import '../../app_resources.dart';
 import '../../engine/game_engine.dart';
 import '../../gui/chat/chat_gui_elements.dart';
@@ -20,7 +21,6 @@ class ChatPage extends StatefulWidget {
     super.key,
     required this.npc,
     this.medium = Medium.chat,
-    //this.onDispose,
     this.floatingActionButton,
     this.externalController,
     this.chatPageController,
@@ -153,9 +153,10 @@ class _ChatPageState extends State<ChatPage> {
               child:
                   isRadio
                       ? ResourceImages.walkieTakie(context)
-                      : Image.asset(
+                      : /*Image.asset(
                         'assets/story/${widget.npc.displayImageAsset}',
-                        fit: BoxFit.cover,
+                        fit: BoxFit.cover,*/
+                        FirebaseHosting.loadImageWidget(GameEngine().npcImagePath(widget.npc), fit: BoxFit.cover,
                       ),
             ),
           ),

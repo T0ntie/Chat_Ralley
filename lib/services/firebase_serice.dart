@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:typed_data';
@@ -7,49 +8,16 @@ import 'dart:convert';
 
 class FirebaseHosting {
   static const FireBaseHostingURI = 'https://storytrail-e3bf7.web.app/';
-  static final Map<String, Uint8List> _imageCache = {};
 
-  static Widget loadImageWidget(String url, {BoxFit fit = BoxFit.contain}) {
-    return FutureBuilder<Uint8List>(
-      future: loadImageBytes(url),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError || !snapshot.hasData) {
-          return const Icon(Icons.broken_image, color: Colors.white70);
-        } else {
-          return Image.memory(
-            snapshot.data!,
-            fit: fit,
-          );
-        }
-      },
+  static Widget loadImageWidget(String url, {BoxFit fit = BoxFit.cover}) {
+    final fullUrl = '$FireBaseHostingURI$url';
+
+    return CachedNetworkImage(
+      imageUrl: fullUrl,
+      placeholder: (context, _) => const Center(child: CircularProgressIndicator()),
+      errorWidget: (context, _, __) => const Icon(Icons.broken_image, color: Colors.white70),
+      fit: fit,
     );
-  }
-
-
-  static Future<Uint8List> loadImageBytes(String url) async {
-    final String completeUrl = '$FireBaseHostingURI$url';
-
-    if (_imageCache.containsKey(completeUrl)) {
-      return _imageCache[completeUrl]!;
-    }
-
-    try {
-      final response = await http.get(Uri.parse(completeUrl));
-      if (response.statusCode == 200) {
-        _imageCache[completeUrl] = response.bodyBytes;
-        return response.bodyBytes;
-      } else {
-        throw Exception(
-          'Fehler beim Laden [$completeUrl]: HTTP ${response.statusCode}',
-        );
-      }
-
-    } catch (e, stack) {
-      print('❌ Fehler beim Laden von Bilddaten aus $completeUrl:\n$e\n$stack');
-      rethrow;
-    }
   }
 
   static Future<String> loadStringFromUrl(String url) async {

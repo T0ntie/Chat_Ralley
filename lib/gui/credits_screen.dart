@@ -1,10 +1,13 @@
-
 import 'package:flutter/material.dart';
+import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/services/firebase_serice.dart';
 import '../engine/story_journal.dart';
 import '../services/gpt_utilities.dart';
 
 class CreditsScreen extends StatefulWidget {
-  const CreditsScreen({super.key});
+  const CreditsScreen({super.key, this.onFatalError});
+
+  final void Function(String error)? onFatalError;
 
   @override
   State<CreditsScreen> createState() => _CreditsScreenState();
@@ -14,14 +17,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
   final ScrollController _scrollController = ScrollController();
   final double pixelsPerSecond = 50;
 
-  String _story = "";
-  final String _creditsText = '''
-Herzliche Gratulation !!
-
-Du hast den Fall gelöst den Knochen gefunden und Knöcherich Beißbert ist wieder hergestellt!
-
-Hier folgt deine Geschichte: 
-''';
+  String _creditsText ="Game Over";
 
   @override
   void initState() {
@@ -30,14 +26,37 @@ Hier folgt deine Geschichte:
     _loadStoryAndStartScrolling();
   }
 
-  Future<void> _loadStoryAndStartScrolling() async{
-    final story = await GptUtilities.buildCreditsStory(StoryJournal().toStory());
+  Future<void> _loadStoryAndStartScrolling() async {
+    print("🟡 Lade-Credits gestartet");
+
+    String credits = "";
+    try {
+      credits = await FirebaseHosting.loadStringFromUrl(GameEngine().creditsTextPath());
+      print("✅ Credits-Text geladen");
+    } catch (e) {
+      widget.onFatalError?.call("Failed to load credits from ${GameEngine().creditsTextPath()}: $e");
+    }
+
+    try {
+      credits +=
+          '\n' + await GptUtilities.buildCreditsStory(StoryJournal().toStory());
+      print("✅ Story generiert");
+    } catch (e) {
+      widget.onFatalError?.call("Failed to build credits story: $e");
+    }
+
     if (!mounted) return;
     setState(() {
-      _story = story;
+      _creditsText = credits;
+      print("🎯 Credits gesetzt, Textlänge: ${credits.length}");
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _startScrolling());
+    //WidgetsBinding.instance.addPostFrameCallback((_) => _startScrolling());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      print("▶️ Starte Scrollen...");
+      _startScrolling();
+    });
   }
 
   void _startScrolling() {
@@ -52,15 +71,13 @@ Hier folgt deine Geschichte:
     );
 
     if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        scrollableHeight,
-        duration: duration,
-        curve: Curves.linear,
-      ).then((_) {
-        if (mounted) {
-          Navigator.of(context).pop();
-        }
-      });
+      _scrollController
+          .animateTo(scrollableHeight, duration: duration, curve: Curves.linear)
+          .then((_) {
+            if (mounted) {
+              Navigator.of(context).pop();
+            }
+          });
     }
   }
 
@@ -78,7 +95,8 @@ Hier folgt deine Geschichte:
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset('assets/logo/credits.png', fit: BoxFit.cover),
+          //Image.asset('assets/logo/credits.png', fit: BoxFit.cover),
+          FirebaseHosting.loadImageWidget(GameEngine().creditsImagePath(), fit: BoxFit.cover),
           Container(color: Colors.black.withAlpha((0.5 * 255).toInt())),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -89,7 +107,7 @@ Hier folgt deine Geschichte:
                   children: [
                     SizedBox(height: screenHeight),
                     Text(
-                      "$_creditsText $_story",
+                      _creditsText,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,

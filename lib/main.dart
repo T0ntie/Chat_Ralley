@@ -26,7 +26,6 @@ void main() async {
     rethrow;
   }
 
-
   if (kDebugMode) {
     // Wenn wir im Debug-Modus sind, aktiviere App Check mit dem Debug Provider.
     // Dies generiert das Token im Logcat/Konsole, das du registrieren musst.
@@ -85,9 +84,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _initializeApp() async {
     try {
-      await Future.wait([
-        LocationService.initialize(),
-      ]);
+      await Future.wait([LocationService.initialize()]);
       Position pos = await Geolocator.getCurrentPosition();
       GameEngine().playerPosition = LatLng(pos.latitude, pos.longitude);
 
@@ -115,7 +112,6 @@ class _MyAppState extends State<MyApp> {
         break;
       case AppScreen.trails:
         screen = TrailSelectionScreen(
-
           onTrailSelected: (String trailId) {
             setState(() {
               _selectedTrailId = trailId;
@@ -123,49 +119,68 @@ class _MyAppState extends State<MyApp> {
             });
           },
           availableTrails: GameEngine().trailsList,
-
         );
         break;
       case AppScreen.game:
-        screen = GameScreen(key: homePageKey,
-            title: MyApp.title,
-            trailId: _selectedTrailId!,
-            onFatalError: (error) {
-              setState(() {
-                _errorMessage = error;
-                _currentScreen = AppScreen.error;
-              });
+        screen = GameScreen(
+          key: homePageKey,
+          title: MyApp.title,
+          trailId: _selectedTrailId!,
+          onFatalError: (error) {
+            setState(() {
+              _errorMessage = error;
+              _currentScreen = AppScreen.error;
             });
-            break;
-            case AppScreen.credits:
-            screen = CreditsScreen();
+          },
+        );
+        break;
+      case AppScreen.credits:
+        screen = CreditsScreen(
+          onFatalError: (error) {
+            setState(() {
+              _errorMessage = error;
+              _currentScreen = AppScreen.error;
+            });
+          },
+        );
         break;
       case AppScreen.error:
         screen = Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.error, color: Colors.red, size: 64),
-                const SizedBox(height: 16),
-                Text(_errorMessage ?? 'Unbekannter Fehler'),
-                const SizedBox(height: 24),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _currentScreen = AppScreen.loading;
-                      _errorMessage = null;
-                    });
-                    _initializeApp();
-                  },
-                  icon: Icon(Icons.refresh),
-                  label: Text('Erneut versuchen'),
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Hintergrundbild
+              Image.asset('assets/images/error.png', fit: BoxFit.cover),
+
+              // UI im Vordergrund
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error, color: Colors.red, size: 64),
+                    const SizedBox(height: 16),
+                    Text(
+                      _errorMessage ?? 'Unbekannter Fehler',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _currentScreen = AppScreen.loading;
+                          _errorMessage = null;
+                        });
+                        _initializeApp();
+                      },
+                      icon: Icon(Icons.refresh),
+                      label: Text('Erneut versuchen'),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
-        break;
     }
 
     return MaterialApp(
@@ -179,4 +194,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-

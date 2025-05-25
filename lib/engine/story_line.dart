@@ -12,6 +12,8 @@ import 'dart:convert';
 class StoryLine {
   final String trailId;
   final String title;
+  final String creditsText;
+  final String creditsImage;
   final List<Npc> npcs;
   final List<Hotspot> hotspotsList;
   final Map<String, Hotspot> hotspotMap;
@@ -26,6 +28,8 @@ class StoryLine {
   StoryLine({
     required this.trailId,
     required this.title,
+    required this.creditsText,
+    required this.creditsImage,
     required this.npcs,
     required this.hotspotsList,
     required this.flags,
@@ -128,6 +132,8 @@ class StoryLine {
       return StoryLine(
         trailId: json['trailId'],
         title: json['title'],
+        creditsText: json['creditsText'],
+        creditsImage: json['creditsImage'],
         npcs: npcs,
         hotspotsList: hotspots,
         flags: flags,

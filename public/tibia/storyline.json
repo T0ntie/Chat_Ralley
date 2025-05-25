@@ -1,6 +1,8 @@
 {
   "trailId": "tibia",
   "title": "Der Fall der verschwundenen Tibia",
+  "creditsText": "credits.txt",
+  "creditsImage": "images/credits.png",
   "npcs": [
     {
       "name": "Kommissar Knatterbach",

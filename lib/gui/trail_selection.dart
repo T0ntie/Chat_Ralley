@@ -41,10 +41,9 @@ class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
       children: [
         selectedTrail != null ?
         FirebaseHosting.loadImageWidget(
-          "images/${selectedTrail!.coverImage}",
+          "${selectedTrail!.coverImage}",
           fit: BoxFit.fitWidth,
         ): Image.asset("assets/images/cover.png", fit: BoxFit.fitWidth),
-        //Image.asset('assets/logo/splash.png', fit: BoxFit.fitWidth),
         Positioned(
           top: 60,
           left: 25,
@@ -77,7 +76,6 @@ class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
           child: SingleChildScrollView(
             child: Material(
               color: Colors.transparent,
-              // damit dein dunkler Hintergrund durchscheint
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -85,8 +83,7 @@ class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
                   Padding(
                     padding: const EdgeInsets.all(32.0),
                     child: Text(
-                      //'Der Fall der verschwundenen Tibia',
-                      selectedTrail?.title ?? 'Kein Trail verfügbar',
+                      selectedTrail?.title ?? 'Kein StoryTrail verfügbar',
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Times new Roman',
