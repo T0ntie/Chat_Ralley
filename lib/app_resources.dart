@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class ResourceIcons {
   static const IconData unknown = Icons.not_listed_location;
   static const IconData identified = Icons.location_on;
-  static const IconData hotspot = Icons.flag;
+  static const IconData hotspot = Icons.tour;
   static const IconData chatBubble = Icons.feedback;
   static const IconData mapHeadingOn = Icons.explore;
   static const IconData mapHeadingOff = Icons.explore_off;
@@ -49,7 +49,7 @@ class ResourceColors {
 
 class ResourceSizes {
   static const double npcIconSize = 40.0;
-  static const double hotspotSize = 30.0;
+  static const double hotspotSize = 50.0;
   static const double playerPositionSize = 40.0;
 }
 

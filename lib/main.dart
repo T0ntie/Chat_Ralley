@@ -59,6 +59,7 @@ void main() async {
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<GameScreenState> homePageKey = GlobalKey<GameScreenState>();
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>(); //fixme ist vielleicht eine Sackgasse
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -186,7 +187,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       navigatorKey: navigatorKey,
-      navigatorObservers: [ActionObserver()],
+      navigatorObservers: [routeObserver, ActionObserver()],
       title: MyApp.title,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: ResourceColors.seed),

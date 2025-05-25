@@ -87,6 +87,7 @@ flutter:
     #- .env
     - assets/logo/
     - assets/images/
+    - assets/icons/
     - assets/story/
     - assets/story/prompts/
     - assets/story/images/

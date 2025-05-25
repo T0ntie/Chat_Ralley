@@ -172,7 +172,7 @@ class Conversation {
     if (_messages.isNotEmpty) {
       ChatMessage cm = _messages.last;
       if(_messages.length == 1 && cm.chatRole == ChatRole.system){
-        print("Prompt-message detected:");
+        //print("Prompt-message detected:");
         StoryJournal().logPrompt(npc.name, npc.prompt.getCreditsPrompt());
       }
 

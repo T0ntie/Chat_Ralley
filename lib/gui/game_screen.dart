@@ -15,8 +15,11 @@ import 'package:storytrail/gui/item_button.dart';
 import 'package:storytrail/gui/notification_services.dart';
 import 'package:storytrail/gui/open_qr_scan_dialog_intent.dart';
 import 'package:storytrail/gui/side_panel.dart';
+import 'package:storytrail/gui/ui_intent.dart';
+import 'package:storytrail/main.dart';
 import 'package:storytrail/services/compass_service.dart';
 import 'package:storytrail/services/location_service.dart';
+import 'package:flutter/scheduler.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key, required this.title, required this.trailId, this.onFatalError,});
@@ -30,7 +33,7 @@ class GameScreen extends StatefulWidget {
   State<GameScreen> createState() => GameScreenState();
 }
 
-class GameScreenState extends State<GameScreen> {
+class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderStateMixin {
   final _frameRate = Duration(milliseconds: 33);
 
   bool _gameInitialized = false;
@@ -40,6 +43,9 @@ class GameScreenState extends State<GameScreen> {
   double _currentHeading = 0.0;
   DateTime _lastHeadingUpdateTime = DateTime.now();
   final MapController _mapController = MapController();
+  MapController get mapController => _mapController;
+
+
   double _currentMapRotation = 0.0;
   late final StreamSubscription<MapEvent> _mapControllerSubscription;
   late final StreamSubscription<double> _compassSubscription;
@@ -55,6 +61,10 @@ class GameScreenState extends State<GameScreen> {
   bool _debuggingVisible = false;
 
   bool showActionTestingPanel = false;
+
+  static GameScreenState? of(BuildContext context) { //fixme ist vielleicht eine Sackgasse
+    return context.findAncestorStateOfType<GameScreenState>();
+  }
 
   set _isSimulatingLocation(bool value) {
     GameEngine().isGPSSimulating = value;
@@ -186,8 +196,28 @@ class GameScreenState extends State<GameScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final route = ModalRoute.of(context);
+      if (route != null) {
+        routeObserver.subscribe(this, route);
+      }
+    });
     _initializeGameUI();
     _initializeGame();
+  }
+
+  Future<void> _handleDeferredGUIEvents() async {
+    await GameEngine().flushDeferredActions(context);
+    checkForNewItemsWithDelay();
+    UiIntentQueue().flush(this);
+  }
+
+
+  @override
+  void didPopNext() {
+    print("🔙 GameScreen wieder sichtbar → Trigger für UIIntents");
+    //UiIntentQueue().flush(context);
+    _handleDeferredGUIEvents();
   }
 
   Positioned buildMapOrientationModeButton() {
@@ -399,7 +429,7 @@ class GameScreenState extends State<GameScreen> {
                 OpenScanDialogIntent(
                   title: "Fund erfassen",
                   expectedItems: GameEngine().getScannableItems(),
-                ).call(context);
+                ).call(this);
               });
             },
 
@@ -431,6 +461,7 @@ class GameScreenState extends State<GameScreen> {
     _compassSubscription.cancel();
     _positionSubscription.cancel();
     _updateTimer.cancel();
+    routeObserver.unsubscribe(this);
     super.dispose();
   }
 }

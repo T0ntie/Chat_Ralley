@@ -1,6 +1,9 @@
+import 'package:storytrail/gui/show_hotspot_intent.dart';
+
 import '../engine/game_engine.dart';
 import '../engine/hotspot.dart';
 
+import '../gui/ui_intent.dart';
 import 'npc_action.dart';
 import '../engine/npc.dart';
 
@@ -16,7 +19,12 @@ class ShowHotspotAction extends NpcAction{
     Hotspot? spot = GameEngine().getHotspotByName(hotspotName);
     if (spot != null) {
       spot.isVisible = true;
+
+      dispatchUIIntent(ShowHotspotIntent(hotspot: spot));
+
     }
+
+
     return true;
   }
 

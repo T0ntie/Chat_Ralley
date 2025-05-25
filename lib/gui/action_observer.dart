@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../engine/game_engine.dart';
 import '../main.dart';
 
-class ActionObserver extends NavigatorObserver {
+class ActionObserver extends NavigatorObserver { //fixme dürfte jetzt obsolet sein
 
   static final ActionObserver _instance = ActionObserver._internal();
   ActionObserver._internal();
@@ -23,6 +23,7 @@ class ActionObserver extends NavigatorObserver {
     }
   }
 
+  /*
   @override
   void didPop(Route route, Route? previousRoute) {
     super.didPop(route, previousRoute);
@@ -39,4 +40,6 @@ class ActionObserver extends NavigatorObserver {
       });
     }
   }
+
+   */
 }

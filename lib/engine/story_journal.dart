@@ -24,13 +24,13 @@ class StoryJournal {
   void logMessage(Medium medium, ChatRole role, String npc, String message)
   {
     final entry = DialogJournalEntry(medium: medium, role: role, npc: npc, message: message);
-    print (" 🐱‍👤 Journal Entry : ${_shorten(entry.toStory())}");
+    //print (" 🐱‍👤 Journal Entry : ${_shorten(entry.toStory())}");
     _entries.add(entry);
   }
 
   void logAction(String action) {
     final entry = ActionJournalEntry(action: action);
-    print (" 🐱‍👤 Journal Entry : ${_shorten(entry.toStory())}");
+    //print (" 🐱‍👤 Journal Entry : ${_shorten(entry.toStory())}");
     _entries.add(entry);
   }
 

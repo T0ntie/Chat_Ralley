@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_svg/svg.dart';
 import '../app_resources.dart';
 import '../engine/game_engine.dart';
 import '../engine/npc.dart';
@@ -159,17 +160,27 @@ class GameMapWidget extends StatelessWidget {
               },
               child: Transform.rotate(
                 angle: _getRotationAngle(),
-                child: AppIcons.hotspot(context),
+                child: SvgPicture.asset(
+                  'assets/icons/flag.svg',
+                  width: 48,
+                  height: 48,
+                )//AppIcons.hotspot(context),
               ),
             ),
             const SizedBox(height: 4),
             if (hotspot.isRevealed)
-              Text(
-                hotspot.name,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: ResourceColors.npcName,
-                  fontWeight: FontWeight.bold,
+              SizedBox(
+                width: 60,
+                child: Text(
+                  hotspot.name,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: ResourceColors.npcName,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
           ],

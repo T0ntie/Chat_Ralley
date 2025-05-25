@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storytrail/gui/game_screen.dart';
 import '../engine/item.dart';
 import '../engine/story_journal.dart';
 import '../gui/item_qr_scan_dialog.dart';
@@ -22,9 +23,9 @@ class OpenScanDialogIntent extends UIIntent {
   }) : message = message ?? defaultMessage;
 
   @override
-  Future<void> call(BuildContext context) async {
+  Future<void> call(GameScreenState state) async {
     final result = await showDialog<String>(
-      context: context,
+      context: state.context,
       builder:
           (_) => ItemQRScanDialog(
             title: title,
@@ -32,7 +33,7 @@ class OpenScanDialogIntent extends UIIntent {
             expectedQrCodes: expectedItemNames,
           ),
     );
-    print("ShowDialog ist fertig. Result: $result");
+    //print("ShowDialog ist fertig. Result: $result");
 
     bool exists = expectedItems.any((item) => item.name == result);
 
@@ -45,7 +46,7 @@ class OpenScanDialogIntent extends UIIntent {
       StoryJournal().logAction(
         "Spieler hat folgenden Gegenstand gefunden: ${selectedItem.name}",
       );
-      print("homPage: ${homePageKey.currentState}");
+      //print("homPage: ${homePageKey.currentState}");
       homePageKey.currentState?.checkForNewItemsWithDelay();
     }
   }
