@@ -10,12 +10,12 @@
       "prompt": "knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
       "visible": true,
-      "speed": 5,
+      "speed": 15,
       "actions": [
         {
           "onInit": null,
           "invokeAction": "spawn",
-          "distance": 150,
+          "distance": 50,
           "notification": "Jemand kommt auf dich zu"
         },
         {

@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/engine/moving_behavior.dart';
-import 'package:hello_world/engine/moving_controller.dart';
+import 'package:storytrail/engine/moving_controller.dart';
 import 'package:latlong2/latlong.dart';
 
 void main() {

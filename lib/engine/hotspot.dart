@@ -1,3 +1,7 @@
+import 'dart:ui';
+
+import 'package:storytrail/engine/game_engine.dart';
+
 import '../engine/game_element.dart';
 import '../engine/story_line.dart';
 import 'package:latlong2/latlong.dart';

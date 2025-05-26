@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
+import 'package:storytrail/engine/game_element.dart';
 import 'package:storytrail/engine/trail.dart';
 import 'package:storytrail/services/firebase_serice.dart';
 import '../engine/item.dart';
@@ -24,7 +25,7 @@ class GameEngine {
 
   GameEngine._internal();
 
-  static const double conversationDistance = 5.0;
+  static const double conversationDistance = 20.0;
 
   bool isGPSSimulating = false;
   LatLng? _lastSimulatedPosition;

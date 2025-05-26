@@ -165,8 +165,7 @@ class GameMapWidget extends StatelessWidget {
                     builder:
                         (ctx) => InfoDialog(
                           title: hotspot.name,
-                          imageAssetPath:
-                              "assets/story/${hotspot.displayImageAsset}",
+                          imageUriPath: GameEngine().hotspotImagePath(hotspot),
                           distanceText:
                               "Entfernung: ${hotspot.currentDistance} Meter",
                           noteText: null,
@@ -174,32 +173,12 @@ class GameMapWidget extends StatelessWidget {
                         ),
                   );
                 },
-                child: AppIcons.hotspot(context),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => InfoDialog(
-                    title: hotspot.name,
-                    //imageAssetPath: "assets/story/${hotspot.displayImageAsset}",
-                    imageUriPath: GameEngine().hotspotImagePath(hotspot),
-                    distanceText: "Entfernung: ${hotspot.currentDistance} Meter",
-                    noteText: null,
-                    onPrimaryAction: null,),
-                );
-              },
-              child: Transform.rotate(
-                angle: _getRotationAngle(),
                 child: SvgPicture.asset(
                   'assets/icons/flag.svg',
                   width: 48,
                   height: 48,
                 )//AppIcons.hotspot(context),
               ),
-            ),
             const SizedBox(height: 4),
             if (hotspot.isRevealed)
               SizedBox(
@@ -217,6 +196,7 @@ class GameMapWidget extends StatelessWidget {
                 ),
               ),
           ],
+        ),
         ),
       );
     }).toList();

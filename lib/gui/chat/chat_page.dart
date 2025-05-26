@@ -150,9 +150,12 @@ class _ChatPageState extends State<ChatPage> {
                 opacity: 0.2,
                 child:
                     isRadio
-                        ? ResourceImages.walkieTakie(context)
-                        : Image.asset(
-                          'assets/story/${widget.npc.displayImageAsset}',
+                        ? Image.asset(
+                          'assets/story/images/walkie-talkie.png',
+                          fit: BoxFit.cover,
+                        )
+                        : FirebaseHosting.loadImageWidget(
+                          GameEngine().npcImagePath(widget.npc),
                           fit: BoxFit.cover,
                         ),
               ),
@@ -160,25 +163,14 @@ class _ChatPageState extends State<ChatPage> {
             Column(
               children: [
                 Expanded(
-                  child: NotificationListener<ScrollNotification>(
-                    onNotification: (notification) {
-                      if (notification is UserScrollNotification ||
-                          notification is ScrollStartNotification) {
-                        FocusScope.of(
-                          context,
-                        ).unfocus(); // Tastatur schließen beim Scroll
-                      }
-                      return false; // Event nicht stoppen
+                  child: ListView.builder(
+                    reverse: true,
+                    padding: EdgeInsets.all(8),
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      final reversedIndex = messages.length - 1 - index;
+                      return MessageBubble(message: messages[reversedIndex]);
                     },
-                    child: ListView.builder(
-                      reverse: true,
-                      padding: EdgeInsets.all(8),
-                      itemCount: messages.length,
-                      itemBuilder: (context, index) {
-                        final reversedIndex = messages.length - 1 - index;
-                        return MessageBubble(message: messages[reversedIndex]);
-                      },
-                    ),
                   ),
                 ),
                 Divider(height: 1),
@@ -193,47 +185,6 @@ class _ChatPageState extends State<ChatPage> {
             if (_isSending) SendingOverlay(),
           ],
         ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.2,
-              child:
-                  isRadio
-                      ? Image.asset(
-                        'assets/story/images/walkie-talkie.png',
-                        fit: BoxFit.cover,
-                      )
-                      : FirebaseHosting.loadImageWidget(
-                        GameEngine().npcImagePath(widget.npc),
-                        fit: BoxFit.cover,
-                      ),
-            ),
-          ),
-          Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  reverse: true,
-                  padding: EdgeInsets.all(8),
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    final reversedIndex = messages.length - 1 - index;
-                    return MessageBubble(message: messages[reversedIndex]);
-                  },
-                ),
-              ),
-              Divider(height: 1),
-              InputBar(
-                controller: _controller,
-                scrollController: _scrollController,
-                isSending: _isSending,
-                onSendPressed: () => sendMessage(_controller.text),
-              ),
-            ],
-          ),
-          if (_isSending) SendingOverlay(),
-        ],
       ),
       floatingActionButton: widget.floatingActionButton,
     );
