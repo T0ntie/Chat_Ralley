@@ -74,6 +74,9 @@ enum AppScreen { loading, trails, game, credits, error }
 class _MyAppState extends State<MyApp> {
   AppScreen _currentScreen = AppScreen.loading;
   String? _errorMessage;
+  late final StreamSubscription<Position> _positionSubscription;
+  bool get _isSimulatingLocation => GameEngine().isGPSSimulating;
+
 
   @override
   void initState() {
@@ -84,7 +87,15 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _initializeApp() async {
     try {
-      await Future.wait([LocationService.initialize()]);
+      await LocationService.initialize();
+
+      _positionSubscription = LocationService.getPositionStream().listen((Position position) {
+        if (!_isSimulatingLocation) {
+          GameEngine().playerPosition =
+              LatLng(position.latitude, position.longitude);
+        }
+      });
+
       Position pos = await Geolocator.getCurrentPosition();
       GameEngine().playerPosition = LatLng(pos.latitude, pos.longitude);
 
@@ -193,5 +204,11 @@ class _MyAppState extends State<MyApp> {
       ),
       home: screen,
     );
+  }
+
+  @override
+  void dispose() {
+    _positionSubscription.cancel();
+    super.dispose();
   }
 }

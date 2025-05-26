@@ -18,8 +18,6 @@ import 'package:storytrail/gui/side_panel.dart';
 import 'package:storytrail/gui/ui_intent.dart';
 import 'package:storytrail/main.dart';
 import 'package:storytrail/services/compass_service.dart';
-import 'package:storytrail/services/location_service.dart';
-import 'package:flutter/scheduler.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key, required this.title, required this.trailId, this.onFatalError,});
@@ -37,7 +35,6 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   final _frameRate = Duration(milliseconds: 33);
 
   bool _gameInitialized = false;
-  bool _locationServiceInitialized = false;
   bool _initializationCompleted = false;
 
   double _currentHeading = 0.0;
@@ -49,7 +46,6 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   double _currentMapRotation = 0.0;
   late final StreamSubscription<MapEvent> _mapControllerSubscription;
   late final StreamSubscription<double> _compassSubscription;
-  late final StreamSubscription<Position> _positionSubscription;
 
   List<Item> get _items => GameEngine().items;
 
@@ -61,10 +57,6 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   bool _debuggingVisible = false;
 
   bool showActionTestingPanel = false;
-
-  static GameScreenState? of(BuildContext context) { //fixme ist vielleicht eine Sackgasse
-    return context.findAncestorStateOfType<GameScreenState>();
-  }
 
   set _isSimulatingLocation(bool value) {
     GameEngine().isGPSSimulating = value;
@@ -99,9 +91,7 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   void _checkIfInitializationCompleted() {
     print(
         "checking Initializaion: $_gameInitialized $_initializationCompleted");
-    if (_gameInitialized &&
-        //_locationServiceInitialized &&
-        !_initializationCompleted) {
+    if (_gameInitialized && !_initializationCompleted) {
       setState(() {
         _initializationCompleted = true;
       });
@@ -118,22 +108,6 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
       }
     });
   }
-
-  Future<void> _initializeLocationStream() async {
-    await LocationService.initialize();
-    _positionSubscription =
-        LocationService.getPositionStream().listen((Position position,) {
-          if (!_isSimulatingLocation) {
-            GameEngine().playerPosition = LatLng(
-              position.latitude,
-              position.longitude,
-            );
-          }
-          _locationServiceInitialized = true;
-          _checkIfInitializationCompleted();
-        });
-  }
-
 
   Future<void> _initializeCompassStream() async {
     try {
@@ -173,10 +147,7 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
 
   Future<void> _initializeGameUI() async {
     try {
-      await Future.wait([
-        _initializeLocationStream(),
-        _initializeCompassStream(),
-      ]);
+      _initializeCompassStream();
     } catch (e) {
 
       widget.onFatalError?.call('❌ Initialisierung des Kompass fehlgeschlagen.' );
@@ -189,7 +160,6 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
       widget.onFatalError?.call('❌ Initialisierung der Karte fehlgeschlagen.' );
       return;
     }
-
     _initializeUpdateTimer();
   }
 
@@ -212,11 +182,9 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
     UiIntentQueue().flush(this);
   }
 
-
   @override
   void didPopNext() {
-    print("🔙 GameScreen wieder sichtbar → Trigger für UIIntents");
-    //UiIntentQueue().flush(context);
+    //print("🔙 GameScreen wieder sichtbar → Trigger für UIIntents");
     _handleDeferredGUIEvents();
   }
 
@@ -459,7 +427,6 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   void dispose() {
     _mapControllerSubscription.cancel();
     _compassSubscription.cancel();
-    _positionSubscription.cancel();
     _updateTimer.cancel();
     routeObserver.unsubscribe(this);
     super.dispose();
