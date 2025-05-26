@@ -5,13 +5,6 @@ import 'package:storytrail/engine/hotspot.dart';
 import 'package:storytrail/gui/game_screen.dart';
 import 'ui_intent.dart';
 
-import 'dart:ui'; // für lerpDouble
-import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:storytrail/engine/hotspot.dart';
-import 'package:storytrail/gui/game_screen.dart';
-import 'ui_intent.dart';
-
 class ShowHotspotIntent extends UIIntent {
   final Hotspot hotspot;
 

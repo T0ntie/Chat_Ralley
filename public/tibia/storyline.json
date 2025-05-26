@@ -6,6 +6,7 @@
   "npcs": [
     {
       "name": "Kommissar Knatterbach",
+      "descriptiveName": "Ein Polizist",
       "position": "KnatterbachPosition",
       "prompt": "knatterbach-prompt.txt",
       "image": "images/knatterbach.png",
@@ -104,6 +105,7 @@
     },
     {
       "name": "Professor Dr. Theobald Knöchelbein",
+      "descriptiveName": "Ein älterer Herr",
       "position": "KnöchelbeinPosition",
       "prompt": "knöchelbein-prompt.txt",
       "image": "images/knöchelbein.png",
@@ -148,6 +150,7 @@
     },
     {
       "name": "Dieter Kroll",
+      "descriptiveName": "Ein Geschäftsmann",
       "position": "KrollPosition",
       "prompt": "kroll-prompt.txt",
       "image": "images/kroll.png",
@@ -199,6 +202,7 @@
     },
     {
       "name": "Bozzi",
+      "descriptiveName": "Ein Hund",
       "position": "BozziPosition",
       "prompt": "bozzi-prompt.txt",
       "image": "images/bozzi.png",
@@ -277,6 +281,7 @@
     },
     {
       "name": "Martha Tschulli",
+      "descriptiveName": "Eine stämmige Frau",
       "position": "TschulliPosition",
       "prompt": "tschulli-prompt.txt",
       "image": "images/tschulli.png",
@@ -346,6 +351,7 @@
     },
     {
       "name": "Beißbert",
+      "descriptiveName": "Ein T-Rex",
       "position": "MuseumPosition",
       "prompt": "beissbert-prompt.txt",
       "image": "images/trex.png",
@@ -405,7 +411,7 @@
       "name": "Haus Tschulli",
       "position": "HausTschulliPosition",
       "image": "images/haustschulli.png",
-      "radius": 20,
+      "radius": 30,
       "visible": false
     },
     {

@@ -34,9 +34,11 @@ class StoryJournal {
     _entries.add(entry);
   }
 
+/*
   String _shorten (String message) {
     return  message.length > 100 ? "${message.substring(0, 100)}..." : message;
   }
+*/
 }
 
 enum JournalEntryType { dialogue, action }

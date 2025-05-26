@@ -43,7 +43,7 @@ class GameMapWidget extends StatelessWidget {
       mapController: mapController,
       options: MapOptions(
         initialCenter: location,
-        initialZoom: 16.0,
+        initialZoom: 18.0,
 
         onTap: (tapPosition, point) {
           print('Tapped on location: ${point.latitude}, ${point.longitude}');

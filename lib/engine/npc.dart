@@ -11,6 +11,7 @@ enum NPCIcon { unknown, identified, nearby, unknownNearby }
 
 class Npc extends GameElement implements ProximityAware{
   final Prompt prompt;
+  final String descriptiveName;
   final String? iconAsset;
 
   bool hasSomethingToSay = false;
@@ -23,6 +24,7 @@ class Npc extends GameElement implements ProximityAware{
 
   Npc({
     required super.name,
+    required this.descriptiveName,
     required super.imageAsset,
     required this.prompt,
     required super.position,
@@ -53,6 +55,7 @@ class Npc extends GameElement implements ProximityAware{
       final LatLng position = StoryLine.positionFromJson(json);
       return Npc(
         name: json['name'],
+        descriptiveName : json['descriptiveName'],
         position: position,
         prompt: prompt,
         imageAsset: json['image'] as String? ?? GameElement.unknownImageAsset,
@@ -124,14 +127,14 @@ class Npc extends GameElement implements ProximityAware{
   }
 
   String get displayName {
-    return isRevealed ? name : "Unbekannt";
+    return isRevealed ? name : descriptiveName;
   }
 
   LatLng get currentPosition {
     return movementController.currentPosition;
   }
 
-/*
+/* //fixme muss weg?
   void checkProximityToPlayer() {
     movementController.checkProximityToPlayer();
   }
