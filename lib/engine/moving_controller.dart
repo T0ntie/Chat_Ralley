@@ -55,6 +55,10 @@ class NPCMovementController extends EntityMovementController {
   //LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   List<LatLng> path;
   static const followingDistance = 10.0;
+
+  static const double stopFollowingDistance = 10.0;
+  static const double resumeFollowingDistance = 20.0;
+
   static const waitDistance = 50.0;
   static const continueDistance = 20.0;
 
@@ -88,19 +92,6 @@ class NPCMovementController extends EntityMovementController {
 
   bool _wasInRange = false;
 
- /* void updateProximity(LatLng playerPosition) {
-    final distance = Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
-    final inRange = distance < GameEngine.conversationDistance;
-
-    if (inRange && !_wasInRange) {
-      onEnterRange();
-    } else if (!inRange && _wasInRange) {
-      onExitRange();
-    }
-
-    _wasInRange = inRange;
-  }*/
-
   void updatePlayerProximity() {
     final inRange = isInCommunicationDistance;
 
@@ -123,7 +114,7 @@ class NPCMovementController extends EntityMovementController {
   LatLng get currentPosition => currentBasePosition;
 
   void maybeStartFollowing() {
-    if (isFollowing && !isMoving && currentDistance > followingDistance) {
+    if (isFollowing && !isMoving && currentDistance > resumeFollowingDistance) {
       toPosition = playerPosition;
       movementStartTime = DateTime.now();
       isMoving = true;
@@ -170,7 +161,7 @@ class NPCMovementController extends EntityMovementController {
           interpolated,
           playerPosition,
         );
-        if (isFollowing && distanceToPlayer < followingDistance) {
+        if (isFollowing && distanceToPlayer < stopFollowingDistance) {
           isMoving = false;
           currentBasePosition = interpolated;
           return interpolated;
