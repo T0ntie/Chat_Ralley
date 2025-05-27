@@ -133,13 +133,7 @@ class Npc extends GameElement implements ProximityAware{
   LatLng get currentPosition {
     return movementController.currentPosition;
   }
-
-/* //fixme muss weg?
-  void checkProximityToPlayer() {
-    movementController.checkProximityToPlayer();
-  }
-*/
-
+  
   NPCIcon get icon {
     if (isVisible) {
       if (isRevealed) {
