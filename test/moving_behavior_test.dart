@@ -59,8 +59,8 @@ void main() {
     });
 
     test('moveTo disables following and leading mode', () {
-      movementController.isFollowing = true;
-      movementController.isLeading = true;
+      movementController.mode = MovementMode.following;
+      movementController.mode = MovementMode.leading;
 
       movementController.moveTo(end);
 
@@ -134,7 +134,7 @@ void main() {
       );
 
       movementController.moveTo(LatLng(51.5075, -0.1278));
-      movementController.movementStartTime = DateTime.now().subtract(Duration(seconds: 10));
+      movementController.movementStartTime = DateTime.now().subtract(Duration(seconds: 30));
 
       movementController.updatePosition();
 
@@ -189,9 +189,10 @@ void main() {
 
     test('NPC stops following when close enough to player', () {
       final player = LatLng(51.5074, -0.1278);
+      final startClose = LatLng(51.50739, -0.1278); // ~1m Abstand
 
       movementController = NPCMovementController(
-        currentBasePosition: LatLng(51.5070, -0.1278),
+        currentBasePosition: startClose,
         toPosition: player,
         speedInKmh: 3.6, // 1 m/s
         onEnterRange: () {},
@@ -200,25 +201,23 @@ void main() {
       );
 
       movementController.startFollowing();
-      movementController.movementStartTime = DateTime.now().subtract(Duration(seconds: 50));
+      movementController.movementStartTime = DateTime.now().subtract(Duration(seconds: 1));
 
       final pos = movementController.updatePosition();
 
-      print('Distance to player: ${movementController.currentDistance}');
-      print('isMoving: ${movementController.isMoving}');
-
+      expect(movementController.currentDistance, lessThan(10)); // innerhalb stopFollowingDistance
       expect(movementController.isMoving, isFalse);
       expect(pos.latitude, closeTo(player.latitude, 0.0001));
     });
   });
 
   group('PlayerMovementController', () {
-    late PlayerMovementController controller;
+    late SimMovementController controller;
     final start = LatLng(51.5074, -0.1278); // London
     final end = LatLng(51.5101, -0.1278); // ≈ 300 m nördlich
 
     setUp(() {
-      controller = PlayerMovementController(startPosition: start);
+      controller = SimMovementController(startPosition: start);
     });
 
     test('initial position is startPosition', () {

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:storytrail/app_resources.dart';
 import 'package:storytrail/engine/game_engine.dart';
@@ -59,7 +58,7 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   bool showActionTestingPanel = false;
 
   set _isSimulatingLocation(bool value) {
-    GameEngine().isGPSSimulating = value;
+    GameEngine().setSimulationMode(value);
   }
 
   LatLng? _lastRealGpsPosition;
@@ -136,9 +135,11 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   void _initializeUpdateTimer() {
     _updateTimer = Timer.periodic(_frameRate, (timer) {
       if (_initializationCompleted) {
-        if (GameEngine().isGPSSimulating) {
-          GameEngine().updatePlayerPositionSimulated();
-        }
+        //if (GameEngine().isGPSSimulating) {
+          //GameEngine().updatePlayerPositionSimulated();
+
+        //}
+        GameEngine().updatePlayerPosition();
         GameEngine().updateAllNpcPositions();
         setState(() {});
       }
@@ -222,7 +223,7 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
       onLongPress:
       _initializationCompleted && _isSimulatingLocation
           ? () {
-        GameEngine().playerMovementController!.teleportHome();
+        GameEngine().playerMovementController.teleportHome();
         _centerMapOnCurrentLocation();
       }
           : null,
@@ -311,9 +312,7 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
                 setState(() {
                   if (!_isSimulatingLocation) {
                     _lastRealGpsPosition = GameEngine().playerPosition;
-                    GameEngine().playerMovementController?.teleportTo(
-                      _lastRealGpsPosition!,
-                    );
+                    GameEngine().playerMovementController.teleportTo(_lastRealGpsPosition!);
                   } else {
                     if (_lastRealGpsPosition != null) {
                       GameEngine().setRealGpsPositionAndNotify(

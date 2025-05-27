@@ -1,27 +1,12 @@
+import 'dart:collection';
 import 'dart:math';
 import 'dart:ui';
 
 import '../engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
 
-abstract class EntityMovementController {
-  bool isMoving;
-  DateTime movementStartTime;
-
-  LatLng currentBasePosition;
-  LatLng toPosition;
-  double speedInKmh;
-
-  double get speedInms => speedInKmh * 1000 / 3600;
-
-  EntityMovementController({
-    required this.currentBasePosition,
-    required this.toPosition,
-    required this.speedInKmh,
-  }) : isMoving = false,
-       movementStartTime = DateTime.now();
-
-  LatLng interpolatePosition(LatLng from, LatLng to, double distanceToTravel) {
+class MovementUtils {
+  static LatLng interpolatePosition(LatLng from, LatLng to, double distanceToTravel) {
     final totalDistance = Distance().as(LengthUnit.Meter, from, to);
     if (totalDistance == 0 || distanceToTravel >= totalDistance) return to;
 
@@ -30,27 +15,36 @@ abstract class EntityMovementController {
     final newLng = from.longitude + (to.longitude - from.longitude) * fraction;
     return LatLng(newLat, newLng);
   }
-
-  LatLng get currentPosition;
-
-  moveTo(LatLng toP) {
-    if (isMoving) {
-      currentBasePosition = currentPosition;
-    }
-    toPosition = toP;
-    isMoving = true;
-    movementStartTime = DateTime.now();
-  }
-
-  void stopMoving() {
-    currentBasePosition = currentPosition;
-    isMoving = false;
-  }
 }
 
-class NPCMovementController extends EntityMovementController {
+enum MovementMode {
+  idle,
+  navigating,
+  following,
+  leading,
+}
+
+
+abstract class MovementController {
+  LatLng get currentPosition;
+  LatLng updatePosition();
+  void stopMoving();
+  void teleportTo(LatLng toP);
+  void teleportHome();
+  void moveTo(LatLng toP);
+}
+
+class NPCMovementController implements MovementController {
+/*
   bool isFollowing;
   bool isLeading;
+*/
+  MovementMode mode = MovementMode.idle;
+  LatLng currentBasePosition;
+  LatLng toPosition;
+  bool isMoving = false;
+  DateTime movementStartTime = DateTime.now();
+  double speedInKmh;
 
   //LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   List<LatLng> path;
@@ -66,26 +60,30 @@ class NPCMovementController extends EntityMovementController {
   final VoidCallback onExitRange;
   LatLng Function()? getPlayerPosition;
 
-  @override
   double get speedInms => (GameEngine().isGPSSimulating ? 150: speedInKmh * 1000 / 3600);
 
   NPCMovementController({
-    required super.currentBasePosition,
-    required super.toPosition,
-    required super.speedInKmh,
+    required this.currentBasePosition,
+    required this.toPosition,
+    required this.speedInKmh,
     required this.onEnterRange,
     required this.onExitRange,
     required this.getPlayerPosition,
-  }) : isFollowing = false,
-       isLeading = false,
+  }) : //isFollowing = false,
+       //isLeading = false,
        path = [];
 
   double get currentDistance {
     return Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
   }
 
+  bool get isFollowing => mode == MovementMode.following;
+  bool get isLeading => mode == MovementMode.leading;
+  bool get isNavigating => mode == MovementMode.navigating;
+  bool get isIdle => mode == MovementMode.idle;
+
   LatLng get playerPosition =>
-      getPlayerPosition?.call() ?? PlayerMovementController.simHome;
+      getPlayerPosition?.call() ?? SimMovementController.simHome;
 
   bool get isInCommunicationDistance =>
       currentDistance < GameEngine.conversationDistance;
@@ -150,7 +148,7 @@ class NPCMovementController extends EntityMovementController {
       );
 
       if (distanceToTravel < distance) {
-        final interpolated = interpolatePosition(
+        final interpolated = MovementUtils.interpolatePosition(
           currentBasePosition,
           toPosition,
           distanceToTravel,
@@ -164,11 +162,13 @@ class NPCMovementController extends EntityMovementController {
         if (isFollowing && distanceToPlayer < stopFollowingDistance) {
           isMoving = false;
           currentBasePosition = interpolated;
+          updatePlayerProximity();
           return interpolated;
         }
         if (isLeading && distanceToPlayer > waitDistance) {
           isMoving = false;
           currentBasePosition = interpolated;
+          updatePlayerProximity();
           return interpolated;
         }
 
@@ -194,10 +194,18 @@ class NPCMovementController extends EntityMovementController {
     }
   }
 
-  @override
   void moveTo(LatLng toP) {
-    resetMovementModes();
-    super.moveTo(toP);
+    //resetMovementModes(); // Setzt leading/following/path zurück
+    path = [];
+    mode = MovementMode.navigating;
+
+    if (isMoving) {
+      currentBasePosition = currentPosition;
+    }
+
+    toPosition = toP;
+    isMoving = true;
+    movementStartTime = DateTime.now();
   }
 
   void moveAlong(List<LatLng> p) {
@@ -207,8 +215,11 @@ class NPCMovementController extends EntityMovementController {
     path = List.from(p);
     toPosition = path.removeAt(0);
     isMoving = true;
+    mode = MovementMode.navigating;
+/*
     isFollowing = false;
     isLeading = false;
+*/
     movementStartTime = DateTime.now();
   }
 
@@ -219,8 +230,11 @@ class NPCMovementController extends EntityMovementController {
     path = List.from(p);
     toPosition = path.removeAt(0);
     isMoving = true;
+/*
     isFollowing = false;
     isLeading = true;
+*/
+    mode = MovementMode.leading;
     movementStartTime = DateTime.now();
   }
 
@@ -230,9 +244,10 @@ class NPCMovementController extends EntityMovementController {
     }
     toPosition = playerPosition;
     path = [];
-    isFollowing = true;
+//    isFollowing = true;
     isMoving = true;
-    isLeading = false;
+  //  isLeading = false;
+    mode = MovementMode.following;
     movementStartTime = DateTime.now();
   }
 
@@ -242,8 +257,9 @@ class NPCMovementController extends EntityMovementController {
     }
     toPosition = toP;
     path = [];
-    isFollowing = false;
-    isLeading = true;
+    /*isFollowing = false;
+    isLeading = true;*/
+    mode = MovementMode.leading;
     movementStartTime = DateTime.now();
 
     // Prüfen ob er gleich starten darf
@@ -258,15 +274,10 @@ class NPCMovementController extends EntityMovementController {
   @override
   void stopMoving() {
     currentBasePosition = currentPosition;
-    isFollowing = false;
+    //isFollowing = false;
     isMoving = false;
-    isLeading = false;
-    path = [];
-  }
-
-  void resetMovementModes() {
-    isFollowing = false;
-    isLeading = false;
+    //isLeading = false;
+    mode = MovementMode.idle;
     path = [];
   }
 
@@ -289,23 +300,32 @@ class NPCMovementController extends EntityMovementController {
       playerPosition.longitude + deltaLng,
     );
     isMoving = false;
-    isFollowing = false;
-    isLeading = false;
+    mode = MovementMode.idle;
+  }
+
+  void teleportHome() {
+    print("⚠️ Teleportation wird bei NPCs nicht unterstützt.");
+  }
+
+  void teleportTo(LatLng newPosition) {
+    print("⚠️ Teleportation wird bei NPCs nicht unterstützt.");
   }
 }
 
-class PlayerMovementController extends EntityMovementController {
+class SimMovementController  implements MovementController {
   static const durationInSeconds = 5.0;
   static const simHome = LatLng(48.09048048682252, 16.296859109639993);
+  LatLng currentBasePosition;
+  LatLng toPosition;
+  bool isMoving = false;
+  DateTime movementStartTime = DateTime.now();
 
-  PlayerMovementController({required LatLng startPosition})
-    : super(
-        currentBasePosition: startPosition,
-        toPosition: startPosition,
-        speedInKmh: 0,
-      );
+  SimMovementController({required LatLng startPosition})
+      : currentBasePosition = startPosition,
+        toPosition = startPosition,
+        isMoving = false,
+        movementStartTime = DateTime.now();
 
-  @override
   double get speedInms {
     final totalDistance = Distance().as(
       LengthUnit.Meter,
@@ -313,6 +333,13 @@ class PlayerMovementController extends EntityMovementController {
       toPosition,
     );
     return totalDistance / durationInSeconds;
+  }
+
+  @override
+  void stopMoving() {
+    currentBasePosition = currentPosition;
+    toPosition = currentPosition;
+    isMoving = false;
   }
 
 
@@ -331,7 +358,6 @@ class PlayerMovementController extends EntityMovementController {
     isMoving = false;
   }
 
-  @override
   void moveTo(LatLng toP) {
     _movementStartPosition = currentBasePosition;
 
@@ -369,7 +395,7 @@ class PlayerMovementController extends EntityMovementController {
       return toPosition;
     }
 
-    final interpolated = interpolatePosition(
+    final interpolated = MovementUtils.interpolatePosition(
       _movementStartPosition,
       toPosition,
       distanceToTravel,
@@ -377,4 +403,184 @@ class PlayerMovementController extends EntityMovementController {
     currentBasePosition = interpolated;
     return interpolated;
   }
+}
+
+
+class GpsMovementController implements MovementController {
+  LatLng _lastGpsPosition;
+  DateTime _lastGpsTimestamp;
+
+  LatLng? _nextGpsPosition;
+  DateTime? _nextGpsTimestamp;
+
+  bool _isMoving = false;
+  LatLng _currentInterpolatedPosition;
+
+  GpsMovementController(LatLng initialPosition)
+      : _lastGpsPosition = initialPosition,
+        _lastGpsTimestamp = DateTime.now(),
+        _currentInterpolatedPosition = initialPosition;
+
+  bool _hasReceivedFirstUpdate = false;
+  final SpeedAverager _speedAverager = SpeedAverager(maxSamples: 5);
+
+  void receiveGpsUpdate(LatLng newPosition) {
+    print("📡 GPS Update erhalten: $newPosition");
+    final now = DateTime.now();
+
+    _speedAverager.addPosition(newPosition); // Neue Position merken
+
+    // Fall 1: erster GPS-Punkt
+    if (!_hasReceivedFirstUpdate) {
+      _lastGpsPosition = newPosition;
+      _currentInterpolatedPosition = newPosition;
+      _lastGpsTimestamp = now;
+      _isMoving = false;
+      _hasReceivedFirstUpdate = true;
+      print("⏸️ Erstes GPS, keine Interpolation gestartet.");
+      return;
+    }
+
+    final speed = _speedAverager.averageSpeed;
+    if (speed <= 0) {
+      // Kein brauchbarer Bewegungswert – direkt setzen
+      _lastGpsPosition = newPosition;
+      _currentInterpolatedPosition = newPosition;
+      _lastGpsTimestamp = now;
+      _isMoving = false;
+      print("⚠️ Keine Bewegung erkennbar – kein Interpolieren");
+      return;
+    }
+
+    // Neue Dauer berechnen: dist / speed
+
+    final dist = Distance().as(LengthUnit.Meter, _currentInterpolatedPosition, newPosition);
+    final duration = Duration(milliseconds: (1000 * dist / speed).round());
+
+    _lastGpsPosition = _currentInterpolatedPosition;
+    _lastGpsTimestamp = now;
+    _nextGpsPosition = newPosition;
+    _nextGpsTimestamp = now.add(duration);
+    _isMoving = true;
+
+    print("🚀 Interpolation gestartet von $_lastGpsPosition → $_nextGpsPosition über ${duration.inMilliseconds} ms");
+  }
+
+  @override
+  LatLng get currentPosition => _currentInterpolatedPosition;
+
+  @override
+  LatLng updatePosition() {
+    if (!_isMoving || _nextGpsPosition == null || _nextGpsTimestamp == null) {
+      return _currentInterpolatedPosition;
+    }
+
+    final elapsed = DateTime.now().difference(_lastGpsTimestamp).inMilliseconds;
+    final total = _nextGpsTimestamp!.difference(_lastGpsTimestamp).inMilliseconds;
+
+    if (total <= 0) {
+      _finalizeMovement();
+      return _currentInterpolatedPosition;
+    }
+
+    final t = elapsed / total;
+    print("⏱ Interpolationsfortschritt: t = $t");
+    if (t >= 1.0) {
+      _finalizeMovement();
+      return _currentInterpolatedPosition;
+    }
+
+    _currentInterpolatedPosition = _interpolateFractional(_lastGpsPosition, _nextGpsPosition!, t);
+    return _currentInterpolatedPosition;
+  }
+
+  void _finalizeMovement() {
+    _currentInterpolatedPosition = _nextGpsPosition!;
+    _lastGpsPosition = _currentInterpolatedPosition;
+    _lastGpsTimestamp = DateTime.now();
+    _isMoving = false;
+    _nextGpsPosition = null;
+    _nextGpsTimestamp = null;
+  }
+
+  @override
+  void stopMoving() {
+    _isMoving = false;
+    _nextGpsPosition = null;
+    _nextGpsTimestamp = null;
+  }
+
+  LatLng _interpolateFractional(LatLng from, LatLng to, double t) {
+    final lat = from.latitude + (to.latitude - from.latitude) * t;
+    final lng = from.longitude + (to.longitude - from.longitude) * t;
+    return LatLng(lat, lng);
+  }
+
+  void teleportHome() {
+    print("⚠️ Teleportation wird bei echtem GPS nicht unterstützt.");
+  }
+
+  void teleportTo(LatLng newPosition) {
+    print("⚠️ Teleportation wird bei echtem GPS nicht unterstützt.");
+  }
+
+  void moveTo(LatLng toP) {
+    print("⚠️ moveTo wird bei echtem GPS nicht unterstützt.");
+  }
+
+}
+
+
+class MovementSample {
+  final LatLng position;
+  final DateTime timestamp;
+
+  MovementSample(this.position, this.timestamp);
+}
+
+class SpeedAverager {
+  final int maxSamples;
+  final Queue<MovementSample> _samples = Queue<MovementSample>();
+  final Distance _distance = const Distance();
+
+  SpeedAverager({this.maxSamples = 5});
+
+  /// Fügt eine neue Position mit aktuellem Zeitstempel hinzu
+  void addPosition(LatLng position) {
+    final sample = MovementSample(position, DateTime.now());
+    _samples.addLast(sample);
+    if (_samples.length > maxSamples) {
+      _samples.removeFirst();
+    }
+  }
+
+  /// Durchschnittliche Geschwindigkeit in Meter/Sekunde
+  double get averageSpeed {
+    if (_samples.length < 2) return 0;
+
+    double totalDistance = 0;
+    double totalTime = 0;
+
+    final samplesList = _samples.toList();
+    for (int i = 1; i < samplesList.length; i++) {
+      final prev = samplesList[i - 1];
+      final current = samplesList[i];
+
+      final d = _distance(prev.position, current.position); // in Meter
+      final t = current.timestamp.difference(prev.timestamp).inMilliseconds / 1000.0;
+
+      if (t > 0) {
+        totalDistance += d;
+        totalTime += t;
+      }
+    }
+
+    return totalTime > 0 ? totalDistance / totalTime : 0;
+  }
+
+  /// Gibt die letzte bekannte Position zurück
+  LatLng? get latestPosition => _samples.isNotEmpty ? _samples.last.position : null;
+
+  /// Gibt die aktuelle Stichprobenanzahl zurück
+  int get sampleCount => _samples.length;
 }

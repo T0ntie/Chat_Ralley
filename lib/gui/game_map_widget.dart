@@ -48,13 +48,13 @@ class GameMapWidget extends StatelessWidget {
         onTap: (tapPosition, point) {
           print('Tapped on location: ${point.latitude}, ${point.longitude}');
           if (isSimulatingLocation) {
-            GameEngine().playerMovementController?.moveTo(point);
+            GameEngine().playerMovementController.moveTo(point);
           }
         },
 
         onLongPress: (tapPosition, point) {
           if (isSimulatingLocation) {
-            GameEngine().playerMovementController?.teleportTo(point);
+            GameEngine().playerMovementController.teleportTo(point);
           }
         },
       ),

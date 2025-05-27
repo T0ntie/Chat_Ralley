@@ -23,22 +23,23 @@ class GameEngine {
 
   factory GameEngine() => _instance;
 
-  GameEngine._internal();
-
+  GameEngine._internal() {
+    _playerMovementController = isGPSSimulating
+        ? SimMovementController(startPosition: SimMovementController.simHome)
+        : GpsMovementController(SimMovementController.simHome);
+  }
   static const double conversationDistance = 20.0;
 
   bool isGPSSimulating = false;
   LatLng? _lastSimulatedPosition;
 
-  final PlayerMovementController _playerMovementController =
-      PlayerMovementController(startPosition: PlayerMovementController.simHome);
+  late final MovementController _playerMovementController;
 
-  PlayerMovementController? get playerMovementController =>
+  MovementController get playerMovementController =>
       _playerMovementController;
 
   String? trailId;
   List<Trail> trailsList = [];
-
 
   StoryLine? storyLine;
 
@@ -63,38 +64,47 @@ class GameEngine {
     return storyLine?.hotspotMap[hotspotName];
   }
 
-    late LatLng _realGpsPosition = PlayerMovementController.simHome; //just a initilizer
-  LatLng get playerPosition {
-    return isGPSSimulating
-        ? _playerMovementController.currentPosition
-        : _realGpsPosition;
+  //late LatLng _realGpsPosition = SimulatingPlayerMovementController.simHome; //just a initilizer
+  LatLng get playerPosition => _playerMovementController.currentPosition;
+
+  void setSimulationMode(bool value) {
+    isGPSSimulating = value;
+
+    final currentPos = _playerMovementController.currentPosition;
+
+    _playerMovementController = value
+        ? SimMovementController(startPosition: currentPos)
+        : GpsMovementController(currentPos);
   }
 
   void setRealGpsPositionAndNotify(LatLng newPosition) {
-    _realGpsPosition = newPosition;
-    _playerPositionUpdated(newPosition);
+
+    final controller = _playerMovementController;
+    if (controller is GpsMovementController) {
+      controller.receiveGpsUpdate(newPosition);
+    }
   }
 
   set playerPosition(LatLng newPosition) {
     if (isGPSSimulating) {
       _playerMovementController.teleportTo(newPosition);
     } else {
-      _realGpsPosition = newPosition;
-
-      _playerPositionUpdated(newPosition);
+      final controller = _playerMovementController;
+      if (controller is GpsMovementController) {
+        controller.receiveGpsUpdate(newPosition);
+      }
     }
   }
-
   late LatLng gpsPosition;
 
-  void updatePlayerPositionSimulated() {
-    if (!isGPSSimulating) return;
+  void updatePlayerPosition() {
+
     final newPosition = _playerMovementController.updatePosition();
 
-    if (_lastSimulatedPosition == newPosition) {
-      return;
+    if (isGPSSimulating) {
+      if (_lastSimulatedPosition == newPosition) return;
+      _lastSimulatedPosition = newPosition;
     }
-    _lastSimulatedPosition = newPosition;
     _playerPositionUpdated(newPosition);
   }
 
