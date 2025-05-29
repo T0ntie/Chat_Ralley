@@ -1,9 +1,9 @@
 import 'package:storytrail/services/firebase_serice.dart';
 
-import '../engine/hotspot.dart';
-import '../engine/item.dart';
+import 'package:storytrail/engine/hotspot.dart';
+import 'package:storytrail/engine/item.dart';
 import 'package:latlong2/latlong.dart';
-import '../engine/game_engine.dart';
+import 'package:storytrail/engine/game_engine.dart';
 
 import 'npc.dart';
 
@@ -32,7 +32,7 @@ class StoryLine {
     required this.hotspotsList,
     required this.flags,
     required this.items,
-  }) : hotspotMap = {for (final hotspot in hotspotsList) hotspot.name: hotspot};
+  }) : hotspotMap = {for (final hotspot in hotspotsList) hotspot.id: hotspot};
 
   static LatLng _latLngFromJson(Map<String, dynamic> json) {
     if (json.containsKey('lat') && json.containsKey('lng')) {

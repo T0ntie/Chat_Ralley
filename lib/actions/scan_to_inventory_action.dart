@@ -1,10 +1,10 @@
-import '../engine/game_engine.dart';
-import '../engine/item.dart';
-import '../gui/open_qr_scan_dialog_intent.dart';
-import '../gui/ui_intent.dart';
+import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/engine/item.dart';
+import 'package:storytrail/gui/open_qr_scan_dialog_intent.dart';
+import 'package:storytrail/gui/ui_intent.dart';
 
-import 'npc_action.dart';
-import '../engine/npc.dart';
+import 'package:storytrail/actions/npc_action.dart';
+import 'package:storytrail/engine/npc.dart';
 
 class ScanToInventoryAction extends NpcAction {
   final String itemName;

@@ -4,14 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:storytrail/engine/game_element.dart';
 import 'package:storytrail/engine/trail.dart';
 import 'package:storytrail/services/firebase_serice.dart';
-import '../engine/item.dart';
-import '../engine/moving_controller.dart';
-import '../gui/notification_services.dart';
+import 'package:storytrail/engine/item.dart';
+import 'package:storytrail/engine/moving_controller.dart';
+import 'package:storytrail/gui/notification_services.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'story_line.dart';
 import 'npc.dart';
-import '../actions/npc_action.dart';
+import 'package:storytrail/actions/npc_action.dart';
 import 'hotspot.dart';
 
 extension KeyNormalization on String {
@@ -22,6 +22,8 @@ class GameEngine {
   static final GameEngine _instance = GameEngine._internal();
 
   factory GameEngine() => _instance;
+
+  Map<String, HasGameState> _gameSate = {};
 
   GameEngine._internal() {
     _playerMovementController = isGPSSimulating
@@ -39,6 +41,9 @@ class GameEngine {
       _playerMovementController;
 
   String? trailId;
+
+  String playerId = "player123"; //fixme firebase anonymous login
+
   List<Trail> trailsList = [];
 
   StoryLine? storyLine;
@@ -60,8 +65,12 @@ class GameEngine {
 
   final Queue<({Npc npc, NpcAction action})> _deferredActions = Queue();
 
-  Hotspot? getHotspotByName(String hotspotName) {
+  /*Hotspot? getHotspotByName(String hotspotName) {
     return storyLine?.hotspotMap[hotspotName];
+  }*/
+
+  Hotspot? getHotspotById(String hotspotId) {
+    return storyLine?.hotspotMap[hotspotId];
   }
 
   //late LatLng _realGpsPosition = SimulatingPlayerMovementController.simHome; //just a initilizer
@@ -123,6 +132,15 @@ class GameEngine {
     for (final npc in npcs) {
       npc.movementController.updatePosition();
     }
+  }
+
+  Npc? getNpcById(String npcId) {
+    final npcs = storyLine?.npcs;
+    if (npcs == null) return null;
+    for (final npc in npcs) {
+      if (npc.id == npcId) return npc;
+    }
+    return null;
   }
 
   Npc? getNpcByName(String npcName) {
@@ -411,6 +429,47 @@ class GameEngine {
       }
     }
   }
+
+  void registerGameState(HasGameState gameState) {
+
+    if (_gameSate.containsKey(gameState.id)) {
+      print("GameState with id ${gameState.id} already registered");
+    }
+    _gameSate[gameState.id] = gameState;
+  }
+
+  Map<String, dynamic> saveGameState() {
+    final metaData = {
+      'playerId': playerId,
+      'trailId': trailId,
+      'saveTime' : DateTime.now().toIso8601String(),
+      'playerPosition' : {
+        'lat': playerPosition.latitude,
+        'lng': playerPosition.longitude,
+      }
+    };
+    final saveData = <String, dynamic>{};
+    for (final entry in _gameSate.entries) {
+      saveData[entry.key] = entry.value.saveGameState();
+    }
+
+    return {
+      'meta': metaData,
+      'save': saveData,
+    };
+  }
+
+  void loadGameState(Map<String, dynamic> json) {
+    final metaData = json['meta'] as Map<String, dynamic>;
+
+    print ("Loaded GameState from trail ${metaData['trailId']} from ${metaData['saveTime']}");
+
+    final saveData = json['save'] as Map<String, dynamic>;
+    for (final entry in _gameSate.entries) {
+      entry.value.loadGameState(saveData[entry.key]);
+    }
+  }
+
 
   void reset() {
     _signalSubscriptions.clear();

@@ -1,46 +1,61 @@
 import 'package:flutter/material.dart';
-import '../engine/game_engine.dart';
-import '../engine/npc.dart';
-import '../gui/item_call_backs.dart';
+import 'package:storytrail/engine/game_element.dart';
+import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/gui/item_call_backs.dart';
 
-class Item {
+class Item with HasGameState {
+  final String id;
   final String name;
   bool isOwned;
   bool isNew;
   bool isScannable;
   final String iconAsset;
   final String useType;
-  final String npcName;
+  final String npcId;
 
   Npc get npc {
-    final npc = GameEngine().getNpcByName(npcName);
+    final npc = GameEngine().getNpcById(npcId);
     if (npc == null) {
-      throw Exception('Npc "$npcName" nicht gefunden.');
+      throw Exception('Npc "$npcId" nicht gefunden.');
     }
     return npc;
   }
 
   Item({
+    required this.id,
     required this.name,
     required this.isOwned,
     required this.isNew,
     required this.isScannable,
     required this.iconAsset,
     required this.useType,
-    required this.npcName,
+    required this.npcId,
   });
 
   static Item fromJson(Map<String, dynamic> json) {
     return Item(
+      id: json['id'],
       name: json['name'],
       isOwned: json['owned'] as bool? ?? false,
       isNew: json['new'] as bool? ?? false,
       isScannable: json['scannable'] as bool? ?? false,
       iconAsset: json['icon'],
       useType: json['useType'],
-      npcName: json['targetNpc'],
+      npcId: json['targetNpc'],
     );
   }
+
+  loadGameState(Map<String, dynamic> json) {
+    isOwned = json['owned'];
+    isNew = json['new'];
+  }
+
+  Map<String, dynamic> saveGameState() => {
+    'id': id,
+    'owned': isOwned,
+    'new': isNew,
+  };
 
   Future<void> execute(BuildContext context) async {
     final callback = ItemCallbacks.useCallbackMap[useType];

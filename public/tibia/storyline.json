@@ -5,6 +5,7 @@
   "creditsImage": "images/credits.png",
   "npcs": [
     {
+      "id": "npc_knatterbach",
       "name": "Kommissar Knatterbach",
       "descriptiveName": "Ein Polizist",
       "position": "KnatterbachPosition",
@@ -35,7 +36,7 @@
         {
           "onSignal": "ShowMuseum",
           "invokeAction": "showHotspot",
-          "hotspot": "Museum",
+          "hotspot": "spot_museum",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
@@ -48,7 +49,7 @@
           "invokeAction": "stopMoving"
         },
         {
-          "onHotspot": "Museum",
+          "onHotspot": "spot_museum",
           "invokeAction": "talk",
           "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]",
           "conditions": {
@@ -71,11 +72,11 @@
         {
           "onSignal": "KnatterbachToPolice",
           "invokeAction": "showHotspot",
-          "hotspot": "Polizei",
+          "hotspot": "spot_police",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
-          "onHotspot": "Polizei",
+          "onHotspot": "spot_police",
           "invokeAction": "talk",
           "trigger": "[Der Spieler kommt hilfesuchend in die Polizeistation]",
           "conditions": {
@@ -104,6 +105,7 @@
       ]
     },
     {
+      "id": "npc_knoechelbein",
       "name": "Professor Dr. Theobald Knöchelbein",
       "descriptiveName": "Ein älterer Herr",
       "position": "KnöchelbeinPosition",
@@ -112,7 +114,7 @@
       "visible": false,
       "actions": [
         {
-          "onHotspot": "Museum",
+          "onHotspot": "spot_museum",
           "invokeAction": "appear"
         },
         {
@@ -130,7 +132,7 @@
         {
           "onSignal": "ShowKroll",
           "invokeAction": "showHotspot",
-          "hotspot": "Haus Kroll",
+          "hotspot": "spot_kroll",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
@@ -139,7 +141,7 @@
           "defer": true
         },
         {
-          "onHotspot": "Museum",
+          "onHotspot": "spot_museum",
           "invokeAction": "behave",
           "promptTag": "tibia",
           "conditions": {
@@ -149,6 +151,7 @@
       ]
     },
     {
+      "id": "npc_kroll",
       "name": "Dieter Kroll",
       "descriptiveName": "Ein Geschäftsmann",
       "position": "KrollPosition",
@@ -158,7 +161,7 @@
       "revealed": false,
       "actions": [
         {
-          "onHotspot": "Haus Kroll",
+          "onHotspot": "spot_kroll",
           "invokeAction": "appear"
         },
         {
@@ -173,12 +176,12 @@
         {
           "onSignal": "KrollDebut",
           "invokeAction": "revealHotspot",
-          "hotspot": "Haus Kroll"
+          "hotspot": "spot_kroll"
         },
         {
           "onSignal": "ShowKirchengasse",
           "invokeAction": "showHotspot",
-          "hotspot": "Haus Tschulli",
+          "hotspot": "spot_tschulli",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
@@ -201,6 +204,7 @@
       ]
     },
     {
+      "id": "npc_bozzi",
       "name": "Bozzi",
       "descriptiveName": "Ein Hund",
       "position": "BozziPosition",
@@ -272,7 +276,7 @@
           "notification": "Der Hund dreht sich weg"
         },
         {
-          "onHotspot": "TibiaVersteck",
+          "onHotspot": "spot_hide",
           "invokeAction": "scanToInventory",
           "item": "Tibia",
           "notification": "Du hast ein T-Rex Tibia erhalten."
@@ -280,6 +284,7 @@
       ]
     },
     {
+      "id": "npc_tschulli",
       "name": "Martha Tschulli",
       "descriptiveName": "Eine stämmige Frau",
       "position": "TschulliPosition",
@@ -290,7 +295,7 @@
       "speed": 10,
       "actions": [
         {
-          "onHotspot": "Haus Tschulli",
+          "onHotspot": "spot_tschulli",
           "invokeAction": "appear"
         },
         {
@@ -344,12 +349,13 @@
           "notification": "Martha folgt dir jetzt."
         },
         {
-          "onHotspot": "Haus Kroll",
+          "onHotspot": "spot_kroll",
           "invokeAction": "stopMoving"
         }
       ]
     },
     {
+      "id": "npc_trex",
       "name": "Beißbert",
       "descriptiveName": "Ein T-Rex",
       "position": "MuseumPosition",
@@ -386,6 +392,7 @@
   ],
   "hotspots": [
     {
+      "id": "spot_museum",
       "name": "Museum",
       "position": "MuseumPosition",
       "image": "images/museum.png",
@@ -393,6 +400,7 @@
       "visible": false
     },
     {
+      "id": "spot_police",
       "name": "Polizei",
       "position": "PolizeiPosition",
       "image": "images/polizei.png",
@@ -400,6 +408,7 @@
       "visible": false
     },
     {
+      "id": "spot_kroll",
       "name": "Haus Kroll",
       "position": "HausKrollPosition",
       "image": "images/hauskroll.png",
@@ -408,6 +417,7 @@
       "revealed": false
     },
     {
+      "id": "spot_tschulli",
       "name": "Haus Tschulli",
       "position": "HausTschulliPosition",
       "image": "images/haustschulli.png",
@@ -415,6 +425,7 @@
       "visible": false
     },
     {
+      "id": "spot_hide",
       "name": "TibiaVersteck",
       "radius": 5,
       "position": {
@@ -426,67 +437,76 @@
   ],
   "items": [
     {
+      "id": "item_walkie",
       "name": "Walkie",
       "icon": "icons/walkie-talkie.svg",
       "owned": false,
       "useType": "radio",
-      "targetNpc": "Kommissar Knatterbach"
+      "targetNpc": "npc_knatterbach"
     },
     {
+      "id": "item_bone",
       "name": "Knochen",
       "icon": "icons/bone.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "Bozzi"
+      "targetNpc": "npc_bozzi"
     },
     {
+      "id": "item_carrot",
       "name": "Karotte",
       "icon": "icons/carrot.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "Bozzi"
+      "targetNpc": "npc_bozzi"
     },
     {
+      "id": "item_tibia",
       "name": "Tibia",
       "icon": "icons/tibia.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "Professor Dr. Theobald Knöchelbein"
+      "targetNpc": "npc_knoechelbein"
     },
     {
+      "id": "item_ball",
       "name": "Ball",
       "icon": "icons/ball.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "Bozzi"
+      "targetNpc": "npc_bozzi"
     },
     {
+      "id": "item_cookie",
       "name": "Keks",
       "icon": "icons/cookie.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "Bozzi"
+      "targetNpc": "npc_bozzi"
     },
     {
+      "id": "item_meat",
       "name": "Fleisch",
       "icon": "icons/meat.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "Bozzi"
+      "targetNpc": "npc_bozzi"
     },
     {
+      "id": "item_cheese",
       "name": "Käse",
       "icon": "icons/cheese.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "Bozzi"
+      "targetNpc": "npc_bozzi"
     },
     {
+      "id": "item_steak",
       "name": "Steak",
       "icon": "icons/steak.svg",
       "owned": false,
       "useType": "show",
-      "targetNpc": "Bozzi"
+      "targetNpc": "npc_bozzi"
     }
   ],
   "flags": {

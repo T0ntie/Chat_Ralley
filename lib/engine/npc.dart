@@ -1,15 +1,15 @@
-import '../actions/npc_action.dart';
-import '../engine/game_element.dart';
-import '../engine/game_engine.dart';
-import '../engine/moving_controller.dart';
-import '../engine/prompt.dart';
-import '../engine/story_line.dart';
+import 'package:storytrail/actions/npc_action.dart';
+import 'package:storytrail/engine/game_element.dart';
+import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/engine/moving_controller.dart';
+import 'package:storytrail/engine/prompt.dart';
+import 'package:storytrail/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
-import 'conversation.dart';
+import 'package:storytrail/engine/conversation.dart';
 
 enum NPCIcon { unknown, identified, nearby, unknownNearby }
 
-class Npc extends GameElement implements ProximityAware{
+class Npc extends GameElement with HasPosition, HasGameState implements ProximityAware {
   final Prompt prompt;
   final String descriptiveName;
   final String? iconAsset;
@@ -23,6 +23,7 @@ class Npc extends GameElement implements ProximityAware{
   late final NPCMovementController movementController;
 
   Npc({
+    required super.id,
     required super.name,
     required this.descriptiveName,
     required super.imageAsset,
@@ -54,6 +55,7 @@ class Npc extends GameElement implements ProximityAware{
 
       final LatLng position = StoryLine.positionFromJson(json);
       return Npc(
+        id: json['id'],
         name: json['name'],
         descriptiveName : json['descriptiveName'],
         position: position,
@@ -70,6 +72,17 @@ class Npc extends GameElement implements ProximityAware{
       rethrow;
     }
   }
+
+  loadGameState(Map<String, dynamic> json) { //fixme eine onLoadAction, die den NPC sinnvoll platziert
+    isVisible = json['isVisible'];
+    isRevealed = json['isRevealed'];
+  }
+
+  Map<String, dynamic> saveGameState() => {
+    'id': id,
+    'isVisible': isVisible,
+    'isRevealed': isRevealed,
+  };
 
   void reveal() {
     isVisible = true;
@@ -133,7 +146,7 @@ class Npc extends GameElement implements ProximityAware{
   LatLng get currentPosition {
     return movementController.currentPosition;
   }
-  
+
   NPCIcon get icon {
     if (isVisible) {
       if (isRevealed) {

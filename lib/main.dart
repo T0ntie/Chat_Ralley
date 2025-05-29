@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:storytrail/gui/game_screen.dart';
-import '../gui/credits_screen.dart';
-import '../gui/trail_selection.dart';
-import '../services/gpt_utilities.dart';
+import 'package:storytrail/gui/credits_screen.dart';
+import 'package:storytrail/gui/trail_selection.dart';
+import 'package:storytrail/services/gpt_utilities.dart';
 import 'services/location_service.dart';
 import 'engine/game_engine.dart';
 import 'app_resources.dart';

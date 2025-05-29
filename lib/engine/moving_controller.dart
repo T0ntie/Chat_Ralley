@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'dart:math';
 import 'dart:ui';
 
-import '../engine/game_engine.dart';
+import 'package:storytrail/engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
 
 class MovementUtils {
@@ -484,7 +484,7 @@ class GpsMovementController implements MovementController {
     }
 
     final t = elapsed / total;
-    print("⏱ Interpolationsfortschritt: t = $t");
+    //print("⏱ Interpolationsfortschritt: t = $t");
     if (t >= 1.0) {
       _finalizeMovement();
       return _currentInterpolatedPosition;

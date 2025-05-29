@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:storytrail/services/firebase_serice.dart';
-import '../app_resources.dart';
-import '../engine/game_engine.dart';
-import '../engine/item.dart';
+import 'package:storytrail/app_resources.dart';
+import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/engine/item.dart';
 
 class ItemButton extends StatefulWidget {
   final Item item;

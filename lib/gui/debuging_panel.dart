@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../actions/npc_action.dart';
-import '../engine/game_engine.dart';
-import '../engine/npc.dart';
+import 'package:storytrail/actions/npc_action.dart';
+import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/engine/npc.dart';
 
 class ActionTestingPanel extends StatefulWidget {
   final Map<String, List<(Npc, NpcAction)>> actionsByTrigger;

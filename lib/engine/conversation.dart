@@ -1,13 +1,16 @@
-import '../engine/game_engine.dart';
-import '../engine/prompt.dart';
-import '../engine/story_journal.dart';
+import 'package:storytrail/engine/game_element.dart';
 
-import '../services/chat_service.dart';
-import 'npc.dart';
+import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/engine/prompt.dart';
+import 'package:storytrail/engine/story_journal.dart';
+
+import 'package:storytrail/services/chat_service.dart';
+import 'package:storytrail/engine/npc.dart';
 import 'dart:convert';
 
-class Conversation {
+class Conversation with HasGameState {
   final Npc npc; // Der NPC, mit dem der User chattet
+  String id;
   final List<ChatMessage> _messages = []; // Liste von Nachrichten
   int userMessageCount = 0;
 
@@ -15,7 +18,7 @@ class Conversation {
 
   Future<void> Function()? onConversationFinished;
 
-  Conversation(this.npc) {
+  Conversation(this.npc) : id = "conversation_${npc.id}" {
     addSystemMessage(npc.prompt.getGameplayPrompt());
   }
 
@@ -164,20 +167,55 @@ class Conversation {
 
   List<Map<String, String>> _toOpenAIMessages(List<ChatMessage> messages) {
     return messages
-        .map((msg) => {'role': msg.getRoleString(), 'content': msg.rawText})
+        .map((msg) => {'role': msg.chatRole.name, 'content': msg.rawText})
         .toList();
   }
 
   void _log() {
     if (_messages.isNotEmpty) {
       ChatMessage cm = _messages.last;
-      if(_messages.length == 1 && cm.chatRole == ChatRole.system){
+      if (_messages.length == 1 && cm.chatRole == ChatRole.system) {
         //print("Prompt-message detected:");
         StoryJournal().logPrompt(npc.name, npc.prompt.getCreditsPrompt());
       }
 
-      StoryJournal().logMessage(cm.medium, cm.chatRole, npc.name, cm.filteredText);
+      StoryJournal().logMessage(
+        cm.medium,
+        cm.chatRole,
+        npc.name,
+        cm.filteredText,
+      );
     }
+  }
+
+  loadGameState(Map<String, dynamic> json) {
+    final messagesJson = json['messages'] as List;
+    for (final msgJson in messagesJson) {
+      final msg = ChatMessage(
+        rawText: msgJson['content'],
+        chatRole: ChatRole.values.firstWhere((e) => e.name == msgJson['role']),
+        medium: Medium.values.firstWhere((e) => e.name == msgJson['medium']),
+        timeStamp: DateTime.parse(msgJson['timeStamp']),
+      );
+      _messages.add(msg);
+    }
+  }
+
+  Map<String, dynamic> saveGameState() {
+    final messagesJson = <Map<String, dynamic>>[];
+    for (final msg in _messages) {
+      messagesJson.add({
+        'role': msg.chatRole.name,
+        'content': msg.rawText,
+        'timeStamp': msg.timeStamp.toIso8601String(),
+        'medium': msg.medium.name,
+      });
+    }
+    return {
+      'npcId': npc.id,
+      'userMessageCount': userMessageCount,
+      'messages': messagesJson,
+    };
   }
 }
 
@@ -204,12 +242,11 @@ class ChatMessage {
   ChatMessage({
     required this.rawText,
     required this.chatRole,
-    //this.isTrigger = false,
     this.medium = Medium.chat,
-  }) : filteredText = _filterMessage(rawText),
+    DateTime? timeStamp,
+  }) : timeStamp = timeStamp ?? DateTime.now(), filteredText = _filterMessage(rawText),
        signalJson =
-           (chatRole == ChatRole.assistant) ? _extractSignal(rawText) : {},
-       timeStamp = DateTime.now() {
+           (chatRole == ChatRole.assistant) ? _extractSignal(rawText) : {} {
     if (chatRole == ChatRole.assistant && signalJson.isNotEmpty) {
       print("✅ Signal gefunden: $signalJson");
     }
@@ -247,15 +284,4 @@ class ChatMessage {
   bool get fromAssistant => chatRole == ChatRole.assistant;
 
   bool get fromSystem => chatRole == ChatRole.system;
-
-  String getRoleString() {
-    switch (chatRole) {
-      case ChatRole.user:
-        return userRole;
-      case ChatRole.assistant:
-        return assistantRole;
-      case ChatRole.system:
-        return systemRole;
-    }
-  }
 }

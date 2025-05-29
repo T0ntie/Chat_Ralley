@@ -1,6 +1,6 @@
 
-import 'npc_action.dart';
-import '../engine/npc.dart';
+import 'package:storytrail/actions/npc_action.dart';
+import 'package:storytrail/engine/npc.dart';
 
 class FollowAction extends NpcAction{
 

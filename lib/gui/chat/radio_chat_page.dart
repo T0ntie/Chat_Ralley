@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../engine/npc.dart';
-import '../../gui/chat/radio_transmission_overlay.dart';
-import 'chat_page.dart';
+import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/gui/chat/radio_transmission_overlay.dart';
+import 'package:storytrail/gui/chat/chat_page.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import '../../engine/conversation.dart';
+import 'package:storytrail/engine/conversation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class RadioChatPage extends StatefulWidget {

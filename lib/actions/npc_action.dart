@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import '../actions/add_to_inventory_action.dart';
-import '../actions/behave_action.dart';
-import '../actions/end_game_action.dart';
-import '../actions/lead_action.dart';
-import '../actions/lead_along_action.dart';
-import '../actions/notify_action.dart';
-import '../actions/scan_to_inventory_action.dart';
-import '../actions/set_flag_action.dart';
-import '../actions/show_hotspot_action.dart';
-import '../actions/reveal_hotspot_action.dart';
-import '../actions/spawn_action.dart';
-import '../actions/stop_moving_action.dart';
-import '../actions/stop_talking_action.dart';
-import '../actions/talk_action.dart';
-import '../engine/game_engine.dart';
-import '../engine/story_journal.dart';
+import 'package:storytrail/actions/add_to_inventory_action.dart';
+import 'package:storytrail/actions/behave_action.dart';
+import 'package:storytrail/actions/end_game_action.dart';
+import 'package:storytrail/actions/lead_action.dart';
+import 'package:storytrail/actions/lead_along_action.dart';
+import 'package:storytrail/actions/notify_action.dart';
+import 'package:storytrail/actions/scan_to_inventory_action.dart';
+import 'package:storytrail/actions/set_flag_action.dart';
+import 'package:storytrail/actions/show_hotspot_action.dart';
+import 'package:storytrail/actions/reveal_hotspot_action.dart';
+import 'package:storytrail/actions/spawn_action.dart';
+import 'package:storytrail/actions/stop_moving_action.dart';
+import 'package:storytrail/actions/stop_talking_action.dart';
+import 'package:storytrail/actions/talk_action.dart';
+import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/engine/story_journal.dart';
 
-import 'walk_action.dart';
-import 'appear_action.dart';
-import 'reveal_action.dart';
-import 'follow_action.dart';
-import 'move_along_action.dart';
-import '../engine/npc.dart';
+import 'package:storytrail/actions/walk_action.dart';
+import 'package:storytrail/actions/appear_action.dart';
+import 'package:storytrail/actions/reveal_action.dart';
+import 'package:storytrail/actions/follow_action.dart';
+import 'package:storytrail/actions/move_along_action.dart';
+import 'package:storytrail/engine/npc.dart';
 
 enum TriggerType { signal, interaction, approach, init, hotspot, message }
 

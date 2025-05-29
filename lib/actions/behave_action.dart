@@ -1,7 +1,7 @@
-import '../engine/game_engine.dart';
+import 'package:storytrail/engine/game_engine.dart';
 
-import 'npc_action.dart';
-import '../engine/npc.dart';
+import 'package:storytrail/actions/npc_action.dart';
+import 'package:storytrail/engine/npc.dart';
 
 class BehaveAction extends NpcAction {
   String? directiveMessage;

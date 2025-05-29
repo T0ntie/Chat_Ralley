@@ -56,6 +56,7 @@ class ChatService {
   }
 
 
+  //wurde ins backend verlagert
 
 /*
   static Future<String> processMessages(List<Map<String, String>> messages) async

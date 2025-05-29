@@ -3,10 +3,6 @@ import 'package:storytrail/services/firebase_serice.dart';
 class Prompt {
   Prompt._();
 
-  //static const String gamePromptFile = 'assets/story/prompts/game-prompt.txt';
-  //static const String compressPromptFile = 'assets/story/prompts/summarize-prompt.txt';
-  //static const String promptAssetPath = 'assets/story/prompts/';
-
   static const String promptUriPath = 'tibia/prompts/';
   static const String gamePromptUri = '${promptUriPath}game-prompt.txt';
   static const String compressPromptUri = '${promptUriPath}summarize-prompt.txt';
@@ -74,19 +70,8 @@ class Prompt {
   Future<void> _loadPrompt(String promptFile) async {
     try {
       this.promptFile = promptFile;
-      //final String gamePrompt = await rootBundle.loadString(gamePromptFile);
       final String gamePrompt = await FirebaseHosting.loadStringFromUrl(gamePromptUri);
-/*
-      final String compressPrompt = await rootBundle.loadString(
-        compressPromptFile,
-      );
-*/
       final String compressPrompt = await FirebaseHosting.loadStringFromUrl(compressPromptUri);
-/*
-      final String npcPrompt = await rootBundle.loadString(
-        promptAssetPath + promptFile,
-      );
-*/
       final String npcPrompt = await FirebaseHosting.loadStringFromUrl(promptUriPath + promptFile);
       String prompt = gamePrompt + npcPrompt + compressPrompt;
       try {

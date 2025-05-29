@@ -1,8 +1,8 @@
-import '../gui/credits_intent.dart';
-import '../gui/ui_intent.dart';
+import 'package:storytrail/gui/credits_intent.dart';
+import 'package:storytrail/gui/ui_intent.dart';
 
 import 'npc_action.dart';
-import '../engine/npc.dart';
+import 'package:storytrail/engine/npc.dart';
 
 class EndGameAction extends NpcAction {
 

@@ -60,8 +60,21 @@ class FirebaseHosting {
   static Future<Map<String, dynamic>> loadJsonFromUrl(String url) async {
     final String completeUrl = '${FireBaseHostingURI}${url}';
 
+    print('📤 Starte Request an: $completeUrl');
+
     try {
-      final response = await http.get(Uri.parse(completeUrl));
+
+      //final response = await http.get(Uri.parse(completeUrl));
+
+      final client = http.Client();
+      final response = await client.get(Uri.parse(completeUrl), headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'FlutterTest/1.0',
+      });
+
+      print('📥 HTTP Status: ${response.statusCode}');
+      print('📥 Response Headers: ${response.headers}');
+      print('📥 Response Body (gekürzt): ${utf8.decode(response.bodyBytes).substring(0, 100)}...');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(

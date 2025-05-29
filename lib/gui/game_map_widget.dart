@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/svg.dart';
-import '../app_resources.dart';
-import '../engine/game_engine.dart';
-import '../engine/npc.dart';
-import '../gui/npc_info_dialog.dart';
+import 'package:storytrail/app_resources.dart';
+import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/gui/npc_info_dialog.dart';
 import 'package:latlong2/latlong.dart';
 
 class GameMapWidget extends StatelessWidget {

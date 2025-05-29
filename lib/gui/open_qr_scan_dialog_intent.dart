@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:storytrail/gui/game_screen.dart';
-import '../engine/item.dart';
-import '../engine/story_journal.dart';
-import '../gui/item_qr_scan_dialog.dart';
-import '../main.dart';
-import 'ui_intent.dart';
+import 'package:storytrail/engine/item.dart';
+import 'package:storytrail/engine/story_journal.dart';
+import 'package:storytrail/gui/item_qr_scan_dialog.dart';
+import 'package:storytrail/main.dart';
+import 'package:storytrail/gui/ui_intent.dart';
 
 class OpenScanDialogIntent extends UIIntent {
   final String title;

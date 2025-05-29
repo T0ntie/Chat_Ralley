@@ -1,8 +1,8 @@
-import '../engine/story_line.dart';
+import 'package:storytrail/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 
-import 'npc_action.dart';
-import '../engine/npc.dart';
+import 'package:storytrail/actions/npc_action.dart';
+import 'package:storytrail/engine/npc.dart';
 
 class WalkAction extends NpcAction {
   final double lat;

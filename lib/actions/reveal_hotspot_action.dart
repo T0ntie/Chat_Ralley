@@ -1,35 +1,40 @@
-import '../engine/game_engine.dart';
-import '../engine/hotspot.dart';
+import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/engine/hotspot.dart';
 
-import 'npc_action.dart';
-import '../engine/npc.dart';
+import 'package:storytrail/actions/npc_action.dart';
+import 'package:storytrail/engine/npc.dart';
 
 class RevealHotspotAction extends NpcAction{
 
-  String hotspotName;
+  String hotspotId;
 
-  RevealHotspotAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.hotspotName});
+  RevealHotspotAction({required super.trigger, required super.conditions, super.notification, super.defer, required this.hotspotId});
 
   @override
   Future<bool> excecute(Npc npc) async {
-    print('$hotspotName revealed');
-    Hotspot? spot = GameEngine().getHotspotByName(hotspotName);
+    Hotspot? spot = GameEngine().getHotspotById(hotspotId);
+
     if (spot != null) {
       spot.isVisible = true;
       spot.isRevealed = true;
+      print('${spot.name} revealed');
+    }
+    else {
+      print('❌ hotspot ${hotspotId} not found');
+      return false;
     }
     return true;
   }
 
   static RevealHotspotAction actionFromJson(Map<String, dynamic> json) {
-    final hotspotName = json['hotspot'];
+    final hotspotId = json['hotspot'];
     final (trigger, conditions, notification, defer) = NpcAction.actionFieldsFromJson(json);
     return RevealHotspotAction(
         trigger: trigger,
         conditions: conditions,
         notification: notification,
         defer: defer,
-        hotspotName: hotspotName);
+        hotspotId: hotspotId);
   }
   static void register() {
     NpcAction.registerAction('revealHotspot', RevealHotspotAction.actionFromJson);
