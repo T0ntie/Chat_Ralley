@@ -15,6 +15,7 @@ class Npc extends GameElement with HasPosition, HasGameState implements Proximit
   final String? iconAsset;
 
   bool hasSomethingToSay = false;
+  bool hasInteracted = false;
 
   List<NpcAction> actions = [];
 
@@ -40,10 +41,11 @@ class Npc extends GameElement with HasPosition, HasGameState implements Proximit
       toPosition: position,
       speedInKmh: speed,
       onEnterRange: () => GameEngine().registerApproach(this),
-      onExitRange: () => print("Range lost."),
+      onExitRange: () => {},//print("Range lost."),
       getPlayerPosition: () => GameEngine().playerPosition,
     );
     currentConversation = Conversation(this);
+    registerSelf();
   }
 
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
@@ -73,15 +75,19 @@ class Npc extends GameElement with HasPosition, HasGameState implements Proximit
     }
   }
 
-  loadGameState(Map<String, dynamic> json) { //fixme eine onLoadAction, die den NPC sinnvoll platziert
-    isVisible = json['isVisible'];
-    isRevealed = json['isRevealed'];
+  loadGameState(Map<String, dynamic> json) {
+    isVisible = json['isVisible'] as bool;
+    isRevealed = json['isRevealed'] as bool;
+    hasSomethingToSay = json['hasSomethingToSay'] as bool;
+    hasInteracted = json['hasInteracted'] as bool;
   }
 
   Map<String, dynamic> saveGameState() => {
     'id': id,
     'isVisible': isVisible,
     'isRevealed': isRevealed,
+    'hasSomethingToSay': hasSomethingToSay,
+    'hasInteracted': hasInteracted,
   };
 
   void reveal() {

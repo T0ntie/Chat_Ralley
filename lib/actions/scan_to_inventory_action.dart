@@ -7,21 +7,21 @@ import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
 
 class ScanToInventoryAction extends NpcAction {
-  final String itemName;
+  final String itemId;
 
   ScanToInventoryAction({
     required super.trigger,
     required super.conditions,
     super.notification,
     super.defer,
-    required this.itemName,
+    required this.itemId,
   });
 
   @override
   Future<bool> excecute(Npc npc) async {
-    Item? item = GameEngine().getItemByName(itemName);
+    Item? item = GameEngine().getItemById(itemId);
     if (item == null) {
-      throw Exception("Item '$itemName nicht gefunden.");
+      throw Exception("Item mit id: $itemId nicht gefunden.");
     }
 
     dispatchUIIntent(
@@ -46,7 +46,7 @@ class ScanToInventoryAction extends NpcAction {
       conditions: conditions,
       notification: notification,
       defer: defer,
-      itemName: json['item'],
+      itemId: json['item'],
     );
   }
 

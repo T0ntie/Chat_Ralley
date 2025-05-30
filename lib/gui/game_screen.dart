@@ -13,10 +13,12 @@ import 'package:storytrail/gui/game_map_widget.dart';
 import 'package:storytrail/gui/item_button.dart';
 import 'package:storytrail/gui/notification_services.dart';
 import 'package:storytrail/gui/open_qr_scan_dialog_intent.dart';
+import 'package:storytrail/gui/save_game_dialog.dart';
 import 'package:storytrail/gui/side_panel.dart';
 import 'package:storytrail/gui/ui_intent.dart';
 import 'package:storytrail/main.dart';
 import 'package:storytrail/services/compass_service.dart';
+import 'package:storytrail/services/firebase_serice.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key, required this.title, required this.trailId, this.onFatalError,});
@@ -94,7 +96,6 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
       setState(() {
         _initializationCompleted = true;
       });
-      GameEngine().registerInitialization();
     }
   }
 
@@ -175,6 +176,9 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
     });
     _initializeGameUI();
     _initializeGame();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _maybeLoadGameState();
+    });
   }
 
   Future<void> _handleDeferredGUIEvents() async {
@@ -345,6 +349,14 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
               });
             },
           ),
+          IconButton(
+            icon: Icon(Icons.save),
+            tooltip: "Spielstand speichern",
+            onPressed: () async {
+              saveGame();
+            },
+          ),
+
         ],
       ),
 
@@ -420,6 +432,57 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
         _isSidePanelVisible = true;
       });
     }
+  }
+
+  void _maybeLoadGameState() async {
+
+    Map <String, dynamic>? gameState = await FirestoreService.loadGameState(widget.trailId);
+
+    if (gameState == null) {
+      print("no savegame found");
+      return;
+    }
+
+    Map<String, dynamic> meta = gameState['meta'];
+    final DateTime savedTime = DateTime.parse(meta['saveTime']);
+
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ContinueGameDialog(
+        saveDate: savedTime,
+        onLoadGame: () {
+          GameEngine().loadGameState(gameState);
+          SnackBarService.showSuccessSnackBar(context, "✔️ Spielstand erfolgreich wieder hergestellt");
+          GameEngine().registerRestore();
+        },
+        onNewGame: () {
+          GameEngine().registerInitialization();
+        },
+      ),
+    );
+
+
+  }
+
+  void saveGame() async {
+    print("Saving game state...");
+    final Map<String, dynamic> saveData;
+    try {
+      saveData = await GameEngine().saveGameState();
+    } catch (e) {
+      print("Error creating save State : $e");
+      return;
+    }
+    try {
+      FirestoreService.saveGameState(trailId: GameEngine().trailId!, jsonGameState: saveData);
+    }catch(e) {
+      print("Error saving game state : $e");
+      return;
+    }
+    print("Game state successfully saved");
+    SnackBarService.showSuccessSnackBar(context, "✔️ Spielstand erfolgreich gespeichert");
   }
 
   @override

@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
@@ -18,13 +20,12 @@ class FirebaseHosting {
           (context, _) => const Center(child: CircularProgressIndicator()),
       errorWidget:
           (context, _, __) =>
-              const Icon(Icons.broken_image, color: Colors.white70),
+      const Icon(Icons.broken_image, color: Colors.white70),
       fit: fit,
     );
   }
 
-  static Widget loadSvgWidget(
-    String url, {
+  static Widget loadSvgWidget(String url, {
     ColorFilter? colorFilter,
     double width = 24,
     double height = 24,
@@ -63,18 +64,7 @@ class FirebaseHosting {
     print('📤 Starte Request an: $completeUrl');
 
     try {
-
-      //final response = await http.get(Uri.parse(completeUrl));
-
-      final client = http.Client();
-      final response = await client.get(Uri.parse(completeUrl), headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'FlutterTest/1.0',
-      });
-
-      print('📥 HTTP Status: ${response.statusCode}');
-      print('📥 Response Headers: ${response.headers}');
-      print('📥 Response Body (gekürzt): ${utf8.decode(response.bodyBytes).substring(0, 100)}...');
+      final response = await http.get(Uri.parse(completeUrl));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(
@@ -91,4 +81,46 @@ class FirebaseHosting {
       rethrow;
     }
   }
+}
+
+class FirestoreService {
+
+  //fixme check of das passt
+  static Future<void> saveGameState({
+    required String trailId,
+    required Map<String, dynamic> jsonGameState,
+  }) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) throw Exception("Benutzer nicht angemeldet");
+
+    final docRef = FirebaseFirestore.instance
+        .collection('gameStates')
+        .doc(uid)
+        .collection('saves')
+        .doc(trailId);
+
+    await docRef.set({
+      'saveTime': FieldValue.serverTimestamp(),
+      'data': jsonGameState,
+    });
+
+    print("Spielstand für trailId '$trailId' gespeichert.");
+  }
+
+  static Future<Map<String, dynamic>?> loadGameState(String trailId) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return null;
+
+    final docRef = FirebaseFirestore.instance
+        .collection('gameStates')
+        .doc(uid)
+        .collection('saves')
+        .doc(trailId);
+
+    final snapshot = await docRef.get();
+    if (!snapshot.exists) return null;
+
+    return snapshot.data()?['data'];
+  }
+
 }

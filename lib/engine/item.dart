@@ -31,7 +31,9 @@ class Item with HasGameState {
     required this.iconAsset,
     required this.useType,
     required this.npcId,
-  });
+  }) {
+    registerSelf();
+  }
 
   static Item fromJson(Map<String, dynamic> json) {
     return Item(

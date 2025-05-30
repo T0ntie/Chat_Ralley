@@ -19,7 +19,9 @@ class Conversation with HasGameState {
   Future<void> Function()? onConversationFinished;
 
   Conversation(this.npc) : id = "conversation_${npc.id}" {
-    addSystemMessage(npc.prompt.getGameplayPrompt());
+    registerSelf();
+    addPrompt(npc.prompt.getGameplayPrompt());
+    print("System prompt added for: ${npc.name}");
   }
 
   Future<void> handleTriggerMessage() async {
@@ -41,7 +43,8 @@ class Conversation with HasGameState {
   List<ChatMessage> getVisibleMessages(Medium medium) {
     return List.unmodifiable(
       _messages.where(
-        (msg) => (!msg.fromSystem && !msg.isTrigger && msg.medium == medium),
+            (msg) =>
+        (!msg.fromSystem && !msg.isTrigger && msg.medium == medium),
       ),
     );
   }
@@ -79,6 +82,12 @@ class Conversation with HasGameState {
     }
   }
 
+  void addPrompt(String message) {
+    _messages.add(ChatMessage(
+        rawText: message, chatRole: ChatRole.system, isInitialPrompt: true));
+    _log();
+  }
+
   void addSystemMessage(String message) {
     _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.system));
     _log();
@@ -89,13 +98,18 @@ class Conversation with HasGameState {
 
     // 1) --- Listen vorbereiten -----------------------------------------------
 
+    assert(
+    _messages.any((m) => m.isInitialPrompt),
+    'Fehlender Initial-Prompt – nicht vorhanden',
+    );
+
     final initialPrompt = _messages.firstWhere(
-      (m) => m.fromSystem,
-      orElse:
-          () => ChatMessage(
-            rawText: npc.prompt.getGameplayPrompt(),
-            chatRole: ChatRole.system,
-          ),
+          (m) => m.isInitialPrompt,
+      orElse: () => ChatMessage(
+        rawText: npc.prompt.getGameplayPrompt(),
+        chatRole: ChatRole.system,
+        isInitialPrompt: true,
+      ),
     );
 
     final List<ChatMessage> laterSystem = [];
@@ -103,35 +117,35 @@ class Conversation with HasGameState {
 
     // Ab Index 1 durchsuchen, damit initialPrompt nicht doppelt landet
     for (var i = 1; i < _messages.length; i++) {
-      final m = _messages[i];
-      (m.fromSystem ? laterSystem : userAssist).add(m);
+    final m = _messages[i];
+    (m.fromSystem ? laterSystem : userAssist).add(m);
     }
 
     if (userAssist.length <= keep && laterSystem.isEmpty) {
-      return; // nichts zu tun
+    return; // nichts zu tun
     }
 
     // 2) --- bestimmen, was behalten / zusammengefasst wird -------------------
     final userAssistToKeep = userAssist.sublist(
-      userAssist.length - keep.clamp(0, userAssist.length),
+    userAssist.length - keep.clamp(0, userAssist.length),
     );
 
     final toSummarize = [
-      ...laterSystem,
-      ...userAssist.sublist(0, userAssist.length - userAssistToKeep.length),
+    ...laterSystem,
+    ...userAssist.sublist(0, userAssist.length - userAssistToKeep.length),
     ];
 
     // 3) --- GPT-Aufruf --------------------------------------------------------
     final promptForGPT = [
-      ChatMessage(
-        rawText: npc.prompt.getSummarizePrompt(),
-        chatRole: ChatRole.system,
-      ),
-      ...toSummarize,
-      ChatMessage(
-        rawText: Prompt.summarizeCommand, //  "[Fasse zusammen]"
-        chatRole: ChatRole.user,
-      ),
+    ChatMessage(
+    rawText: npc.prompt.getSummarizePrompt(),
+    chatRole: ChatRole.system,
+    ),
+    ...toSummarize,
+    ChatMessage(
+    rawText: Prompt.summarizeCommand, //  "[Fasse zusammen]"
+    chatRole: ChatRole.user,
+    ),
     ];
 
     final summary = await _processConversation(promptForGPT);
@@ -140,12 +154,12 @@ class Conversation with HasGameState {
 
     // 4) --- Neue Nachrichtenliste zusammenbauen ------------------------------
     _messages
-      ..clear()
-      ..addAll([
-        initialPrompt,
-        ChatMessage(rawText: summary, chatRole: ChatRole.system),
-        ...userAssistToKeep,
-      ]);
+    ..clear()
+    ..addAll([
+    initialPrompt,
+    ChatMessage(rawText: summary, chatRole: ChatRole.system),
+    ...userAssistToKeep,
+    ]);
   }
 
   bool _isSummarizing = false;
@@ -190,6 +204,20 @@ class Conversation with HasGameState {
 
   loadGameState(Map<String, dynamic> json) {
     final messagesJson = json['messages'] as List;
+    //alle messages außer dem initial prompt entfernen
+    _messages.removeWhere((m) => !m.isInitialPrompt);
+    assert(_messages.any((m) => m.isInitialPrompt), 'Missing initial prompt after load!');
+
+    if (!_messages.any((m) => m.isInitialPrompt)) {
+      _messages.insert(
+        0,
+        ChatMessage(
+          rawText: npc.prompt.getGameplayPrompt(),
+          chatRole: ChatRole.system,
+          isInitialPrompt: true,
+        ),
+      );
+    }
     for (final msgJson in messagesJson) {
       final msg = ChatMessage(
         rawText: msgJson['content'],
@@ -203,7 +231,10 @@ class Conversation with HasGameState {
 
   Map<String, dynamic> saveGameState() {
     final messagesJson = <Map<String, dynamic>>[];
-    for (final msg in _messages) {
+    //System Prompt wird nicht gespeichert!
+    final messagesToSave = _messages.where((m) => !m.isInitialPrompt).toList();
+
+    for (final msg in messagesToSave) {
       messagesJson.add({
         'role': msg.chatRole.name,
         'content': msg.rawText,
@@ -238,15 +269,19 @@ class ChatMessage {
   final ChatRole chatRole;
   final Medium medium;
   final DateTime timeStamp;
+  final bool isInitialPrompt;
 
   ChatMessage({
     required this.rawText,
     required this.chatRole,
     this.medium = Medium.chat,
+    this.isInitialPrompt = false,
     DateTime? timeStamp,
-  }) : timeStamp = timeStamp ?? DateTime.now(), filteredText = _filterMessage(rawText),
-       signalJson =
-           (chatRole == ChatRole.assistant) ? _extractSignal(rawText) : {} {
+  })
+      : timeStamp = timeStamp ?? DateTime.now(),
+        filteredText = _filterMessage(rawText),
+        signalJson =
+        (chatRole == ChatRole.assistant) ? _extractSignal(rawText) : {} {
     if (chatRole == ChatRole.assistant && signalJson.isNotEmpty) {
       print("✅ Signal gefunden: $signalJson");
     }

@@ -51,8 +51,7 @@ void main() {
       }
 
       for (final key in action.keys) {
-        if (key.startsWith('on') &&
-            !NpcActionTrigger.stringToTriggerTypeForTest.containsKey(key)) {
+        if (key.startsWith('on') && !TriggerTypeX.isKnownKey(key)) {
           unknownTriggers.add(key);
         }
       }
@@ -250,6 +249,7 @@ void main() {
       'targetNpc',
       'radius',
       'onInit',
+      'onRestore',
       'onSignal',
       'onInteraction',
       'onHotspot',

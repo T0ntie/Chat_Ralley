@@ -21,20 +21,23 @@ class Hotspot extends GameElement with HasGameState implements ProximityAware {
     required super.isRevealed,
     required this.onEnter,
     required this.onExit,
-  });
+  }) {
+    registerSelf();
+  }
 
   static Hotspot fromJson(Map<String, dynamic> json) {
     final LatLng position = StoryLine.positionFromJson(json);
     String name = json['name'] as String;
+    String id = json['id'] as String;
     return Hotspot(
-      id: json['id'] as String,
+      id: id,
       name: name,
       radius: (json['radius'] as num?)?.toDouble() ?? 10.0,
       isVisible: json['visible'] as bool? ?? true,
       isRevealed: json['revealed'] as bool? ?? true,
       position: position,
       imageAsset: json['image'] as String? ?? GameElement.unknownImageAsset,
-      onEnter: () => GameEngine().registerHotspot(name),
+      onEnter: () => GameEngine().registerHotspot(id),
       onExit: () => print("Player left Hotspot $name."),
     );
   }

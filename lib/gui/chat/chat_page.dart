@@ -46,6 +46,7 @@ class _ChatPageState extends State<ChatPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await GameEngine().registerInteraction(widget.npc);
+      widget.npc.hasInteracted = true;
       _handleTriggers();
       widget.npc.hasSomethingToSay = false;
     });

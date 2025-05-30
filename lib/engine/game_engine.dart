@@ -35,14 +35,14 @@ class GameEngine {
   bool isGPSSimulating = false;
   LatLng? _lastSimulatedPosition;
 
-  late final MovementController _playerMovementController;
+  late MovementController _playerMovementController;
 
   MovementController get playerMovementController =>
       _playerMovementController;
 
   String? trailId;
 
-  String playerId = "player123"; //fixme firebase anonymous login
+  late String playerId; //fixme brauch ich das hier
 
   List<Trail> trailsList = [];
 
@@ -60,6 +60,7 @@ class GameEngine {
   final Map<Npc, List<NpcAction>> _interactionSubscriptions = {};
   final Map<Npc, List<NpcAction>> _approachSubscriptions = {};
   final Map<Npc, List<NpcAction>> _initSubscriptions = {};
+  final Map<Npc, List<NpcAction>> _restoreSubscriptions = {};
   final Map<String, List<(Npc, NpcAction)>> _hotspotSubscriptions = {};
   final Map<Npc, List<(NpcAction, int)>> _messageCountSubscriptions = {};
 
@@ -173,16 +174,16 @@ class GameEngine {
     return "$trailId/${hotspot.displayImageAsset}";
   }
 
-  Item? getItemByName(String itemName) {
+  Item? getItemById(String itemId) {
     try {
-      return items.firstWhere((item) => item.name == itemName);
+      return items.firstWhere((item) => item.id == itemId);
     } catch (e) {
       return null;
     }
   }
 
-  bool ownsItem(String itemName) {
-    Item? item = getItemByName(itemName);
+  bool ownsItem(String itemId) {
+    Item? item = getItemById(itemId);
     return item?.isOwned ?? false;
   }
 
@@ -242,6 +243,10 @@ class GameEngine {
           case TriggerType.init:
             _initSubscriptions.putIfAbsent(npc, () => []).add(action);
             print('🚀 Registered init action for ${npc.name}');
+            break;
+          case TriggerType.restore:
+            _restoreSubscriptions.putIfAbsent(npc, () => []).add(action);
+            print('💾 Registered restore action for ${npc.name}');
             break;
           case TriggerType.hotspot:
             final hotspotName = action.trigger.value as String;
@@ -348,7 +353,7 @@ class GameEngine {
   }
 
   Future<void> registerInitialization() async {
-    print('🚀 Initialization registered!');
+    print('🚀 Initialization event registered!');
     for (final entry in _initSubscriptions.entries.toList()) {
       final Npc npc = entry.key;
       final List<NpcAction> actions = entry.value;
@@ -358,9 +363,25 @@ class GameEngine {
           '🚀 Action ${action.runtimeType} for NPC: ${npc.name} executed: $didRun',
         );
       }
-      _initSubscriptions.remove(entry.key); // ✅ funktioniert jetzt
+      _initSubscriptions.remove(entry.key);
     }
   }
+
+  Future<void> registerRestore() async {
+    print('💾 Restore event registered!');
+    for (final entry in _restoreSubscriptions.entries.toList()) {
+      final Npc npc = entry.key;
+      final List<NpcAction> actions = entry.value;
+      for (final action in actions) {
+        final didRun = await action.invoke(npc);
+        print(
+          '💾 Action ${action.runtimeType} for NPC: ${npc.name} executed: $didRun',
+        );
+      }
+      _restoreSubscriptions.remove(entry.key);
+    }
+  }
+
 
   Future<void> registerSignal(Map<String, dynamic> json) async {
     print('Signal $json registered!');
@@ -446,7 +467,8 @@ class GameEngine {
       'playerPosition' : {
         'lat': playerPosition.latitude,
         'lng': playerPosition.longitude,
-      }
+      },
+      'flags': flags,
     };
     final saveData = <String, dynamic>{};
     for (final entry in _gameSate.entries) {
@@ -461,6 +483,10 @@ class GameEngine {
 
   void loadGameState(Map<String, dynamic> json) {
     final metaData = json['meta'] as Map<String, dynamic>;
+    final flagsJson = metaData['flags'] as Map<String, dynamic>;
+    flagsJson.forEach((key, value) {
+        flags[key] = value as bool;
+      });
 
     print ("Loaded GameState from trail ${metaData['trailId']} from ${metaData['saveTime']}");
 

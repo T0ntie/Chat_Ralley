@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:storytrail/gui/game_screen.dart';
 import 'package:storytrail/gui/credits_screen.dart';
@@ -42,6 +43,9 @@ void main() async {
     print("✅ App Check Production Provider aktiviert.");
   }
 
+  //firebase anonymouse login
+  initAnonymousUser();
+
   GptUtilities.init();
 
   // Nur Hochformat erlauben
@@ -59,6 +63,21 @@ void main() async {
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<GameScreenState> homePageKey = GlobalKey<GameScreenState>();
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>(); //fixme ist vielleicht eine Sackgasse
+
+Future<void> initAnonymousUser() async {
+  final auth = FirebaseAuth.instance;
+
+  // Prüfen, ob der Nutzer bereits eingeloggt ist
+  if (auth.currentUser == null) {
+    await auth.signInAnonymously();
+  }
+
+  // UID holen
+  final uid = auth.currentUser!.uid;
+  GameEngine().playerId = uid;
+  print('Angemeldet mit UID: $uid');
+}
+
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

@@ -25,6 +25,27 @@
           "invokeAction": "follow"
         },
         {
+          "onRestore": null,
+          "invokeAction": "spawn",
+          "distance": 50,
+          "notification": "Jemand kommt auf dich zu",
+          "conditions": {
+            "flag:knatterbachAtPolice": false
+          }
+        },
+        {
+          "onRestore": null,
+          "invokeAction": "follow",
+          "conditions": {
+            "flag:knatterbachAtPolice": false
+          }
+        },
+        {
+          "onRestore": null,
+          "invokeAction": "talk",
+          "trigger": "[Der Spieler hat dich sehr lange warten lassen, beschwer dich!]",
+        },
+        {
           "onInteraction": null,
           "invokeAction": "reveal"
         },
@@ -53,7 +74,7 @@
           "invokeAction": "talk",
           "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]",
           "conditions": {
-            "knatterbachAtPolice": false
+            "flag:knatterbachAtPolice": false
           }
         },
         {
@@ -80,7 +101,7 @@
           "invokeAction": "talk",
           "trigger": "[Der Spieler kommt hilfesuchend in die Polizeistation]",
           "conditions": {
-            "knatterbachAtPolice": true
+            "flag:knatterbachAtPolice": true
           }
         },
         {
@@ -99,7 +120,7 @@
           "invokeAction": "behave",
           "promptTag": "tibia",
             "conditions": {
-              "item:Tibia": true
+              "item:item_tibia": true
             }
           }
       ]
@@ -122,11 +143,19 @@
           "invokeAction": "reveal"
         },
         {
+          "onRestore": null,
+          "invokeAction": "behave",
+          "directive": "[Der Spieler war lange weg und hat sich nicht um dein Problem gekümmert]",
+          "conditions": {
+            "npc:npc_knoechelbein.hasInteracted": true
+          }
+        },
+        {
           "onMessageCount": 10,
           "invokeAction": "behave",
           "directive": "[Erinnere dich an das Besucherbuch]",
           "conditions": {
-            "knowsKrollsAddress": false
+            "flag:knowsKrollsAddress": false
           }
         },
         {
@@ -145,7 +174,7 @@
           "invokeAction": "behave",
           "promptTag": "tibia",
           "conditions": {
-            "item:Tibia": true
+            "item:item_tibia": true
           }
         }
       ]
@@ -220,7 +249,7 @@
           "path": "BonePath",
           "notification": "Der Hund möchte dir etwas zeigen!",
           "conditions": {
-            "item:Karotte": true
+            "item:item_carrot": true
           }
         },
         {
@@ -242,7 +271,7 @@
           "promptTag": "reveal",
           "notification": "Der Hund schnuppert interessiert an deiner Tasche",
           "conditions": {
-            "item:Karotte": true
+            "item:item_carrot": true
           }
         },
         {
@@ -278,7 +307,7 @@
         {
           "onHotspot": "spot_hide",
           "invokeAction": "scanToInventory",
-          "item": "Tibia",
+          "item": "item_tibia",
           "notification": "Du hast ein T-Rex Tibia erhalten."
         }
       ]
@@ -310,37 +339,37 @@
         {
           "onSignal": "getBone",
           "invokeAction": "addToInventory",
-          "item": "Knochen",
+          "item": "item_bone",
           "notification": "Du hast einen Knochen erhalten."
         },
         {
           "onSignal": "getCarrot",
           "invokeAction": "addToInventory",
-          "item": "Karotte",
+          "item": "item_carrot",
           "notification": "Du hast eine Karotte erhalten."
         },
         {
           "onSignal": "getBall",
           "invokeAction": "addToInventory",
-          "item": "Ball",
+          "item": "item_ball",
           "notification": "Du hast einen Ball erhalten."
         },
         {
           "onSignal": "getMeat",
           "invokeAction": "addToInventory",
-          "item": "Fleisch",
+          "item": "item_meat",
           "notification": "Du hast ein Stück Fleisch erhalten."
         },
         {
           "onSignal": "getCookie",
           "invokeAction": "addToInventory",
-          "item": "Keks",
+          "item": "item_cookie",
           "notification": "Du hast ein Hundekeks erhalten."
         },
         {
           "onSignal": "getSteak",
           "invokeAction": "addToInventory",
-          "item": "Steak",
+          "item": "item_steak",
           "notification": "Du hast ein Steak erhalten."
         },
         {

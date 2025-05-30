@@ -195,7 +195,6 @@ class NPCMovementController implements MovementController {
   }
 
   void moveTo(LatLng toP) {
-    //resetMovementModes(); // Setzt leading/following/path zurück
     path = [];
     mode = MovementMode.navigating;
 
@@ -425,7 +424,7 @@ class GpsMovementController implements MovementController {
   final SpeedAverager _speedAverager = SpeedAverager(maxSamples: 5);
 
   void receiveGpsUpdate(LatLng newPosition) {
-    print("📡 GPS Update erhalten: $newPosition");
+    //print("📡 GPS Update erhalten: $newPosition");
     final now = DateTime.now();
 
     _speedAverager.addPosition(newPosition); // Neue Position merken
@@ -437,7 +436,7 @@ class GpsMovementController implements MovementController {
       _lastGpsTimestamp = now;
       _isMoving = false;
       _hasReceivedFirstUpdate = true;
-      print("⏸️ Erstes GPS, keine Interpolation gestartet.");
+      //print("⏸️ Erstes GPS, keine Interpolation gestartet.");
       return;
     }
 
@@ -448,7 +447,7 @@ class GpsMovementController implements MovementController {
       _currentInterpolatedPosition = newPosition;
       _lastGpsTimestamp = now;
       _isMoving = false;
-      print("⚠️ Keine Bewegung erkennbar – kein Interpolieren");
+      //print("⚠️ Keine Bewegung erkennbar – kein Interpolieren");
       return;
     }
 
@@ -463,7 +462,7 @@ class GpsMovementController implements MovementController {
     _nextGpsTimestamp = now.add(duration);
     _isMoving = true;
 
-    print("🚀 Interpolation gestartet von $_lastGpsPosition → $_nextGpsPosition über ${duration.inMilliseconds} ms");
+    //print("🚀 Interpolation gestartet von $_lastGpsPosition → $_nextGpsPosition über ${duration.inMilliseconds} ms");
   }
 
   @override
@@ -527,9 +526,7 @@ class GpsMovementController implements MovementController {
   void moveTo(LatLng toP) {
     print("⚠️ moveTo wird bei echtem GPS nicht unterstützt.");
   }
-
 }
-
 
 class MovementSample {
   final LatLng position;

@@ -5,25 +5,25 @@ import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
 
 class AddToInventoryAction extends NpcAction {
-  final String itemName;
+  final String itemId;
 
   AddToInventoryAction({
     required super.trigger,
     required super.conditions,
     super.notification,
     super.defer,
-    required this.itemName,
+    required this.itemId,
   });
 
   @override
   Future<bool> excecute(Npc npc) async {
-    Item? item = GameEngine().getItemByName(itemName);
+    Item? item = GameEngine().getItemById(itemId);
     if (item == null) {
-      throw Exception("Item '$itemName nicht gefunden.");
+      throw Exception("Kein Item mit Id: $itemId gefunden.");
     }
     item.isOwned = true;
     item.isNew = true;
-    log("${npc.name} hat dem Spieler folgenden Gegenstand gegeben: $itemName");
+    log("${npc.name} hat dem Spieler folgenden Gegenstand gegeben: ${item.name}");
     return item.isOwned;
   }
 
@@ -39,7 +39,7 @@ class AddToInventoryAction extends NpcAction {
       conditions: conditions,
       notification: notification,
       defer: defer,
-      itemName: json['item'],
+      itemId: json['item'],
     );
   }
 
