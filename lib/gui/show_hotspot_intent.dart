@@ -1,7 +1,7 @@
-import 'dart:ui'; // für lerpDouble
-import 'package:flutter/material.dart';
+import 'package:flutter/animation.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:storytrail/engine/hotspot.dart';
+import 'package:storytrail/gui/camera_flight.dart';
 import 'package:storytrail/gui/game_screen.dart';
 import 'ui_intent.dart';
 
@@ -11,20 +11,33 @@ class ShowHotspotIntent extends UIIntent {
   ShowHotspotIntent({required this.hotspot});
 
   @override
+  @override
   Future<void> call(GameScreenState state) async {
     final controller = state.mapController;
+
+    await CameraFlight(
+      state: state,
+      controller: state.mapController,
+      to: hotspot.position,
+    ).animate();
+  }
+}
+/*
+    final animator = CameraFlightAnimator(
+      vsync: state,
+      controller: controller,
+    );
 
     final from = controller.camera.center;
     final fromZoom = controller.camera.zoom;
 
     final to = hotspot.position;
     final toZoom = 17.0;
-    final midZoom = 16.0; // Flughöhe
+    final midZoom = 16.0;
 
     final distanceCalc = const Distance();
     final dist = distanceCalc(from, to);
 
-    // ✂️ Optional: Überspringe Animation bei kurzen Distanzen
     if (dist < 100) {
       controller.move(to, toZoom);
       print("📍 Jumped to nearby Hotspot: ${hotspot.name}");
@@ -36,56 +49,71 @@ class ShowHotspotIntent extends UIIntent {
       return Duration(milliseconds: millis.toInt());
     }
 
+    final midpoint = curvedMidpoint(from, to);
 
-    // 🔁 Gemeinsamer Animations-Helfer
-    Future<void> animateTo(
-        LatLng start,
-        LatLng end,
-        double startZoom,
-        double endZoom,
-        Duration duration,
-        ) async {
-      final animationController = AnimationController(
-        duration: duration,
-        vsync: state,
-      );
+    final base = 1000.0;
 
-      animationController.addListener(() {
-        final t = animationController.value;
-        final lat = lerpDouble(start.latitude, end.latitude, t)!;
-        final lng = lerpDouble(start.longitude, end.longitude, t)!;
-        final zoom = lerpDouble(startZoom, endZoom, t)!;
-        controller.move(LatLng(lat, lng), zoom);
-      });
-
-      await animationController.forward();
-      animationController.dispose();
-    }
-
-    // 🛫 Phase 1: Zur Mitte mit mittlerem Zoom
-    final midpoint = LatLng(
-      (from.latitude + to.latitude) / 2,
-      (from.longitude + to.longitude) / 2,
+    // ✈️ Hinflug – Position + separater sanfter Zoom
+    await animator.animateCameraSplitZoom(
+      from: from,
+      to: to,
+      fromZoom: fromZoom,
+      toZoom: midZoom,
+      duration: dynamicDuration(base),
+      positionCurve: Curves.easeInOut,
+      zoomCurve: Curves.easeOutQuad,
     );
+*/
 
-    double base = 1000;
-    await animateTo(from, midpoint, fromZoom, midZoom, dynamicDuration(base));
-
-    // 🛬 Phase 2: Von Mitte zum Ziel (reinzoomen)
-    await animateTo(midpoint, to, midZoom, toZoom, dynamicDuration(base));
+/*
+    await animator.animateCameraSplitZoom(
+      from: midpoint,
+      to: to,
+      fromZoom: midZoom,
+      toZoom: toZoom,
+      duration: dynamicDuration(base),
+      positionCurve: Curves.easeInOut,
+      zoomCurve: Curves.easeInQuad,
+    );
+*/
+/*
 
     print("📍 Moved to Hotspot: ${hotspot.name}");
 
-    // ⏱️ Verweile einen Moment
     await Future.delayed(const Duration(seconds: 1));
 
-    // 🔁 Phase 3: Zurück zur Mitte
-    await animateTo(to, midpoint, toZoom, midZoom, dynamicDuration(base));
+    // 🔙 Rückflug – einfache Kamerabewegung (klassisch)
+    await animator.animateCamera(
+      from: to,
+      to: from,
+      fromZoom: toZoom,
+      toZoom: midZoom,
+      duration: dynamicDuration(base),
+    );
+*/
 
-    // 🔽 Phase 4: Zurück zum Startpunkt
-    await animateTo(midpoint, from, midZoom, fromZoom, dynamicDuration(base));
-
+/*
+    await animator.animateCamera(
+      from: midpoint,
+      to: from,
+      fromZoom: midZoom,
+      toZoom: fromZoom,
+      duration: dynamicDuration(base),
+    );
+*/
+/*
     print("🔙 Returned to original position");
   }
-}
+
+
+  LatLng curvedMidpoint(LatLng a, LatLng b) {
+    final lat = (a.latitude + b.latitude) / 2;
+    final lng = (a.longitude + b.longitude) / 2;
+
+    // Kleine Verschiebung nach "oben" (in Kartenrichtung)
+    const offset = 0.0015;
+    return LatLng(lat + offset, lng); // Versatz nur in Latitude
+  }
+*/
+//}
 
