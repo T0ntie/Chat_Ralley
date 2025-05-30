@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:storytrail/app_resources.dart';
 import 'package:storytrail/engine/game_engine.dart';
 import 'package:storytrail/engine/item.dart';
+import 'package:storytrail/gui/camera_flight.dart';
 import 'package:storytrail/gui/chat/chat_page.dart';
 import 'package:storytrail/gui/debuging_panel.dart';
 import 'package:storytrail/gui/game_map_widget.dart';
@@ -452,10 +453,15 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
       barrierDismissible: false,
       builder: (context) => ContinueGameDialog(
         saveDate: savedTime,
-        onLoadGame: () {
+        onLoadGame: () async{
           GameEngine().loadGameState(gameState);
           SnackBarService.showSuccessSnackBar(context, "✔️ Spielstand erfolgreich wieder hergestellt");
           GameEngine().registerRestore();
+          await CameraFlight(
+          state: this,
+          controller: this.mapController,
+          to: GameEngine().lastSaveLocation!,
+          ).animate();
         },
         onNewGame: () {
           GameEngine().registerInitialization();

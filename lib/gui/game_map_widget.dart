@@ -139,10 +139,54 @@ class GameMapWidget extends StatelessWidget {
             ),
             ..._buildHotspotMarkers(context),
             ..._buildNpcMarkers(context),
+            if (GameEngine().lastSaveLocation != null)
+              _buildLastSavePositionMarker(context),
           ],
         ),
       ],
     );
+  }
+
+  Marker _buildLastSavePositionMarker(BuildContext context) {
+    String? saveDate;
+    if (GameEngine().lastSaveTime != null){
+      final lastSave = GameEngine().lastSaveTime!;
+      final day = lastSave.day.toString().padLeft(2, '0');
+      final month = lastSave.month.toString().padLeft(2, '0');
+      final hour = lastSave.hour.toString().padLeft(2, '0');
+      final minute = lastSave.minute.toString().padLeft(2, '0');
+      saveDate = '${day}.${month}.${lastSave.year} – ${hour}:${minute}';
+    }
+    return
+      Marker(
+        point: GameEngine().lastSaveLocation!,
+        width: 150,
+        height: 60,
+        child: Transform.rotate(
+          angle: _getRotationAngle(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SvgPicture.asset(
+                "assets/icons/save-pin.svg",
+                width: 30,
+                height: 30,
+              ),
+              const SizedBox(height: 4),
+              if (saveDate != null)
+              Text(
+                saveDate,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: ResourceColors.npcName,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
   }
 
   List<Marker> _buildHotspotMarkers(BuildContext context) {
@@ -177,26 +221,26 @@ class GameMapWidget extends StatelessWidget {
                   'assets/icons/flag.svg',
                   width: 48,
                   height: 48,
-                )//AppIcons.hotspot(context),
+                ), //AppIcons.hotspot(context),
               ),
-            const SizedBox(height: 4),
-            if (hotspot.isRevealed)
-              SizedBox(
-                width: 60,
-                child: Text(
-                  hotspot.name,
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: ResourceColors.npcName,
-                    fontWeight: FontWeight.bold,
+              const SizedBox(height: 4),
+              if (hotspot.isRevealed)
+                SizedBox(
+                  width: 60,
+                  child: Text(
+                    hotspot.name,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: ResourceColors.npcName,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-          ],
-        ),
+            ],
+          ),
         ),
       );
     }).toList();
@@ -219,13 +263,22 @@ class GameMapWidget extends StatelessWidget {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (ctx) => InfoDialog(
-                        title: npc.displayName,
-                        //imageAssetPath: "assets/story/${npc.displayImageAsset}",
-                        imageUriPath: GameEngine().npcImagePath(npc),
-                        distanceText: "Entfernung: ${npc.currentDistance} Meter",
-                        noteText: !(npc.isInCommunicationDistance) ? "Komm näher, um mit ${npc.displayName} zu kommunizieren.": null,
-                        onPrimaryAction: npc.isInCommunicationDistance ? () => onNpcChatRequested(npc): null,),
+                    builder:
+                        (ctx) => InfoDialog(
+                          title: npc.displayName,
+                          //imageAssetPath: "assets/story/${npc.displayImageAsset}",
+                          imageUriPath: GameEngine().npcImagePath(npc),
+                          distanceText:
+                              "Entfernung: ${npc.currentDistance} Meter",
+                          noteText:
+                              !(npc.isInCommunicationDistance)
+                                  ? "Komm näher, um mit ${npc.displayName} zu kommunizieren."
+                                  : null,
+                          onPrimaryAction:
+                              npc.isInCommunicationDistance
+                                  ? () => onNpcChatRequested(npc)
+                                  : null,
+                        ),
                   );
                 },
                 //child: AppIcons.npc(context, npc.icon), //Image.asset('assets/story/icons/trex2.png'),

@@ -56,6 +56,9 @@ class GameEngine {
 
   Map<String, bool> get flags => storyLine?.flags ?? {};
 
+  LatLng? lastSaveLocation;
+  DateTime? lastSaveTime;
+
   final Map<String, List<(Npc, NpcAction)>> _signalSubscriptions = {};
   final Map<Npc, List<NpcAction>> _interactionSubscriptions = {};
   final Map<Npc, List<NpcAction>> _approachSubscriptions = {};
@@ -487,7 +490,9 @@ class GameEngine {
     flagsJson.forEach((key, value) {
         flags[key] = value as bool;
       });
-
+    final playerPositionJson = metaData['playerPosition'] as Map<String, dynamic>;
+    lastSaveLocation = LatLng(playerPositionJson['lat'] as double, playerPositionJson['lng'] as double);
+    lastSaveTime = DateTime.parse(metaData['saveTime'] as String);
     print ("Loaded GameState from trail ${metaData['trailId']} from ${metaData['saveTime']}");
 
     final saveData = json['save'] as Map<String, dynamic>;

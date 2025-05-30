@@ -1,5 +1,3 @@
-import 'package:flutter/animation.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:storytrail/engine/hotspot.dart';
 import 'package:storytrail/gui/camera_flight.dart';
 import 'package:storytrail/gui/game_screen.dart';
@@ -13,8 +11,6 @@ class ShowHotspotIntent extends UIIntent {
   @override
   @override
   Future<void> call(GameScreenState state) async {
-    final controller = state.mapController;
-
     await CameraFlight(
       state: state,
       controller: state.mapController,

@@ -43,7 +43,7 @@
         {
           "onRestore": null,
           "invokeAction": "talk",
-          "trigger": "[Der Spieler hat dich sehr lange warten lassen, beschwer dich!]",
+          "trigger": "[Der Spieler hat dich sehr lange warten lassen, beschwer dich!]"
         },
         {
           "onInteraction": null,
@@ -144,8 +144,8 @@
         },
         {
           "onRestore": null,
-          "invokeAction": "behave",
-          "directive": "[Der Spieler war lange weg und hat sich nicht um dein Problem gekümmert]",
+          "invokeAction": "talk",
+          "trigger": "[Der Spieler war lange weg und hat sich nicht um dein Problem gekümmert]",
           "conditions": {
             "npc:npc_knoechelbein.hasInteracted": true
           }
@@ -306,6 +306,12 @@
         },
         {
           "onHotspot": "spot_hide",
+          "invokeAction": "showHotspot",
+          "hotspot": "spot_hide",
+          "notification": "Du bist in der Nähe von Bozzis Versteck"
+        },
+        {
+          "onHotspot": "spot_hide",
           "invokeAction": "scanToInventory",
           "item": "item_tibia",
           "notification": "Du hast ein T-Rex Tibia erhalten."
@@ -455,7 +461,8 @@
     },
     {
       "id": "spot_hide",
-      "name": "TibiaVersteck",
+      "name": "Das Versteck",
+      "image": "images/hide.png",
       "radius": 5,
       "position": {
         "lat": 48.08465098939792,
