@@ -96,6 +96,12 @@
           "defer": true
         },
         {
+          "onSignal": "SaveGame",
+          "invokeAction": "saveGame",
+          "defer": true,
+          "notification": "Knatterbach hat deinen Ermittlungsstand protokolliert."
+        },
+        {
           "onSignal": "KnatterbachToPolice",
           "invokeAction": "showHotspot",
           "hotspot": "spot_police",
@@ -150,7 +156,7 @@
         {
           "onRestore": null,
           "invokeAction": "talk",
-          "trigger": "[Der Spieler war lange weg und hat sich nicht um dein Problem gekümmert]",
+          "trigger": "[Der Spieler war lange weg und hat sich nicht um dein Problem gekümmert, beschwer dich bei ihm]",
           "conditions": {
             "npc:npc_knoechelbein.hasInteracted": true
           }
@@ -168,6 +174,11 @@
           "invokeAction": "showHotspot",
           "hotspot": "spot_kroll",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
+        },
+        {
+          "onSignal": "ShowKroll",
+          "invokeAction": "saveGame",
+          "defer": "true"
         },
         {
           "onSignal": "TibiaReturned",
@@ -219,6 +230,11 @@
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
+          "onSignal": "ShowKirchengase",
+          "invokeAction": "saveGame",
+          "defer": true
+        },
+        {
           "onInteraction": null,
           "invokeAction": "talk",
           "trigger": "[Spieler streichelt deinen Hund]",
@@ -234,7 +250,6 @@
             "flag:unfriendlyToBozzi": true
           }
         }
-
       ]
     },
     {
@@ -258,6 +273,11 @@
           }
         },
         {
+          "onSignal": "bozziLead",
+          "invokeAction": "saveGame",
+          "defer": true
+        },
+        {
           "onSignal": "callBozzi",
           "invokeAction": "spawn",
           "notification": "Ein Hund erscheint"
@@ -269,6 +289,11 @@
         {
           "onSignal": "callBozzi",
           "invokeAction": "reveal"
+        },
+        {
+          "onSignal": "callBozzi",
+          "invokeAction": "saveGame",
+          "defer": true
         },
         {
           "onApproach": null,
