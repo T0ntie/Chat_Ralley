@@ -107,7 +107,7 @@
         {
           "onSignal": "GetWalkie",
           "invokeAction": "addToInventory",
-          "item": "Walkie",
+          "item": "item_walkie",
           "notification": "Du hast ein Walkie-Talkie erhalten."
         },
         {
@@ -447,7 +447,7 @@
       "name": "Haus Kroll",
       "position": "HausKrollPosition",
       "image": "images/hauskroll.png",
-      "radius": 30,
+      "radius": 40,
       "visible": false,
       "revealed": false
     },
