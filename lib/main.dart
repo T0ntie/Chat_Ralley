@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:storytrail/gui/game_screen.dart';
 import 'package:storytrail/gui/credits_screen.dart';
+import 'package:storytrail/gui/location_stream_manager.dart';
 import 'package:storytrail/gui/trail_selection.dart';
 import 'package:storytrail/services/gpt_utilities.dart';
 import 'services/location_service.dart';
@@ -54,6 +55,8 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
+  LocationStreamManager().initialize(); // nur einmal starten
+
   await GameEngine().loadTrails();
   print("✅ trails should be loaded");
 
@@ -77,7 +80,6 @@ Future<void> initAnonymousUser() async {
   GameEngine().playerId = uid;
   print('Angemeldet mit UID: $uid');
 }
-
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -106,8 +108,19 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _initializeApp() async {
     try {
-      await LocationService.initialize();
+      //await LocationService.initialize();
 
+      final stream = LocationService.stream;
+      if (stream != null) {
+        _positionSubscription = stream.listen((position) {
+          if (!_isSimulatingLocation) {
+            GameEngine().playerPosition = LatLng(position.latitude, position.longitude);
+          }
+        });
+      } else {
+        print("⚠️ Kein aktiver Standortstream – Manager noch nicht initialisiert?");
+      }
+/*
       _positionSubscription = LocationService.getPositionStream().listen((Position position) {
         if (!_isSimulatingLocation) {
           GameEngine().playerPosition =
@@ -117,6 +130,7 @@ class _MyAppState extends State<MyApp> {
 
       Position pos = await Geolocator.getCurrentPosition();
       GameEngine().playerPosition = LatLng(pos.latitude, pos.longitude);
+*/
 
       setState(() {
         _currentScreen = AppScreen.trails;

@@ -92,6 +92,11 @@
         },
         {
           "onSignal": "KnatterbachToPolice",
+          "invokeAction": "saveGame",
+          "defer": true
+        },
+        {
+          "onSignal": "KnatterbachToPolice",
           "invokeAction": "showHotspot",
           "hotspot": "spot_police",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."

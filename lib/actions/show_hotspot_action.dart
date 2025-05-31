@@ -1,9 +1,9 @@
-import 'package:storytrail/gui/show_hotspot_intent.dart';
+import 'package:storytrail/gui/intents/show_hotspot_intent.dart';
 
 import 'package:storytrail/engine/game_engine.dart';
 import 'package:storytrail/engine/hotspot.dart';
 
-import 'package:storytrail/gui/ui_intent.dart';
+import 'package:storytrail/gui/intents/ui_intent.dart';
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
 

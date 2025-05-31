@@ -1,12 +1,13 @@
 import 'package:storytrail/gui/intents/credits_intent.dart';
+import 'package:storytrail/gui/intents/save_game_intent.dart';
 import 'package:storytrail/gui/intents/ui_intent.dart';
 
 import 'npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
 
-class EndGameAction extends NpcAction {
+class SaveGameAction extends NpcAction {
 
-  EndGameAction({
+  SaveGameAction({
     required super.trigger,
     required super.conditions,
     super.notification,
@@ -16,22 +17,23 @@ class EndGameAction extends NpcAction {
   @override
   Future<bool> excecute(Npc npc) async {
 
-    print("Trying to end the game");
+    print("Trying to save the game");
+
 
     dispatchUIIntent(
-      CreditsIntent(),
+      SaveGameIntent(),
     );
     return true;
   }
 
-  static EndGameAction actionFromJson(Map<String, dynamic> json) {
+  static SaveGameAction actionFromJson(Map<String, dynamic> json) {
     final (
       trigger,
       conditions,
       notification,
       defer,
     ) = NpcAction.actionFieldsFromJson(json);
-    return EndGameAction(
+    return SaveGameAction(
       trigger: trigger,
       conditions: conditions,
       notification: notification,
@@ -41,8 +43,8 @@ class EndGameAction extends NpcAction {
 
   static void register() {
     NpcAction.registerAction(
-      'endGame',
-      EndGameAction.actionFromJson,
+      'saveGame',
+      SaveGameAction.actionFromJson,
     );
   }
 }

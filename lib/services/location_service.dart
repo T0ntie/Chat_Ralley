@@ -41,11 +41,7 @@ class LocationService {
     }
   }
 
-  static Stream<Position> getPositionStream() {
-    if (_locationStream == null) {
-      print('❌ Kein LocationStream vorhanden');
-      throw Exception('❌ Kein LocationStream vorhanden');
-    }
-    return _locationStream!;
-  }
+  static Stream<Position>? get stream => _locationStream;
+
+  static void clear() => _locationStream = null;
 }

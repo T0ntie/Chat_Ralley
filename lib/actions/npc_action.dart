@@ -5,6 +5,7 @@ import 'package:storytrail/actions/end_game_action.dart';
 import 'package:storytrail/actions/lead_action.dart';
 import 'package:storytrail/actions/lead_along_action.dart';
 import 'package:storytrail/actions/notify_action.dart';
+import 'package:storytrail/actions/save_game_action.dart';
 import 'package:storytrail/actions/scan_to_inventory_action.dart';
 import 'package:storytrail/actions/set_flag_action.dart';
 import 'package:storytrail/actions/show_hotspot_action.dart';
@@ -283,5 +284,6 @@ abstract class NpcAction {
     LeadAlongAction.register();
     ScanToInventoryAction.register();
     EndGameAction.register();
+    SaveGameAction.register();
   }
 }
