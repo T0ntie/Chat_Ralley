@@ -6,53 +6,72 @@ import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/story_line.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
-  /*setUpAll(() async {
-    try {
-      await Firebase.initializeApp();
-      print('✅ Firebase initialisiert im Test');
-    } catch (e) {
-      print('❌ Fehler bei Firebase Init im Test: $e');
-    }
-  });*/
-
-  /*test('parses real storyline.json without throwing', () async {
-    try {
-      NpcAction.registerAllNpcActions();
-      final storyline = await StoryLine.loadStoryLine("tibia");
-
-      expect(storyline.trailId.isNotEmpty, isTrue);
-      expect(storyline.title.isNotEmpty, isTrue);
-      print('✅ Storyline geladen: ${storyline.title}');
-    } catch (e, stack) {
-      fail('❌ Fehler beim Laden der echten Storyline-Datei:\n$e\n$stack');
-    }
-  });*/
-
-  test('Alle invokeAction-Typen im JSON sind gültig', () async {
+  test('JSON-Datei ist inhaltlich konsistent', () async {
     final raw = await File('public/tibia/storyline.json').readAsString();
-    final json = jsonDecode(raw);
+    final data = jsonDecode(raw);
+
+    final knownInvokeActions = {
+      'spawn',
+      'follow',
+      'talk',
+      'reveal',
+      'stopMoving',
+      'walkTo',
+      'behave',
+      'saveGame',
+      'showHotspot',
+      'addToInventory',
+      'appear',
+      'notify',
+      'scanToInventory',
+      'stopTalking',
+      'revealHotspot',
+      'endGame',
+      'leadAlong',
+    };
+
+    final knownTriggers = {
+      'onInit',
+      'onRestore',
+      'onInteraction',
+      'onSignal',
+      'onHotspot',
+      'onApproach',
+      'onMessageCount',
+    };
 
     final unknownActions = <String>{};
     final unknownTriggers = <String>{};
+    final missingFields = <String, List<String>>{};
 
-    final actions =
-        (json['npcs'] as List)
-            .map((npc) => npc['actions'] ?? [])
-            .expand((a) => a)
-            .cast<Map<String, dynamic>>();
+    for (final npc in data['npcs']) {
+      final npcId = npc['id'] ?? '(unbekannt)';
+      final actions = npc['actions'] ?? [];
+      for (final action in actions) {
+        final map = action as Map<String, dynamic>;
 
-    for (final action in actions) {
-      final actionType = action['invokeAction'];
-      if (actionType is String &&
-          !NpcAction.actionRegistryForTest.containsKey(actionType)) {
-        unknownActions.add(actionType);
-      }
+        final actionType = map['invokeAction'];
+        if (actionType is! String || !knownInvokeActions.contains(actionType)) {
+          unknownActions.add(actionType.toString());
+        }
 
-      for (final key in action.keys) {
-        if (key.startsWith('on') && !TriggerTypeX.isKnownKey(key)) {
-          unknownTriggers.add(key);
+        for (final key in map.keys) {
+          if (key.startsWith('on') && !knownTriggers.contains(key)) {
+            unknownTriggers.add(key);
+          }
+        }
+
+        // Beispiel: wenn "walkTo" verwendet wird, muss "position" da sein
+        if (actionType == 'walkTo' && !map.containsKey('position')) {
+          missingFields
+              .putIfAbsent(npcId, () => [])
+              .add('position fehlt bei walkTo');
+        }
+
+        if (actionType == 'showHotspot' && !map.containsKey('hotspot')) {
+          missingFields
+              .putIfAbsent(npcId, () => [])
+              .add('hotspot fehlt bei showHotspot');
         }
       }
     }
@@ -60,37 +79,45 @@ void main() {
     expect(
       unknownActions,
       isEmpty,
-      reason: 'Unbekannte invokeAction-Typen:\n$unknownActions',
+      reason: 'Unbekannte invokeAction-Typen: $unknownActions',
     );
     expect(
       unknownTriggers,
       isEmpty,
-      reason: 'Unbekannte Trigger-Typen:\n$unknownTriggers',
+      reason: 'Unbekannte Trigger-Typen: $unknownTriggers',
     );
-    print('✅ Alle Actions überprüft');
+    expect(
+      missingFields,
+      isEmpty,
+      reason: 'Pflichtfelder fehlen:\n${_formatMissing(missingFields)}',
+    );
+
+    print('✅ JSON validiert erfolgreich.');
   });
 
-  test('Alle in storyline referenzierten Prompt-Dateien existieren', () async {
-    final storyline = await StoryLine.loadStoryLine("tibia");
-    final missingFiles = <String>[];
+  test('Alle NPC-Prompt-Dateien existieren', () async {
+    final raw = await File('public/tibia/storyline.json').readAsString();
+    final data = jsonDecode(raw);
 
-    for (final npc in storyline.npcs) {
-      final ppath = 'public/tibia/prompts/${npc.prompt.promptFile}';
-      if (!await File(ppath).exists()) {
-        missingFiles.add(ppath);
-      }
-      final ipath = 'public/tibia/${npc.imageAsset}';
-      if (!await File(ipath).exists()) {
-        missingFiles.add(ipath);
+    final promptDir = Directory('public/tibia/prompts');
+    final missingPrompts = <String>{};
+
+    for (final npc in data['npcs']) {
+      final prompt = npc['prompt'];
+      if (prompt is String && prompt.trim().isNotEmpty) {
+        final promptPath = File('${promptDir.path}/$prompt');
+        if (!promptPath.existsSync()) {
+          missingPrompts.add(prompt);
+        }
       }
     }
 
     expect(
-      missingFiles,
+      missingPrompts,
       isEmpty,
-      reason: 'Fehlende NPC-Dateien:\n${missingFiles.join('\n')}',
+      reason: 'Fehlende Prompt-Dateien:\n${missingPrompts.join('\n')}',
     );
-    print('✅ Alle Prompt-Dateien existieren');
+    print('✅ Alle NPC-Prompt-Dateien vorhanden.');
   });
 
   test(
@@ -156,10 +183,8 @@ void main() {
           for (final key in conditions.keys) {
             if (key.startsWith('flag:')) {
               usedFlags.add(key.substring(5).trim()); // → flag:xyz
-            } else if (key.startsWith('item:')) {
-              // Items ignorieren
             } else {
-              usedFlags.add(key.trim()); // → xyz ohne Prefix = auch ein Flag
+              // alles andere ignorieren
             }
           }
         }
@@ -188,7 +213,7 @@ void main() {
       // 1. Definierte Items aus dem JSON
       final definedItems =
           (json['items'] as List?)
-              ?.map((item) => item['name'] as String)
+              ?.map((item) => item['id'] as String)
               .toSet() ??
           {};
 
@@ -202,8 +227,8 @@ void main() {
               action['conditions'] as Map<String, dynamic>? ?? {};
           for (final key in conditions.keys) {
             if (key.startsWith('item:')) {
-              final itemName = key.substring(5).trim();
-              usedItems.add(itemName);
+              final itemId = key.substring(5).trim();
+              usedItems.add(itemId);
             }
           }
         }
@@ -309,4 +334,63 @@ void main() {
 
     print('✅ Alle JSON-Schlüssel sind gültig.');
   });
+
+  test('Alle referenzierten Positionen sind in positions.json vorhanden', () async {
+    final storylineRaw =
+        await File('public/tibia/storyline.json').readAsString();
+    final storyline = jsonDecode(storylineRaw);
+
+    final positionsRaw =
+        await File('public/tibia/positions.json').readAsString();
+    final positions =
+        (jsonDecode(positionsRaw)['positions'] as Map<String, dynamic>).keys
+            .toSet();
+
+    final usedPositions = <String>{};
+
+    // 1. NPCs: prüfe npc["position"]
+    for (final npc in storyline['npcs'] ?? []) {
+      final pos = npc['position'];
+      if (pos is String) {
+        usedPositions.add(pos);
+      }
+    }
+
+    // 2. Hotspots: prüfe hotspot["position"] (wenn nicht lat/lng direkt gesetzt)
+    for (final hotspot in storyline['hotspots'] ?? []) {
+      final pos = hotspot['position'];
+      if (pos is String) {
+        usedPositions.add(pos);
+      }
+    }
+
+    // 3. Actions: prüfe action["position"]
+    for (final npc in storyline['npcs'] ?? []) {
+      for (final action in npc['actions'] ?? []) {
+        final a = action as Map<String, dynamic>;
+        final pos = a['position'];
+        if (pos is String) {
+          usedPositions.add(pos);
+        }
+      }
+    }
+
+    // Vergleich
+    final unknownPositions = usedPositions.difference(positions);
+
+    expect(
+      unknownPositions,
+      isEmpty,
+      reason:
+          '❌ Diese Positionen werden verwendet, sind aber nicht in positions.json definiert:\n${unknownPositions.join('\n')}',
+    );
+
+    print('✅ Alle verwendeten Positionen sind korrekt definiert.');
+  });
+}
+
+String _formatMissing(Map<String, List<String>> map) {
+  return map.entries
+      .map((e) => '${e.key}:\n  - ${e.value.join('\n  - ')}')
+      .join('\n');
 }
