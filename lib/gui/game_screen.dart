@@ -66,7 +66,9 @@ class GameScreenState extends State<GameScreen>
   bool showActionTestingPanel = false;
 
   set _isSimulatingLocation(bool value) {
-    GameEngine().setSimulationMode(value);
+    setState(() {
+      GameEngine().setSimulationMode(value);
+    });
   }
 
   LatLng? _lastRealGpsPosition;
@@ -326,6 +328,7 @@ class GameScreenState extends State<GameScreen>
                       );
                     }
                   }
+
                   _isSimulatingLocation = !_isSimulatingLocation;
                 });
               },
