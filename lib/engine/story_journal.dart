@@ -2,6 +2,7 @@ import 'package:storytrail/engine/conversation.dart';
 import 'package:storytrail/engine/game_element.dart';
 
 class StoryJournal with HasGameState {
+  @override
   String id = "storyJournal";
   static final StoryJournal _instance = StoryJournal._internal();
 
@@ -48,8 +49,10 @@ class StoryJournal with HasGameState {
     _entries.add((DateTime.now(), action));
   }
 
-  void loadGameState(Map<String, dynamic> json) {}
+  @override
+  void loadGameState(Map<String, dynamic> json) {} //fixme implement
 
+  @override
   Map<String, dynamic> saveGameState() {
     final entriesJson = <Map<String, dynamic>>[];
     for (final (timestamp, content) in _entries) {

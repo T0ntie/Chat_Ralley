@@ -6,6 +6,7 @@ import 'package:storytrail/engine/game_engine.dart';
 import 'package:storytrail/engine/npc.dart';
 import 'package:storytrail/gui/npc_info_dialog.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class GameMapWidget extends StatelessWidget {
   final LatLng location;
@@ -13,7 +14,7 @@ class GameMapWidget extends StatelessWidget {
   final double currentHeading;
   final double currentMapRotation;
   final bool isMapHeadingBasedOrientation;
-  final bool isSimulatingLocation;
+  final bool isSimulatingLocation; //fixme das darf wohl nicht stateless sein
   final void Function(LatLng point)? onSimulatedLocationChange;
   final void Function(Npc npc) onNpcChatRequested;
 
@@ -46,8 +47,8 @@ class GameMapWidget extends StatelessWidget {
         initialZoom: 18.0,
 
         onTap: (tapPosition, point) {
-          print('Tapped on location: ${point.latitude}, ${point.longitude}');
-          if (isSimulatingLocation) {
+          log.d('Tapped on location: ${point.latitude}, ${point.longitude}');
+          if (isSimulatingLocation) { //fixme hier hats was, simuliert und hat dennoch GPS
             GameEngine().playerMovementController.moveTo(point);
           }
         },
@@ -155,7 +156,7 @@ class GameMapWidget extends StatelessWidget {
       final month = lastSave.month.toString().padLeft(2, '0');
       final hour = lastSave.hour.toString().padLeft(2, '0');
       final minute = lastSave.minute.toString().padLeft(2, '0');
-      saveDate = '${day}.${month}.${lastSave.year} – ${hour}:${minute}';
+      saveDate = '$day.$month.${lastSave.year} – $hour:$minute';
     }
     return
       Marker(

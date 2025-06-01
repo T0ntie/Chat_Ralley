@@ -1,12 +1,11 @@
-import 'package:storytrail/gui/intents/credits_intent.dart';
 import 'package:storytrail/gui/intents/save_game_intent.dart';
 import 'package:storytrail/gui/intents/ui_intent.dart';
+import 'package:storytrail/services/log_service.dart';
 
 import 'npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
 
 class SaveGameAction extends NpcAction {
-
   SaveGameAction({
     required super.trigger,
     required super.conditions,
@@ -16,13 +15,8 @@ class SaveGameAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
-
-    print("Trying to save the game");
-
-
-    dispatchUIIntent(
-      SaveGameIntent(),
-    );
+    log.i("Spielstand wird gespeichert.");
+    dispatchUIIntent(SaveGameIntent());
     return true;
   }
 
@@ -42,9 +36,6 @@ class SaveGameAction extends NpcAction {
   }
 
   static void register() {
-    NpcAction.registerAction(
-      'saveGame',
-      SaveGameAction.actionFromJson,
-    );
+    NpcAction.registerAction('saveGame', SaveGameAction.actionFromJson);
   }
 }

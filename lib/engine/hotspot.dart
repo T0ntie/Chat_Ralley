@@ -5,6 +5,7 @@ import 'package:storytrail/engine/game_engine.dart';
 import 'package:storytrail/engine/game_element.dart';
 import 'package:storytrail/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class Hotspot extends GameElement with HasGameState implements ProximityAware {
   double radius;
@@ -38,15 +39,17 @@ class Hotspot extends GameElement with HasGameState implements ProximityAware {
       position: position,
       imageAsset: json['image'] as String? ?? GameElement.unknownImageAsset,
       onEnter: () => GameEngine().registerHotspot(id),
-      onExit: () => print("Player left Hotspot $name."),
+      onExit: () => log.d("Spieler hat Hotspot $name verlassen."),
     );
   }
 
+  @override
   void loadGameState(Map<String, dynamic> json) {
     isVisible = json['isVisible'];
     isRevealed = json['isRevealed'];
   }
 
+  @override
   Map<String, dynamic> saveGameState() => {
     'id': id,
     'isVisible': isVisible,
@@ -72,7 +75,6 @@ class Hotspot extends GameElement with HasGameState implements ProximityAware {
     } else if (!inRange && _wasInRange) {
       onExit.call();
     }
-
     _wasInRange = inRange;
   }
 }

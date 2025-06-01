@@ -1,5 +1,6 @@
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class RevealAction extends NpcAction{
 
@@ -7,9 +8,9 @@ class RevealAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    print('${npc.name} reveals');
+    log.i('NPC "${npc.name}" ist nicht mehr anonym.');
     npc.reveal();
-    log("${npc.name} stellt sich vor.");
+    jlog("${npc.name} stellt sich vor.");
     return true;
   }
 

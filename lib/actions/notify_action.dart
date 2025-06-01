@@ -22,5 +22,4 @@ class NotifyAction extends NpcAction{
   static void register() {
     NpcAction.registerAction('notify', NotifyAction.actionFromJson);
   }
-
 }

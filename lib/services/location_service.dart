@@ -1,4 +1,5 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class LocationService {
 
@@ -10,22 +11,22 @@ class LocationService {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      print('❌ Ortungsdienste sind deaktiviert');
-      throw Exception('❌ Ortungsdienste sind deaktiviert');
+      log.e('❌ Geolocator is not enabled.', stackTrace: StackTrace.current);
+      throw Exception('❌ Geolocator is not enabled.');
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        print('❌ Standortberechtigung verweigert');
-        throw Exception('❌ Standortberechtigung verweigert');
+        log.e('❌ Location permissions denied.', stackTrace: StackTrace.current);
+        throw Exception('❌ Location permissions denied.');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      print('❌ Standortberechtigung dauerhaft verweigert');
-      throw Exception('❌ Standortberechtigung dauerhaft verweigert');
+      log.e('❌ Location permissions permanently denied.', stackTrace: StackTrace.current);
+      throw Exception('❌ Location permissions permanently denied.');
     }
 
     LocationSettings locationSettings = LocationSettings(
@@ -35,8 +36,8 @@ class LocationService {
 
     try {
       _locationStream ??= Geolocator.getPositionStream(locationSettings: locationSettings);
-    } catch (e, stack) {
-      print('❌ Fehler beim Geolocator initialisieren:\n$e\n$stack');
+    } catch (e, stackTrace) {
+      log.e('❌ Failed to initialize geolocator.', stackTrace: stackTrace);
       rethrow;
     }
   }

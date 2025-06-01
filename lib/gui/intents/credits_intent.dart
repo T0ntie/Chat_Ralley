@@ -11,7 +11,6 @@ class CreditsIntent extends UIIntent {
   @override
   Future<void> call(GameScreenState state) async {
 
-    //print("Launching End-Screen....");
     navigatorKey.currentState?.push(
       MaterialPageRoute(
         builder: (context) => CreditsScreen(),

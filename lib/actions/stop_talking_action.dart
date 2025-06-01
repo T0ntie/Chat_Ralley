@@ -1,5 +1,6 @@
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class StopTalkingAction extends NpcAction{
 
@@ -7,7 +8,8 @@ class StopTalkingAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    print('${npc.name} stops talking');
+    log.i('NPC "${npc.name}" beendet das Gespräch.');
+    jlog('"${npc.name}" beendet abrupt das Gespräch.');
     await npc.stopTalking();
     return true;
   }

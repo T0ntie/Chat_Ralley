@@ -3,8 +3,10 @@ import 'package:storytrail/engine/game_element.dart';
 import 'package:storytrail/engine/game_engine.dart';
 import 'package:storytrail/engine/npc.dart';
 import 'package:storytrail/gui/item_call_backs.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class Item with HasGameState {
+  @override
   final String id;
   final String name;
   bool isOwned;
@@ -17,7 +19,8 @@ class Item with HasGameState {
   Npc get npc {
     final npc = GameEngine().getNpcById(npcId);
     if (npc == null) {
-      throw Exception('Npc "$npcId" nicht gefunden.');
+      log.e('Npc "$npcId" für Item "$name" nicht gefunden.',  stackTrace: StackTrace.current);
+      throw Exception('Npc "$npcId" for item "$name" not found.');
     }
     return npc;
   }
@@ -48,11 +51,13 @@ class Item with HasGameState {
     );
   }
 
+  @override
   loadGameState(Map<String, dynamic> json) {
     isOwned = json['owned'];
     isNew = json['new'];
   }
 
+  @override
   Map<String, dynamic> saveGameState() => {
     'id': id,
     'owned': isOwned,
@@ -64,7 +69,8 @@ class Item with HasGameState {
     if (callback != null) {
       await callback(context, this);
     } else {
-      throw Exception('Kein Callback für ItemUseType "$useType" registriert.');
+      log.e('Kein Callback für ItemUseType "$useType" registriert.', stackTrace: StackTrace.current);
+      throw Exception('No callback for ItemUseType "$useType" registered.');
     }
   }
 }

@@ -3,10 +3,13 @@ import 'package:storytrail/engine/game_engine.dart';
 
 class GameElement with HasIdentity {
 
+  @override
   String id;
+  @override
   String name;
   LatLng position;
   bool isVisible;
+  @override
   bool isRevealed;
   String imageAsset;
 

@@ -2,6 +2,7 @@ import 'package:storytrail/engine/game_engine.dart';
 
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class BehaveAction extends NpcAction {
   String? directiveMessage;
@@ -14,10 +15,11 @@ class BehaveAction extends NpcAction {
     super.defer,
     required this.directiveMessage,
     String? promptTag,
-  }): promptTag = promptTag?.norm;
+  }) : promptTag = promptTag?.norm;
 
   @override
   Future<bool> excecute(Npc npc) async {
+    log.i('${npc.name} bekommt neue Instruktionen: tag:"$promptTag", behave: "$directiveMessage".');
     if (promptTag case final tag?) npc.injectTaggedPrompts(tag);
     if (directiveMessage case final message?) npc.behave(message);
     return true;
@@ -27,8 +29,12 @@ class BehaveAction extends NpcAction {
     final directiveMessage = json['directive'] as String?;
     final promptTag = json['promptTag'] as String?;
     if (directiveMessage == null && promptTag == null) {
+      log.e(
+        '❌ Invalid Json neither "directive" nor "promptTag" specified in "${json}".',
+        stackTrace: StackTrace.current,
+      );
       throw ArgumentError(
-        "Weder 'directive' noch 'promptTag' versorgt in BehaveAction at + $json",
+        '❌ Invalid Json neither "directive" nor "promptTag" specified in "${json}".',
       );
     }
     final (

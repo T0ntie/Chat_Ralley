@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:storytrail/actions/npc_action.dart';
-import 'package:storytrail/engine/story_line.dart';
 
 void main() {
   test('JSON-Datei ist inhaltlich konsistent', () async {

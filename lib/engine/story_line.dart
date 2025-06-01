@@ -4,6 +4,7 @@ import 'package:storytrail/engine/hotspot.dart';
 import 'package:storytrail/engine/item.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/services/log_service.dart';
 
 import 'npc.dart';
 
@@ -41,40 +42,39 @@ class StoryLine {
         (json['lng'] as num).toDouble(),
       );
     }
+    log.e('❌ Missing or invalid Lat/Lng in $json', stackTrace: StackTrace.current);
     throw FormatException("Missing or invalid Lat/Lng in $json");
   }
 
   static Map<String, List<LatLng>> _namedPathsFromJson(
-    Map<String, dynamic> json,
-  ) {
+      Map<String, dynamic> json,) {
     try {
       final pathJson = json['paths'] as Map<String, dynamic>;
       return pathJson.map((key, value) {
         List<LatLng> path =
-            (value as List<dynamic>).map((p) {
-              return _latLngFromJson(p);
-            }).toList();
+        (value as List<dynamic>).map((p) {
+          return _latLngFromJson(p);
+        }).toList();
         return MapEntry(key, path);
       });
-    } catch (e, stack) {
-      print('❌ Fehler beim parsen der paths in $positionsURI:\n$e\n$stack');
+    } catch (e, stackTrace) {
+      log.e('❌ Failed to parse pahts in "$positionsURI".', error: e,
+          stackTrace: stackTrace);
       rethrow;
     }
   }
 
   static Map<String, LatLng> _namedPositionsFromJson(
-    Map<String, dynamic> json,
-  ) {
+      Map<String, dynamic> json,) {
     try {
       final positionJson = json['positions'] as Map<String, dynamic>;
       return positionJson.map((key, value) {
         final latLng = _latLngFromJson(value);
         return MapEntry(key, latLng);
       });
-    } catch (e, stack) {
-      print(
-        '❌ Fehler beim parsen der positions in $positionsURI:\n$e\n$stack',
-      );
+    } catch (e, stackTrace) {
+      log.e('❌ Failed to parse positions in "$positionsURI".', error: e,
+          stackTrace: stackTrace);
       rethrow;
     }
   }
@@ -102,15 +102,15 @@ class StoryLine {
       if (StoryLine._positions.containsKey(pos)) {
         return StoryLine._positions[pos]!;
       } else {
-        throw FormatException(
-          "❌ Position-Name '$pos' ist nicht in positions.json definiert.",
-        );
+        log.e('❌ Position name "$pos" has not been defined in positions.json.');
+        throw FormatException('❌ Position name "$pos" has not been defined in positions.json.');
       }
     }
     if (pos is Map<String, dynamic>) {
       return _latLngFromJson(pos);
     }
-    throw FormatException("❌ Ungültiges Format für 'position': $pos");
+    log.e('❌ invalid format for "position": "$pos".');
+    throw FormatException('❌ invalid format for "position": "$pos".');
   }
 
   static Future<StoryLine> fromJsonAsync(Map<String, dynamic> json) async {
@@ -137,35 +137,32 @@ class StoryLine {
         flags: flags,
         items: items,
       );
-    } catch (e, stack) {
-      print('❌ Fehler im Json der Storyline:\n$e\n$stack');
+    } catch (e, stackTrace) {
+      log.e('❌ failed to parse storyline json.', error: e, stackTrace: stackTrace);
       rethrow;
     }
   }
 
   static Future<StoryLine> loadStoryLine(String trail) async {
-   final positionsUrl = "${trail}/${positionsURI}";
-   final storyLineUrl = "${trail}/${storyLineURI}";
-  try {
+    final positionsUrl = "$trail/$positionsURI";
+    final storyLineUrl = "$trail/$storyLineURI";
+    try {
       final positionsJson = await FirebaseHosting.loadJsonFromUrl(positionsUrl);
       _positions.clear();
       _positions.addAll(StoryLine._namedPositionsFromJson(positionsJson));
       _paths.clear();
       _paths.addAll(StoryLine._namedPathsFromJson(positionsJson));
-    } catch (e, stack) {
-      print(
-        '❌ Fehler beim Laden der Positions from $positionsUrl:\n$e\n$stack',
-      );
+    } catch (e, stackTrace) {
+      log.e('❌ failed to load positions from "$positionsUrl".', error: e,
+          stackTrace: stackTrace);
       rethrow;
     }
     try {
-      //String storyLineJsonString = await rootBundle.loadString(storyLineAsset);
       final storLineJson = await FirebaseHosting.loadJsonFromUrl(storyLineUrl);
       return await StoryLine.fromJsonAsync(storLineJson);
-    } catch (e, stack) {
-      print(
-        '❌ Fehler beim Laden der Storyline from $storyLineUrl:\n$e\n$stack',
-      );
+    } catch (e, stackTrace) {
+      log.e('❌ failed to load positions from "$storyLineUrl".', error: e,
+          stackTrace: stackTrace);
       rethrow;
     }
   }

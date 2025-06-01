@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:storytrail/app_resources.dart';
 import 'package:storytrail/main.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class FlushBarService {
   static final FlushBarService _instance = FlushBarService._internal();
@@ -18,7 +19,7 @@ class FlushBarService {
     final context = navigatorKey.currentContext;
 
     if (context == null) {
-      print('FlushBarService: currentContext is null, cannot show Flushbar.');
+      log.e('Invalid context, cannot show Flushbar.', stackTrace: StackTrace.current);
       return;
     }
 
@@ -78,7 +79,6 @@ class SnackBarService {
         backgroundColor: ResourceColors.errorSnack(context),
       ),
     );
-    print(message);
   }
 
 
@@ -86,7 +86,6 @@ class SnackBarService {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-
         backgroundColor: ResourceColors.successSnack(context),
       ),
     );

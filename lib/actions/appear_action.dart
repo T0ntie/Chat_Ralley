@@ -1,5 +1,6 @@
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class AppearAction extends NpcAction{
 
@@ -7,9 +8,9 @@ class AppearAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    print('${npc.name} appears');
+    log.i('${npc.name} wird sichtbar.');
     npc.isVisible = true;
-    log("${npc.name} ist erschienen.");
+    jlog("${npc.name} ist erschienen.");
     return npc.isVisible;
   }
 
@@ -25,5 +26,4 @@ class AppearAction extends NpcAction{
   static void register() {
     NpcAction.registerAction('appear', AppearAction.actionFromJson);
   }
-
 }

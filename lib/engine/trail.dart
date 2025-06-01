@@ -1,5 +1,6 @@
 import 'package:latlong2/latlong.dart';
 import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class Trail {
   final String trailId;
@@ -33,7 +34,8 @@ class Trail {
         (json['lng'] as num).toDouble(),
       );
     }
-    throw FormatException("Missing or invalid Lat/Lng in $json");
+    log.e('❌ Missing or invalid Lat/Lng in $json', stackTrace: StackTrace.current);
+    throw FormatException('❌ Missing or invalid Lat/Lng in $json');
   }
 
   double get currentDistance {

@@ -5,6 +5,7 @@ import 'package:storytrail/gui/intents/ui_intent.dart';
 
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class ScanToInventoryAction extends NpcAction {
   final String itemId;
@@ -21,7 +22,9 @@ class ScanToInventoryAction extends NpcAction {
   Future<bool> excecute(Npc npc) async {
     Item? item = GameEngine().getItemById(itemId);
     if (item == null) {
-      throw Exception("Item mit id: $itemId nicht gefunden.");
+      log.e('❌ Item with id: "$itemId" not found.');
+      assert(false, '❌ Item with id: "$itemId" not found.');
+      return false;
     }
 
     dispatchUIIntent(
@@ -31,7 +34,6 @@ class ScanToInventoryAction extends NpcAction {
       ),
     );
     return(item.isOwned);
-    //show QR Code here
   }
 
   static ScanToInventoryAction actionFromJson(Map<String, dynamic> json) {

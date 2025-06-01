@@ -3,6 +3,7 @@ import 'package:latlong2/latlong.dart';
 
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class MoveAlongAction extends NpcAction {
   final List<LatLng> path;
@@ -17,7 +18,7 @@ class MoveAlongAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
-    print('${npc.name} starts moving along a path');
+    log.i('NPC ${npc.name} bewegt sich einen Pfad entlang.');
     npc.moveAlong(path);
     return true;
   }

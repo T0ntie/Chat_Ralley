@@ -25,8 +25,6 @@ class _ItemQRScanDialogState extends State<ItemQRScanDialog> {
     if (_isProcessing) return;
     _isProcessing = true;
 
-    print("handlingBarcodes");
-
     if (widget.expectedQrCodes.contains(code)) {
       Navigator.of(context).pop(code); // ✅ Richtiger Code – zurückgeben
     } else {

@@ -1,6 +1,7 @@
 
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class FollowAction extends NpcAction{
 
@@ -8,9 +9,9 @@ class FollowAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    print('${npc.name} starts following you');
+    log.i('NPC ${npc.name} folgt dem Spieler.');
     npc.startFollowing();
-    log("${npc.name} folgt dem Spieler");
+    jlog("${npc.name} folgt dem Spieler.");
     return true;
   }
 

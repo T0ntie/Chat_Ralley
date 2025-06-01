@@ -50,7 +50,7 @@ void main() {
             response.statusCode,
             200,
             reason: 'Expected status code 200 for $fullUrl. Received ${response.statusCode}. '
-                'Body: ${response.body.length > 200 ? response.body.substring(0, 200) + '...' : response.body}', // Zeige ggf. einen Teil des Fehler-Bodys
+                'Body: ${response.body.length > 200 ? '${response.body.substring(0, 200)}...' : response.body}', // Zeige ggf. einen Teil des Fehler-Bodys
           );
 
           // 2. Prüfe, ob der Content-Type Header auf JSON hindeutet (optional, da wir bodyBytes verwenden)
@@ -105,7 +105,7 @@ void main() {
             response.statusCode,
             200,
             reason: 'Expected status code 200 for $fullUrl. Received ${response.statusCode}. '
-                'Body: ${response.body.length > 200 ? response.body.substring(0, 200) + '...' : response.body}',
+                'Body: ${response.body.length > 200 ? '${response.body.substring(0, 200)}...' : response.body}',
           );
 
           // 2. Prüfe, ob der Content-Type Header auf Text hindeutet (optional)

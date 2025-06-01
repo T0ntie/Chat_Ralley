@@ -8,6 +8,7 @@ import 'package:storytrail/engine/item.dart';
 import 'package:storytrail/engine/moving_controller.dart';
 import 'package:storytrail/gui/notification_services.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:storytrail/services/log_service.dart';
 
 import 'story_line.dart';
 import 'npc.dart';
@@ -23,7 +24,7 @@ class GameEngine {
 
   factory GameEngine() => _instance;
 
-  Map<String, HasGameState> _gameSate = {};
+  final Map<String, HasGameState> _gameSate = {}; //fixme provide a clear method for restarting
 
   GameEngine._internal() {
     _playerMovementController = isGPSSimulating
@@ -42,7 +43,7 @@ class GameEngine {
 
   String? trailId;
 
-  late String playerId; //fixme brauch ich das hier
+  late String playerId;
 
   List<Trail> trailsList = [];
 
@@ -69,15 +70,10 @@ class GameEngine {
 
   final Queue<({Npc npc, NpcAction action})> _deferredActions = Queue();
 
-  /*Hotspot? getHotspotByName(String hotspotName) {
-    return storyLine?.hotspotMap[hotspotName];
-  }*/
-
   Hotspot? getHotspotById(String hotspotId) {
     return storyLine?.hotspotMap[hotspotId];
   }
 
-  //late LatLng _realGpsPosition = SimulatingPlayerMovementController.simHome; //just a initilizer
   LatLng get playerPosition => _playerMovementController.currentPosition;
 
   void setSimulationMode(bool value) {
@@ -224,6 +220,7 @@ class GameEngine {
     this.trailId = trailId;
     NpcAction.registerAllNpcActions();
     storyLine = await StoryLine.loadStoryLine(trailId);
+    log.d("👉 Registriere alle Actions aus der Storyline....");
     for (final npc in npcs) {
       for (final action in npc.actions) {
         switch (action.trigger.type) {
@@ -233,23 +230,23 @@ class GameEngine {
               npc,
               action,
             ));
-            print('🔔 Registered signal action: "$signal" for ${npc.name}');
+            log.i('🔔 ${action.runtimeType} wurde für das Signal $signal und den NPC "${npc.name}" registriert.');
             break;
           case TriggerType.interaction:
             _interactionSubscriptions.putIfAbsent(npc, () => []).add(action);
-            print('🗣️ Registered interaction action for ${npc.name}');
+            log.i('🗣️ ${action.runtimeType} wurde für eine Interaktion mit NPC "${npc.name}" registriert.');
             break;
           case TriggerType.approach:
             _approachSubscriptions.putIfAbsent(npc, () => []).add(action);
-            print('👣 Registered aproach action for ${npc.name}');
+            log.i('👣 ${action.runtimeType} wurde für eine Annäherung von NPC  "${npc.name}" registriert.');
             break;
           case TriggerType.init:
             _initSubscriptions.putIfAbsent(npc, () => []).add(action);
-            print('🚀 Registered init action for ${npc.name}');
+            log.i('🚀 ${action.runtimeType} wurde für die Initialisierung für NPC "${npc.name}" registriert.');
             break;
           case TriggerType.restore:
             _restoreSubscriptions.putIfAbsent(npc, () => []).add(action);
-            print('💾 Registered restore action for ${npc.name}');
+            log.i('💾 ${action.runtimeType} wurde fürs Laden des Spielstandes für NPC "${npc.name}" registriert.');
             break;
           case TriggerType.hotspot:
             final hotspotName = action.trigger.value as String;
@@ -257,7 +254,7 @@ class GameEngine {
               npc,
               action,
             ));
-            print('🧿 Registered hotspot action for $hotspotName');
+            log.i('🧿 ${action.runtimeType} wurde für Hotspot $hotspotName und NPC "${npc.name}" registriert.');
             break;
           case TriggerType.message:
             final messageCount = action.trigger.value as int;
@@ -265,22 +262,23 @@ class GameEngine {
               action,
               messageCount,
             ));
-            print('💬 Registered message action for ${npc.name}');
+            log.i('💬 ${action.runtimeType} wurde für Nachrichten von NPC "${npc.name}" registriert.');
         }
       }
     }
+    log.d("👉 ....Alle Actions registriert");
   }
 
   bool checkFlag(String flag) {
     if (!flags.containsKey(flag.norm)) {
-      print('Unknown flag in checkFlag: ${flag.norm}');
+      log.w('⚠️ Unknown flag encountered: ${flag.norm}');
     }
     return flags[flag.norm] ?? false;
   }
 
   void setFlag(String flag, bool value) {
     if (!flags.containsKey(flag.norm)) {
-      print('New flag: ${flag.norm} set to $value');
+      log.d('New flag: ${flag.norm} set to $value');
     }
     flags[flag.norm] = value;
   }
@@ -306,8 +304,8 @@ class GameEngine {
     if (actions != null) {
       for (final action in actions) {
         final didRun = await action.invoke(npc);
-        print(
-          '$logPrefix ${action.runtimeType} for ${npc.name} executed: $didRun',
+        log.i(
+          '$logPrefix ${action.runtimeType} für NPC ${npc.name} ausgeführt: $didRun.',
         );
         if (!didRun) remaining.add(action);
       }
@@ -317,14 +315,14 @@ class GameEngine {
         map[npc] = remaining;
       }
     } else {
-      print('$logPrefix No actions for ${npc.name}');
+      log.d('$logPrefix keine Action für ${npc.name} registriert.');
     }
   }
 
   Future<void> _runHotspotActions(String hotspotName) async {
     final subscribers = _hotspotSubscriptions[hotspotName];
     if (subscribers == null) {
-      print('🧿 No actions registered for hotspot $hotspotName');
+      log.d('🧿 keine Action für hotspot $hotspotName registriert.');
       return;
     }
 
@@ -332,9 +330,8 @@ class GameEngine {
 
     for (final (npc, action) in subscribers) {
       final didRun = await action.invoke(npc);
-      print(
-        '🧿 Action ${action.runtimeType} for ${npc.name} at $hotspotName: $didRun',
-      );
+      log.i('🧿 ${action.runtimeType} for ${npc
+          .name} at $hotspotName ausgeführt: $didRun.');
       if (!didRun) remaining.add((npc, action));
     }
 
@@ -356,14 +353,14 @@ class GameEngine {
   }
 
   Future<void> registerInitialization() async {
-    print('🚀 Initialization event registered!');
+    log.d('🚀 Initialization Event erkannt.');
     for (final entry in _initSubscriptions.entries.toList()) {
       final Npc npc = entry.key;
       final List<NpcAction> actions = entry.value;
       for (final action in actions) {
         final didRun = await action.invoke(npc);
-        print(
-          '🚀 Action ${action.runtimeType} for NPC: ${npc.name} executed: $didRun',
+        log.i(
+          '🚀 ${action.runtimeType} für NPC: ${npc.name} ausgeführt: $didRun.',
         );
       }
       _initSubscriptions.remove(entry.key);
@@ -371,23 +368,22 @@ class GameEngine {
   }
 
   Future<void> registerRestore() async {
-    print('💾 Restore event registered!');
+    log.d('💾 Restore Event erkannt.');
     for (final entry in _restoreSubscriptions.entries.toList()) {
       final Npc npc = entry.key;
       final List<NpcAction> actions = entry.value;
       for (final action in actions) {
         final didRun = await action.invoke(npc);
-        print(
-          '💾 Action ${action.runtimeType} for NPC: ${npc.name} executed: $didRun',
+        log.i(
+          '💾 ${action.runtimeType} für NPC: ${npc.name} ausgeführt: $didRun.',
         );
       }
       _restoreSubscriptions.remove(entry.key);
     }
   }
 
-
   Future<void> registerSignal(Map<String, dynamic> json) async {
-    print('Signal $json registered!');
+    log.d('Signal $json erkannt.');
     if (json.containsKey('signal')) {
       await _handleSignals(json);
     }
@@ -400,16 +396,16 @@ class GameEngine {
     final signalString = json['signal'] as String;
     final subscribers = _signalSubscriptions[signalString];
     if (subscribers == null) {
-      print('🔔 No subscribers for signal $signalString.');
+      log.w('🔔 No subscribers for signal $signalString.');
       return;
     }
     for (final (npc, action) in subscribers) {
       if (action.defer) {
-        print('⏸️ Verzögere Action ${action.runtimeType} für ${npc.name}');
+        log.d('⏸️ Verzögere ${action.runtimeType} für NPC ${npc.name}.');
         _deferredActions.add((npc: npc, action: action));
       } else {
-        print(
-          '▶️ Action ${action.runtimeType} für ${npc.name} wird ausgeführt',
+        log.d(
+          '▶️ ${action.runtimeType} für ${npc.name} wird sofort ausgeführt.',
         );
         await action.invoke(npc);
       }
@@ -420,11 +416,11 @@ class GameEngine {
     BuildContext context, {
     VoidCallback? onFlushed,
   }) async {
-    print('🔁 Verarbeite ${_deferredActions.length} verzögerte Actions...');
+    log.d('🔁 Verarbeite ${_deferredActions.length} verzögerte Actions...');
     while (_deferredActions.isNotEmpty) {
       final entry = _deferredActions.removeFirst();
-      print(
-        '▶️ Action ${entry.action.runtimeType} für ${entry.npc.name} wird ausgeführt',
+      log.d(
+        '▶️ ${entry.action.runtimeType} für NPC ${entry.npc.name} wird jetzt ausgeführt',
       );
       await entry.action.invoke(entry.npc);
     }
@@ -435,19 +431,19 @@ class GameEngine {
     newFlags.forEach((key, value) {
       flags[key.norm] =
           value; // Das Flag wird entweder hinzugefügt oder der Wert geändert
-      print('🚩 Flag ${key.norm} set to $value');
+      log.i('🚩 Flag ${key.norm} gesetzt mit Wert: $value.');
     });
   }
 
   void registerMessage(Npc npc, int count) async {
-    print('💬 Message for ${npc.name} registered');
+    log.d('💬 Message für NPC ${npc.name} erkannt');
     for (final entry in _messageCountSubscriptions.entries.toList()) {
       final Npc npc = entry.key;
       final List<(NpcAction, int)> actionsEntries = entry.value;
       for (final actionEntry in actionsEntries) {
         final (NpcAction action, int messageCount) = actionEntry;
         if (messageCount == count) {
-          print('💬 Executing action for ${npc.name}');
+          log.i('💬 ${action.runtimeType} für NPC ${npc.name} ausgeführt.');
           await action.invoke(npc);
         }
       }
@@ -455,9 +451,9 @@ class GameEngine {
   }
 
   void registerGameState(HasGameState gameState) {
-
     if (_gameSate.containsKey(gameState.id)) {
-      print("GameState with id ${gameState.id} already registered");
+      log.w("⚠️ Game State with id ${gameState.id} already registered!");
+      assert(false, "⚠️ Game State with id ${gameState.id} already registered!");
     }
     _gameSate[gameState.id] = gameState;
   }
@@ -493,14 +489,13 @@ class GameEngine {
     final playerPositionJson = metaData['playerPosition'] as Map<String, dynamic>;
     lastSaveLocation = LatLng(playerPositionJson['lat'] as double, playerPositionJson['lng'] as double);
     lastSaveTime = DateTime.parse(metaData['saveTime'] as String);
-    print ("Loaded GameState from trail ${metaData['trailId']} from ${metaData['saveTime']}");
 
     final saveData = json['save'] as Map<String, dynamic>;
     for (final entry in _gameSate.entries) {
       entry.value.loadGameState(saveData[entry.key]);
     }
+    log.i("Game State für Trail ${metaData['trailId']} vom ${metaData['saveTime']} geladen.");
   }
-
 
   void reset() {
     _signalSubscriptions.clear();
@@ -555,7 +550,6 @@ class GameEngineDebugger {
     for (var entry in GameEngine()._approachSubscriptions.entries) {
       for (var action in entry.value) {
         result.add(('approach', entry.key, action));
-        //print("Approach-Action added to registered Actions: ${action.runtimeType}");
       }
     }
 

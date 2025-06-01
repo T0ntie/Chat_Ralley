@@ -3,6 +3,7 @@ import 'package:latlong2/latlong.dart';
 
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class LeadAlongAction extends NpcAction {
   final List<LatLng> path;
@@ -17,9 +18,9 @@ class LeadAlongAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
-    print('${npc.name} starts leading along a path');
+    log.i('NPC ${npc.name} führt den Spieler einen Pfad entlang.');
     npc.leadAlong(path);
-    log("${npc.name} führt den Spieler an einem bestimmten Ort.");
+    jlog("${npc.name} führt den Spieler an einem bestimmten Ort.");
     return true;
   }
 

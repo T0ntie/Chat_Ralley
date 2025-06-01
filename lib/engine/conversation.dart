@@ -8,8 +8,11 @@ import 'package:storytrail/services/chat_service.dart';
 import 'package:storytrail/engine/npc.dart';
 import 'dart:convert';
 
+import 'package:storytrail/services/log_service.dart';
+
 class Conversation with HasGameState {
   final Npc npc; // Der NPC, mit dem der User chattet
+  @override
   String id;
   final List<ChatMessage> _messages = []; // Liste von Nachrichten
   int userMessageCount = 0;
@@ -21,13 +24,12 @@ class Conversation with HasGameState {
   Conversation(this.npc) : id = "conversation_${npc.id}" {
     registerSelf();
     addPrompt(npc.prompt.getGameplayPrompt());
-    print("System prompt added for: ${npc.name}");
+    log.d("System prompt für NPC ${npc.name} hinzugefügt.");
   }
 
   Future<void> handleTriggerMessage() async {
     if (_messages.last.isTrigger) {
       String triggeredResponse = await processConversation();
-      //print('triggered Response is $triggeredResponse');
       addAssistantMessage(triggeredResponse, Medium.chat);
     }
   }
@@ -57,14 +59,14 @@ class Conversation with HasGameState {
         medium: Medium.trigger,
       ),
     );
-    _log();
+    _jlog();
   }
 
   void addUserMessage(String message, Medium medium) {
     _messages.add(
       ChatMessage(rawText: message, chatRole: ChatRole.user, medium: medium),
     );
-    _log();
+    _jlog();
     GameEngine().registerMessage(npc, ++userMessageCount);
   }
 
@@ -75,7 +77,7 @@ class Conversation with HasGameState {
       medium: medium,
     );
     _messages.add(chatMessage);
-    _log();
+    _jlog();
 
     if (chatMessage.signalJson.isNotEmpty) {
       await GameEngine().registerSignal(chatMessage.signalJson);
@@ -85,12 +87,12 @@ class Conversation with HasGameState {
   void addPrompt(String message) {
     _messages.add(ChatMessage(
         rawText: message, chatRole: ChatRole.system, isInitialPrompt: true));
-    _log();
+    _jlog();
   }
 
   void addSystemMessage(String message) {
     _messages.add(ChatMessage(rawText: message, chatRole: ChatRole.system));
-    _log();
+    _jlog();
   }
 
   Future<void> _compressConversation() async {
@@ -150,7 +152,7 @@ class Conversation with HasGameState {
 
     final summary = await _processConversation(promptForGPT);
 
-    print("Summary durchgeführt: $summary");
+    log.i("Summary durchgeführt: $summary");
 
     // 4) --- Neue Nachrichtenliste zusammenbauen ------------------------------
     _messages
@@ -185,10 +187,10 @@ class Conversation with HasGameState {
         .toList();
   }
 
-  void _log() {
+  void _jlog() {
     if (_messages.isNotEmpty) {
       ChatMessage cm = _messages.last;
-      if (_messages.length == 1 && cm.chatRole == ChatRole.system) {
+      if (_messages.length == 1 && cm.chatRole == ChatRole.system) { //fixme prompt property nutzen
         //print("Prompt-message detected:");
         StoryJournal().logPrompt(npc.name, npc.prompt.getCreditsPrompt());
       }
@@ -202,6 +204,7 @@ class Conversation with HasGameState {
     }
   }
 
+  @override
   loadGameState(Map<String, dynamic> json) {
     final messagesJson = json['messages'] as List;
     //alle messages außer dem initial prompt entfernen
@@ -229,6 +232,7 @@ class Conversation with HasGameState {
     }
   }
 
+  @override
   Map<String, dynamic> saveGameState() {
     final messagesJson = <Map<String, dynamic>>[];
     //System Prompt wird nicht gespeichert!
@@ -283,7 +287,7 @@ class ChatMessage {
         signalJson =
         (chatRole == ChatRole.assistant) ? _extractSignal(rawText) : {} {
     if (chatRole == ChatRole.assistant && signalJson.isNotEmpty) {
-      print("✅ Signal gefunden: $signalJson");
+      log.i("✅ Signal in Antwort von NPC gefunden: $signalJson");
     }
   }
 

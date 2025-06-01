@@ -41,7 +41,7 @@ class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
       children: [
         selectedTrail != null ?
         FirebaseHosting.loadImageWidget(
-          "${selectedTrail!.coverImage}",
+          selectedTrail!.coverImage,
           fit: BoxFit.fitWidth,
         ): Image.asset("assets/images/cover.png", fit: BoxFit.fitWidth),
         Positioned(

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:storytrail/services/log_service.dart';
 import 'package:tiktoken/tiktoken.dart';
-
 
 class ChatService {
   //static const _url = 'https://api.openai.com/v1/chat/completions';
@@ -30,35 +30,49 @@ class ChatService {
   }
 
   static const _firebaseFunctionUrl = 'https://callgpt-erqoo6fo7q-uc.a.run.app';
-  static Future<String> processMessages(List<Map<String, String>> messages) async {
-    try {
-      final response = await http.post(
-        Uri.parse(_firebaseFunctionUrl),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({
-          'messages': messages,
-          'model': _model,
-        }),
-      );
 
-      if (response.statusCode == 200) {
+  static Future<String> processMessages(
+    List<Map<String, String>> messages,
+  ) async {
+    final http.Response response;
+    try {
+      response = await http.post(
+        Uri.parse(_firebaseFunctionUrl),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode({'messages': messages, 'model': _model}),
+      );
+    } catch (e, stackTrace) {
+      log.e(
+        '❌ Failed to post to firebase function "$_firebaseFunctionUrl".',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
+    if (response.statusCode == 200) {
+      try {
         final decoded = jsonDecode(utf8.decode(response.bodyBytes));
         return decoded['reply'];
-      } else {
-        throw Exception('Fehler: ${response.statusCode} - ${response.body}');
+      } catch (e, stackTrace) {
+        log.e(
+          '❌ Failed to decode response from firebase function "$_firebaseFunctionUrl".',
+          error: e,
+          stackTrace: stackTrace,
+        );
+        rethrow;
       }
-    } catch (e, stack) {
-      print('❌ Fehler beim Aufruf der Firebase Function:\n$e\n$stack');
-      rethrow;
+    } else {
+      log.e(
+        '❌ Recived errorcode from firebase function "$_firebaseFunctionUrl" : ${response.statusCode} - ${response.body}',
+        error: response.body,
+      );
+      throw Exception('Errorcode: ${response.statusCode} - ${response.body}');
     }
   }
 
-
   //wurde ins backend verlagert
 
-/*
+  /*
   static Future<String> processMessages(List<Map<String, String>> messages) async
   {
     try {
@@ -96,7 +110,7 @@ class ChatService {
     }
   }
 */
-/*
+  /*
   static Future<String> generateItemMessage(String npcName, String itemName) async {
     final messages = [
       {
@@ -120,7 +134,4 @@ itemName: $itemName
     return response.trim();
   }
 */
-
-
 }
-

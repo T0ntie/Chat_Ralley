@@ -1,5 +1,6 @@
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class TalkAction extends NpcAction{
   String triggerMessage;
@@ -7,6 +8,7 @@ class TalkAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
+    log.i('NPC "${npc.name}" meldet sich zu Wort: "$triggerMessage"');
     await npc.talk(triggerMessage);
     return true;
   }

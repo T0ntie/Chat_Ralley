@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:storytrail/services/chat_service.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class GptUtilities {
   static const String utilityPromptFile =
@@ -16,7 +17,7 @@ class GptUtilities {
       utilityPrompt = await rootBundle.loadString(utilityPromptFile);
       creditsPrompt = await rootBundle.loadString(creditsPromptFile);
     } catch (e, stack) {
-      print('❌ Failed to load prompt files\n$e\n$stack');
+      log.e('❌ Failed to load prompt files', error: e, stackTrace: stack);
       rethrow;
     }
   }

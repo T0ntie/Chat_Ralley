@@ -6,10 +6,13 @@ import 'package:storytrail/engine/prompt.dart';
 import 'package:storytrail/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:storytrail/engine/conversation.dart';
+import 'package:storytrail/services/log_service.dart';
 
 enum NPCIcon { unknown, identified, nearby, unknownNearby }
 
-class Npc extends GameElement with HasPosition, HasGameState implements ProximityAware {
+class Npc extends GameElement
+    with HasPosition, HasGameState
+    implements ProximityAware {
   final Prompt prompt;
   final String descriptiveName;
   final String? iconAsset;
@@ -35,13 +38,14 @@ class Npc extends GameElement with HasPosition, HasGameState implements Proximit
     required super.isRevealed,
     required speed, //in km/h
     required this.iconAsset,
-  }){
+  }) {
     movementController = NPCMovementController(
       currentBasePosition: position,
       toPosition: position,
       speedInKmh: speed,
       onEnterRange: () => GameEngine().registerApproach(this),
-      onExitRange: () => {},//print("Range lost."),
+      onExitRange: () => {},
+      //print("Range lost."),
       getPlayerPosition: () => GameEngine().playerPosition,
     );
     currentConversation = Conversation(this);
@@ -59,7 +63,7 @@ class Npc extends GameElement with HasPosition, HasGameState implements Proximit
       return Npc(
         id: json['id'],
         name: json['name'],
-        descriptiveName : json['descriptiveName'],
+        descriptiveName: json['descriptiveName'],
         position: position,
         prompt: prompt,
         imageAsset: json['image'] as String? ?? GameElement.unknownImageAsset,
@@ -69,19 +73,34 @@ class Npc extends GameElement with HasPosition, HasGameState implements Proximit
         iconAsset: json['iconAsset'] as String?,
         actions: actions,
       );
-    } catch (e, stack) {
-      print('❌ Fehler im Json der Npcs:\n$e\n$stack');
+    } catch (e, stackTrace) {
+      log.e(
+        '❌ Failed to parse json from a npc.',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
 
+  @override
   loadGameState(Map<String, dynamic> json) {
-    isVisible = json['isVisible'] as bool;
-    isRevealed = json['isRevealed'] as bool;
-    hasSomethingToSay = json['hasSomethingToSay'] as bool;
-    hasInteracted = json['hasInteracted'] as bool;
+    try {
+      isVisible = json['isVisible'] as bool;
+      isRevealed = json['isRevealed'] as bool;
+      hasSomethingToSay = json['hasSomethingToSay'] as bool;
+      hasInteracted = json['hasInteracted'] as bool;
+    } catch (e, stackTrace) {
+      log.e(
+        '❌ Failed to parse game state json from npc $name.',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
   }
 
+  @override
   Map<String, dynamic> saveGameState() => {
     'id': id,
     'isVisible': isVisible,
@@ -90,6 +109,7 @@ class Npc extends GameElement with HasPosition, HasGameState implements Proximit
     'hasInteracted': hasInteracted,
   };
 
+  @override
   void reveal() {
     isVisible = true;
     isRevealed = true;
@@ -127,7 +147,7 @@ class Npc extends GameElement with HasPosition, HasGameState implements Proximit
     await currentConversation.finishConversation();
   }
 
-  Future <void> talk(String repsondTo) async {
+  Future<void> talk(String repsondTo) async {
     hasSomethingToSay = true;
     currentConversation.addTriggerMessage(repsondTo);
   }
@@ -172,7 +192,8 @@ class Npc extends GameElement with HasPosition, HasGameState implements Proximit
     return NPCIcon.unknown;
   }
 
-  bool get isInCommunicationDistance => movementController.isInCommunicationDistance;
+  bool get isInCommunicationDistance =>
+      movementController.isInCommunicationDistance;
 
   @override
   void updateProximity(LatLng playerPosition) {

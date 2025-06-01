@@ -1,4 +1,5 @@
 import 'package:storytrail/gui/game_screen.dart';
+import 'package:storytrail/services/log_service.dart';
 
 abstract class UIIntent {
   Future<void> call(GameScreenState state);
@@ -18,7 +19,7 @@ class UiIntentQueue {
   UiIntentQueue._internal();
 
   void enqueue(UIIntent intent) {
-    print("📥 UIIntent queued: ${intent.runtimeType}");
+    log.d("📥 UIIntent queued: ${intent.runtimeType}.");
     _queue.add(intent);
   }
 
@@ -31,7 +32,7 @@ class UiIntentQueue {
     for (final intent in toExecute) {
       await intent.call(state);
     }
-    print("🚀 Flushed ${toExecute.length} UIIntents");
+    log.d("📥 Flushed ${toExecute.length} UIIntents.");
   }
 
   bool get hasPending => _queue.isNotEmpty;

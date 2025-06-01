@@ -1,5 +1,6 @@
 import 'package:storytrail/gui/intents/credits_intent.dart';
 import 'package:storytrail/gui/intents/ui_intent.dart';
+import 'package:storytrail/services/log_service.dart';
 
 import 'npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
@@ -15,9 +16,7 @@ class EndGameAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
-
-    print("Trying to end the game");
-
+    log.i("Ending the game");
     dispatchUIIntent(
       CreditsIntent(),
     );

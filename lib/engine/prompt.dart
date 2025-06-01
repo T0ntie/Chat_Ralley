@@ -1,4 +1,5 @@
 import 'package:storytrail/services/firebase_serice.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class Prompt {
   Prompt._();
@@ -33,7 +34,8 @@ class Prompt {
   String getTaggedPrompt(String tag) {
     final sections = tagToSections[tag];
     if (sections == null || sections.isEmpty) {
-      throw StateError("❌ Kein Abschnitt mit Tag $tag im Prompt '$promptFile' gefunden.");
+      log.e('❌ no section found with tag "$tag" in prompt "$promptFile" found.');
+      throw StateError('❌ no section found with tag "$tag" in prompt "$promptFile" found.');
     }
     return getCustomPrompt(sections);
   }
@@ -41,7 +43,8 @@ class Prompt {
   String getPromptSection(String section) {
     final content = promptSectionMap[section];
     if (content == null) {
-      throw ArgumentError("Prompt-Abschnitt '$section' existiert nicht.");
+      log.e('❌ there is no section called "$section".');
+      throw ArgumentError('❌ there is no section called "$section".');
     }
     return content;
   }
@@ -55,7 +58,8 @@ class Prompt {
         buffer.writeln(content);
         buffer.writeln(); // fügt eine Leerzeile zwischen Sektionen ein
       } else {
-        throw StateError("❌ Abschnitt '$section' fehlt im Prompt '$promptFile'.");
+        log.e('❌ section "$section" missing in prompt "$promptFile".');
+        throw StateError('❌ section "$section" missing in prompt "$promptFile".');
       }
     }
     return buffer.toString().trim();
@@ -68,22 +72,43 @@ class Prompt {
   }
 
   Future<void> _loadPrompt(String promptFile) async {
+    this.promptFile = promptFile;
+    final String gamePrompt;
     try {
-      this.promptFile = promptFile;
-      final String gamePrompt = await FirebaseHosting.loadStringFromUrl(gamePromptUri);
-      final String compressPrompt = await FirebaseHosting.loadStringFromUrl(compressPromptUri);
-      final String npcPrompt = await FirebaseHosting.loadStringFromUrl(promptUriPath + promptFile);
-      String prompt = gamePrompt + npcPrompt + compressPrompt;
-      try {
-        parsePromptSections(prompt, promptSectionMap, tagToSections);
-      } catch (e) {
-        print("❌ Feher beim Parsen von '$promptFile': $e");
-        rethrow;
-      }
-    } catch (e, stack) {
-      print(
-        '❌ Failed to load prompt files $gamePromptUri or $promptFile:\n$e\n$stack',
-      );
+      gamePrompt = await FirebaseHosting.loadStringFromUrl(
+          gamePromptUri);
+    } catch (e, stackTrace) {
+      log.e('❌ failed to load prompt file "$gamePromptUri".', error: e,
+          stackTrace: stackTrace);
+      rethrow;
+    }
+
+    final String compressPrompt;
+    try {
+      compressPrompt = await FirebaseHosting.loadStringFromUrl(
+          compressPromptUri);
+    } catch (e, stackTrace) {
+      log.e('❌ failed to load prompt file "$compressPromptUri".', error: e,
+          stackTrace: stackTrace);
+      rethrow;
+    }
+
+    final String npcPrompt;
+    try {
+      npcPrompt =
+      await FirebaseHosting.loadStringFromUrl('$promptUriPath$promptFile');
+    } catch (e, stackTrace) {
+      log.e('❌ failed to load prompt file "$promptUriPath$promptFile".',
+          error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+
+    String prompt = gamePrompt + npcPrompt + compressPrompt;
+    try {
+      parsePromptSections(prompt, promptSectionMap, tagToSections);
+    } catch (e, stackTrace) {
+      log.e('❌ failed to parse prompt sections in "$promptFile".', error: e,
+          stackTrace: stackTrace);
       rethrow;
     }
   }

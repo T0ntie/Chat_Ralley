@@ -3,6 +3,7 @@ import 'package:storytrail/engine/game_engine.dart';
 import 'package:storytrail/services/firebase_serice.dart';
 import 'package:storytrail/engine/story_journal.dart';
 import 'package:storytrail/services/gpt_utilities.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class CreditsScreen extends StatefulWidget {
   const CreditsScreen({super.key, this.onFatalError});
@@ -27,20 +28,20 @@ class _CreditsScreenState extends State<CreditsScreen> {
   }
 
   Future<void> _loadStoryAndStartScrolling() async {
-    print("🟡 Lade-Credits gestartet");
+    log.d("🟡 Lade-Credits gestartet");
 
     String credits = "";
     try {
       credits = await FirebaseHosting.loadStringFromUrl(GameEngine().creditsTextPath());
-      print("✅ Credits-Text geladen");
+      log.d("✅ Credits-Text geladen");
     } catch (e) {
       widget.onFatalError?.call("Failed to load credits from ${GameEngine().creditsTextPath()}: $e");
     }
 
     try {
-      credits +=
-          '\n' + await GptUtilities.buildCreditsStory(StoryJournal().toStory());
-      print("✅ Story generiert");
+      final story = await GptUtilities.buildCreditsStory(StoryJournal().toStory());
+      credits = '$credits\n$story';
+      log.d("✅ Story generiert");
     } catch (e) {
       widget.onFatalError?.call("Failed to build credits story: $e");
     }
@@ -48,13 +49,11 @@ class _CreditsScreenState extends State<CreditsScreen> {
     if (!mounted) return;
     setState(() {
       _creditsText = credits;
-      print("🎯 Credits gesetzt, Textlänge: ${credits.length}");
     });
 
     //WidgetsBinding.instance.addPostFrameCallback((_) => _startScrolling());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print("▶️ Starte Scrollen...");
       _startScrolling();
     });
   }

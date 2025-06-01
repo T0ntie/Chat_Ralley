@@ -5,6 +5,7 @@ import 'package:storytrail/gui/credits_screen.dart';
 import 'package:storytrail/gui/location_stream_manager.dart';
 import 'package:storytrail/gui/trail_selection.dart';
 import 'package:storytrail/services/gpt_utilities.dart';
+import 'package:storytrail/services/log_service.dart';
 import 'services/location_service.dart';
 import 'engine/game_engine.dart';
 import 'app_resources.dart';
@@ -19,35 +20,44 @@ import 'package:flutter/foundation.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  debugPrint = (String? message, {int? wrapWidth}) {};
+
   try {
     await Firebase.initializeApp();
-    print("✅ Firebase erfolgreich initialisiert");
-  } catch (e) {
-    print("❌ Firebase Fehler: $e");
+    log.i("✅ Firebase erfolgreich initialisiert");
+  } catch (e, stackTrace) {
+    log.e("❌ Failed to initialize Firebase", error: e, stackTrace: stackTrace);
     rethrow;
   }
 
   if (kDebugMode) {
     // Wenn wir im Debug-Modus sind, aktiviere App Check mit dem Debug Provider.
     // Dies generiert das Token im Logcat/Konsole, das du registrieren musst.
-    print("⚠️ App Check: Debug Provider wird initialisiert...");
     await FirebaseAppCheck.instance.activate(
       androidProvider: AndroidProvider.debug,
       appleProvider: AppleProvider.debug,
     );
-    print("✅ App Check Debug Provider aktiviert.");
+    log.i("✅ App Check Debug Provider aktiviert.");
   } else {
     await FirebaseAppCheck.instance.activate(
       androidProvider: AndroidProvider.playIntegrity,
       appleProvider: AppleProvider.appAttest,
     );
-    print("✅ App Check Production Provider aktiviert.");
+    log.i("✅ App Check Production Provider aktiviert.");
   }
 
   //firebase anonymouse login
-  initAnonymousUser();
+  try {
+    initAnonymousUser();
+  } catch(e, stackTrace) {
+    log.e("❌ Failed to initialize anonymous user:", error: e, stackTrace: stackTrace);
+  }
 
-  GptUtilities.init();
+  try {
+    GptUtilities.init();
+  } catch(e, stackTrace) {
+    log.e("❌ Failed initialize GPT Utilities:", error: e, stackTrace: stackTrace);
+  }
 
   // Nur Hochformat erlauben
   await SystemChrome.setPreferredOrientations([
@@ -57,8 +67,12 @@ void main() async {
 
   LocationStreamManager().initialize(); // nur einmal starten
 
-  await GameEngine().loadTrails();
-  print("✅ trails should be loaded");
+  try {
+    await GameEngine().loadTrails();
+    log.i("✅ Trails erfolgreich geladen");
+  } catch(e, stackTrace) {
+    log.e("❌ Failed load existing trails:", error: e, stackTrace: stackTrace);
+  }
 
   runApp(const MyApp());
 }
@@ -78,7 +92,7 @@ Future<void> initAnonymousUser() async {
   // UID holen
   final uid = auth.currentUser!.uid;
   GameEngine().playerId = uid;
-  print('Angemeldet mit UID: $uid');
+  log.i('✅ Angemeldet mit UID: $uid');
 }
 
 class MyApp extends StatefulWidget {
@@ -102,13 +116,11 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    //_currentScreen = AppScreen.loading;
     _initializeApp();
   }
 
   Future<void> _initializeApp() async {
     try {
-      //await LocationService.initialize();
 
       final stream = LocationService.stream;
       if (stream != null) {
@@ -118,31 +130,20 @@ class _MyAppState extends State<MyApp> {
           }
         });
       } else {
-        print("⚠️ Kein aktiver Standortstream – Manager noch nicht initialisiert?");
+        log.w("⚠️ Kein aktiver Standortstream – Manager noch nicht initialisiert?");
+        assert(false, "⚠️ Kein aktiver Standortstream – Manager noch nicht initialisiert?");
       }
-/*
-      _positionSubscription = LocationService.getPositionStream().listen((Position position) {
-        if (!_isSimulatingLocation) {
-          GameEngine().playerPosition =
-              LatLng(position.latitude, position.longitude);
-        }
-      });
-
-      Position pos = await Geolocator.getCurrentPosition();
-      GameEngine().playerPosition = LatLng(pos.latitude, pos.longitude);
-*/
-
       setState(() {
         _currentScreen = AppScreen.trails;
       });
-    } catch (e) {
+    } catch (e, stackTrace) {
       setState(() {
-        _errorMessage = '❌ Fehler beim Initialisieren: $e';
+        _errorMessage = '❌ Fehler beim Initialisieren';
+        log.e("❌ Fehler beim Initialisieren", error: e, stackTrace: stackTrace);
         _currentScreen = AppScreen.error;
       });
     }
   }
-
 
   String? _selectedTrailId;
 

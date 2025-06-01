@@ -32,7 +32,7 @@ class CameraFlight {
 
     if (dist < 100) {
       controller.move(to, toZoom);
-      print("📍 Jumped to nearby target");
+      //print("📍 Jumped to nearby target");
       return;
     }
 
@@ -54,7 +54,7 @@ class CameraFlight {
       zoomCurve: Curves.easeOutCubic,
     );
 
-    print("📍 Arrived at target");
+    //print("📍 Arrived at target");
 
     // ⏱️ Verweilen
     await Future.delayed(const Duration(seconds: 1));
@@ -69,7 +69,7 @@ class CameraFlight {
       curve: Curves.easeInOut,
     );
 
-    print("🔙 Returned to original position");
+    //print("🔙 Returned to original position");
   }
 }
 

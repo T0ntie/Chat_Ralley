@@ -1,5 +1,6 @@
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class SpawnAction extends NpcAction{
 
@@ -9,7 +10,7 @@ class SpawnAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    print('${npc.name} spawns');
+    log.i('${npc.name} erscheint neben dem Spieler');
     npc.spawn(distance);
     return true;
   }

@@ -1,6 +1,6 @@
 import 'package:storytrail/engine/game_engine.dart';
 import 'package:storytrail/engine/item.dart';
-
+import 'package:storytrail/services/log_service.dart';
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
 
@@ -19,11 +19,12 @@ class AddToInventoryAction extends NpcAction {
   Future<bool> excecute(Npc npc) async {
     Item? item = GameEngine().getItemById(itemId);
     if (item == null) {
-      throw Exception("Kein Item mit Id: $itemId gefunden.");
+      log.e('❌ no item with id "$itemId" found.', stackTrace: StackTrace.current);
+      throw Exception('❌ no item with id "$itemId" found.');
     }
     item.isOwned = true;
     item.isNew = true;
-    log("${npc.name} hat dem Spieler folgenden Gegenstand gegeben: ${item.name}");
+    super.jlog("${npc.name} hat dem Spieler folgenden Gegenstand gegeben: ${item.name}");
     return item.isOwned;
   }
 

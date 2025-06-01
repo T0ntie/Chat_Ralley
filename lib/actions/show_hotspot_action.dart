@@ -1,11 +1,10 @@
 import 'package:storytrail/gui/intents/show_hotspot_intent.dart';
-
 import 'package:storytrail/engine/game_engine.dart';
 import 'package:storytrail/engine/hotspot.dart';
-
 import 'package:storytrail/gui/intents/ui_intent.dart';
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class ShowHotspotAction extends NpcAction{
 
@@ -19,11 +18,12 @@ class ShowHotspotAction extends NpcAction{
 
     if (spot != null) {
       spot.isVisible = true;
-      print('${spot.name} appears');
+      log.i('Hotspot "${spot.name}" erscheint auf der Karte.');
       dispatchUIIntent(ShowHotspotIntent(hotspot: spot));
     }
     else{
-      print('❌ hotspot ${hotspotId} not found');
+      log.e('❌ hotspot ${hotspotId} not found in showHotspotAction', stackTrace: StackTrace.current);
+      assert(false, '❌ hotspot ${hotspotId} not found showHotspotAction');
       return false;
     }
     return true;

@@ -16,13 +16,13 @@ import 'package:storytrail/actions/stop_talking_action.dart';
 import 'package:storytrail/actions/talk_action.dart';
 import 'package:storytrail/engine/game_engine.dart';
 import 'package:storytrail/engine/story_journal.dart';
-
 import 'package:storytrail/actions/walk_action.dart';
 import 'package:storytrail/actions/appear_action.dart';
 import 'package:storytrail/actions/reveal_action.dart';
 import 'package:storytrail/actions/follow_action.dart';
 import 'package:storytrail/actions/move_along_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 enum TriggerType {
   signal,
@@ -52,9 +52,12 @@ extension TriggerTypeX on TriggerType {
 
   static TriggerType fromKey(String key) {
     return TriggerType.values.firstWhere(
-      (e) => e.key == key,
-      orElse:
-          () => throw FormatException('❌ Unbekannter TriggerType-Key: $key'),
+            (e) => e.key == key,
+        orElse:
+            () {
+          log.e('❌ Unknown trigger type key: $key encountered');
+          throw FormatException('❌ Unknown trigger type key: $key');
+        }
     );
   }
 }
@@ -63,38 +66,16 @@ class NpcActionTrigger {
   final TriggerType type;
   final dynamic value;
 
-  /*
-  static const Map<String, TriggerType> _stringToTriggerType = {
-    'onSignal': TriggerType.signal,
-    'onInteraction': TriggerType.interaction,
-    'onApproach': TriggerType.approach,
-    'onInit': TriggerType.init,
-    'onRestore': TriggerType.restore,
-    'onHotspot': TriggerType.hotspot,
-    'onMessageCount': TriggerType.message,
-  };
-*/
-
-  /* @visibleForTesting
-  static Map<String, TriggerType> get stringToTriggerTypeForTest =>
-      Map.unmodifiable(_stringToTriggerType);
-*/
   NpcActionTrigger({required this.type, required this.value});
-
-  /*  static NpcActionTrigger npcActionTriggerfromJson(Map<String, dynamic> json) {
-    for (final entry in _stringToTriggerType.entries) {
-      if (json.containsKey(entry.key)) {
-        return NpcActionTrigger(type: entry.value, value: json[entry.key]);
-      }
-    }
-    throw FormatException('❌ Unbekannter Action Trigger in: $json');
-  }*/
 
   factory NpcActionTrigger.fromJson(Map<String, dynamic> json) {
     final triggerEntry = json.entries.firstWhere(
-      (e) => TriggerTypeX.isKnownKey(e.key),
-      orElse:
-          () => throw FormatException('❌ Kein gültiger Trigger-Key in: $json'),
+            (e) => TriggerTypeX.isKnownKey(e.key),
+        orElse:
+            () {
+          log.e('❌ Invalid trigger key in: "$json".');
+          throw FormatException('❌ Invalid trigger key in: "$json".');
+        }
     );
 
     return NpcActionTrigger(
@@ -102,18 +83,6 @@ class NpcActionTrigger {
       value: triggerEntry.value,
     );
   }
-
-  /*factory NpcActionTrigger.fromJson(Map<String, dynamic> json) {
-
-    print("so sieht das trigger json aus: ${json.toString()}");
-
-    final entry = _stringToTriggerType.entries.firstWhere(
-          (e) => json.containsKey(e.key),
-      orElse: () => throw FormatException('❌ Unbekannter Action Trigger in: $json'),
-    );
-    return NpcActionTrigger(type: entry.value, value: json[entry.key]);
-  }
-*/
 }
 
 abstract class NpcAction {
@@ -144,26 +113,6 @@ abstract class NpcAction {
   }
 
   Future<bool> invoke(Npc npc) async {
-    /*
-    Map<String, bool> flags = GameEngine().flags;
-
-
-    print("Aktuelle Flags im GameEngine:");
-    flags.forEach((key, value) {
-      print("  $key: $value");
-    });
-
-    print("Aktuelle Items: ");
-    for (final item in GameEngine().items) {
-      print("Item: ${item.name}: owned: ${item.isOwned}");
-    }
-
-    print("Conditions für Invoke:");
-    conditions.forEach((key, value) {
-      print("-->  '$key': '$value'");
-    });
-*/
-
     bool allConditionsMet = conditions.entries.every((entry) {
       final key = entry.key;
       final expected = entry.value;
@@ -173,11 +122,6 @@ abstract class NpcAction {
         return GameEngine().checkFlag(flagName) == expected;
       } else if (key.startsWith('item:')) {
         final itemId = key.substring(5).trim();
-/*
-        print(
-          "comparing item: $itemId ${GameEngine().ownsItem(itemId)} == $expected",
-        );
-*/
         return GameEngine().ownsItem(itemId) == expected;
       } else if (key.startsWith('npc:')){
 
@@ -198,16 +142,19 @@ abstract class NpcAction {
            return gameState[propertyName] == expected;
          }
          else {
-           print("while invoking no npc found with id: $npcId");
+           log.e('❌ no npc found with id: "$npcId".', stackTrace: StackTrace.current);
+           assert(false, '❌ no npc found with id: "$npcId".');
            return false;
          }
         }
         else {
-          print("failed to parse conditions on key: $key");
+          log.e('❌ failed to parse conditions on key: "$key".', stackTrace: StackTrace.current);
+          assert(false, '❌ no npc found with id: "$key".');
           return false;
         }
       } else {
-        print("condition key found with out prefix, key: $key");
+        log.w('⚠️ condition key found without any prefix, key: "$key".');
+        assert(false, '⚠️ condition key found without any prefix, key: "$key".');
         // Rückwärtskompatibel für alte Keys ohne Präfix
         return GameEngine().checkFlag(key) == expected;
       }
@@ -215,10 +162,8 @@ abstract class NpcAction {
 
     if (allConditionsMet) {
       bool result = await excecute(npc);
-      //print("executed for: ${npc.name} notification: $notification");
       if (result && notification != null) {
         GameEngine().showNotification(notification!);
-        //print("notifcation shown");
       }
       return result;
     }
@@ -227,7 +172,7 @@ abstract class NpcAction {
 
   Future<bool> excecute(Npc npc);
 
-  void log(String message) {
+  void jlog(String message) {
     StoryJournal().logAction(message);
   }
 
@@ -259,7 +204,8 @@ abstract class NpcAction {
     final factory = _actionRegistry[actionType];
 
     if (factory == null) {
-      throw Exception('❌ Unknown action type in storyline.jnsn: $actionType');
+      log.e('❌ Unknown action type in storyline.json: $actionType');
+      throw Exception('❌ Unknown action type in storyline.json: $actionType');
     }
     return factory(json);
   }

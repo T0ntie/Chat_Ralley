@@ -20,7 +20,7 @@ class ContinueGameDialog extends StatelessWidget {
     final hour = saveDate.hour.toString().padLeft(2, '0');
     final minute = saveDate.minute.toString().padLeft(2, '0');
     final formattedDate =
-        '${day}.${month}.${saveDate.year} – ${hour}:${minute}';
+        '$day.$month.${saveDate.year} – $hour:$minute';
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

@@ -3,6 +3,7 @@ import 'package:latlong2/latlong.dart';
 
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class WalkAction extends NpcAction {
   final double lat;
@@ -19,7 +20,7 @@ class WalkAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
-    print('${npc.name} starts walking to $lat, $lng');
+    log.i('NPC "${npc.name}" bewegt sich Richtung $lat, $lng');
     npc.moveTo(LatLng(lat, lng));
     return true;
   }

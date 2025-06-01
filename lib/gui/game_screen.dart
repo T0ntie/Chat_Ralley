@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -20,20 +19,26 @@ import 'package:storytrail/gui/intents/ui_intent.dart';
 import 'package:storytrail/main.dart';
 import 'package:storytrail/services/compass_service.dart';
 import 'package:storytrail/services/firebase_serice.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({super.key, required this.title, required this.trailId, this.onFatalError,});
+  const GameScreen({
+    super.key,
+    required this.title,
+    required this.trailId,
+    this.onFatalError,
+  });
 
   final String title;
   final String trailId;
   final void Function(String error)? onFatalError;
 
-
   @override
   State<GameScreen> createState() => GameScreenState();
 }
 
-class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderStateMixin {
+class GameScreenState extends State<GameScreen>
+    with RouteAware, TickerProviderStateMixin {
   final _frameRate = Duration(milliseconds: 33);
 
   bool _gameInitialized = false;
@@ -42,8 +47,8 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   double _currentHeading = 0.0;
   DateTime _lastHeadingUpdateTime = DateTime.now();
   final MapController _mapController = MapController();
-  MapController get mapController => _mapController;
 
+  MapController get mapController => _mapController;
 
   double _currentMapRotation = 0.0;
   late final StreamSubscription<MapEvent> _mapControllerSubscription;
@@ -81,18 +86,18 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   Future<void> _initializeGame() async {
     try {
       await GameEngine().loadSelectedTrail(widget.trailId);
-    } catch(e) {
-      widget.onFatalError?.call('❌ Laden des StoryTrails fehlgeschlagen.' );
+    } catch (e, stackTrace) {
+      log.e('❌ Failed to load selcted trail: ${widget.trailId}', error: e, stackTrace: stackTrace);
+      widget.onFatalError?.call('❌ Laden des StoryTrails fehlgeschlagen.');
       return;
     }
     _gameInitialized = true;
     _checkIfInitializationCompleted();
+    log.i('✅ Alle Spieldaten erfolgreich geladen');
     SnackBarService.showSuccessSnackBar(context, "✔️ Alle Spieldaten geladen");
   }
 
   void _checkIfInitializationCompleted() {
-    print(
-        "checking Initializaion: $_gameInitialized $_initializationCompleted");
     if (_gameInitialized && !_initializationCompleted) {
       setState(() {
         _initializationCompleted = true;
@@ -113,34 +118,30 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   Future<void> _initializeCompassStream() async {
     try {
       CompassService.initialize();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      log.e('❌ Failed to initialize compass service.', error: e, stackTrace: stackTrace);
       rethrow;
     } //
-    _compassSubscription =
-        CompassService.getCompassDirection().listen((heading,) {
-          DateTime currentTime = DateTime.now();
-          if ((heading - _currentHeading).abs() >= 5 ||
-              currentTime
-                  .difference(_lastHeadingUpdateTime)
-                  .inSeconds >= 1) {
-            if (_isMapHeadingBasedOrientation) {
-              _mapController.rotate(-heading);
-            }
-            setState(() {
-              _currentHeading = heading;
-              _lastHeadingUpdateTime = currentTime;
-            });
-          }
+    _compassSubscription = CompassService.getCompassDirection().listen((
+      heading,
+    ) {
+      DateTime currentTime = DateTime.now();
+      if ((heading - _currentHeading).abs() >= 5 ||
+          currentTime.difference(_lastHeadingUpdateTime).inSeconds >= 1) {
+        if (_isMapHeadingBasedOrientation) {
+          _mapController.rotate(-heading);
+        }
+        setState(() {
+          _currentHeading = heading;
+          _lastHeadingUpdateTime = currentTime;
         });
+      }
+    });
   }
 
   void _initializeUpdateTimer() {
     _updateTimer = Timer.periodic(_frameRate, (timer) {
       if (_initializationCompleted) {
-        //if (GameEngine().isGPSSimulating) {
-          //GameEngine().updatePlayerPositionSimulated();
-
-        //}
         GameEngine().updatePlayerPosition();
         GameEngine().updateAllNpcPositions();
         setState(() {});
@@ -151,16 +152,19 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   Future<void> _initializeGameUI() async {
     try {
       _initializeCompassStream();
-    } catch (e) {
-
-      widget.onFatalError?.call('❌ Initialisierung des Kompass fehlgeschlagen.' );
+    } catch (e, stackTrace) {
+      log.e('❌ Failed to initialize compass stream', error: e, stackTrace: stackTrace);
+      widget.onFatalError?.call(
+        '❌ Initialisierung des Kompass fehlgeschlagen.',
+      );
       return;
     }
 
     try {
       _initializeMapController();
-    } catch (e) {
-      widget.onFatalError?.call('❌ Initialisierung der Karte fehlgeschlagen.' );
+    } catch (e, stackTrace) {
+      log.e('❌ Failed to initialize map controller', error: e, stackTrace: stackTrace);
+      widget.onFatalError?.call('❌ Initialisierung der Karte fehlgeschlagen.');
       return;
     }
     _initializeUpdateTimer();
@@ -190,7 +194,6 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
 
   @override
   void didPopNext() {
-    //print("🔙 GameScreen wieder sichtbar → Trigger für UIIntents");
     _handleDeferredGUIEvents();
   }
 
@@ -218,20 +221,20 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
   Widget buildFloatingActionButton() {
     return GestureDetector(
       onTap:
-      _initializationCompleted
-          ? () {
-        setState(() {
-          _centerMapOnCurrentLocation();
-        });
-      }
-          : null,
+          _initializationCompleted
+              ? () {
+                setState(() {
+                  _centerMapOnCurrentLocation();
+                });
+              }
+              : null,
       onLongPress:
-      _initializationCompleted && _isSimulatingLocation
-          ? () {
-        GameEngine().playerMovementController.teleportHome();
-        _centerMapOnCurrentLocation();
-      }
-          : null,
+          _initializationCompleted && _isSimulatingLocation
+              ? () {
+                GameEngine().playerMovementController.teleportHome();
+                _centerMapOnCurrentLocation();
+              }
+              : null,
       child: FloatingActionButton(
         heroTag: "CenterLocation_fab",
         onPressed: null, // wichtig, damit GestureDetector alles übernimmt
@@ -259,7 +262,7 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
           child: GestureDetector(
             onLongPress: () {
               setState(() {
-                _debuggingVisible = !_debuggingVisible; // Beispielzustand
+                _debuggingVisible = !_debuggingVisible;
               });
             },
 
@@ -289,11 +292,7 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
         ),
         title: Text(
           "StoryTrail",
-          style: Theme
-              .of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -317,7 +316,9 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
                 setState(() {
                   if (!_isSimulatingLocation) {
                     _lastRealGpsPosition = GameEngine().playerPosition;
-                    GameEngine().playerMovementController.teleportTo(_lastRealGpsPosition!);
+                    GameEngine().playerMovementController.teleportTo(
+                      _lastRealGpsPosition!,
+                    );
                   } else {
                     if (_lastRealGpsPosition != null) {
                       GameEngine().setRealGpsPositionAndNotify(
@@ -335,10 +336,20 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
               tooltip: "Restart",
               onPressed: () async {
                 GameEngine().reset();
-                await GameEngine().loadSelectedTrail("tiba"); //fixme
+                await GameEngine().loadSelectedTrail( //fixme GameSate muss gelöscht werden
+                  GameEngine().trailId!,
+                ); //fixme testen
                 final currentPosition = GameEngine().playerPosition;
                 GameEngine().setRealGpsPositionAndNotify(currentPosition);
                 GameEngine().registerInitialization();
+              },
+            ),
+          if (_debuggingVisible)
+            IconButton(
+              icon: Icon(Icons.save),
+              tooltip: "Spielstand speichern",
+              onPressed: () async {
+                saveGame();
               },
             ),
           IconButton(
@@ -350,145 +361,157 @@ class GameScreenState extends State<GameScreen> with RouteAware, TickerProviderS
               });
             },
           ),
-          IconButton(
-            icon: Icon(Icons.save),
-            tooltip: "Spielstand speichern",
-            onPressed: () async {
-              saveGame();
-            },
-          ),
-
         ],
       ),
 
       body:
-      !_initializationCompleted
-          ? Center(
-        child: CircularProgressIndicator(),
-      ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist
-          : Stack(
-        children: [
-          GameMapWidget(
-            location: GameEngine().playerPosition,
-            mapController: _mapController,
-            currentHeading: _currentHeading,
-            currentMapRotation: _currentMapRotation,
-            isMapHeadingBasedOrientation: _isMapHeadingBasedOrientation,
-            isSimulatingLocation: _isSimulatingLocation,
-            onSimulatedLocationChange: (point) {
-              setState(() {
-                GameEngine().playerPosition = point;
-                //_processNewLocation(_playerPosition);
-              });
-            },
-            onNpcChatRequested: (npc) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => ChatPage(npc: npc)),
-              );
-            },
-          ),
-          buildMapOrientationModeButton(),
-          if (showActionTestingPanel)
-            ActionTestingPanel(
-              actionsByTrigger:
-              GameEngineDebugger.getActionsGroupedByTrigger(),
-              flags: GameEngine().flags,
-            ),
-          SidePanel(
-            isVisible: (_isSidePanelVisible),
-            onClose: () {
-              setState(() {
-                _isSidePanelVisible = false;
-                GameEngine().markAllItemsAsSeen();
-              });
-            },
-            onScan: () {
-              setState(() {
-                print("text");
-                OpenScanDialogIntent(
-                  title: "Fund erfassen",
-                  expectedItems: GameEngine().getScannableItems(),
-                ).call(this);
-              });
-            },
+          !_initializationCompleted
+              ? Center(
+                child: CircularProgressIndicator(),
+              ) // Ladeanzeige, wenn der Standort noch nicht verfügbar ist
+              : Stack(
+                children: [
+                  GameMapWidget(
+                    location: GameEngine().playerPosition,
+                    mapController: _mapController,
+                    currentHeading: _currentHeading,
+                    currentMapRotation: _currentMapRotation,
+                    isMapHeadingBasedOrientation: _isMapHeadingBasedOrientation,
+                    isSimulatingLocation: _isSimulatingLocation,
+                    onSimulatedLocationChange: (point) {
+                      setState(() {
+                        GameEngine().playerPosition = point;
+                        //_processNewLocation(_playerPosition);
+                      });
+                    },
+                    onNpcChatRequested: (npc) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => ChatPage(npc: npc)),
+                      );
+                    },
+                  ),
+                  buildMapOrientationModeButton(),
+                  if (showActionTestingPanel)
+                    ActionTestingPanel(
+                      actionsByTrigger:
+                          GameEngineDebugger.getActionsGroupedByTrigger(),
+                      flags: GameEngine().flags,
+                    ),
+                  SidePanel(
+                    isVisible: (_isSidePanelVisible),
+                    onClose: () {
+                      setState(() {
+                        _isSidePanelVisible = false;
+                        GameEngine().markAllItemsAsSeen();
+                      });
+                    },
+                    onScan: () {
+                      setState(() {
+                        OpenScanDialogIntent(
+                          title: "Fund erfassen",
+                          expectedItems: GameEngine().getScannableItems(),
+                        ).call(this);
+                      });
+                    },
 
-            children: buildItems(),
-          ),
-        ],
-      ),
+                    children: buildItems(),
+                  ),
+                ],
+              ),
       floatingActionButton: buildFloatingActionButton(),
     );
   }
 
   void checkForNewItemsWithDelay() async {
-    print("👉 Check for new items triggered");
+    log.d("👉 Prüfe ob neue Items anzuzeigen sind....");
 
     // Prüfen, ob neue Items vorhanden sind
     if (!_isSidePanelVisible && GameEngine().hasNewItems()) {
+      log.d("👉 .... ja neue Items vorhanden.");
       await Future.delayed(Duration(seconds: 3));
       if (!mounted) return;
-      print("👉 New items found, opening side panel");
       setState(() {
         _isSidePanelVisible = true;
       });
+    } else {
+      log.d("👉 .... nein keine neuen Items.");
     }
   }
 
   void _maybeLoadGameState() async {
-
-    Map <String, dynamic>? gameState = await FirestoreService.loadGameState(widget.trailId);
+    Map<String, dynamic>? gameState = await FirestoreService.loadGameState(
+      widget.trailId,
+    );
 
     if (gameState == null) {
-      print("no savegame found");
+      log.i("No savegame found.");
       return;
     }
 
     Map<String, dynamic> meta = gameState['meta'];
     final DateTime savedTime = DateTime.parse(meta['saveTime']);
 
-
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => ContinueGameDialog(
-        saveDate: savedTime,
-        onLoadGame: () async{
-          GameEngine().loadGameState(gameState);
-          SnackBarService.showSuccessSnackBar(context, "✔️ Spielstand erfolgreich wieder hergestellt");
-          GameEngine().registerRestore();
-          await CameraFlight(
-          state: this,
-          controller: this.mapController,
-          to: GameEngine().lastSaveLocation!,
-          ).animate();
-        },
-        onNewGame: () {
-          GameEngine().registerInitialization();
-        },
-      ),
+      builder:
+          (context) => ContinueGameDialog(
+            saveDate: savedTime,
+            onLoadGame: () async {
+              try {
+                GameEngine().loadGameState(gameState);
+              } catch (e, stackTrace) {
+                log.e(
+                  "❌ Failed to load game state",
+                  error: e,
+                  stackTrace: stackTrace,
+                );
+                rethrow;
+              }
+              log.i("✅ Spielstand erfolgreich gespeichert");
+              SnackBarService.showSuccessSnackBar(
+                context,
+                "✔️ Spielstand erfolgreich wieder hergestellt",
+              );
+              GameEngine().registerRestore();
+              await CameraFlight(
+                state: this,
+                controller: mapController,
+                to: GameEngine().lastSaveLocation!,
+              ).animate();
+            },
+            onNewGame: () {
+              GameEngine().registerInitialization();
+            },
+          ),
     );
-
-
   }
 
   void saveGame() async {
-    print("Saving game state...");
     final Map<String, dynamic> saveData;
     try {
       saveData = await GameEngine().saveGameState();
-    } catch (e) {
-      print("Error creating save State : $e");
+    } catch (e, stackTrace) {
+      log.e("❌ Failed to create save state.", error:e, stackTrace: stackTrace);
+      assert(false, "❌ Failed to create save state.");
       return;
     }
     try {
-      FirestoreService.saveGameState(trailId: GameEngine().trailId!, jsonGameState: saveData);
-    }catch(e) {
-      print("Error saving game state : $e");
+      FirestoreService.saveGameState(
+        trailId: GameEngine().trailId!,
+        jsonGameState: saveData,
+      );
+    } catch (e, stacktrace) {
+      log.e("❌ Failed to save game state", error: e, stackTrace: stacktrace);
+      assert(false, "❌ Failed to create save state.");
       return;
     }
-    print("Game state successfully saved");
-    SnackBarService.showSuccessSnackBar(context, "✔️ Spielstand erfolgreich gespeichert");
+    log.i("✅ Spielstand erfolgreich gespeichert");
+    SnackBarService.showSuccessSnackBar(
+      context,
+      "✔️ Spielstand erfolgreich gespeichert.",
+    );
   }
 
   @override

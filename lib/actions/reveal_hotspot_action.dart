@@ -3,6 +3,7 @@ import 'package:storytrail/engine/hotspot.dart';
 
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class RevealHotspotAction extends NpcAction{
 
@@ -17,10 +18,11 @@ class RevealHotspotAction extends NpcAction{
     if (spot != null) {
       spot.isVisible = true;
       spot.isRevealed = true;
-      print('${spot.name} revealed');
+      log.i('Hotspot "${spot.name}" ist nicht mehr unbekannt.');
     }
     else {
-      print('❌ hotspot ${hotspotId} not found');
+      log.w('⚠️ hotspot ${hotspotId} not found while revealing');
+      assert(false, '⚠️ hotspot ${hotspotId} not found while revealing');
       return false;
     }
     return true;

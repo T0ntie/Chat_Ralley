@@ -2,6 +2,8 @@
 import 'package:flutter_compass/flutter_compass.dart';
 import 'dart:async';
 
+import 'package:storytrail/services/log_service.dart';
+
 class CompassService {
 
   // Stream, das die Kompassrichtung liefert
@@ -14,8 +16,8 @@ class CompassService {
       if (rawStream != null) {
         _compassStream = rawStream.map((event) => event.heading ?? 0.0);
       } else {
-        print('❌ Initialisierung des Kompass-Streams fehlgeschlagen.');
-          throw Exception('❌ Initialisierung des Kompass-Streams fehlgeschlagen.');
+        log.e('❌ Failed to initialize compass stream.', stackTrace: StackTrace.current);
+          throw Exception('❌ Failed to initialize compass stream.');
       }
     }
   }

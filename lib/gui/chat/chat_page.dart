@@ -5,6 +5,7 @@ import 'package:storytrail/gui/chat/chat_gui_elements.dart';
 import 'package:storytrail/gui/notification_services.dart';
 import 'package:storytrail/engine/npc.dart';
 import 'package:storytrail/engine/conversation.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class ChatPage extends StatefulWidget {
   final Npc npc;
@@ -97,9 +98,9 @@ class _ChatPageState extends State<ChatPage> {
     } catch (e, stackTrace) {
       SnackBarService.showErrorSnackBar(
         context,
-        '❌ Kommunikation mit Chat GPT fehlgeschlagen.',
+        '❌ Kommunikation fehlgeschlagen.',
       );
-      print("Exception occured: $e : \n$stackTrace ");
+      log.e('❌ Failed to send message.', error: e, stackTrace: stackTrace);
     } finally {
       if (mounted) {
         setState(() {

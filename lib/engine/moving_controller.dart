@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:storytrail/engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class MovementUtils {
   static LatLng interpolatePosition(LatLng from, LatLng to, double distanceToTravel) {
@@ -24,7 +25,6 @@ enum MovementMode {
   leading,
 }
 
-
 abstract class MovementController {
   LatLng get currentPosition;
   LatLng updatePosition();
@@ -35,10 +35,6 @@ abstract class MovementController {
 }
 
 class NPCMovementController implements MovementController {
-/*
-  bool isFollowing;
-  bool isLeading;
-*/
   MovementMode mode = MovementMode.idle;
   LatLng currentBasePosition;
   LatLng toPosition;
@@ -46,7 +42,6 @@ class NPCMovementController implements MovementController {
   DateTime movementStartTime = DateTime.now();
   double speedInKmh;
 
-  //LatLng playerPosition = LatLng(51.5074, -0.1278); //London
   List<LatLng> path;
   static const followingDistance = 10.0;
 
@@ -69,9 +64,7 @@ class NPCMovementController implements MovementController {
     required this.onEnterRange,
     required this.onExitRange,
     required this.getPlayerPosition,
-  }) : //isFollowing = false,
-       //isLeading = false,
-       path = [];
+  }) : path = [];
 
   double get currentDistance {
     return Distance().as(LengthUnit.Meter, currentPosition, playerPosition);
@@ -98,7 +91,6 @@ class NPCMovementController implements MovementController {
     } else if (!inRange && _wasInRange) {
       onExitRange();
     }
-
     _wasInRange = inRange;
   }
 
@@ -126,6 +118,7 @@ class NPCMovementController implements MovementController {
     }
   }
 
+  @override
   LatLng updatePosition() {
     if (!isMoving) {
       maybeStartFollowing();
@@ -194,6 +187,7 @@ class NPCMovementController implements MovementController {
     }
   }
 
+  @override
   void moveTo(LatLng toP) {
     path = [];
     mode = MovementMode.navigating;
@@ -215,10 +209,6 @@ class NPCMovementController implements MovementController {
     toPosition = path.removeAt(0);
     isMoving = true;
     mode = MovementMode.navigating;
-/*
-    isFollowing = false;
-    isLeading = false;
-*/
     movementStartTime = DateTime.now();
   }
 
@@ -229,10 +219,6 @@ class NPCMovementController implements MovementController {
     path = List.from(p);
     toPosition = path.removeAt(0);
     isMoving = true;
-/*
-    isFollowing = false;
-    isLeading = true;
-*/
     mode = MovementMode.leading;
     movementStartTime = DateTime.now();
   }
@@ -243,9 +229,7 @@ class NPCMovementController implements MovementController {
     }
     toPosition = playerPosition;
     path = [];
-//    isFollowing = true;
     isMoving = true;
-  //  isLeading = false;
     mode = MovementMode.following;
     movementStartTime = DateTime.now();
   }
@@ -256,8 +240,6 @@ class NPCMovementController implements MovementController {
     }
     toPosition = toP;
     path = [];
-    /*isFollowing = false;
-    isLeading = true;*/
     mode = MovementMode.leading;
     movementStartTime = DateTime.now();
 
@@ -273,9 +255,7 @@ class NPCMovementController implements MovementController {
   @override
   void stopMoving() {
     currentBasePosition = currentPosition;
-    //isFollowing = false;
     isMoving = false;
-    //isLeading = false;
     mode = MovementMode.idle;
     path = [];
   }
@@ -302,12 +282,14 @@ class NPCMovementController implements MovementController {
     mode = MovementMode.idle;
   }
 
+  @override
   void teleportHome() {
-    print("⚠️ Teleportation wird bei NPCs nicht unterstützt.");
+    LogService.w("⚠️ Teleportation not supported for NPCs");
   }
 
+  @override
   void teleportTo(LatLng newPosition) {
-    print("⚠️ Teleportation wird bei NPCs nicht unterstützt.");
+    LogService.w("⚠️ Teleportation not supported for NPCs");
   }
 }
 
@@ -347,16 +329,19 @@ class SimMovementController  implements MovementController {
 
   late LatLng _movementStartPosition;
 
+  @override
   void teleportHome() {
     teleportTo(simHome);
   }
 
+  @override
   void teleportTo(LatLng newPosition) {
     currentBasePosition = newPosition;
     toPosition = newPosition;
     isMoving = false;
   }
 
+  @override
   void moveTo(LatLng toP) {
     _movementStartPosition = currentBasePosition;
 
@@ -375,6 +360,7 @@ class SimMovementController  implements MovementController {
     isMoving = true;
   }
 
+  @override
   LatLng updatePosition() {
     if (!isMoving) return currentBasePosition;
 
@@ -424,7 +410,7 @@ class GpsMovementController implements MovementController {
   final SpeedAverager _speedAverager = SpeedAverager(maxSamples: 5);
 
   void receiveGpsUpdate(LatLng newPosition) {
-    //print("📡 GPS Update erhalten: $newPosition");
+    LogService.d("📡 GPS Update erhalten: $newPosition");
     final now = DateTime.now();
 
     _speedAverager.addPosition(newPosition); // Neue Position merken
@@ -461,7 +447,6 @@ class GpsMovementController implements MovementController {
     _nextGpsPosition = newPosition;
     _nextGpsTimestamp = now.add(duration);
     _isMoving = true;
-
     //print("🚀 Interpolation gestartet von $_lastGpsPosition → $_nextGpsPosition über ${duration.inMilliseconds} ms");
   }
 
@@ -515,16 +500,19 @@ class GpsMovementController implements MovementController {
     return LatLng(lat, lng);
   }
 
+  @override
   void teleportHome() {
-    print("⚠️ Teleportation wird bei echtem GPS nicht unterstützt.");
+    LogService.w("⚠️ Teleportation not supported while using GPS");
   }
 
+  @override
   void teleportTo(LatLng newPosition) {
-    print("⚠️ Teleportation wird bei echtem GPS nicht unterstützt.");
+    LogService.w("⚠️ Teleportation not supported while using GPS");
   }
 
+  @override
   void moveTo(LatLng toP) {
-    print("⚠️ moveTo wird bei echtem GPS nicht unterstützt.");
+    LogService.w("⚠️ moveTo not supported while using GPS");
   }
 }
 

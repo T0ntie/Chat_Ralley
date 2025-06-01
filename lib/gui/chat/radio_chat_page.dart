@@ -5,6 +5,7 @@ import 'package:storytrail/gui/chat/chat_page.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:storytrail/engine/conversation.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class RadioChatPage extends StatefulWidget {
   final Npc npc;
@@ -33,15 +34,15 @@ class _RadioChatPageState extends State<RadioChatPage> {
     await _requestMicPermission();
 
     bool available = await _speech.initialize(
-      onStatus: (status) => print("📡 STT Status: $status"),
-      onError: (error) => print("❗ STT Fehler: $error"),
+      onStatus: (status) => log.i("✅ STT Status: $status"),
+      onError: (error) => log.e("❌ STT Fehler: $error"),
     );
 
     if (!available) {
-      print("❌ Speech-to-Text konnte nicht initialisiert werden.");
+      log.e('❌ Failed to initialize speech to text', stackTrace: StackTrace.current);
       setState(() => _speechReady = false);
     } else {
-      print("✅ Speech-to-Text ist bereit.");
+      log.i('✅ Speech-to-Text ist bereit.');
       setState(() => _speechReady = true);
     }
   }
@@ -49,40 +50,35 @@ class _RadioChatPageState extends State<RadioChatPage> {
   Future<void> _requestMicPermission() async {
     var status = await Permission.microphone.request();
     if (!status.isGranted) {
-      print("🎤 Mikrofon-Zugriff verweigert");
+      log.e('❌ Microphone access denied.', stackTrace: StackTrace.current);
     }
   }
 
   void _startListening() async {
     if (!_speechReady) {
-      print("⚠️ STT wurde nicht initialisiert. Abbruch.");
+      log.w("⚠️ STT hasn't been initialized.");
       return;
     }
-    print("🎤 Start Listening...");
+    log.d("🎤 Start listening....");
     setState(() => _isListening = true);
     _speech.listen(
       onResult: (result) {
         setState(() {
           _controller.text = result.recognizedWords;
-          print("result: ${result.recognizedWords}");
+          log.d("🎤 ....result: ${result.recognizedWords}");
         });
       },
     );
   }
 
   void _stopListening() async {
-    print("stop talking");
+    log.d("🎤 Stop listening.");
     await _speech.stop();
     setState(() => _isListening = false);
-    // Trigger Nachricht senden durch Simulation von Enter
-    //FocusScope.of(context).unfocus();
     _chatController.sendMessage?.call(_controller.text);
-    // Optional: Text senden über Callback
   }
 
   Widget _buildPushToTalkButton() {
-    print("speechReady: $_speechReady");
-
     if (!_speechReady) return const SizedBox.shrink();
 
     return ValueListenableBuilder<bool>(

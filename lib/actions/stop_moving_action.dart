@@ -1,5 +1,6 @@
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class StopMovingAction extends NpcAction{
 
@@ -7,7 +8,7 @@ class StopMovingAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    print('${npc.name} stops');
+    log.i('NPC "${npc.name}" bleibt stehen.');
     npc.stopMoving();
     return true;
   }
