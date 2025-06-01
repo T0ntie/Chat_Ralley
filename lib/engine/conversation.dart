@@ -190,8 +190,7 @@ class Conversation with HasGameState {
   void _jlog() {
     if (_messages.isNotEmpty) {
       ChatMessage cm = _messages.last;
-      if (_messages.length == 1 && cm.chatRole == ChatRole.system) { //fixme prompt property nutzen
-        //print("Prompt-message detected:");
+      if (cm.isInitialPrompt) {
         StoryJournal().logPrompt(npc.name, npc.prompt.getCreditsPrompt());
       }
 

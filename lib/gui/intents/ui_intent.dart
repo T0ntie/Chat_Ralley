@@ -28,11 +28,10 @@ class UiIntentQueue {
 
     final toExecute = List<UIIntent>.from(_queue);
     _queue.clear();
-
+    log.d("🎨  ${toExecute.length} UIIntents werden abgearbeitet.");
     for (final intent in toExecute) {
       await intent.call(state);
     }
-    log.d("🎨  ${toExecute.length} UIIntents werden abgearbeitet.");
   }
 
   bool get hasPending => _queue.isNotEmpty;
