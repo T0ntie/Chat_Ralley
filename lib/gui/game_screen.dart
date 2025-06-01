@@ -316,17 +316,19 @@ class GameScreenState extends State<GameScreen>
               tooltip: "Simulate",
               onPressed: () {
                 setState(() {
+                  // von Echtbetrieb => Simulation
                   if (!_isSimulatingLocation) {
                     _lastRealGpsPosition = GameEngine().playerPosition;
-                    GameEngine().playerMovementController.teleportTo(
-                      _lastRealGpsPosition!,
-                    );
-                  } else {
-                    if (_lastRealGpsPosition != null) {
-                      GameEngine().setRealGpsPositionAndNotify(
+                    // von Simulation => Echtbetrieb
+                    } else {
+                      GameEngine().playerMovementController.teleportTo(
                         _lastRealGpsPosition!,
                       );
-                    }
+                      if (_lastRealGpsPosition != null) {
+                        GameEngine().setRealGpsPositionAndNotify(
+                          _lastRealGpsPosition!,
+                        );
+                      }
                   }
 
                   _isSimulatingLocation = !_isSimulatingLocation;
