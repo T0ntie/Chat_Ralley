@@ -10,7 +10,7 @@ class SpawnAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('${npc.name} erscheint neben dem Spieler');
+    log.i('🎬 ${npc.name} erscheint neben dem Spieler');
     npc.spawn(distance);
     return true;
   }

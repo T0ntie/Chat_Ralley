@@ -272,6 +272,7 @@ class GameEngine {
   bool checkFlag(String flag) {
     if (!flags.containsKey(flag.norm)) {
       log.w('⚠️ Unknown flag encountered: ${flag.norm}');
+      assert(false, '⚠️ Unknown flag encountered: ${flag.norm}');
     }
     return flags[flag.norm] ?? false;
   }
@@ -315,14 +316,14 @@ class GameEngine {
         map[npc] = remaining;
       }
     } else {
-      log.d('$logPrefix keine Action für ${npc.name} registriert.');
+      log.d('$logPrefix Annäherung an ${npc.name} erkannt, keine Action gefunden.');
     }
   }
 
   Future<void> _runHotspotActions(String hotspotName) async {
     final subscribers = _hotspotSubscriptions[hotspotName];
     if (subscribers == null) {
-      log.d('🧿 keine Action für hotspot $hotspotName registriert.');
+      log.d('🧿 $hotspotName erreicht, keine Action gefunden.');
       return;
     }
 

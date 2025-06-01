@@ -20,6 +20,7 @@ class ScanToInventoryAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
+    log.i('🎬 NPC "${npc.name}" hat ein Item ("$itemId") zum Scannen gefunden.');
     Item? item = GameEngine().getItemById(itemId);
     if (item == null) {
       log.e('❌ Item with id: "$itemId" not found.');

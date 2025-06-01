@@ -19,7 +19,7 @@ class BehaveAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('${npc.name} bekommt neue Instruktionen: tag:"$promptTag", behave: "$directiveMessage".');
+    log.i('🎬 ${npc.name} bekommt neue Instruktionen: tag:"$promptTag", behave: "$directiveMessage".');
     if (promptTag case final tag?) npc.injectTaggedPrompts(tag);
     if (directiveMessage case final message?) npc.behave(message);
     return true;

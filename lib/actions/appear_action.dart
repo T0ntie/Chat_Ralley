@@ -8,7 +8,7 @@ class AppearAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('${npc.name} wird sichtbar.');
+    log.i('🎬 ${npc.name} wird sichtbar.');
     npc.isVisible = true;
     jlog("${npc.name} ist erschienen.");
     return npc.isVisible;

@@ -24,7 +24,7 @@ class AddToInventoryAction extends NpcAction {
     }
     item.isOwned = true;
     item.isNew = true;
-    super.jlog("${npc.name} hat dem Spieler folgenden Gegenstand gegeben: ${item.name}");
+    super.jlog("🎬 ${npc.name} hat dem Spieler folgenden Gegenstand gegeben: ${item.name}");
     return item.isOwned;
   }
 

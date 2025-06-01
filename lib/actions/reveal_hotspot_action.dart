@@ -18,7 +18,7 @@ class RevealHotspotAction extends NpcAction{
     if (spot != null) {
       spot.isVisible = true;
       spot.isRevealed = true;
-      log.i('Hotspot "${spot.name}" ist nicht mehr unbekannt.');
+      log.i('🎬 Hotspot "${spot.name}" ist nicht mehr unbekannt.');
     }
     else {
       log.w('⚠️ hotspot ${hotspotId} not found while revealing');

@@ -8,7 +8,7 @@ class StopTalkingAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('NPC "${npc.name}" beendet das Gespräch.');
+    log.i('🎬 NPC "${npc.name}" beendet das Gespräch.');
     jlog('"${npc.name}" beendet abrupt das Gespräch.');
     await npc.stopTalking();
     return true;

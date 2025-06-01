@@ -5,6 +5,7 @@ import 'package:storytrail/engine/story_journal.dart';
 import 'package:storytrail/gui/item_qr_scan_dialog.dart';
 import 'package:storytrail/main.dart';
 import 'package:storytrail/gui/intents/ui_intent.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class OpenScanDialogIntent extends UIIntent {
   final String title;
@@ -24,6 +25,7 @@ class OpenScanDialogIntent extends UIIntent {
 
   @override
   Future<void> call(GameScreenState state) async {
+    log.i("🎨 Starte scan dialog.");
     final result = await showDialog<String>(
       context: state.context,
       builder:

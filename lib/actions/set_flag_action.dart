@@ -1,4 +1,5 @@
 import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/services/log_service.dart';
 
 import 'npc_action.dart';
 import 'package:storytrail/engine/npc.dart';
@@ -16,6 +17,7 @@ class SetFlagAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
+    log.i('🎬 NPC "${npc.name}" hat die folgenden Flags gesetzt: "$flags"');
     GameEngine().setFlags(flags);
     return true;
   }

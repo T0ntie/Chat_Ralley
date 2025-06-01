@@ -22,7 +22,7 @@ class LeadAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('NPC ${npc.name} führt dich nach $lat, $lng');
+    log.i('🎬 NPC ${npc.name} führt dich nach $lat, $lng');
     npc.leadTo(LatLng(lat, lng));
     jlog("${npc.name} führt den Spieler an einem bestimmten Ort.");
     return true;

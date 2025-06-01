@@ -24,7 +24,7 @@ class Conversation with HasGameState {
   Conversation(this.npc) : id = "conversation_${npc.id}" {
     registerSelf();
     addPrompt(npc.prompt.getGameplayPrompt());
-    log.d("System prompt für NPC ${npc.name} hinzugefügt.");
+    log.d("💬 System prompt für NPC ${npc.name} hinzugefügt.");
   }
 
   Future<void> handleTriggerMessage() async {
@@ -287,7 +287,7 @@ class ChatMessage {
         signalJson =
         (chatRole == ChatRole.assistant) ? _extractSignal(rawText) : {} {
     if (chatRole == ChatRole.assistant && signalJson.isNotEmpty) {
-      log.i("✅ Signal in Antwort von NPC gefunden: $signalJson");
+      log.i("💬 Signal in Antwort von NPC gefunden: $signalJson");
     }
   }
 

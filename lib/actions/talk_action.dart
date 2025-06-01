@@ -8,7 +8,7 @@ class TalkAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('NPC "${npc.name}" meldet sich zu Wort: "$triggerMessage"');
+    log.i('🎬 NPC "${npc.name}" meldet sich zu Wort: "$triggerMessage"');
     await npc.talk(triggerMessage);
     return true;
   }

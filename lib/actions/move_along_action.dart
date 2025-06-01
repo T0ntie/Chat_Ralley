@@ -18,7 +18,7 @@ class MoveAlongAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('NPC ${npc.name} bewegt sich einen Pfad entlang.');
+    log.i('🎬 NPC ${npc.name} bewegt sich einen Pfad entlang.');
     npc.moveAlong(path);
     return true;
   }

@@ -18,7 +18,7 @@ class LeadAlongAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('NPC ${npc.name} führt den Spieler einen Pfad entlang.');
+    log.i('🎬 NPC ${npc.name} führt den Spieler einen Pfad entlang.');
     npc.leadAlong(path);
     jlog("${npc.name} führt den Spieler an einem bestimmten Ort.");
     return true;

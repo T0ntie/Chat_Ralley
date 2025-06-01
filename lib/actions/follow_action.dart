@@ -9,7 +9,7 @@ class FollowAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('NPC ${npc.name} folgt dem Spieler.');
+    log.i('🎬 NPC ${npc.name} folgt dem Spieler jetzt.');
     npc.startFollowing();
     jlog("${npc.name} folgt dem Spieler.");
     return true;

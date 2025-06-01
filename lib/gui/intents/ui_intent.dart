@@ -19,7 +19,7 @@ class UiIntentQueue {
   UiIntentQueue._internal();
 
   void enqueue(UIIntent intent) {
-    log.d("📥 UIIntent queued: ${intent.runtimeType}.");
+    log.d("🎨 UIIntent vorgemerkt: ${intent.runtimeType}.");
     _queue.add(intent);
   }
 
@@ -32,7 +32,7 @@ class UiIntentQueue {
     for (final intent in toExecute) {
       await intent.call(state);
     }
-    log.d("📥 Flushed ${toExecute.length} UIIntents.");
+    log.d("🎨  ${toExecute.length} UIIntents werden abgearbeitet.");
   }
 
   bool get hasPending => _queue.isNotEmpty;

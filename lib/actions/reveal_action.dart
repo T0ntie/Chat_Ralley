@@ -8,7 +8,7 @@ class RevealAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('NPC "${npc.name}" ist nicht mehr anonym.');
+    log.i('🎬 NPC "${npc.name}" ist nicht mehr anonym.');
     npc.reveal();
     jlog("${npc.name} stellt sich vor.");
     return true;
