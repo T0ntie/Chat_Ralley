@@ -86,7 +86,7 @@
         {
           "onSignal": "KnatterbachToPolice",
           "invokeAction": "behave",
-          "directive": "[Du bist jetzt auf der Polizeistation]",
+          "directive": "[Du bist jetzt am Gemeindeamt]",
           "promptTag": "police",
           "defer": true
         },
