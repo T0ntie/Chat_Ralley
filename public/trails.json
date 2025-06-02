@@ -2,7 +2,9 @@
   "trails": [
     {
       "trailId": "tibia",
+      "storyId": "tiba",
       "label": "Der Fall Tibia",
+      "locationName": "Mödling",
       "coverImage": "tibia/images/cover.png",
       "baseLocation": {
         "lat": 48.08654208326306,
@@ -11,14 +13,28 @@
       "title": "Der Fall der verschwundenen Tibia"
     },
     {
-      "trailId": "drno",
+      "trailId": "drno_nowhere",
+      "storyId": "drno",
       "label": "Dr Unexist",
+      "locationName": "Nirgendwo",
       "coverImage": "drno/cover.png",
       "baseLocation": {
         "lat": 48.02654208326306,
         "lng": 16.187920962933388
       },
       "title": "notexisting"
+    },
+    {
+      "trailId": "tibia_brbr",
+      "storyId": "tiba",
+      "label": "Der Fall Tibia",
+      "locationName": "Breitenbrunn",
+      "coverImage": "tibia/images/cover.png",
+      "baseLocation": {
+        "lat": 48.08654208326306,
+        "lng": 16.287920962933388
+      },
+      "title": "Der Fall der verschwundenen Tibia"
     }
   ]
 }

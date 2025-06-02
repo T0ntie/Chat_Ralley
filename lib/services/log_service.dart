@@ -6,14 +6,16 @@ import 'package:logger/logger.dart';
 class LogService {
   static final Logger _logger = Logger(
     level: kReleaseMode ? Level.warning : Level.trace,
-    printer: SimplePrinter(colors: true),
-    /*PrettyPrinter(
-      printEmojis: true,
-      methodCount: 0,
-      errorMethodCount: 3,
-      lineLength: 100,
-    ),*/
-  );
+    //printer:SimplePrinter(colors: true),
+    printer: PrettyPrinter(
+    printEmojis: true,        // Emojis behalten für visuelle Orientierung
+    printTime: false,         // Kein Zeitstempel, wenn nicht gebraucht
+    methodCount: 0,           // Keine Methoden bei normalen Logs
+    errorMethodCount: 5,      // Stacktrace nur bei Fehlern
+    lineLength: 120,          // Längere Zeilen, um Zeilenumbrüche zu vermeiden
+    colors: true,
+    noBoxingByDefault: true,  // <<< WICHTIG: Kein ASCII-Rahmen!
+  ),  );
 
 
   static void d(dynamic message) => _logger.d('[storytrail] $message');

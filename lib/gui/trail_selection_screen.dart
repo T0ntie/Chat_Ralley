@@ -18,6 +18,7 @@ class TrailSelectionScreen extends StatefulWidget {
 
 class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
   String? _selectedTrailId;
+  late List<Trail> sortedTrails;
 
   Trail? get selectedTrail {
     return widget.availableTrails
@@ -29,9 +30,25 @@ class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.availableTrails.isNotEmpty) {
-      _selectedTrailId = widget.availableTrails.first.trailId;
+    sortedTrails = sortTrails(widget.availableTrails);
+    if (sortedTrails.isNotEmpty) {
+      _selectedTrailId = sortedTrails.first.trailId;
     }
+  }
+
+  List<Trail> sortTrails(List<Trail> inputTrails) {
+    final map = <String, Trail>{};
+    for (final trail in inputTrails) {
+      //trails mit gleichem Label nur einmal aufnehmen (nur das mit der geringsten Entfernung)
+      if (!map.containsKey(trail.storyId) ||
+          trail.currentDistance < map[trail.storyId]!.currentDistance) {
+        map[trail.storyId] = trail;
+      }
+    }
+    final sorted =
+        map.values.toList()
+          ..sort((a, b) => a.currentDistance.compareTo(b.currentDistance));
+    return sorted;
   }
 
   @override
@@ -140,7 +157,7 @@ class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
                       ),
                       value: _selectedTrailId,
                       items:
-                          widget.availableTrails.map((trail) {
+                      sortedTrails.map((trail) {
                             return DropdownMenuItem<String>(
                               value: trail.trailId,
                               child: Row(

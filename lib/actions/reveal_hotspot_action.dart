@@ -21,8 +21,8 @@ class RevealHotspotAction extends NpcAction{
       log.i('🎬 Hotspot "${spot.name}" ist nicht mehr unbekannt.');
     }
     else {
-      log.w('⚠️ hotspot ${hotspotId} not found while revealing');
-      assert(false, '⚠️ hotspot ${hotspotId} not found while revealing');
+      log.w('⚠️ hotspot $hotspotId not found while revealing');
+      assert(false, '⚠️ hotspot $hotspotId not found while revealing');
       return false;
     }
     return true;

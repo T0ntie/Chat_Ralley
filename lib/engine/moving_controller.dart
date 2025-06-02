@@ -285,11 +285,13 @@ class NPCMovementController implements MovementController {
   @override
   void teleportHome() {
     LogService.w("⚠️ Teleportation not supported for NPCs");
+    assert(false, "⚠️ Teleportation not supported for NPCs");
   }
 
   @override
   void teleportTo(LatLng newPosition) {
     LogService.w("⚠️ Teleportation not supported for NPCs");
+    assert(false, "⚠️ Teleportation not supported for NPCs");
   }
 }
 
@@ -503,16 +505,19 @@ class GpsMovementController implements MovementController {
   @override
   void teleportHome() {
     LogService.w("⚠️ Teleportation not supported while using GPS");
+    assert(false, "⚠️ Teleportation not supported while using GPS");
   }
 
   @override
   void teleportTo(LatLng newPosition) {
     LogService.w("⚠️ Teleportation not supported while using GPS");
+    assert(false, "⚠️ Teleportation not supported while using GPS");
   }
 
   @override
   void moveTo(LatLng toP) {
     LogService.w("⚠️ moveTo not supported while using GPS");
+    assert(false, "⚠️ moveTo not supported while using GPS");
   }
 }
 

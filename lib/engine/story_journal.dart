@@ -1,5 +1,6 @@
 import 'package:storytrail/engine/conversation.dart';
 import 'package:storytrail/engine/game_element.dart';
+import 'package:storytrail/services/log_service.dart';
 
 class StoryJournal with HasGameState {
   @override
@@ -50,7 +51,28 @@ class StoryJournal with HasGameState {
   }
 
   @override
-  void loadGameState(Map<String, dynamic> json) {} //fixme implement
+  void loadGameState(Map<String, dynamic> json) {
+    final journal = json['journal'];
+    if (journal is! List) return;
+
+    _entries.clear();
+
+    for (final entry in journal) {
+      final map = entry as Map<String, dynamic>?;
+      final timestampStr = map?['timestamp'] as String?;
+      final content = map?['content'] as String?;
+      final timestamp = DateTime.tryParse(timestampStr ?? '');
+
+      if (timestamp == null || content == null) {
+        log.w(
+            '⚠️ Invalid entries while loading jounal from game state: "$journal"');
+        assert(false, '⚠️ Invalid entries while loading jounal from game state: "$journal"');
+        continue;
+      }
+
+      _entries.add((timestamp, content));
+    }
+  }
 
   @override
   Map<String, dynamic> saveGameState() {

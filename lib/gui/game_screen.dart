@@ -10,10 +10,10 @@ import 'package:storytrail/gui/camera_flight.dart';
 import 'package:storytrail/gui/chat/chat_page.dart';
 import 'package:storytrail/gui/debuging_panel.dart';
 import 'package:storytrail/gui/game_map_widget.dart';
-import 'package:storytrail/gui/item_button.dart';
+import 'package:storytrail/gui/items/item_button.dart';
 import 'package:storytrail/gui/notification_services.dart';
 import 'package:storytrail/gui/intents/open_qr_scan_dialog_intent.dart';
-import 'package:storytrail/gui/save_game_dialog.dart';
+import 'package:storytrail/gui/continue_game_dialog.dart';
 import 'package:storytrail/gui/side_panel.dart';
 import 'package:storytrail/gui/intents/ui_intent.dart';
 import 'package:storytrail/main.dart';
@@ -109,6 +109,12 @@ class GameScreenState extends State<GameScreen>
 
   void _initializeMapController() {
     _mapControllerSubscription = _mapController.mapEventStream.listen((event) {
+/*
+      if (event is MapEventMoveEnd) {
+        print("Zoomlevel: ${_mapController.camera.zoom}");
+      }
+*/
+
       if (event is MapEventRotate) {
         setState(() {
           _currentMapRotation = event.camera.rotation;

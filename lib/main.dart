@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:storytrail/gui/game_screen.dart';
 import 'package:storytrail/gui/credits_screen.dart';
 import 'package:storytrail/gui/location_stream_manager.dart';
-import 'package:storytrail/gui/trail_selection.dart';
+import 'package:storytrail/gui/trail_selection_screen.dart';
 import 'package:storytrail/services/gpt_utilities.dart';
 import 'package:storytrail/services/log_service.dart';
 import 'services/location_service.dart';

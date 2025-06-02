@@ -30,11 +30,11 @@ class BehaveAction extends NpcAction {
     final promptTag = json['promptTag'] as String?;
     if (directiveMessage == null && promptTag == null) {
       log.e(
-        '❌ Invalid Json neither "directive" nor "promptTag" specified in "${json}".',
+        '❌ Invalid Json neither "directive" nor "promptTag" specified in "$json".',
         stackTrace: StackTrace.current,
       );
       throw ArgumentError(
-        '❌ Invalid Json neither "directive" nor "promptTag" specified in "${json}".',
+        '❌ Invalid Json neither "directive" nor "promptTag" specified in "$json".',
       );
     }
     final (

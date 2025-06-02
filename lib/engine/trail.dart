@@ -4,6 +4,8 @@ import 'package:storytrail/services/log_service.dart';
 
 class Trail {
   final String trailId;
+  final String storyId;
+  final String locationName;
   final String title;
   final String label;
   final LatLng baseLocation;
@@ -11,6 +13,8 @@ class Trail {
 
   Trail({
     required this.trailId,
+    required this.storyId,
+    required this.locationName,
     required this.title,
     required this.label,
     required this.baseLocation,
@@ -20,6 +24,8 @@ class Trail {
   static Trail fromJson(Map<String, dynamic> json) {
     return Trail(
       trailId: json['trailId'],
+      storyId: json['storyId'],
+      locationName: json['locationName'],
       label: json['label'],
       title: json['title'],
       coverImage: json['coverImage'],
