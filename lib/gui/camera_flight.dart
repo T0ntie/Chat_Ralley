@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/animation.dart';
 import 'package:latlong2/latlong.dart';
@@ -17,7 +18,7 @@ class CameraFlight {
     required this.state,
     required this.controller,
     required this.to,
-    this.toZoom = 17.0,
+    this.toZoom = 15.0,
   })  : from = controller.camera.center,
         fromZoom = controller.camera.zoom;
 
@@ -27,6 +28,65 @@ class CameraFlight {
       controller: controller,
     );
 
+    // 1. Entfernung berechnen
+    final distanceCalc = const Distance();
+    final dist = distanceCalc(from, to);
+
+    // 2. Minimal nötiges Zoomlevel berechnen
+    final minZoom = estimateZoomLevel(dist);
+
+  //  print("minZoom $minZoom");
+
+    // 3. Nur rauszoomen wenn nötig, nie reinzoomen
+    final adjustedToZoom = min(fromZoom, minZoom);
+//    print("adjustedToZoom $adjustedToZoom");
+
+/*
+    if (adjustedToZoom == fromZoom) {
+      print("Hotspot schon in Sichtweite, mache gar nichts");
+      return;
+    }
+*/
+
+    await animator.animateCameraSplitZoom(
+    from: from,
+    to: to,
+    fromZoom: fromZoom,
+    toZoom: adjustedToZoom,
+    duration: const Duration(seconds: 5),
+    positionCurve: Curves.easeInOut,
+    zoomCurve: Curves.easeOutCubic,
+    );
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    await animator.animateCamera(
+      from: to,
+      to: from,
+      fromZoom: adjustedToZoom,
+      toZoom: adjustedToZoom, // Zoom bleibt gleich
+      duration: const Duration(seconds: 2),
+      curve: Curves.easeInOut,
+    );
+
+// 2. Dann Zoom zurück (Position bleibt gleich)
+    await animator.animateCamera(
+      from: from,
+      to: from, // Position bleibt gleich
+      fromZoom: adjustedToZoom,
+      toZoom: fromZoom,
+      duration: const Duration(seconds: 2),
+      curve: Curves.easeInOutCubic,
+    );
+  }
+
+  double estimateZoomLevel(double distanceInMeters, {double paddingFactor = 1.5}) {
+    const double worldWidthMeters = 40075000; // Erdumfang (ca.)
+    final visibleWidth = distanceInMeters * paddingFactor;
+    final zoom = (log(worldWidthMeters / visibleWidth) / ln2);
+    return zoom.clamp(0.0, 20.0);
+  }
+/*
     final distanceCalc = const Distance();
     final dist = distanceCalc(from, to);
 
@@ -70,7 +130,7 @@ class CameraFlight {
     );
 
     //print("🔙 Returned to original position");
-  }
+  }*/
 }
 
 class CameraFlightAnimator {
