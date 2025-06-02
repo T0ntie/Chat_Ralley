@@ -41,7 +41,7 @@ class GameScreenState extends State<GameScreen>
     with RouteAware, TickerProviderStateMixin {
   final _frameRate = Duration(milliseconds: 33);
 
-  bool _gameInitialized = false;
+  //bool _gameInitialized = false;
   bool _initializationCompleted = false;
 
   double _currentHeading = 0.0;
@@ -85,7 +85,7 @@ class GameScreenState extends State<GameScreen>
     _currentMapRotation = 0;
   }
 
-  Future<void> _initializeGame() async {
+  Future<void> _initializeGame() async{
     try {
       await GameEngine().loadSelectedTrail(widget.trailId);
     } catch (e, stackTrace) {
@@ -93,12 +93,17 @@ class GameScreenState extends State<GameScreen>
       widget.onFatalError?.call('❌ Laden des StoryTrails fehlgeschlagen.');
       return;
     }
-    _gameInitialized = true;
-    _checkIfInitializationCompleted();
+
+    setState(() {
+      _initializationCompleted = true;
+    });
+
+   // _checkIfInitializationCompleted();
     log.i('✅ Alle Spieldaten erfolgreich geladen');
     SnackBarService.showSuccessSnackBar(context, "✔️ Alle Spieldaten geladen");
   }
 
+/*
   void _checkIfInitializationCompleted() {
     if (_gameInitialized && !_initializationCompleted) {
       setState(() {
@@ -106,6 +111,7 @@ class GameScreenState extends State<GameScreen>
       });
     }
   }
+*/
 
   void _initializeMapController() {
     _mapControllerSubscription = _mapController.mapEventStream.listen((event) {
@@ -159,7 +165,7 @@ class GameScreenState extends State<GameScreen>
 
   Future<void> _initializeGameUI() async {
     try {
-      _initializeCompassStream();
+      await _initializeCompassStream();
     } catch (e, stackTrace) {
       log.e('❌ Failed to initialize compass stream', error: e, stackTrace: stackTrace);
       widget.onFatalError?.call(
@@ -186,12 +192,17 @@ class GameScreenState extends State<GameScreen>
       if (route != null) {
         routeObserver.subscribe(this, route);
       }
+
+      _initializeAll();
     });
-    _initializeGameUI();
-    _initializeGame();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _maybeLoadGameState();
-    });
+  }
+
+  void _initializeAll() async {
+    await Future.wait([
+      _initializeGameUI(),
+      _initializeGame(),
+    ]);
+    _maybeLoadGameState();
   }
 
   Future<void> _handleDeferredGUIEvents() async {
@@ -456,7 +467,8 @@ class GameScreenState extends State<GameScreen>
     );
 
     if (gameState == null) {
-      log.i("No savegame found.");
+      log.i("Kein Spielstand vorhanden.");
+      GameEngine().registerInitialization();
       return;
     }
 
