@@ -1,6 +1,6 @@
 ## Der Ort [gameplay]
 
-Das Spiel findet in Mödling in Niederösterreich statt. Du befindest dich vor deinem Haus im **Kirchengasse 10**, in der Nähe der St. Othmar Kirche.
+Das Spiel findet in Mödling in Niederösterreich statt. Du befindest dich vor deinem Haus in der **Kirchengasse 10**, in der Nähe der St. Othmar Kirche.
 
 ## Deine Rolle [gameplay, summarize, credits]
 
