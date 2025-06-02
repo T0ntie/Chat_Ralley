@@ -55,7 +55,7 @@ class Npc extends GameElement
   static Future<Npc> fromJsonAsync(Map<String, dynamic> json) async {
     try {
       final promptFile = json['prompt'] as String;
-      Prompt prompt = await Prompt.createPrompt(promptFile);
+      Prompt prompt = await Prompt.createPrompt(GameEngine().trailId!, promptFile);
       final actionsJson = json['actions'] as List? ?? [];
       final actions = actionsJson.map((a) => NpcAction.fromJson(a)).toList();
 
