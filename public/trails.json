@@ -26,13 +26,13 @@
     },
     {
       "trailId": "tibia_brbr",
-      "storyId": "tiba",
-      "label": "Der Fall Tibia",
+      "storyId": "tibaX",
+      "label": "Der Fall Tibia BB",
       "locationName": "Breitenbrunn",
       "coverImage": "tibia/images/cover.png",
       "baseLocation": {
-        "lat": 48.08654208326306,
-        "lng": 16.287920962933388
+        "lat": 47.945565097893336,
+        "lng": 16.733020289142797
       },
       "title": "Der Fall der verschwundenen Tibia"
     }

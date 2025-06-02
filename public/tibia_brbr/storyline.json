@@ -1,0 +1,586 @@
+{
+  "trailId": "tibia_brbr",
+  "title": "Der Fall der verschwundenen Tibia",
+  "creditsText": "credits.txt",
+  "creditsImage": "images/credits.png",
+  "npcs": [
+    {
+      "id": "npc_knatterbach",
+      "name": "Kommissar Knatterbach",
+      "descriptiveName": "Ein Polizist",
+      "position": "KnatterbachPosition",
+      "prompt": "knatterbach-prompt.txt",
+      "image": "images/knatterbach.png",
+      "visible": true,
+      "speed": 15,
+      "actions": [
+        {
+          "onInit": null,
+          "invokeAction": "spawn",
+          "distance": 50,
+          "notification": "Jemand kommt auf dich zu"
+        },
+        {
+          "onInit": null,
+          "invokeAction": "follow"
+        },
+        {
+          "onRestore": null,
+          "invokeAction": "spawn",
+          "distance": 50,
+          "notification": "Jemand kommt auf dich zu",
+          "conditions": {
+            "flag:knatterbachAtPolice": false
+          }
+        },
+        {
+          "onRestore": null,
+          "invokeAction": "follow",
+          "conditions": {
+            "flag:knatterbachAtPolice": false
+          }
+        },
+        {
+          "onRestore": null,
+          "invokeAction": "talk",
+          "trigger": "[Der Spieler hat dich sehr lange warten lassen, beschwer dich!]"
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "reveal"
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "talk",
+          "trigger": "[Der Spieler sieht dich freundlich an]"
+        },
+        {
+          "onSignal": "ShowMuseum",
+          "invokeAction": "showHotspot",
+          "hotspot": "spot_museum",
+          "notification": "Ein neuer Ort wurde auf der Karte markiert."
+        },
+        {
+          "onSignal": "KnatterbachFollow",
+          "invokeAction": "follow",
+          "notification": "Kommissar Knatterbach folgt dir jetzt."
+        },
+        {
+          "onSignal": "KnatterbachStop",
+          "invokeAction": "stopMoving"
+        },
+        {
+          "onHotspot": "spot_museum",
+          "invokeAction": "talk",
+          "trigger": "[Der Sieler betritt das Museum, erinnere ihn dass du gehen musst]",
+          "conditions": {
+            "flag:knatterbachAtPolice": false
+          }
+        },
+        {
+          "onSignal": "KnatterbachToPolice",
+          "invokeAction": "walkTo",
+          "position": "PolizeiPosition",
+          "defer": true
+        },
+        {
+          "onSignal": "KnatterbachToPolice",
+          "invokeAction": "behave",
+          "directive": "[Du bist jetzt auf der Polizeistation]",
+          "promptTag": "police",
+          "defer": true
+        },
+        {
+          "onSignal": "KnatterbachToPolice",
+          "invokeAction": "saveGame",
+          "defer": true
+        },
+        {
+          "onSignal": "SaveGame",
+          "invokeAction": "saveGame",
+          "defer": true,
+          "notification": "Knatterbach hat deinen Ermittlungsstand protokolliert."
+        },
+        {
+          "onSignal": "KnatterbachToPolice",
+          "invokeAction": "showHotspot",
+          "hotspot": "spot_police",
+          "notification": "Ein neuer Ort wurde auf der Karte markiert."
+        },
+        {
+          "onHotspot": "spot_police",
+          "invokeAction": "talk",
+          "trigger": "[Der Spieler kommt hilfesuchend in die Polizeistation]",
+          "conditions": {
+            "flag:knatterbachAtPolice": true
+          }
+        },
+        {
+          "onSignal": "GetWalkie",
+          "invokeAction": "addToInventory",
+          "item": "item_walkie",
+          "notification": "Du hast ein Walkie-Talkie erhalten."
+        },
+        {
+          "onSignal": "GetWalkie",
+          "invokeAction": "behave",
+          "promptTag": "radio"
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "behave",
+          "promptTag": "tibia",
+            "conditions": {
+              "item:item_tibia": true
+            }
+          }
+      ]
+    },
+    {
+      "id": "npc_knoechelbein",
+      "name": "Professor Dr. Theobald Knöchelbein",
+      "descriptiveName": "Ein älterer Herr",
+      "position": "KnöchelbeinPosition",
+      "prompt": "knöchelbein-prompt.txt",
+      "image": "images/knöchelbein.png",
+      "visible": false,
+      "actions": [
+        {
+          "onHotspot": "spot_museum",
+          "invokeAction": "appear"
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "reveal"
+        },
+        {
+          "onRestore": null,
+          "invokeAction": "talk",
+          "trigger": "[Der Spieler war lange weg und hat sich nicht um dein Problem gekümmert, beschwer dich bei ihm]",
+          "conditions": {
+            "npc:npc_knoechelbein.hasInteracted": true
+          }
+        },
+        {
+          "onMessageCount": 10,
+          "invokeAction": "behave",
+          "directive": "[Erinnere dich an das Besucherbuch]",
+          "conditions": {
+            "flag:knowsKrollsAddress": false
+          }
+        },
+        {
+          "onSignal": "ShowKroll",
+          "invokeAction": "showHotspot",
+          "hotspot": "spot_kroll",
+          "notification": "Ein neuer Ort wurde auf der Karte markiert."
+        },
+        {
+          "onSignal": "ShowKroll",
+          "invokeAction": "saveGame",
+          "defer": "true"
+        },
+        {
+          "onSignal": "TibiaReturned",
+          "invokeAction": "endGame",
+          "defer": true
+        },
+        {
+          "onHotspot": "spot_museum",
+          "invokeAction": "behave",
+          "promptTag": "tibia",
+          "conditions": {
+            "item:item_tibia": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "npc_kroll",
+      "name": "Dieter Kroll",
+      "descriptiveName": "Ein Geschäftsmann",
+      "position": "KrollPosition",
+      "prompt": "kroll-prompt.txt",
+      "image": "images/kroll.png",
+      "visible": false,
+      "revealed": false,
+      "actions": [
+        {
+          "onHotspot": "spot_kroll",
+          "invokeAction": "appear"
+        },
+        {
+          "onSignal": "KrollCutOff",
+          "invokeAction": "stopTalking",
+          "notification": "Das Gespräch wurde beendet."
+        },
+        {
+          "onSignal": "KrollDebut",
+          "invokeAction": "reveal"
+        },
+        {
+          "onSignal": "KrollDebut",
+          "invokeAction": "revealHotspot",
+          "hotspot": "spot_kroll"
+        },
+        {
+          "onSignal": "ShowTschulli",
+          "invokeAction": "showHotspot",
+          "hotspot": "spot_tschulli",
+          "notification": "Ein neuer Ort wurde auf der Karte markiert."
+        },
+        {
+          "onSignal": "ShowTschulli",
+          "invokeAction": "saveGame",
+          "defer": true
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "talk",
+          "trigger": "[Spieler streichelt deinen Hund]",
+          "conditions": {
+            "flag:friendlyToBozzi": true
+          }
+        },
+        {
+          "onInteraction": null,
+          "invokeAction": "talk",
+          "trigger": "[Spieler ist grob zu deinem Hund]",
+          "conditions": {
+            "flag:unfriendlyToBozzi": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "npc_bozzi",
+      "name": "Bozzi",
+      "descriptiveName": "Ein Hund",
+      "position": "BozziPosition",
+      "prompt": "bozzi-prompt.txt",
+      "image": "images/bozzi.png",
+      "visible": false,
+      "revealed": false,
+      "speed": 15,
+      "actions": [
+        {
+          "onSignal": "bozziLead",
+          "invokeAction": "leadAlong",
+          "path": "BonePath",
+          "notification": "Der Hund möchte dir etwas zeigen!",
+          "conditions": {
+            "item:item_carrot": true
+          },
+          "defer": true
+        },
+        {
+          "onSignal": "bozziLead",
+          "invokeAction": "saveGame",
+          "defer": true
+        },
+        {
+          "onSignal": "callBozzi",
+          "invokeAction": "spawn",
+          "notification": "Ein Hund erscheint"
+        },
+        {
+          "onSignal": "callBozzi",
+          "invokeAction": "appear"
+        },
+        {
+          "onSignal": "callBozzi",
+          "invokeAction": "reveal"
+        },
+        {
+          "onSignal": "callBozzi",
+          "invokeAction": "saveGame",
+          "defer": true
+        },
+        {
+          "onApproach": null,
+          "invokeAction": "behave",
+          "promptTag": "reveal",
+          "notification": "Der Hund schnuppert interessiert an deiner Tasche",
+          "conditions": {
+            "item:item_carrot": true
+          }
+        },
+        {
+          "onSignal": "tailWag",
+          "invokeAction": "notify",
+          "notification": "Der Hund wedelt mit dem Schwanz"
+        },
+        {
+          "onSignal": "tailTuck",
+          "invokeAction": "notify",
+          "notification": "Der Hund zieht den Schwanz ein"
+        },
+        {
+          "onSignal": "nudge",
+          "invokeAction": "notify",
+          "notification": "Der Hund stupst dich auffordernd an"
+        },
+        {
+          "onSignal": "growl",
+          "invokeAction": "notify",
+          "notification": "Der Hund knurrt dich an"
+        },
+        {
+          "onSignal": "headTilt",
+          "invokeAction": "notify",
+          "notification": "Der Hund hält den Kopf schief"
+        },
+        {
+          "onSignal": "turnaway",
+          "invokeAction": "notify",
+          "notification": "Der Hund dreht sich weg"
+        },
+        {
+          "onHotspot": "spot_hide",
+          "invokeAction": "showHotspot",
+          "hotspot": "spot_hide",
+          "notification": "Du bist in der Nähe von Bozzis Versteck"
+        },
+        {
+          "onHotspot": "spot_hide",
+          "invokeAction": "scanToInventory",
+          "item": "item_tibia",
+          "notification": "Du hast ein T-Rex Tibia erhalten."
+        }
+      ]
+    },
+    {
+      "id": "npc_tschulli",
+      "name": "Martha Tschulli",
+      "descriptiveName": "Eine stämmige Frau",
+      "position": "TschulliPosition",
+      "prompt": "tschulli-prompt.txt",
+      "image": "images/tschulli.png",
+      "visible": false,
+      "revealed": false,
+      "speed": 10,
+      "actions": [
+        {
+          "onHotspot": "spot_tschulli",
+          "invokeAction": "appear"
+        },
+        {
+          "onSignal": "TschulliDebut",
+          "invokeAction": "reveal"
+        },
+        {
+          "onSignal": "canTalk",
+          "invokeAction": "behave",
+          "promptTag": "canTalk"
+        },
+        {
+          "onSignal": "getBone",
+          "invokeAction": "addToInventory",
+          "item": "item_bone",
+          "notification": "Du hast einen Knochen erhalten."
+        },
+        {
+          "onSignal": "getCarrot",
+          "invokeAction": "addToInventory",
+          "item": "item_carrot",
+          "notification": "Du hast eine Karotte erhalten."
+        },
+        {
+          "onSignal": "getBall",
+          "invokeAction": "addToInventory",
+          "item": "item_ball",
+          "notification": "Du hast einen Ball erhalten."
+        },
+        {
+          "onSignal": "getMeat",
+          "invokeAction": "addToInventory",
+          "item": "item_meat",
+          "notification": "Du hast ein Stück Fleisch erhalten."
+        },
+        {
+          "onSignal": "getCookie",
+          "invokeAction": "addToInventory",
+          "item": "item_cookie",
+          "notification": "Du hast ein Hundekeks erhalten."
+        },
+        {
+          "onSignal": "getSteak",
+          "invokeAction": "addToInventory",
+          "item": "item_steak",
+          "notification": "Du hast ein Steak erhalten."
+        },
+        {
+          "onSignal": "tschulliFollows",
+          "invokeAction": "follow",
+          "notification": "Martha folgt dir jetzt."
+        },
+        {
+          "onHotspot": "spot_kroll",
+          "invokeAction": "stopMoving"
+        }
+      ]
+    },
+    {
+      "id": "npc_trex",
+      "name": "Beißbert",
+      "descriptiveName": "Ein T-Rex",
+      "position": "MuseumPosition",
+      "prompt": "beissbert-prompt.txt",
+      "image": "images/trex.png",
+      "visible": false,
+      "revealed": false,
+      "iconAsset": "icons/trex.png",
+      "actions": [
+        {
+          "onSignal": "TibiaReturned",
+          "invokeAction": "appear",
+          "defer": true
+        },
+        {
+          "onSignal": "TibiaReturned",
+          "invokeAction": "reveal",
+          "defer": true
+        },
+        {
+          "onSignal": "TibiaReturned",
+          "invokeAction": "follow",
+          "defer": true
+        },
+        {
+          "onSignal": "TibiaReturned",
+          "invokeAction": "talk",
+          "trigger": "[Du siehst ein schmackhaftes Steak auf zwei Beinen vor dir]",
+          "defer": true
+        }
+
+      ]
+    }
+  ],
+  "hotspots": [
+    {
+      "id": "spot_museum",
+      "name": "Museum",
+      "position": "MuseumPosition",
+      "image": "images/museum.png",
+      "radius": 20,
+      "visible": false
+    },
+    {
+      "id": "spot_police",
+      "name": "Polizei",
+      "position": "PolizeiPosition",
+      "image": "images/polizei.png",
+      "radius": 25,
+      "visible": false
+    },
+    {
+      "id": "spot_kroll",
+      "name": "Haus Kroll",
+      "position": "HausKrollPosition",
+      "image": "images/hauskroll.png",
+      "radius": 25,
+      "visible": false,
+      "revealed": false
+    },
+    {
+      "id": "spot_tschulli",
+      "name": "Haus Tschulli",
+      "position": "HausTschulliPosition",
+      "image": "images/haustschulli.png",
+      "radius": 30,
+      "visible": false,
+      "revealed": false
+    },
+    {
+      "id": "spot_hide",
+      "name": "Das Versteck",
+      "image": "images/hide.png",
+      "radius": 5,
+      "position": {
+        "lat": 47.945997,
+        "lng":  16.730613
+      },
+      "visible": false
+    }
+  ],
+  "items": [
+    {
+      "id": "item_walkie",
+      "name": "Walkie",
+      "icon": "icons/walkie-talkie.svg",
+      "owned": false,
+      "useType": "radio",
+      "targetNpc": "npc_knatterbach"
+    },
+    {
+      "id": "item_bone",
+      "name": "Knochen",
+      "icon": "icons/bone.svg",
+      "owned": false,
+      "useType": "show",
+      "targetNpc": "npc_bozzi"
+    },
+    {
+      "id": "item_carrot",
+      "name": "Karotte",
+      "icon": "icons/carrot.svg",
+      "owned": false,
+      "useType": "show",
+      "targetNpc": "npc_bozzi"
+    },
+    {
+      "id": "item_tibia",
+      "name": "Tibia",
+      "icon": "icons/tibia.svg",
+      "owned": false,
+      "useType": "show",
+      "targetNpc": "npc_knoechelbein"
+    },
+    {
+      "id": "item_ball",
+      "name": "Ball",
+      "icon": "icons/ball.svg",
+      "owned": false,
+      "useType": "show",
+      "targetNpc": "npc_bozzi"
+    },
+    {
+      "id": "item_cookie",
+      "name": "Keks",
+      "icon": "icons/cookie.svg",
+      "owned": false,
+      "useType": "show",
+      "targetNpc": "npc_bozzi"
+    },
+    {
+      "id": "item_meat",
+      "name": "Fleisch",
+      "icon": "icons/meat.svg",
+      "owned": false,
+      "useType": "show",
+      "targetNpc": "npc_bozzi"
+    },
+    {
+      "id": "item_cheese",
+      "name": "Käse",
+      "icon": "icons/cheese.svg",
+      "owned": false,
+      "useType": "show",
+      "targetNpc": "npc_bozzi"
+    },
+    {
+      "id": "item_steak",
+      "name": "Steak",
+      "icon": "icons/steak.svg",
+      "owned": false,
+      "useType": "show",
+      "targetNpc": "npc_bozzi"
+    }
+  ],
+  "flags": {
+    "friendlyToBozzi": false,
+    "unfriendlyToBozzi": false,
+    "knowsKrollsAddress": false,
+    "knatterbachAtPolice": false
+  }
+}
