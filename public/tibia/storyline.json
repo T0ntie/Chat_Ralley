@@ -270,7 +270,8 @@
           "notification": "Der Hund möchte dir etwas zeigen!",
           "conditions": {
             "item:item_carrot": true
-          }
+          },
+          "defer": true
         },
         {
           "onSignal": "bozziLead",
