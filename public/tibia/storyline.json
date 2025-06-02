@@ -224,13 +224,13 @@
           "hotspot": "spot_kroll"
         },
         {
-          "onSignal": "ShowKirchengasse",
+          "onSignal": "ShowTschulli",
           "invokeAction": "showHotspot",
           "hotspot": "spot_tschulli",
           "notification": "Ein neuer Ort wurde auf der Karte markiert."
         },
         {
-          "onSignal": "ShowKirchengase",
+          "onSignal": "ShowTschulli",
           "invokeAction": "saveGame",
           "defer": true
         },
