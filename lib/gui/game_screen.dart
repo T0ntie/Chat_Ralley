@@ -73,7 +73,8 @@ class GameScreenState extends State<GameScreen>
 
   LatLng? _lastRealGpsPosition;
 
-  bool _isSidePanelVisible = false; //fixme
+  bool _isSidePanelVisible = false;
+  bool _highlightScanButton = false;
 
   void _centerMapOnCurrentLocation() {
     _mapController.move(GameEngine().playerPosition, 16.0);
@@ -85,11 +86,15 @@ class GameScreenState extends State<GameScreen>
     _currentMapRotation = 0;
   }
 
-  Future<void> _initializeGame() async{
+  Future<void> _initializeGame() async {
     try {
       await GameEngine().loadSelectedTrail(widget.trailId);
     } catch (e, stackTrace) {
-      log.e('❌ Failed to load selcted trail: ${widget.trailId}', error: e, stackTrace: stackTrace);
+      log.e(
+        '❌ Failed to load selcted trail: ${widget.trailId}',
+        error: e,
+        stackTrace: stackTrace,
+      );
       widget.onFatalError?.call('❌ Laden des StoryTrails fehlgeschlagen.');
       return;
     }
@@ -98,14 +103,14 @@ class GameScreenState extends State<GameScreen>
       _initializationCompleted = true;
     });
 
-   // _checkIfInitializationCompleted();
+    // _checkIfInitializationCompleted();
     log.i('✅ Alle Spieldaten erfolgreich geladen');
     SnackBarService.showSuccessSnackBar(context, "✔️ Alle Spieldaten geladen");
   }
 
   void _initializeMapController() {
     _mapControllerSubscription = _mapController.mapEventStream.listen((event) {
-/*
+      /*
       if (event is MapEventMoveEnd) {
         print("Zoomlevel: ${_mapController.camera.zoom}");
       }
@@ -123,7 +128,11 @@ class GameScreenState extends State<GameScreen>
     try {
       CompassService.initialize();
     } catch (e, stackTrace) {
-      log.e('❌ Failed to initialize compass service.', error: e, stackTrace: stackTrace);
+      log.e(
+        '❌ Failed to initialize compass service.',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     } //
     _compassSubscription = CompassService.getCompassDirection().listen((
@@ -157,7 +166,11 @@ class GameScreenState extends State<GameScreen>
     try {
       await _initializeCompassStream();
     } catch (e, stackTrace) {
-      log.e('❌ Failed to initialize compass stream', error: e, stackTrace: stackTrace);
+      log.e(
+        '❌ Failed to initialize compass stream',
+        error: e,
+        stackTrace: stackTrace,
+      );
       widget.onFatalError?.call(
         '❌ Initialisierung des Kompass fehlgeschlagen.',
       );
@@ -167,7 +180,11 @@ class GameScreenState extends State<GameScreen>
     try {
       _initializeMapController();
     } catch (e, stackTrace) {
-      log.e('❌ Failed to initialize map controller', error: e, stackTrace: stackTrace);
+      log.e(
+        '❌ Failed to initialize map controller',
+        error: e,
+        stackTrace: stackTrace,
+      );
       widget.onFatalError?.call('❌ Initialisierung der Karte fehlgeschlagen.');
       return;
     }
@@ -188,10 +205,7 @@ class GameScreenState extends State<GameScreen>
   }
 
   void _initializeAll() async {
-    await Future.wait([
-      _initializeGameUI(),
-      _initializeGame(),
-    ]);
+    await Future.wait([_initializeGameUI(), _initializeGame()]);
     _maybeLoadGameState();
   }
 
@@ -327,15 +341,15 @@ class GameScreenState extends State<GameScreen>
                   if (!_isSimulatingLocation) {
                     _lastRealGpsPosition = GameEngine().playerPosition;
                     // von Simulation => Echtbetrieb
-                    } else {
-                      GameEngine().playerMovementController.teleportTo(
+                  } else {
+                    GameEngine().playerMovementController.teleportTo(
+                      _lastRealGpsPosition!,
+                    );
+                    if (_lastRealGpsPosition != null) {
+                      GameEngine().setRealGpsPositionAndNotify(
                         _lastRealGpsPosition!,
                       );
-                      if (_lastRealGpsPosition != null) {
-                        GameEngine().setRealGpsPositionAndNotify(
-                          _lastRealGpsPosition!,
-                        );
-                      }
+                    }
                   }
 
                   _isSimulatingLocation = !_isSimulatingLocation;
@@ -348,7 +362,8 @@ class GameScreenState extends State<GameScreen>
               tooltip: "Restart",
               onPressed: () async {
                 GameEngine().reset();
-                await GameEngine().loadSelectedTrail( //fixme GameSate muss gelöscht werden
+                await GameEngine().loadSelectedTrail(
+                  //fixme GameSate muss gelöscht werden
                   GameEngine().trailId!,
                 ); //fixme testen
                 final currentPosition = GameEngine().playerPosition;
@@ -412,13 +427,16 @@ class GameScreenState extends State<GameScreen>
                     ),
                   SidePanel(
                     isVisible: (_isSidePanelVisible),
+                    highlightScanButton: _highlightScanButton,
                     onClose: () {
                       setState(() {
                         _isSidePanelVisible = false;
+                        _highlightScanButton = false;
                         GameEngine().markAllItemsAsSeen();
                       });
                     },
                     onScan: () {
+                      _highlightScanButton = false;
                       setState(() {
                         OpenScanDialogIntent(
                           title: "Fund erfassen",
@@ -433,6 +451,22 @@ class GameScreenState extends State<GameScreen>
               ),
       floatingActionButton: buildFloatingActionButton(),
     );
+  }
+
+  void highlightScanButton() async {
+    log.d("highlight the scan item button in sidepanel");
+    if (!_isSidePanelVisible) {
+      await Future.delayed(Duration(seconds: 2));
+      if (!mounted) return;
+
+      setState(() {
+        _isSidePanelVisible = true;
+      });
+
+      setState(() {
+        _highlightScanButton = true;
+      });
+    }
   }
 
   void checkForNewItemsWithDelay() async {
@@ -506,7 +540,7 @@ class GameScreenState extends State<GameScreen>
     try {
       saveData = await GameEngine().saveGameState();
     } catch (e, stackTrace) {
-      log.e("❌ Failed to create save state.", error:e, stackTrace: stackTrace);
+      log.e("❌ Failed to create save state.", error: e, stackTrace: stackTrace);
       assert(false, "❌ Failed to create save state.");
       return;
     }

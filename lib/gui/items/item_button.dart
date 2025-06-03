@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storytrail/gui/items/glowing_animate_wrapper.dart';
 import 'package:storytrail/services/firebase_serice.dart';
 import 'package:storytrail/app_resources.dart';
 import 'package:storytrail/engine/game_engine.dart';
@@ -15,16 +16,19 @@ class ItemButton extends StatefulWidget {
 
 class _ItemButtonState extends State<ItemButton>
     with SingleTickerProviderStateMixin {
+/*
   late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
   late final Animation<Color?> _glowAnimation;
+*/
 
-  final bool _showGlow = true;
+//  final bool _showGlow = true;
 
   @override
   void initState() {
     super.initState();
 
+/*
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
@@ -46,12 +50,13 @@ class _ItemButtonState extends State<ItemButton>
         _controller.repeat(reverse: true);
       }
     });
+*/
   }
 
 
   @override
   void dispose() {
-    _controller.dispose();
+//    _controller.dispose();
     super.dispose();
   }
 
@@ -60,11 +65,34 @@ class _ItemButtonState extends State<ItemButton>
     if (widget.item.isNew) {
       setState(() {
         GameEngine().markAllItemsAsSeen();
-        _controller.stop();
+  //      _controller.stop();
       });
     }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return GlowingAnimatedWrapper(
+      animate: widget.item.isNew,
+      glowColor: ResourceColors.glow,
+      child: Container(
+        margin: const EdgeInsets.all(6),
+        child: ClipOval(
+          child: IconButton(
+            icon: FirebaseHosting.loadSvgWidget(
+              GameEngine().itemIconPath(widget.item),
+              colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+              width: 24,
+              height: 24,
+            ),
+            onPressed: _onPressed,
+          ),
+        ),
+      ),
+    );
+  }
+
+/*
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -110,4 +138,5 @@ class _ItemButtonState extends State<ItemButton>
       },
     );
   }
+*/
 }

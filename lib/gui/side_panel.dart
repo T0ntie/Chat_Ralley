@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:storytrail/gui/items/glowing_animate_wrapper.dart';
 
 class SidePanel extends StatelessWidget {
   final bool isVisible;
+  final bool highlightScanButton;
   final VoidCallback onClose;
   final VoidCallback onScan;
   final List<Widget> children;
@@ -10,6 +12,7 @@ class SidePanel extends StatelessWidget {
   const SidePanel({
     super.key,
     required this.isVisible,
+    required this.highlightScanButton,
     required this.onClose,
     required this.onScan,
     required this.children,
@@ -84,12 +87,15 @@ class SidePanel extends StatelessWidget {
                       indent: 12,
                       endIndent: 8,
                     ),
-                    IconButton(
-                      icon: Icon(Icons.center_focus_strong_sharp, color: Colors.white),
-                      tooltip: "Nach Items suchen",
-                      onPressed: onScan,
+                    GlowingAnimatedWrapper(
+                      animate: highlightScanButton,
+                      glowColor: Colors.orangeAccent,
+                      child: IconButton(
+                        icon: Icon(Icons.center_focus_strong_sharp, color: Colors.white),
+                        tooltip: "Nach Items suchen",
+                        onPressed: onScan,
+                      ),
                     ),
-
                     IconButton(
                       icon: Icon(Icons.close, color: Colors.white),
                       tooltip: "Schließen",

@@ -130,10 +130,10 @@
           "onInteraction": null,
           "invokeAction": "behave",
           "promptTag": "tibia",
-            "conditions": {
-              "item:item_tibia": true
-            }
+          "conditions": {
+            "item:item_tibia": true
           }
+        }
       ]
     },
     {
@@ -452,7 +452,6 @@
           "trigger": "[Du siehst ein schmackhaftes Steak auf zwei Beinen vor dir]",
           "defer": true
         }
-
       ]
     }
   ],

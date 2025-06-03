@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:storytrail/actions/add_to_inventory_action.dart';
 import 'package:storytrail/actions/behave_action.dart';
 import 'package:storytrail/actions/end_game_action.dart';
+import 'package:storytrail/actions/highlight_scan_action.dart';
 import 'package:storytrail/actions/lead_action.dart';
 import 'package:storytrail/actions/lead_along_action.dart';
 import 'package:storytrail/actions/notify_action.dart';
@@ -229,6 +230,7 @@ abstract class NpcAction {
     LeadAction.register();
     LeadAlongAction.register();
     ScanToInventoryAction.register();
+    HighlightScanAction.register();
     EndGameAction.register();
     SaveGameAction.register();
   }
