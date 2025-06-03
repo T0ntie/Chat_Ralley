@@ -48,7 +48,7 @@ class OpenScanDialogIntent extends UIIntent {
         "Spieler hat folgenden Gegenstand gefunden: ${selectedItem.name}",
       );
       //print("homPage: ${homePageKey.currentState}");
-      homePageKey.currentState?.checkForNewItemsWithDelay();
+      state.checkForNewItemsWithDelay();
     }
   }
 }

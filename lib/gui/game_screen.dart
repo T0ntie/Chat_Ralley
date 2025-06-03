@@ -103,16 +103,6 @@ class GameScreenState extends State<GameScreen>
     SnackBarService.showSuccessSnackBar(context, "✔️ Alle Spieldaten geladen");
   }
 
-/*
-  void _checkIfInitializationCompleted() {
-    if (_gameInitialized && !_initializationCompleted) {
-      setState(() {
-        _initializationCompleted = true;
-      });
-    }
-  }
-*/
-
   void _initializeMapController() {
     _mapControllerSubscription = _mapController.mapEventStream.listen((event) {
 /*
@@ -207,7 +197,7 @@ class GameScreenState extends State<GameScreen>
 
   Future<void> _handleDeferredGUIEvents() async {
     await GameEngine().flushDeferredActions(context);
-    checkForNewItemsWithDelay();
+    //checkForNewItemsWithDelay();
     UiIntentQueue().flush(this);
   }
 
@@ -451,7 +441,7 @@ class GameScreenState extends State<GameScreen>
     // Prüfen, ob neue Items vorhanden sind
     if (!_isSidePanelVisible && GameEngine().hasNewItems()) {
       log.d("👉 .... ja neue Items vorhanden.");
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(Duration(seconds: 2));
       if (!mounted) return;
       setState(() {
         _isSidePanelVisible = true;

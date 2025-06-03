@@ -4,19 +4,14 @@ import 'package:storytrail/gui/game_screen.dart';
 import 'package:storytrail/services/log_service.dart';
 import 'ui_intent.dart';
 
-class ShowHotspotIntent extends UIIntent {
-  final Hotspot hotspot;
+class NewItemIntent extends UIIntent {
 
-  ShowHotspotIntent({required this.hotspot});
+  NewItemIntent();
 
   @override
   @override
   Future<void> call(GameScreenState state) async {
-    log.i('🎨 Starte Kameraflug zu Hotspot "${hotspot.name}"');
-    await CameraFlight(
-      state: state,
-      controller: state.mapController,
-      to: hotspot.position,
-    ).animate();
+    log.i('🎨 Zeige das neue Item an');
+    state.checkForNewItemsWithDelay();
   }
 }
