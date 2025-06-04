@@ -49,6 +49,8 @@ class OpenScanDialogIntent extends UIIntent {
       );
       //print("homPage: ${homePageKey.currentState}");
       state.checkForNewItemsWithDelay();
-    }
+    } else {
+        state.highlightScanButton();
+      }
   }
 }

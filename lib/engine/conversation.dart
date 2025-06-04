@@ -28,10 +28,16 @@ class Conversation with HasGameState {
   }
 
   Future<void> handleTriggerMessage() async {
-    if (_messages.last.isTrigger) {
-      String triggeredResponse = await processConversation();
-      addAssistantMessage(triggeredResponse, Medium.chat);
+    try {
+      if (_messages.last.isTrigger) {
+        String triggeredResponse = await processConversation();
+        addAssistantMessage(triggeredResponse, Medium.chat);
+      }
+    }catch(e, stackTrace) {
+     log.e('❌ Failed to process trigger conversation', error: e, stackTrace: stackTrace);
+     rethrow;
     }
+
   }
 
   Future<void> finishConversation() async {

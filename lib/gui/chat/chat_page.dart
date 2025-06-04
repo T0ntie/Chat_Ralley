@@ -67,7 +67,15 @@ class _ChatPageState extends State<ChatPage> {
       _isSending = true;
     });
 
-    await _conversation.handleTriggerMessage();
+    try {
+      await _conversation.handleTriggerMessage();
+    }catch (e, stackTrace) {
+      SnackBarService.showErrorSnackBar(
+        context,
+        '❌ Kommunikation fehlgeschlagen.',
+      );
+      log.e('❌ Failed to handle trigger message.', error: e, stackTrace: stackTrace);
+    }
 
     if (!mounted) return;
 
