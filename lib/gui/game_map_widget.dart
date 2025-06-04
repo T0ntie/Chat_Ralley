@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:storytrail/app_resources.dart';
 import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/engine/moving_controller.dart';
 import 'package:storytrail/engine/npc.dart';
 import 'package:storytrail/gui/npc_info_dialog.dart';
 import 'package:latlong2/latlong.dart';
@@ -40,6 +41,13 @@ class GameMapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pulse = _getPulseState(GameEngine.conversationDistance);
+
+    final controller = GameEngine().playerMovementController;
+    LatLng? rawGpsPosition = null;
+    if (controller is GpsMovementController) {
+      rawGpsPosition = controller.rawGpsPosition;
+      // Jetzt kannst du rawPos verwenden
+    }
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
@@ -122,6 +130,16 @@ class GameMapWidget extends StatelessWidget {
 
         MarkerLayer(
           markers: [
+            if (rawGpsPosition != null)
+              Marker(
+                point: (rawGpsPosition),
+                width: 40,
+                height: 40,
+                child: Transform.rotate(
+                  angle: currentHeading * (pi / 180),
+                  child: Icon(Icons.navigation, color: Colors.grey, size: 24),
+                ),
+              ),
             Marker(
               point: location,
               width: 40,
@@ -129,15 +147,16 @@ class GameMapWidget extends StatelessWidget {
               child: Transform.rotate(
                 angle: currentHeading * (pi / 180),
                 child:
-                    GameEngine().isGPSSimulating
-                        ? Icon(
-                          Icons.my_location,
-                          color: Color(0xFF6A0DAD),
-                          size: 40,
-                        )
-                        : AppIcons.playerPosition,
+                GameEngine().isGPSSimulating
+                    ? Icon(
+                  Icons.my_location,
+                  color: Color(0xFF6A0DAD),
+                  size: 40,
+                )
+                    : AppIcons.playerPosition,
               ),
             ),
+
             ..._buildHotspotMarkers(context),
             ..._buildNpcMarkers(context),
             if (GameEngine().lastSaveLocation != null)

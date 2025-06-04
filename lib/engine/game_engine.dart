@@ -536,7 +536,6 @@ class GameEngineDebugger {
     for (var npc in npcs) {
       var actions = npc.actions;
       for (var action in actions) {
-        var trigger = action.trigger;
         result.add((action.trigger.type.name, npc, action));
       }
     }

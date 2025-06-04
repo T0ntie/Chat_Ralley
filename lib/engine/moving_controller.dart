@@ -403,6 +403,8 @@ class GpsMovementController implements MovementController {
   bool _isMoving = false;
   LatLng _currentInterpolatedPosition;
 
+  LatLng? get rawGpsPosition => _nextGpsPosition;
+
   GpsMovementController(LatLng initialPosition)
       : _lastGpsPosition = initialPosition,
         _lastGpsTimestamp = DateTime.now(),
@@ -415,7 +417,7 @@ class GpsMovementController implements MovementController {
     LogService.d("📡 GPS Update erhalten: $newPosition");
     final now = DateTime.now();
 
-    _speedAverager.addPosition(newPosition); // Neue Position merken
+    _speedAverager.addPosition(newPosition);
 
     // Fall 1: erster GPS-Punkt
     if (!_hasReceivedFirstUpdate) {
@@ -424,32 +426,35 @@ class GpsMovementController implements MovementController {
       _lastGpsTimestamp = now;
       _isMoving = false;
       _hasReceivedFirstUpdate = true;
-      //print("⏸️ Erstes GPS, keine Interpolation gestartet.");
       return;
     }
 
     final speed = _speedAverager.averageSpeed;
-    if (speed <= 0) {
-      // Kein brauchbarer Bewegungswert – direkt setzen
+
+    // Fall 2: keine Bewegung – direkt setzen
+    if (speed <= 0.5) {
       _lastGpsPosition = newPosition;
       _currentInterpolatedPosition = newPosition;
       _lastGpsTimestamp = now;
       _isMoving = false;
-      //print("⚠️ Keine Bewegung erkennbar – kein Interpolieren");
       return;
     }
 
-    // Neue Dauer berechnen: dist / speed
-
+    // Neue Interpolation starten
     final dist = Distance().as(LengthUnit.Meter, _currentInterpolatedPosition, newPosition);
-    final duration = Duration(milliseconds: (1000 * dist / speed).round());
+
+    // Interpolationsdauer basierend auf Geschwindigkeit berechnen (in ms)
+    final estimatedMs = (1000 * dist / speed).round();
+
+    // Dauer begrenzen, z.B. 250–2000 ms
+    final clampedMs = estimatedMs.clamp(250, 2000);
+    final duration = Duration(milliseconds: clampedMs);
 
     _lastGpsPosition = _currentInterpolatedPosition;
     _lastGpsTimestamp = now;
     _nextGpsPosition = newPosition;
     _nextGpsTimestamp = now.add(duration);
     _isMoving = true;
-    //print("🚀 Interpolation gestartet von $_lastGpsPosition → $_nextGpsPosition über ${duration.inMilliseconds} ms");
   }
 
   @override
@@ -461,7 +466,8 @@ class GpsMovementController implements MovementController {
       return _currentInterpolatedPosition;
     }
 
-    final elapsed = DateTime.now().difference(_lastGpsTimestamp).inMilliseconds;
+    final now = DateTime.now();
+    final elapsed = now.difference(_lastGpsTimestamp).inMilliseconds;
     final total = _nextGpsTimestamp!.difference(_lastGpsTimestamp).inMilliseconds;
 
     if (total <= 0) {
@@ -469,14 +475,21 @@ class GpsMovementController implements MovementController {
       return _currentInterpolatedPosition;
     }
 
-    final t = elapsed / total;
-    //print("⏱ Interpolationsfortschritt: t = $t");
-    if (t >= 1.0) {
+    double t = elapsed / total;
+
+    // ⏩ Extrapolation begrenzen
+    if (t >= 1.2) {
       _finalizeMovement();
       return _currentInterpolatedPosition;
     }
 
-    _currentInterpolatedPosition = _interpolateFractional(_lastGpsPosition, _nextGpsPosition!, t);
+    // 🔁 Interpoliert (oder leicht extrapoliert)
+    _currentInterpolatedPosition = _interpolateFractional(
+      _lastGpsPosition,
+      _nextGpsPosition!,
+      t,
+    );
+
     return _currentInterpolatedPosition;
   }
 

@@ -30,8 +30,8 @@ class LocationService {
     }
 
     LocationSettings locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 5, // liefert nur Updates bei >5m Bewegung
+      accuracy: LocationAccuracy.bestForNavigation,
+      distanceFilter: 1, // liefert nur Updates bei >5m Bewegung
     );
 
     try {
