@@ -4,12 +4,12 @@ import 'package:storytrail/engine/game_engine.dart';
 import 'package:storytrail/engine/npc.dart';
 
 class ActionTestingPanel extends StatefulWidget {
-  final Map<String, List<(Npc, NpcAction)>> actionsByTrigger;
+    final Map<String, List<(Npc, String, NpcAction)>> actionsByNpc;
   final Map<String, bool> flags;
 
   const ActionTestingPanel({
     super.key,
-    required this.actionsByTrigger,
+    required this.actionsByNpc,
     required this.flags,
   });
 
@@ -114,8 +114,8 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    ...widget.actionsByTrigger.entries.map((entry) {
-                      final triggerName = entry.key;
+                    ...widget.actionsByNpc.entries.map((entry) {
+                      final npcId = entry.key;
                       final actions = entry.value;
 
                       return Theme(
@@ -127,7 +127,7 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                         child: ExpansionTile(
                           tilePadding: EdgeInsets.zero,
                           title: Text(
-                            triggerName,
+                            GameEngine().getNpcById(npcId)?.name ?? "Unknown",
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -138,7 +138,7 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                           children:
                               actions.asMap().entries.map((actionEntry) {
                                 final index = actionEntry.key;
-                                final (npc, action) = actionEntry.value;
+                                final (npc, trigger, action) = actionEntry.value;
 
                                 return Container(
                                   margin: const EdgeInsets.symmetric(
@@ -157,18 +157,19 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     title: Text(
-                                      "${npc.name} → ${action.runtimeType}",
+                                      "${trigger}${action.trigger.value != null ? ' (${action.trigger.value})' : ''}",
                                       style: const TextStyle(
                                         color: Colors.white,
                                       ),
                                     ),
                                     subtitle: Text(
-                                      "Trigger-Wert: ${action.trigger.value}",
+                                      "${action.runtimeType}",
                                       style: const TextStyle(
                                         color: Colors.white70,
                                         fontSize: 12,
                                       ),
                                     ),
+
                                     trailing: const Icon(
                                       Icons.play_arrow,
                                       color: Colors.white70,

@@ -512,20 +512,19 @@ class GameEngine {
 }
 
 class GameEngineDebugger {
-  static Map<String, List<(Npc, NpcAction)>>? _actionsGroupedByTrigger;
 
-  static Map<String, List<(Npc, NpcAction)>> getActionsGroupedByTrigger() {
-    if (_actionsGroupedByTrigger != null) {
-      return _actionsGroupedByTrigger!;
+  static Map<String, List<(Npc, String,  NpcAction)>>? _actionsGroupedByNpc;
+
+  static Map<String, List<(Npc, String, NpcAction)>> getActionsGroupedByNpc() {
+    if (_actionsGroupedByNpc != null) {
+      return _actionsGroupedByNpc!;
     }
 
-    final Map<String, List<(Npc, NpcAction)>> grouped = {};
-
-    for (var (trigger, npc, action) in _getAllRegisteredActionEntries()) {
-      grouped.putIfAbsent(trigger, () => []).add((npc, action));
+    final Map<String, List<(Npc, String, NpcAction)>> grouped = {};
+    for(var(trigger, npc, action) in _getAllRegisteredActionEntries()) {
+      grouped.putIfAbsent(npc.id, () => []).add((npc, trigger, action));
     }
-
-    _actionsGroupedByTrigger = grouped;
+    _actionsGroupedByNpc = grouped;
     return grouped;
   }
 
@@ -533,45 +532,12 @@ class GameEngineDebugger {
   _getAllRegisteredActionEntries() {
     final List<(String, Npc, NpcAction)> result = [];
 
-    // Signal: Map<String, List<(Npc, NpcAction)>>
-    for (var entry in GameEngine()._signalSubscriptions.values) {
-      for (var (npc, action) in entry) {
-        result.add(('signal', npc, action));
-      }
-    }
-
-    // Interaction: Map<Npc, List<NpcAction>>
-    for (var entry in GameEngine()._interactionSubscriptions.entries) {
-      for (var action in entry.value) {
-        result.add(('interaction', entry.key, action));
-      }
-    }
-
-    // Approach: Map<Npc, List<NpcAction>>
-    for (var entry in GameEngine()._approachSubscriptions.entries) {
-      for (var action in entry.value) {
-        result.add(('approach', entry.key, action));
-      }
-    }
-
-    // Init: Map<Npc, List<NpcAction>>
-    for (var entry in GameEngine()._initSubscriptions.entries) {
-      for (var action in entry.value) {
-        result.add(('init', entry.key, action));
-      }
-    }
-
-    // Hotspot: Map<String, List<(Npc, NpcAction)>>
-    for (var entry in GameEngine()._hotspotSubscriptions.values) {
-      for (var (npc, action) in entry) {
-        result.add(('hotspot', npc, action));
-      }
-    }
-
-    // MessageCount: Map<Npc, List<(NpcAction, int)>>
-    for (var entry in GameEngine()._messageCountSubscriptions.entries) {
-      for (var (action, _) in entry.value) {
-        result.add(('message', entry.key, action));
+    List<Npc> npcs = GameEngine().npcs;
+    for (var npc in npcs) {
+      var actions = npc.actions;
+      for (var action in actions) {
+        var trigger = action.trigger;
+        result.add((action.trigger.type.name, npc, action));
       }
     }
     return result;

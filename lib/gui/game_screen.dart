@@ -421,8 +421,8 @@ class GameScreenState extends State<GameScreen>
                   buildMapOrientationModeButton(),
                   if (showActionTestingPanel)
                     ActionTestingPanel(
-                      actionsByTrigger:
-                          GameEngineDebugger.getActionsGroupedByTrigger(),
+                      actionsByNpc:
+                          GameEngineDebugger.getActionsGroupedByNpc(),
                       flags: GameEngine().flags,
                     ),
                   SidePanel(
