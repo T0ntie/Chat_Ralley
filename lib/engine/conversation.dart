@@ -15,6 +15,9 @@ class Conversation with HasGameState {
   @override
   String id;
   final List<ChatMessage> _messages = []; // Liste von Nachrichten
+
+  final List<String> _promptTags = [];
+
   int userMessageCount = 0;
 
   int messagesToKeep = 10;
@@ -94,6 +97,18 @@ class Conversation with HasGameState {
     _messages.add(ChatMessage(
         rawText: message, chatRole: ChatRole.system, isInitialPrompt: true));
     _jlog();
+  }
+
+  void addPromptSection(String message, String sectionName)
+  {
+    if (!_promptTags.contains(sectionName)) {
+      _promptTags.add(sectionName);
+      _messages.add(ChatMessage(
+          rawText: message, chatRole: ChatRole.system));
+      _jlog();
+    } else {
+      log.d('Prompt Section "$sectionName" wurde bereits hinzugefügt.');
+    }
   }
 
   void addSystemMessage(String message) {

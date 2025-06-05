@@ -77,7 +77,8 @@ class GameScreenState extends State<GameScreen>
   bool _highlightScanButton = false;
 
   void _centerMapOnCurrentLocation() {
-    _mapController.move(GameEngine().playerPosition, 16.0);
+    final currentZoom = _mapController.camera.zoom;
+    _mapController.move(GameEngine().playerPosition, currentZoom);
   }
 
   void _switchMapOrientationMode() {

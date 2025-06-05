@@ -154,7 +154,7 @@ class Npc extends GameElement
 
   void injectTaggedPrompts(String tag) async {
     String content = prompt.getTaggedPrompt(tag);
-    currentConversation.addSystemMessage(content);
+    currentConversation.addPromptSection(content, tag);
   }
 
   void behave(String directive) {
