@@ -27,6 +27,7 @@ enum MovementMode {
 
 abstract class MovementController {
   LatLng get currentPosition;
+  LatLng get targetPosition;
   LatLng updatePosition();
   void stopMoving();
   void teleportTo(LatLng toP);
@@ -102,6 +103,9 @@ class NPCMovementController implements MovementController {
 
   @override
   LatLng get currentPosition => currentBasePosition;
+
+  @override
+  LatLng get targetPosition => toPosition;
 
   void maybeStartFollowing() {
     if (isFollowing && !isMoving && currentDistance > resumeFollowingDistance) {
@@ -329,6 +333,9 @@ class SimMovementController  implements MovementController {
   @override
   LatLng get currentPosition => currentBasePosition;
 
+  @override
+  LatLng get targetPosition => toPosition;
+
   late LatLng _movementStartPosition;
 
   @override
@@ -403,7 +410,7 @@ class GpsMovementController implements MovementController {
   bool _isMoving = false;
   LatLng _currentInterpolatedPosition;
 
-  LatLng? get rawGpsPosition => _nextGpsPosition;
+  LatLng get targetPosition => (_nextGpsPosition == null) ? _lastGpsPosition : _nextGpsPosition!;
 
   GpsMovementController(LatLng initialPosition)
       : _lastGpsPosition = initialPosition,
@@ -470,20 +477,13 @@ class GpsMovementController implements MovementController {
     final elapsed = now.difference(_lastGpsTimestamp).inMilliseconds;
     final total = _nextGpsTimestamp!.difference(_lastGpsTimestamp).inMilliseconds;
 
-    if (total <= 0) {
-      _finalizeMovement();
+    if (total <= 0 || elapsed >= total) {
+      _finalizeMovement(); // springt auf Ziel
       return _currentInterpolatedPosition;
     }
 
-    double t = elapsed / total;
+    final t = elapsed / total;
 
-    // ⏩ Extrapolation begrenzen
-    if (t >= 1.2) {
-      _finalizeMovement();
-      return _currentInterpolatedPosition;
-    }
-
-    // 🔁 Interpoliert (oder leicht extrapoliert)
     _currentInterpolatedPosition = _interpolateFractional(
       _lastGpsPosition,
       _nextGpsPosition!,

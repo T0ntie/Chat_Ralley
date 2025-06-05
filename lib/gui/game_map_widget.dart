@@ -42,12 +42,8 @@ class GameMapWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final pulse = _getPulseState(GameEngine.conversationDistance);
 
-    final controller = GameEngine().playerMovementController;
-    LatLng? rawGpsPosition = null;
-    if (controller is GpsMovementController) {
-      rawGpsPosition = controller.rawGpsPosition;
-      // Jetzt kannst du rawPos verwenden
-    }
+    LatLng targetPosition = GameEngine().playerMovementController.targetPosition;
+
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
@@ -130,9 +126,9 @@ class GameMapWidget extends StatelessWidget {
 
         MarkerLayer(
           markers: [
-            if (rawGpsPosition != null)
+            if (targetPosition != null)
               Marker(
-                point: (rawGpsPosition),
+                point: (targetPosition),
                 width: 40,
                 height: 40,
                 child: Transform.rotate(
