@@ -63,7 +63,8 @@
         {
           "onSignal": "KnatterbachFollow",
           "invokeAction": "follow",
-          "notification": "Kommissar Knatterbach folgt dir jetzt."
+          "notification": "Kommissar Knatterbach folgt dir jetzt.",
+          "defer": true
         },
         {
           "onSignal": "KnatterbachStop",
@@ -183,6 +184,11 @@
         {
           "onSignal": "TibiaReturned",
           "invokeAction": "endGame",
+          "defer": true
+        },
+        {
+          "onSignal": "TibiaReturened",
+          "invokeAction": "saveGame",
           "defer": true
         },
         {
@@ -359,6 +365,11 @@
           "invokeAction": "scanToInventory",
           "item": "item_tibia",
           "notification": "Du hast ein T-Rex Tibia erhalten."
+        },
+        {
+          "onHotspot": "spot_hide",
+          "invokeAction": "saveGame",
+          "defer": true
         }
       ]
     },
@@ -389,7 +400,6 @@
             "flag:quizPassed": false
           }
         },
-
         {
           "onSignal": "canTalk",
           "invokeAction": "behave",
@@ -434,7 +444,8 @@
         {
           "onSignal": "tschulliFollows",
           "invokeAction": "follow",
-          "notification": "Martha folgt dir jetzt."
+          "notification": "Martha folgt dir jetzt.",
+          "defer": true
         },
         {
           "onHotspot": "spot_kroll",
