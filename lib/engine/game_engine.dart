@@ -437,19 +437,19 @@ class GameEngine {
   }
 
   void registerMessage(Npc npc, int count) async {
-    log.d('💬 Message für NPC ${npc.name} erkannt');
-    for (final entry in _messageCountSubscriptions.entries.toList()) {
-      final Npc npc = entry.key;
-      final List<(NpcAction, int)> actionsEntries = entry.value;
-      for (final actionEntry in actionsEntries) {
-        final (NpcAction action, int messageCount) = actionEntry;
-        if (messageCount == count) {
-          log.i('💬 ${action.runtimeType} für NPC ${npc.name} ausgeführt.');
-          await action.invoke(npc);
-        }
+    log.d('💬 Die ${count}. Nachricht für NPC ${npc.name} erkannt.');
+
+    final actionsEntries = _messageCountSubscriptions[npc];
+    if (actionsEntries == null) return;
+
+    for (final (action, messageCount) in actionsEntries) {
+      if (messageCount == count) {
+        log.i('💬 ${action.runtimeType} für NPC ${npc.name} ausgeführt.');
+        await action.invoke(npc);
       }
     }
   }
+
 
   void registerGameState(HasGameState gameState) {
     if (_gameSate.containsKey(gameState.id)) {

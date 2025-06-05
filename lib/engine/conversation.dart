@@ -227,6 +227,7 @@ class Conversation with HasGameState {
   @override
   loadGameState(Map<String, dynamic> json) {
     final messagesJson = json['messages'] as List;
+    userMessageCount = json['userMessageCount'] ?? 0;
     //alle messages außer dem initial prompt entfernen
     _messages.removeWhere((m) => !m.isInitialPrompt);
     assert(_messages.any((m) => m.isInitialPrompt), 'Missing initial prompt after load!');
