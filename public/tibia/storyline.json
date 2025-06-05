@@ -382,6 +382,15 @@
           "invokeAction": "reveal"
         },
         {
+          "onMessageCount": 10,
+          "invokeAction": "behave",
+          "directive": "[Mach mit dem Spieler das Hunde Quizz]",
+          "conditions": {
+            "flag:quizPassed": false
+          }
+        },
+
+        {
           "onSignal": "canTalk",
           "invokeAction": "behave",
           "promptTag": "canTalk"
@@ -429,7 +438,12 @@
         },
         {
           "onHotspot": "spot_kroll",
-          "invokeAction": "stopMoving"
+          "invokeAction": "walkTo",
+          "position": "TschulliBeiKrollPosition",
+          "defer": true,
+          "conditions": {
+            "flag:tschulliFollows": true
+          }
         }
       ]
     },
@@ -507,10 +521,7 @@
       "name": "Das Versteck",
       "image": "images/hide.png",
       "radius": 5,
-      "position": {
-        "lat": 48.08465098939792,
-        "lng": 16.278219512071608
-      },
+      "position": "HidePosition",
       "visible": false
     }
   ],
@@ -592,6 +603,7 @@
     "friendlyToBozzi": false,
     "unfriendlyToBozzi": false,
     "knowsKrollsAddress": false,
-    "knatterbachAtPolice": false
+    "knatterbachAtPolice": false,
+    "quizPassed" : false
   }
 }
