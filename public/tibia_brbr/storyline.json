@@ -130,10 +130,10 @@
           "onInteraction": null,
           "invokeAction": "behave",
           "promptTag": "tibia",
-            "conditions": {
-              "item:item_tibia": true
-            }
+          "conditions": {
+            "item:item_tibia": true
           }
+        }
       ]
     },
     {
@@ -210,11 +210,6 @@
           "invokeAction": "appear"
         },
         {
-          "onSignal": "KrollCutOff",
-          "invokeAction": "stopTalking",
-          "notification": "Das Gespräch wurde beendet."
-        },
-        {
           "onSignal": "KrollDebut",
           "invokeAction": "reveal"
         },
@@ -222,6 +217,11 @@
           "onSignal": "KrollDebut",
           "invokeAction": "revealHotspot",
           "hotspot": "spot_kroll"
+        },
+        {
+          "onSignal": "KrollCutOff",
+          "invokeAction": "stopTalking",
+          "notification": "Das Gespräch wurde beendet."
         },
         {
           "onSignal": "ShowTschulli",
@@ -297,10 +297,28 @@
           "defer": true
         },
         {
-          "onApproach": null,
+          "onInteraction": null,
           "invokeAction": "behave",
           "promptTag": "reveal",
           "notification": "Der Hund schnuppert interessiert an deiner Tasche",
+          "conditions": {
+            "item:item_carrot": true
+          }
+        },
+        {
+          "onApproach": null,
+          "invokeAction": "behave",
+          "promptTag": "reveal",
+          "notification": "Der Hund schnuppert interessiert an deiner Tasche.",
+          "conditions": {
+            "item:item_carrot": true
+          }
+        },
+        {
+          "onSignal": "hasCarrot",
+          "invokeAction": "behave",
+          "promptTag": "reveal",
+          "notification": "Der Hund stupst dich auffordernd an.",
           "conditions": {
             "item:item_carrot": true
           }
@@ -314,11 +332,6 @@
           "onSignal": "tailTuck",
           "invokeAction": "notify",
           "notification": "Der Hund zieht den Schwanz ein"
-        },
-        {
-          "onSignal": "nudge",
-          "invokeAction": "notify",
-          "notification": "Der Hund stupst dich auffordernd an"
         },
         {
           "onSignal": "growl",
@@ -452,7 +465,6 @@
           "trigger": "[Du siehst ein schmackhaftes Steak auf zwei Beinen vor dir]",
           "defer": true
         }
-
       ]
     }
   ],
@@ -488,8 +500,7 @@
       "position": "HausTschulliPosition",
       "image": "images/haustschulli.png",
       "radius": 30,
-      "visible": false,
-      "revealed": false
+      "visible": false
     },
     {
       "id": "spot_hide",

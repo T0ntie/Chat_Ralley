@@ -424,6 +424,7 @@ class GameScreenState extends State<GameScreen>
                       actionsByNpc:
                           GameEngineDebugger.getActionsGroupedByNpc(),
                       flags: GameEngine().flags,
+                      items: GameEngine().items,
                     ),
                   SidePanel(
                     isVisible: (_isSidePanelVisible),

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/game_engine.dart';
+import 'package:storytrail/engine/item.dart';
 import 'package:storytrail/engine/npc.dart';
 
 class ActionTestingPanel extends StatefulWidget {
     final Map<String, List<(Npc, String, NpcAction)>> actionsByNpc;
   final Map<String, bool> flags;
+  final List<Item> items;
 
   const ActionTestingPanel({
     super.key,
     required this.actionsByNpc,
     required this.flags,
+    required this.items,
   });
 
   @override
@@ -237,6 +240,60 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                       );
                     }),
                     const SizedBox(height: 16),
+
+                    const Text(
+                      "Aktuelle Items",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    ...widget.items.map((item) {
+                      final itemName = item.name;
+                      final itemOwned = item.isOwned;
+                      return Container(
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 2,
+                          horizontal: 4,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withAlpha((0.05 * 255).toInt()),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            // Handle Tap
+                            item.isOwned = !item.isOwned;
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                itemName,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                itemOwned ? "owned" : "not owned",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: itemOwned ? Colors.green : Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ],
                 ),
               );
