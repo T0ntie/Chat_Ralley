@@ -106,6 +106,7 @@ class GameScreenState extends State<GameScreen>
 
     // _checkIfInitializationCompleted();
     log.i('✅ Alle Spieldaten erfolgreich geladen');
+    if (!mounted) return;
     SnackBarService.showSuccessSnackBar(context, "✔️ Alle Spieldaten geladen");
   }
 
@@ -500,7 +501,7 @@ class GameScreenState extends State<GameScreen>
 
     Map<String, dynamic> meta = gameState['meta'];
     final DateTime savedTime = DateTime.parse(meta['saveTime']);
-
+    if (!mounted) return;
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -540,7 +541,7 @@ class GameScreenState extends State<GameScreen>
   void saveGame() async {
     final Map<String, dynamic> saveData;
     try {
-      saveData = await GameEngine().saveGameState();
+      saveData = GameEngine().saveGameState();
     } catch (e, stackTrace) {
       log.e("❌ Failed to create save state.", error: e, stackTrace: stackTrace);
       assert(false, "❌ Failed to create save state.");

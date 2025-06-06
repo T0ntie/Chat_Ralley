@@ -3,7 +3,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:storytrail/app_resources.dart';
 import 'package:storytrail/engine/game_engine.dart';
-import 'package:storytrail/engine/moving_controller.dart';
 import 'package:storytrail/engine/npc.dart';
 import 'package:storytrail/gui/npc_info_dialog.dart';
 import 'package:latlong2/latlong.dart';
@@ -42,7 +41,8 @@ class GameMapWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final pulse = _getPulseState(GameEngine.conversationDistance);
 
-    LatLng targetPosition = GameEngine().playerMovementController.targetPosition;
+    LatLng targetPosition =
+        GameEngine().playerMovementController.targetPosition;
 
     return FlutterMap(
       mapController: mapController,
@@ -52,7 +52,8 @@ class GameMapWidget extends StatelessWidget {
 
         onTap: (tapPosition, point) {
           log.d('Tapped on location: ${point.latitude}, ${point.longitude}');
-          if (isSimulatingLocation) { //fixme hier hats was, simuliert und hat dennoch GPS
+          if (isSimulatingLocation) {
+            //fixme hier hats was, simuliert und hat dennoch GPS
             GameEngine().playerMovementController.moveTo(point);
           }
         },
@@ -79,10 +80,10 @@ class GameMapWidget extends StatelessWidget {
                       radius: hotspot.radius,
                       useRadiusInMeter: true,
                       color: ResourceColors.hotspotCircle.withAlpha(
-                        (0.1 * 255).toInt(),
+                        (0.1 * 255).round(),
                       ),
                       borderColor: ResourceColors.hotspotCircle.withAlpha(
-                        (0.5 * 255).toInt(),
+                        (0.5 * 255).round(),
                       ),
                       borderStrokeWidth: 2,
                     ),
@@ -96,15 +97,15 @@ class GameMapWidget extends StatelessWidget {
                   pulse.maxReached
                       ? Colors.transparent
                       : ResourceColors.playerPositionCircle.withAlpha(
-                        (pulse.colorFade * 0.5 * 255).toInt(),
+                        (pulse.colorFade * 0.5 * 255).round(),
                       ),
               borderColor:
                   pulse.maxReached
                       ? ResourceColors.playerPositionFadeoutCircle.withAlpha(
-                        ((pulse.colorFade + 0.2) * 255).toInt(),
+                        ((pulse.colorFade + 0.2) * 255).round(),
                       )
                       : ResourceColors.playerPositionCircle.withAlpha(
-                        (pulse.colorFade * 0.5 * 255).toInt(),
+                        (pulse.colorFade * 0.5 * 255).round(),
                       ),
               borderStrokeWidth: 2,
             ),
@@ -114,10 +115,10 @@ class GameMapWidget extends StatelessWidget {
                 radius: GameEngine.conversationDistance,
                 useRadiusInMeter: true,
                 color: ResourceColors.playerPositionCircle.withAlpha(
-                  (pulse.colorFade * 0.5 * 255).toInt(),
+                  (pulse.colorFade * 0.5 * 255).round(),
                 ),
                 borderColor: ResourceColors.playerPositionCircle.withAlpha(
-                  (pulse.colorFade * 0.3 * 255).toInt(),
+                  (pulse.colorFade * 0.3 * 255).round(),
                 ),
                 borderStrokeWidth: 2,
               ),
@@ -126,16 +127,15 @@ class GameMapWidget extends StatelessWidget {
 
         MarkerLayer(
           markers: [
-            if (targetPosition != null)
-              Marker(
-                point: (targetPosition),
-                width: 40,
-                height: 40,
-                child: Transform.rotate(
-                  angle: currentHeading * (pi / 180),
-                  child: Icon(Icons.navigation, color: Colors.grey, size: 24),
-                ),
+            Marker(
+              point: (targetPosition),
+              width: 40,
+              height: 40,
+              child: Transform.rotate(
+                angle: currentHeading * (pi / 180),
+                child: Icon(Icons.navigation, color: Colors.grey, size: 24),
               ),
+            ),
             Marker(
               point: location,
               width: 40,
@@ -143,13 +143,13 @@ class GameMapWidget extends StatelessWidget {
               child: Transform.rotate(
                 angle: currentHeading * (pi / 180),
                 child:
-                GameEngine().isGPSSimulating
-                    ? Icon(
-                  Icons.my_location,
-                  color: Color(0xFF6A0DAD),
-                  size: 40,
-                )
-                    : AppIcons.playerPosition,
+                    GameEngine().isGPSSimulating
+                        ? Icon(
+                          Icons.my_location,
+                          color: Color(0xFF6A0DAD),
+                          size: 40,
+                        )
+                        : AppIcons.playerPosition,
               ),
             ),
 
@@ -165,7 +165,7 @@ class GameMapWidget extends StatelessWidget {
 
   Marker _buildLastSavePositionMarker(BuildContext context) {
     String? saveDate;
-    if (GameEngine().lastSaveTime != null){
+    if (GameEngine().lastSaveTime != null) {
       final lastSave = GameEngine().lastSaveTime!;
       final day = lastSave.day.toString().padLeft(2, '0');
       final month = lastSave.month.toString().padLeft(2, '0');
@@ -173,23 +173,22 @@ class GameMapWidget extends StatelessWidget {
       final minute = lastSave.minute.toString().padLeft(2, '0');
       saveDate = '$day.$month.${lastSave.year} – $hour:$minute';
     }
-    return
-      Marker(
-        point: GameEngine().lastSaveLocation!,
-        width: 150,
-        height: 60,
-        child: Transform.rotate(
-          angle: _getRotationAngle(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SvgPicture.asset(
-                "assets/icons/save-pin.svg",
-                width: 30,
-                height: 30,
-              ),
-              const SizedBox(height: 4),
-              if (saveDate != null)
+    return Marker(
+      point: GameEngine().lastSaveLocation!,
+      width: 150,
+      height: 60,
+      child: Transform.rotate(
+        angle: _getRotationAngle(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              "assets/icons/save-pin.svg",
+              width: 30,
+              height: 30,
+            ),
+            const SizedBox(height: 4),
+            if (saveDate != null)
               Text(
                 saveDate,
                 textAlign: TextAlign.center,
@@ -199,10 +198,10 @@ class GameMapWidget extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
-          ),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   List<Marker> _buildHotspotMarkers(BuildContext context) {

@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/actions/npc_action.dart';
-import '../lib/engine/story_line.dart';
+import 'package:storytrail/actions/npc_action.dart';
+import 'package:storytrail/engine/story_line.dart';
+import 'package:storytrail/services/log_service.dart';
 
 final RegExp signalTagPattern = RegExp(
   r'<npc-signal>\s*\{\s*"signal"\s*:\s*"([^"]+)"[\s\S]*?\}\s*</npc-signal>',
@@ -36,7 +37,7 @@ void main() {
 
       expect(storyline.trailId.isNotEmpty, isTrue);
       expect(storyline.title.isNotEmpty, isTrue);
-      print('✅ Storyline geladen: ${storyline.title}');
+      log.d('✅ Storyline geladen: ${storyline.title}');
 
       // Prompt-Dateien
       final promptFiles = [
@@ -75,7 +76,7 @@ void main() {
         'ℹ️ Diese Signale sind im JSON definiert, werden aber in keinem Prompt verwendet:\n$unusedSignals',
       );
 
-      print('✅ Signale überprüft');
+      log.d('✅ Signale überprüft');
 
     } catch (e, stack) {
       fail('❌ Fehler beim Laden der echten Storyline-Datei:\n$e\n$stack');

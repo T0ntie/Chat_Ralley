@@ -28,12 +28,12 @@ class MessageBubble extends StatelessWidget {
                 colors:
                     fromUser
                         ? [
-                          Colors.blueGrey.shade700.withAlpha((0.6*255).toInt()),
-                          Colors.blueGrey.shade800.withAlpha((0.8*255).toInt()),
+                      Colors.blueGrey.shade700.withAlpha((0.6 * 255).round()),
+                      Colors.blueGrey.shade800.withAlpha((0.8 * 255).round()),
                         ]
                         : [
-                          Colors.grey.shade700.withAlpha((0.6*255).toInt()),
-                          Colors.grey.shade700.withAlpha((0.8*255).toInt()),
+                          Colors.grey.shade700.withAlpha((0.6 * 255).round()),
+                          Colors.grey.shade700.withAlpha((0.8 * 255).round()),
                         ],
                 //[Colors.grey.shade700, Colors.grey.shade800],
                 begin: Alignment.topLeft,
@@ -199,7 +199,7 @@ class SendingOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned.fill(
       child: Container(
-        color: Theme.of(context).colorScheme.surface.withAlpha((0.6 * 255).toInt()),
+        color: Theme.of(context).colorScheme.surface.withAlpha((0.6 * 255).round()),
         child: const Center(child: CircularProgressIndicator()),
       ),
     );

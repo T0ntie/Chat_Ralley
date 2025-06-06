@@ -96,7 +96,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
         children: [
           //Image.asset('assets/logo/credits.png', fit: BoxFit.cover),
           FirebaseHosting.loadImageWidget(GameEngine().creditsImagePath(), fit: BoxFit.cover),
-          Container(color: Colors.black.withAlpha((0.5 * 255).toInt())),
+          Container(color: Colors.black.withAlpha((0.5 * 255).round())),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: IgnorePointer(

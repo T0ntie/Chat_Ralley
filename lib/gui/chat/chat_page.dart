@@ -70,6 +70,7 @@ class _ChatPageState extends State<ChatPage> {
     try {
       await _conversation.handleTriggerMessage();
     }catch (e, stackTrace) {
+      if (!mounted) return;
       SnackBarService.showErrorSnackBar(
         context,
         '❌ Kommunikation fehlgeschlagen.',

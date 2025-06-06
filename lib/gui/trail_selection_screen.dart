@@ -88,7 +88,7 @@ class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
             ),
           ),
         ),
-        Container(color: Colors.black.withAlpha((0.3 * 255).toInt())),
+        Container(color: Colors.black.withAlpha((0.3 * 255).round())),
         Center(
           child: SingleChildScrollView(
             child: Material(
@@ -127,7 +127,7 @@ class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
                       // Textfarbe der Auswahl
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Colors.black.withOpacity(0.5),
+                        fillColor: Colors.black.withAlpha((0.5 * 255).round()),
                         // Dropdown-Feld-Hintergrund
                         labelText: 'Verfügbare Trails',
                         labelStyle: TextStyle(

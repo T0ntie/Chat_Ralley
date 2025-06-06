@@ -151,7 +151,7 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                                   decoration: BoxDecoration(
                                     color: Colors.white.withAlpha(
                                       (0.08 + (index.isEven ? 0.0 : 0.05) * 255)
-                                          .toInt(),
+                                          .round(),
                                     ),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -160,7 +160,7 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     title: Text(
-                                      "${trigger}${action.trigger.value != null ? ' (${action.trigger.value})' : ''}",
+                                      "$trigger${action.trigger.value != null ? ' (${action.trigger.value})' : ''}",
                                       style: const TextStyle(
                                         color: Colors.white,
                                       ),
@@ -208,7 +208,7 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                           horizontal: 12,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withAlpha((0.05 * 255).toInt()),
+                          color: Colors.white.withAlpha((0.05 * 255).round()),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: GestureDetector(
@@ -263,7 +263,7 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                           horizontal: 12,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withAlpha((0.05 * 255).toInt()),
+                          color: Colors.white.withAlpha((0.05 * 255).round()),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: GestureDetector(
@@ -293,7 +293,7 @@ class _ActionTestingPanelState extends State<ActionTestingPanel> {
                           ),
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               );

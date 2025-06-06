@@ -9,7 +9,6 @@ class LogService {
     //printer:SimplePrinter(colors: true),
     printer: PrettyPrinter(
     printEmojis: true,        // Emojis behalten für visuelle Orientierung
-    printTime: false,         // Kein Zeitstempel, wenn nicht gebraucht
     methodCount: 0,           // Keine Methoden bei normalen Logs
     errorMethodCount: 5,      // Stacktrace nur bei Fehlern
     lineLength: 120,          // Längere Zeilen, um Zeilenumbrüche zu vermeiden
@@ -33,7 +32,8 @@ class LogService {
   }
 }
 
-//alias
+// alias
+// ignore: camel_case_types
 typedef log = LogService;
 
 

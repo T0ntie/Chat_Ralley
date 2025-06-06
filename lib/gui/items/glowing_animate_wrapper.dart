@@ -39,8 +39,8 @@ class _GlowingAnimatedWrapperState extends State<GlowingAnimatedWrapper>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _glowAnimation = ColorTween(
-      begin: widget.glowColor.withOpacity(0.1),
-      end: widget.glowColor.withOpacity(0.8),
+      begin: widget.glowColor.withAlpha((0.1 * 255).round()),
+      end: widget.glowColor.withAlpha((0.8 * 255).round()),
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

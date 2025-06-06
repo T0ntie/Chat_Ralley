@@ -2,10 +2,10 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:storytrail/engine/game_element.dart';
+import 'package:storytrail/engine/movement_controller.dart';
 import 'package:storytrail/engine/trail.dart';
 import 'package:storytrail/services/firebase_serice.dart';
 import 'package:storytrail/engine/item.dart';
-import 'package:storytrail/engine/moving_controller.dart';
 import 'package:storytrail/gui/notification_services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:storytrail/services/log_service.dart';
@@ -437,7 +437,7 @@ class GameEngine {
   }
 
   void registerMessage(Npc npc, int count) async {
-    log.d('💬 Die ${count}. Nachricht für NPC ${npc.name} erkannt.');
+    log.d('💬 Die $count. Nachricht für NPC ${npc.name} erkannt.');
 
     final actionsEntries = _messageCountSubscriptions[npc];
     if (actionsEntries == null) return;

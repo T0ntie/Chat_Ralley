@@ -86,7 +86,6 @@ class ContinueGameDialog extends StatelessWidget {
                           Navigator.of(context).pop();
                           onLoadGame();
                         },
-                        child: const Text('Spiel fortsetzen'),
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.white70,
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -94,6 +93,7 @@ class ContinueGameDialog extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
+                        child: const Text('Spiel fortsetzen'),
                       ),
                     ),
                     //const SizedBox(width: 12),
@@ -103,7 +103,6 @@ class ContinueGameDialog extends StatelessWidget {
                           Navigator.of(context).pop();
                           onNewGame();
                         },
-                        child: const Text('Neu beginnen'),
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.white70,
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -111,6 +110,7 @@ class ContinueGameDialog extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
+                        child: const Text('Neu beginnen'),
                       ),
                     ),
                   ],

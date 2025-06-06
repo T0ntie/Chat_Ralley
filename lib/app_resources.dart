@@ -44,7 +44,7 @@ class ResourceColors {
 
   //newIconGlow
   static Color glow = Color(0xFFFFB300);
-  static Color newItemBackground(BuildContext context) =>Theme.of(context).colorScheme.secondaryContainer.withAlpha((0.4 * 255).toInt());
+  static Color newItemBackground(BuildContext context) =>Theme.of(context).colorScheme.secondaryContainer.withAlpha((0.4 * 255).round());
 }
 
 class ResourceSizes {

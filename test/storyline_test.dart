@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
+// ignore_for_file: avoid_print
+
 void main() {
   test('JSON-Datei ist inhaltlich konsistent', () async {
     final raw = await File('public/tibia/storyline.json').readAsString();

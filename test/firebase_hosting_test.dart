@@ -2,7 +2,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Für JSON-Decoding und UTF-8
-
+// ignore_for_file: avoid_print
 // Basis-URL deines Firebase Hostings, wie in deinem FirebaseHosting Klasse
 const String firebaseHostingBaseUrl = 'https://storytrail-e3bf7.web.app/';
 
