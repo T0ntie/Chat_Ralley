@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:storytrail/engine/moving_controller.dart';
+import 'package:storytrail/engine/movement_controller.dart';
 import 'package:latlong2/latlong.dart';
 
 void main() {
@@ -371,7 +371,39 @@ void main() {
       expect(pos.latitude, lessThan(wp3.latitude)); // nicht ganz angekommen
     });
 
+    test('boosts when too far behind in following mode', () {
+      final npcStart = LatLng(51.5000, -0.1278); // ~800m südlich vom Spieler
+      final playerPos = LatLng(51.5074, -0.1278); // Spieler in London
+
+      movementController = NPCMovementController(
+        currentBasePosition: npcStart,
+        toPosition: playerPos,
+        speedInKmh: 3.6, // 1 m/s
+        onEnterRange: () {},
+        onExitRange: () {},
+        getPlayerPosition: () => playerPos,
+      );
+
+      movementController.startFollowing();
+
+      // Starte Bewegung vor 1 Sekunde, um einen echten Bewegungsschritt zu ermöglichen
+      movementController.movementStartTime = DateTime.now().subtract(Duration(seconds: 1));
+
+      final dist = Distance().as(LengthUnit.Meter, npcStart, playerPos);
+      final normalSpeed = movementController.speedInms;
+      final boostedSpeed = movementController.adjustedSpeedInms;
+
+      expect(dist / normalSpeed, greaterThan(10.0)); // Normale Zeit zum Aufholen > 10s
+      expect(boostedSpeed, closeTo(dist / 5.0, 0.01)); // Boost-Ziel: in 5s
+
+      final updatedPos = movementController.updatePosition();
+
+      // Erwartung: NPC hat sich merklich in Richtung Spieler bewegt
+      expect(updatedPos.latitude, greaterThan(npcStart.latitude));
+      expect(boostedSpeed, greaterThan(normalSpeed));
+    });
   });
+
 
 
 }

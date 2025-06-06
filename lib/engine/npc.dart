@@ -1,7 +1,7 @@
 import 'package:storytrail/actions/npc_action.dart';
 import 'package:storytrail/engine/game_element.dart';
 import 'package:storytrail/engine/game_engine.dart';
-import 'package:storytrail/engine/moving_controller.dart';
+import 'package:storytrail/engine/movement_controller.dart';
 import 'package:storytrail/engine/prompt.dart';
 import 'package:storytrail/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';

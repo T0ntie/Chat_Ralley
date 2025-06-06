@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:math';
-import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:storytrail/engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:storytrail/services/log_service.dart';
@@ -98,7 +98,7 @@ class NPCMovementController implements MovementController {
   double _getDistanceToTravelSince(DateTime startTime) {
     final now = DateTime.now();
     final timeDiffSeconds = now.difference(startTime).inMilliseconds / 1000.0;
-    return speedInms * timeDiffSeconds;
+    return adjustedSpeedInms * timeDiffSeconds;
   }
 
   @override
@@ -121,6 +121,38 @@ class NPCMovementController implements MovementController {
       isMoving = true;
     }
   }
+
+
+  static const double boostActivationThresholdSec = 10.0; // Boost aktivieren, wenn länger als 10s
+  static const double boostDeactivationThresholdSec = 3.0; // Boost deaktivieren, wenn weniger als 3s
+  static const double desiredBoostDurationSec = 5.0; // Ziel: in 5s aufholen
+
+  /// Berechnet die aktuelle Geschwindigkeit des NPCs in m/s,
+  /// basierend auf dem Abstand zum Spieler und dem gewünschten Verhalten.
+  /// Boost wird aktiviert, wenn der NPC >10s brauchen würde,
+  /// und deaktiviert, wenn er wieder <3s brauchen würde.
+  @visibleForTesting
+  double get adjustedSpeedInms {
+    if (!isFollowing) return speedInms;
+
+    final dist = currentDistance;
+    final timeNeeded = dist / speedInms;
+
+    // Boost aktivieren
+    if (timeNeeded > boostActivationThresholdSec) {
+      final boosted = dist / desiredBoostDurationSec;
+      return boosted;
+    }
+
+    // Boost deaktivieren
+    if (timeNeeded < boostDeactivationThresholdSec) {
+      return speedInms;
+    }
+
+    // Normale Geschwindigkeit beibehalten
+    return speedInms;
+  }
+
 
   @override
   LatLng updatePosition() {
@@ -410,6 +442,7 @@ class GpsMovementController implements MovementController {
   bool _isMoving = false;
   LatLng _currentInterpolatedPosition;
 
+  @override
   LatLng get targetPosition => (_nextGpsPosition == null) ? _lastGpsPosition : _nextGpsPosition!;
 
   GpsMovementController(LatLng initialPosition)
