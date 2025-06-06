@@ -9,7 +9,9 @@ class StoryJournal with HasGameState {
 
   factory StoryJournal() => _instance;
 
-  StoryJournal._internal();
+  StoryJournal._internal() {
+    registerSelf();
+  }
 
   final List<(DateTime, String)> _entries = [];
 
