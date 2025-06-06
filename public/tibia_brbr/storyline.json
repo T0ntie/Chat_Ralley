@@ -458,7 +458,9 @@
           "onSignal": "tschulliFollows",
           "invokeAction": "follow",
           "notification": "Martha folgt dir jetzt.",
-          "defer": true
+          "defer": true,
+          "conditions": {
+            "flag:tschullifollowed": false}
         },
         {
           "onHotspot": "spot_kroll",
@@ -466,7 +468,15 @@
           "position": "TschulliBeiKrollPosition",
           "defer": true,
           "conditions": {
-            "flag:tschulliFollows": true
+            "flag:tschullifollowed": true
+          }
+        },
+        {
+          "onHotspot": "spot_kroll",
+          "invokeAction": "behave",
+          "promptTag": "kroll",
+          "conditions": {
+            "flag:tschullifollowed": true
           }
         }
       ]
