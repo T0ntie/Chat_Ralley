@@ -62,13 +62,6 @@ class InfoDialog extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: FirebaseHosting.loadImageWidget(imageUriPath, fit: BoxFit.cover),
-/*
-                  child: Image.asset(
-                    imageAssetPath,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, color: Colors.white70),
-                  ),
-*/
                 ),
               ),
             ),

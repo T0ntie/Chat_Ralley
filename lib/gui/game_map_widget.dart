@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:storytrail/app_resources.dart';
 import 'package:storytrail/engine/game_engine.dart';
 import 'package:storytrail/engine/npc.dart';
-import 'package:storytrail/gui/npc_info_dialog.dart';
+import 'package:storytrail/gui/info_dialog.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:storytrail/services/log_service.dart';
 
@@ -226,7 +226,7 @@ class GameMapWidget extends StatelessWidget {
                           title: hotspot.name,
                           imageUriPath: GameEngine().hotspotImagePath(hotspot),
                           distanceText:
-                              "Entfernung: ${hotspot.currentDistance} Meter",
+                              "Entfernung: ${hotspot.currentDistance.round()} Meter",
                           noteText: null,
                           onPrimaryAction: null,
                         ),
@@ -284,7 +284,7 @@ class GameMapWidget extends StatelessWidget {
                           //imageAssetPath: "assets/story/${npc.displayImageAsset}",
                           imageUriPath: GameEngine().npcImagePath(npc),
                           distanceText:
-                              "Entfernung: ${npc.currentDistance} Meter",
+                              "Entfernung: ${npc.currentDistance.round()} Meter",
                           noteText:
                               !(npc.isInCommunicationDistance)
                                   ? "Komm näher, um mit ${npc.displayName} zu kommunizieren."
