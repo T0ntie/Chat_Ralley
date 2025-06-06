@@ -270,21 +270,6 @@
       "speed": 15,
       "actions": [
         {
-          "onSignal": "bozziLead",
-          "invokeAction": "leadAlong",
-          "path": "BonePath",
-          "notification": "Der Hund möchte dir etwas zeigen!",
-          "conditions": {
-            "item:item_carrot": true
-          },
-          "defer": true
-        },
-        {
-          "onSignal": "bozziLead",
-          "invokeAction": "saveGame",
-          "defer": true
-        },
-        {
           "onSignal": "callBozzi",
           "invokeAction": "spawn",
           "notification": "Ein Hund erscheint"
@@ -332,27 +317,55 @@
         {
           "onSignal": "tailWag",
           "invokeAction": "notify",
-          "notification": "Der Hund wedelt mit dem Schwanz"
+          "notification": "Der Hund wedelt mit dem Schwanz."
         },
         {
           "onSignal": "tailTuck",
           "invokeAction": "notify",
-          "notification": "Der Hund zieht den Schwanz ein"
+          "notification": "Der Hund zieht den Schwanz ein."
         },
         {
           "onSignal": "growl",
           "invokeAction": "notify",
-          "notification": "Der Hund knurrt dich an"
+          "notification": "Der Hund knurrt dich an."
         },
         {
           "onSignal": "headTilt",
           "invokeAction": "notify",
-          "notification": "Der Hund hält den Kopf schief"
+          "notification": "Der Hund hält den Kopf schief."
         },
         {
           "onSignal": "turnaway",
           "invokeAction": "notify",
-          "notification": "Der Hund dreht sich weg"
+          "notification": "Der Hund dreht sich weg."
+        },
+        {
+          "onSignal": "nudge",
+          "invokeAction": "notify",
+          "notification": "Der Hund stupst dich aufmunternd an."
+        },
+        {
+          "onSignal": "bozziLead",
+          "invokeAction": "leadAlong",
+          "path": "BonePath",
+          "notification": "Der Hund läuft voraus, Folge ihm!",
+          "conditions": {
+            "item:item_carrot": true
+          },
+          "defer": true
+        },
+        {
+          "onSignal": "bozziLead",
+          "invokeAction": "saveGame",
+          "defer": true
+        },
+        {
+          "onSignal": "bozziLead",
+          "invokeAction": "stopTalking",
+          "notification": "Der Hund möchte dir etwas zeigen!",
+          "conditions": {
+            "item:item_carrot": true
+          }
         },
         {
           "onHotspot": "spot_hide",
@@ -615,6 +628,7 @@
     "unfriendlyToBozzi": false,
     "knowsKrollsAddress": false,
     "knatterbachAtPolice": false,
+    "tschulliFollows": false,
     "quizPassed" : false
   }
 }
