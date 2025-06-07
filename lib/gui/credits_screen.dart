@@ -15,70 +15,118 @@ class CreditsScreen extends StatefulWidget {
 }
 
 class _CreditsScreenState extends State<CreditsScreen> {
-  final ScrollController _scrollController = ScrollController();
-  final double pixelsPerSecond = 50;
 
-  String _creditsText ="Game Over";
+  String _creditsBase = 'Game Over.';
+  String _creditsStory = '';
+  bool _gptDone = false;
+  bool _showLoader = false;
+
+  final ScrollController _scrollController = ScrollController();
+  final double pixelsPerSecond = 30;
+
+
 
   @override
   void initState() {
     super.initState();
-    //WidgetsBinding.instance.addPostFrameCallback((_) => _startScrolling());
-    _loadStoryAndStartScrolling();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadBaseCredits(); // async Funktion
+    });
   }
 
-  Future<void> _loadStoryAndStartScrolling() async {
+  Future<void> _loadBaseCredits() async {
     log.d("🟡 Lade-Credits gestartet");
 
-    String credits = "";
     try {
-      credits = await FirebaseHosting.loadStringFromUrl(GameEngine().creditsTextPath());
+      _creditsBase = await FirebaseHosting.loadStringFromUrl(GameEngine().creditsTextPath());
       log.d("✅ Credits-Text geladen");
+
     } catch (e) {
       widget.onFatalError?.call("Failed to load credits from ${GameEngine().creditsTextPath()}: $e");
+      return;
     }
+
+    setState(() {});
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToUpperThird());
+
+    // GPT laden nebenbei starten
+    _loadGptStory();
+  }
+
+  bool _firstScrollDone = false;
+
+
+  Future<void> _loadGptStory() async {
+    setState(() {
+      _showLoader = true;
+    });
 
     try {
+      log.d("🟡 Lasse die Story von GPT generieren");
       final story = await GptUtilities.buildCreditsStory(StoryJournal().toStory());
-      credits = '$credits\n$story';
-      log.d("✅ Story generiert");
+      log.d("✅ Story von GPT generiert");
+      _creditsStory = story;
+      _gptDone = true;
     } catch (e) {
-      widget.onFatalError?.call("Failed to build credits story: $e");
+      widget.onFatalError?.call("Failed to build credits story by GPT: $e");
+      return;
     }
 
-    if (!mounted) return;
     setState(() {
-      _creditsText = credits;
+      _showLoader = false;
     });
 
-    //WidgetsBinding.instance.addPostFrameCallback((_) => _startScrolling());
+    if (_firstScrollDone) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollGptOnly());
+    }
+  }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startScrolling();
+
+
+  void _scrollToUpperThird() {
+    if (!_scrollController.hasClients) return;
+
+    final screenHeight = MediaQuery.of(context).size.height;
+    final stopAt = screenHeight * (2 / 3); // credits.txt erscheint im oberen Drittel
+
+    _scrollController
+        .animateTo(
+      stopAt,
+      duration: Duration(
+        milliseconds: (stopAt / pixelsPerSecond * 1000).round(),
+      ),
+      curve: Curves.linear,
+    )
+        .then((_) {
+      setState(() {
+        _firstScrollDone = true;
+        if (!_gptDone) {
+          _showLoader = true;
+        }
+      });
+
+      if (_gptDone) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => _scrollGptOnly());
+      }
     });
   }
 
-  void _startScrolling() {
-    if (!mounted) return;
-    final scrollableHeight = _scrollController.position.maxScrollExtent;
-    //final screenHeight = MediaQuery.of(context).size.height;
+  void _scrollStoryToTop() {
+    if (!_scrollController.hasClients) return;
 
-    // ⏱️ Rechne zusätzliche Scrollhöhe für "ganz raus scrollen"
-    final pixelsToScroll = scrollableHeight;
+    final totalHeight = _scrollController.position.maxScrollExtent;
     final duration = Duration(
-      milliseconds: (pixelsToScroll / pixelsPerSecond * 1000).round(),
+      milliseconds: (totalHeight / pixelsPerSecond * 1000).round(),
     );
 
-    if (_scrollController.hasClients) {
-      _scrollController
-          .animateTo(scrollableHeight, duration: duration, curve: Curves.linear)
-          .then((_) {
-            if (mounted) {
-              Navigator.of(context).pop();
-            }
-          });
-    }
+    _scrollController
+        .animateTo(totalHeight,
+        duration: duration,
+        curve: Curves.linear)
+        .then((_) => Navigator.of(context).pop());
   }
+
 
   @override
   void dispose() {
@@ -94,7 +142,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          //Image.asset('assets/logo/credits.png', fit: BoxFit.cover),
           FirebaseHosting.loadImageWidget(GameEngine().creditsImagePath(), fit: BoxFit.cover),
           Container(color: Colors.black.withAlpha((0.5 * 255).round())),
           Padding(
@@ -106,7 +153,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
                   children: [
                     SizedBox(height: screenHeight),
                     Text(
-                      _creditsText,
+                      _creditsBase,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -116,7 +163,26 @@ class _CreditsScreenState extends State<CreditsScreen> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: screenHeight),
+                    if (_showLoader) ...[
+                      const SizedBox(height: 40),
+                      const CircularProgressIndicator(color: Colors.white),
+                      const SizedBox(height: 200),
+                    ],
+                    if (_gptDone) ...[
+                      SizedBox(height: 40),
+                      Text(
+                        _creditsStory,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          height: 1.8,
+                          fontFamily: 'Times New Roman',
+                          decoration: TextDecoration.none,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: screenHeight),
+                    ],
                   ],
                 ),
               ),
@@ -125,16 +191,48 @@ class _CreditsScreenState extends State<CreditsScreen> {
           Positioned(
             top: 40,
             right: 20,
-            child: TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                "Überspringen",
-                style: TextStyle(color: Colors.white),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Überspringen"),
             ),
-          ),
-        ],
+          ),        ],
       ),
     );
+  }
+
+  void _scrollGptOnly() {
+    if (!_scrollController.hasClients) return;
+
+    final currentOffset = _scrollController.offset;
+    final fullExtent = _scrollController.position.maxScrollExtent;
+
+    final remainingScroll = fullExtent - currentOffset;
+
+    if (remainingScroll <= 0) {
+      Navigator.of(context).pop(); // schon ganz unten
+      return;
+    }
+
+    final duration = Duration(
+      milliseconds: (remainingScroll / pixelsPerSecond * 1000).round(),
+    );
+
+    _scrollController
+        .animateTo(
+      fullExtent,
+      duration: duration,
+      curve: Curves.linear,
+    )
+        .then((_) {
+      if (mounted) Navigator.of(context).pop();
+    });
   }
 }
