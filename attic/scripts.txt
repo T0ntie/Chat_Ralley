@@ -26,3 +26,40 @@ Version: 1
 Enter this debug secret into the allow list in the Firebase Console for your project: c5c94203-da3f-42d4-9068-f960bb4aa22e
 
 C:\Users\gerno\AppData\Local\Android\Sdk\platform-tools\adb.exe logcat -d > logcat.txt
+
+
+ C:\Dev\Android\AndroidStudio\jbr\bin\keytool.exe -genkey -v -keystore ~/my-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias my-key-alias
+
+ Kna2terb8-t
+
+
+
+ C:\Dev\Android\AndroidStudio\jbr\bin\keytool.exe -list -v -keystore C:\Users\gerno\StudioProjects\storytrail\storytrail-release-key.jks -alias my-key-alias
+
+ Aliasname: my-key-alias
+ Erstellungsdatum: 07.06.2025
+ Eintragstyp: PrivateKeyEntry
+ Zertifikatskettenlänge: 1
+ Zertifikat[1]:
+ Eigentümer: CN=Gernot Koller, OU=StoryTrail, O=StoryTrail, L=Moedling, ST=NOE, C=AT
+ Aussteller: CN=Gernot Koller, OU=StoryTrail, O=StoryTrail, L=Moedling, ST=NOE, C=AT
+ Seriennummer: a31e4c03dfc4708a
+ Gültig von: Sat Jun 07 21:48:29 CEST 2025 bis: Wed Oct 23 21:48:29 CEST 2052
+ Zertifikatsfingerprints:
+          SHA1: CF:09:8A:88:29:75:8D:E5:00:9C:07:54:10:77:DC:98:17:F9:53:4E
+          SHA256: D7:FC:31:42:60:45:EB:9B:79:44:5C:2B:CE:3A:DA:80:AD:29:66:8B:86:A4:FD:F7:C1:EB:F4:40:5F:A4:EB:28
+ Signaturalgorithmusname: SHA384withRSA
+ Public-Key-Algorithmus von Subject: 2048-Bit-RSA-Schlüssel
+ Version: 3
+
+ Erweiterungen:
+
+ #1: ObjectId: 2.5.29.14 Criticality=false
+ SubjectKeyIdentifier [
+ KeyIdentifier [
+ 0000: 40 09 1C 60 4A 2C 02 8C   EA 1D 93 02 11 C6 CC D6  @..`J,..........
+ 0010: 04 83 7D A0                                        ....
+ ]
+ ]
+
+
