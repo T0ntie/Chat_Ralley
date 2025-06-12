@@ -27,7 +27,7 @@ class AddToInventoryAction extends NpcAction {
     log.i('🎬 NPC "${npc.name}" hat ein neues Item: "$itemId" bekommen.');
     item.isOwned = true;
     item.isNew = true;
-    super.jlog("🎬 ${npc.name} hat dem Spieler folgenden Gegenstand gegeben: ${item.name}");
+    super.jlog("${npc.name} hat dem Spieler folgenden Gegenstand gegeben: ${item.name}");
     dispatchUIIntent(NewItemIntent());
     return item.isOwned;
   }
