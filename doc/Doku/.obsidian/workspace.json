@@ -1,0 +1,212 @@
+{
+  "main": {
+    "id": "82a0000605344d8d",
+    "type": "split",
+    "children": [
+      {
+        "id": "e331901817bf9b4f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ab6397f854042e3d",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          },
+          {
+            "id": "6742da959aa047c5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Firebase Projekt aufsetzen.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Firebase Projekt aufsetzen"
+            }
+          },
+          {
+            "id": "1989ffaa59c7e50f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Authentication einrichten.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Authentication einrichten"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "c70dcf2e84112871",
+    "type": "split",
+    "children": [
+      {
+        "id": "f717db648eafe021",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2e88b0393c8874d0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "96d585022741ef76",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "b570b607303a35ed",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "1d0d2ca80c2c8f40",
+    "type": "split",
+    "children": [
+      {
+        "id": "f9573c85fb931f96",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e6abd89d92a78a65",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Authentication einrichten.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Authentication einrichten"
+            }
+          },
+          {
+            "id": "93a788eb87a8ca43",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Authentication einrichten.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Authentication einrichten"
+            }
+          },
+          {
+            "id": "de7459b5f496e39c",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "050fa812ae0609fa",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Authentication einrichten.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Authentication einrichten"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "1989ffaa59c7e50f",
+  "lastOpenFiles": [
+    "Pasted image 20250613222931.png",
+    "Firebase Projekt aufsetzen.md",
+    "Authentication einrichten.md",
+    "Pasted image 20250613222804.png",
+    "Pasted image 20250613222609.png",
+    "Welcome.md",
+    "Pasted image 20250613222259.png",
+    "Pasted image 20250613222201.png",
+    "Pasted image 20250613221634.png",
+    "Pasted image 20250613220821.png",
+    "Pasted image 20250613215716.png",
+    "Pasted image 20250613215603.png",
+    "Pasted image 20250613214445.png"
+  ]
+}
