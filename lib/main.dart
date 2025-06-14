@@ -16,6 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/foundation.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,10 @@ void main() async {
   debugPrint = (String? message, {int? wrapWidth}) {};
 
   try {
-    await Firebase.initializeApp();
+    //await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     log.i("✅ Firebase erfolgreich initialisiert");
   } catch (e, stackTrace) {
     log.e("❌ Failed to initialize Firebase", error: e, stackTrace: stackTrace);
