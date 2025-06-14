@@ -1,4 +1,4 @@
-package com.storytrail.app
+package com.aitrailsgo.app
 
 import io.flutter.embedding.android.FlutterActivity
 
