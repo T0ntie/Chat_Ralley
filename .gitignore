@@ -13,6 +13,7 @@ key/.env
 .swiftpm/
 migrate_working_dir/
 .firebase/hosting*.cache
+node_modules/
 
 # IntelliJ related
 *.iml
