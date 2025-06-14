@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "storytrail-e3bf7"
-  }
+    "default": "aitrailsgo",
+    "prod": "aitrailsgo"
+  },
+  "targets": {},
+  "etags": {}
 }

@@ -44,9 +44,37 @@
               "icon": "lucide-file",
               "title": "Authentication einrichten"
             }
+          },
+          {
+            "id": "945d26bf5a58cf84",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Firebase Hosting einrichten.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Firebase Hosting einrichten"
+            }
+          },
+          {
+            "id": "b3def8a604cf28c8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Firebase Functions einrichten.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Firebase Functions einrichten"
+            }
           }
         ],
-        "currentTab": 2
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -119,7 +147,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Authentication einrichten.md",
+                "file": "Firebase Functions einrichten.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -129,7 +157,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Authentication einrichten"
+              "title": "Backlinks for Firebase Functions einrichten"
             }
           },
           {
@@ -138,12 +166,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Authentication einrichten.md",
+                "file": "Firebase Functions einrichten.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Authentication einrichten"
+              "title": "Outgoing links from Firebase Functions einrichten"
             }
           },
           {
@@ -167,13 +195,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Authentication einrichten.md",
+                "file": "Firebase Functions einrichten.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Authentication einrichten"
+              "title": "Outline of Firebase Functions einrichten"
             }
           }
         ]
@@ -193,20 +221,22 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "1989ffaa59c7e50f",
+  "active": "b3def8a604cf28c8",
   "lastOpenFiles": [
+    "Firebase Hosting einrichten.md",
+    "Firebase Functions einrichten.md",
+    "Pasted image 20250613230940.png",
+    "Pasted image 20250613230912.png",
+    "Pasted image 20250613230017.png",
+    "Pasted image 20250613224247.png",
+    "Authentication einrichten.md",
     "Pasted image 20250613222931.png",
     "Firebase Projekt aufsetzen.md",
-    "Authentication einrichten.md",
     "Pasted image 20250613222804.png",
     "Pasted image 20250613222609.png",
     "Welcome.md",
     "Pasted image 20250613222259.png",
     "Pasted image 20250613222201.png",
-    "Pasted image 20250613221634.png",
-    "Pasted image 20250613220821.png",
-    "Pasted image 20250613215716.png",
-    "Pasted image 20250613215603.png",
-    "Pasted image 20250613214445.png"
+    "Pasted image 20250613221634.png"
   ]
 }
