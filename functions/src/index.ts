@@ -1,20 +1,22 @@
 import * as admin from "firebase-admin";
 admin.initializeApp();
 import { onRequest } from "firebase-functions/v2/https";
+
 export const callGPT = onRequest({ region: "us-central1" }, async (req, res) => {
   const apiKey = process.env.OPENAI_API_KEY;
-
   const appCheckToken = req.header("X-Firebase-AppCheck");
 
   if (!appCheckToken) {
-    return res.status(403).json({ error: "Missing App Check token" });
+    res.status(403).json({ error: "Missing App Check token" });
+    return;
   }
 
   try {
     await admin.appCheck().verifyToken(appCheckToken);
   } catch (err) {
     console.error("App Check verification failed:", err);
-    return res.status(403).json({ error: "App Check verification failed" });
+    res.status(403).json({ error: "App Check verification failed" });
+    return;
   }
 
   if (!apiKey) {

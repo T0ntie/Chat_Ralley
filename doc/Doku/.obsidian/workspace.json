@@ -72,9 +72,93 @@
               "icon": "lucide-file",
               "title": "Firebase Functions einrichten"
             }
+          },
+          {
+            "id": "e89202f25c043a47",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "NVM Windows installieren.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "NVM Windows installieren"
+            }
+          },
+          {
+            "id": "8b0d5b59894d3ac7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Open AI Key setzen.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Open AI Key setzen"
+            }
+          },
+          {
+            "id": "c25c1443e0672323",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Firebase Storage einrichten.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Firebase Storage einrichten"
+            }
+          },
+          {
+            "id": "5b3e48ff0cd71697",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "AppCheck einrichten.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "AppCheck einrichten"
+            }
+          },
+          {
+            "id": "6d2bd2cea2a932b5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "AppCheck einrichten.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "AppCheck einrichten"
+            }
+          },
+          {
+            "id": "8219167393960af6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Firebase Rules deployen.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Firebase Rules deployen"
+            }
           }
         ],
-        "currentTab": 4
+        "currentTab": 10
       }
     ],
     "direction": "vertical"
@@ -221,22 +305,28 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "b3def8a604cf28c8",
+  "active": "8219167393960af6",
   "lastOpenFiles": [
-    "Firebase Hosting einrichten.md",
-    "Firebase Functions einrichten.md",
-    "Pasted image 20250613230940.png",
-    "Pasted image 20250613230912.png",
-    "Pasted image 20250613230017.png",
-    "Pasted image 20250613224247.png",
-    "Authentication einrichten.md",
-    "Pasted image 20250613222931.png",
     "Firebase Projekt aufsetzen.md",
-    "Pasted image 20250613222804.png",
-    "Pasted image 20250613222609.png",
-    "Welcome.md",
-    "Pasted image 20250613222259.png",
-    "Pasted image 20250613222201.png",
-    "Pasted image 20250613221634.png"
+    "Firebase Rules deployen.md",
+    "AppCheck einrichten.md",
+    "Pasted image 20250614120820.png",
+    "Pasted image 20250614120007.png",
+    "App registrieren.md",
+    "Pasted image 20250614115732.png",
+    "Pasted image 20250614115332.png",
+    "Pasted image 20250614115113.png",
+    "Pasted image 20250614113328.png",
+    "Pasted image 20250614112935.png",
+    "Firebase Storage einrichten.md",
+    "Pasted image 20250614112401.png",
+    "Pasted image 20250614112248.png",
+    "Pasted image 20250614112216.png",
+    "NVM Windows installieren.md",
+    "Open AI Key setzen.md",
+    "Firebase Functions einrichten.md",
+    "Firebase Hosting einrichten.md",
+    "Authentication einrichten.md",
+    "Welcome.md"
   ]
 }
