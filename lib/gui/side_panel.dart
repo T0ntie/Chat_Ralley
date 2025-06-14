@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:storytrail/gui/items/glowing_animate_wrapper.dart';
+import 'package:aitrailsgo/gui/items/glowing_animate_wrapper.dart';
 
 class SidePanel extends StatelessWidget {
   final bool isVisible;

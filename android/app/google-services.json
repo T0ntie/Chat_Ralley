@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:291585528646:android:3220503eadd8c5bcde0b47",
+        "android_client_info": {
+          "package_name": "com.aitrailsgo.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA70bDWYjqoQK8Hqe07in0WZ_FsVY8fN-A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:291585528646:android:a7e4235076bf35d9de0b47",
         "android_client_info": {
           "package_name": "com.storytrail.app"

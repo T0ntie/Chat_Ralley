@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
-import 'package:storytrail/app_resources.dart';
-import 'package:storytrail/main.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/app_resources.dart';
+import 'package:aitrailsgo/main.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class FlushBarService {
   static final FlushBarService _instance = FlushBarService._internal();

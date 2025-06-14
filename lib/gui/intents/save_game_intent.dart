@@ -1,4 +1,4 @@
-import 'package:storytrail/gui/game_screen.dart';
+import 'package:aitrailsgo/gui/game_screen.dart';
 import 'ui_intent.dart';
 
 class SaveGameIntent extends UIIntent {

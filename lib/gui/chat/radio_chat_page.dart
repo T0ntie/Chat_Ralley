@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:storytrail/engine/npc.dart';
-import 'package:storytrail/gui/chat/radio_transmission_overlay.dart';
-import 'package:storytrail/gui/chat/chat_page.dart';
+import 'package:aitrailsgo/engine/npc.dart';
+import 'package:aitrailsgo/gui/chat/radio_transmission_overlay.dart';
+import 'package:aitrailsgo/gui/chat/chat_page.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:storytrail/engine/conversation.dart';
+import 'package:aitrailsgo/engine/conversation.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class RadioChatPage extends StatefulWidget {
   final Npc npc;

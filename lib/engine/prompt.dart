@@ -1,5 +1,5 @@
-import 'package:storytrail/services/firebase_serice.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/firebase_serice.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class Prompt {
   final String trailId;

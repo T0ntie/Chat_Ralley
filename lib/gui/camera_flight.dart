@@ -4,7 +4,7 @@ import 'package:flutter/animation.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:storytrail/gui/game_screen.dart';
+import 'package:aitrailsgo/gui/game_screen.dart';
 
 class CameraFlight {
   final GameScreenState state;

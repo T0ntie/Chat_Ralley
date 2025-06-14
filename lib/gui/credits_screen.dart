@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:storytrail/engine/game_engine.dart';
-import 'package:storytrail/services/firebase_serice.dart';
-import 'package:storytrail/engine/story_journal.dart';
-import 'package:storytrail/services/gpt_utilities.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
+import 'package:aitrailsgo/services/firebase_serice.dart';
+import 'package:aitrailsgo/engine/story_journal.dart';
+import 'package:aitrailsgo/services/gpt_utilities.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class CreditsScreen extends StatefulWidget {
   const CreditsScreen({super.key, this.onFatalError});

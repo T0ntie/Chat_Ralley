@@ -1,18 +1,18 @@
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
-import 'package:storytrail/engine/game_element.dart';
-import 'package:storytrail/engine/movement_controller.dart';
-import 'package:storytrail/engine/trail.dart';
-import 'package:storytrail/services/firebase_serice.dart';
-import 'package:storytrail/engine/item.dart';
-import 'package:storytrail/gui/notification_services.dart';
+import 'package:aitrailsgo/engine/game_element.dart';
+import 'package:aitrailsgo/engine/movement_controller.dart';
+import 'package:aitrailsgo/engine/trail.dart';
+import 'package:aitrailsgo/services/firebase_serice.dart';
+import 'package:aitrailsgo/engine/item.dart';
+import 'package:aitrailsgo/gui/notification_services.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 import 'story_line.dart';
 import 'npc.dart';
-import 'package:storytrail/actions/npc_action.dart';
+import 'package:aitrailsgo/actions/npc_action.dart';
 import 'hotspot.dart';
 
 extension KeyNormalization on String {

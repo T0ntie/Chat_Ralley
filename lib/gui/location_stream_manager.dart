@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:storytrail/services/location_service.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/location_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class LocationStreamManager with WidgetsBindingObserver {
   static final LocationStreamManager _instance = LocationStreamManager._internal();

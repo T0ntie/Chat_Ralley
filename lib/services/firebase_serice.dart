@@ -6,10 +6,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class FirebaseHosting {
-  static const fireBaseHostingURI = 'https://storytrail-e3bf7.web.app/';
+  static const fireBaseHostingURI = 'https://aitrailsgo.web.app/';
 
   static Widget loadImageWidget(String url, {BoxFit fit = BoxFit.cover}) {
     final fullUrl = '$fireBaseHostingURI$url';

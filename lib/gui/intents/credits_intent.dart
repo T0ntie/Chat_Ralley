@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:storytrail/gui/game_screen.dart';
-import 'package:storytrail/gui/credits_screen.dart';
-import 'package:storytrail/main.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/gui/game_screen.dart';
+import 'package:aitrailsgo/gui/credits_screen.dart';
+import 'package:aitrailsgo/main.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 import 'ui_intent.dart';
 
 class CreditsIntent extends UIIntent {

@@ -1,5 +1,5 @@
 import 'package:latlong2/latlong.dart';
-import 'package:storytrail/engine/game_engine.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
 
 class GameElement with HasIdentity {
 

@@ -1,9 +1,9 @@
-import 'package:storytrail/engine/story_line.dart';
+import 'package:aitrailsgo/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
 
-import 'package:storytrail/actions/npc_action.dart';
-import 'package:storytrail/engine/npc.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/actions/npc_action.dart';
+import 'package:aitrailsgo/engine/npc.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class WalkAction extends NpcAction {
   final double lat;

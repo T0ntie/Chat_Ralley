@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 import 'package:tiktoken/tiktoken.dart';
 
 class ChatService {

@@ -149,12 +149,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "AppCheck einrichten.md",
+                "file": "App registrieren.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "AppCheck einrichten"
+              "title": "App registrieren"
             }
           }
         ],
@@ -307,9 +307,9 @@
   },
   "active": "8219167393960af6",
   "lastOpenFiles": [
+    "AppCheck einrichten.md",
     "Firebase Rules deployen.md",
     "Firebase Projekt aufsetzen.md",
-    "AppCheck einrichten.md",
     "Pasted image 20250614120820.png",
     "Pasted image 20250614120007.png",
     "App registrieren.md",

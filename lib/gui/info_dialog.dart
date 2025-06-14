@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:storytrail/services/firebase_serice.dart';
+import 'package:aitrailsgo/services/firebase_serice.dart';
 
 class InfoDialog extends StatelessWidget {
   final String title;

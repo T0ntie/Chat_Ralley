@@ -1,5 +1,5 @@
-import 'package:storytrail/gui/game_screen.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/gui/game_screen.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 import 'ui_intent.dart';
 
 class HighlightScanButtonIntent extends UIIntent {

@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
-import 'package:storytrail/services/chat_service.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/chat_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class GptUtilities {
   static const String utilityPromptFile =

@@ -1,4 +1,4 @@
-import 'package:storytrail/engine/npc.dart';
+import 'package:aitrailsgo/engine/npc.dart';
 import 'package:flutter/material.dart';
 
 class ResourceIcons {

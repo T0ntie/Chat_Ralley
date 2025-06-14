@@ -1,5 +1,5 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class LocationService {
 

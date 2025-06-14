@@ -1,12 +1,12 @@
-import 'package:storytrail/actions/npc_action.dart';
-import 'package:storytrail/engine/game_element.dart';
-import 'package:storytrail/engine/game_engine.dart';
-import 'package:storytrail/engine/movement_controller.dart';
-import 'package:storytrail/engine/prompt.dart';
-import 'package:storytrail/engine/story_line.dart';
+import 'package:aitrailsgo/actions/npc_action.dart';
+import 'package:aitrailsgo/engine/game_element.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
+import 'package:aitrailsgo/engine/movement_controller.dart';
+import 'package:aitrailsgo/engine/prompt.dart';
+import 'package:aitrailsgo/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:storytrail/engine/conversation.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/engine/conversation.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 enum NPCIcon { unknown, identified, nearby, unknownNearby }
 

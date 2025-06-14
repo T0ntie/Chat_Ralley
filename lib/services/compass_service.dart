@@ -2,7 +2,7 @@
 import 'package:flutter_compass/flutter_compass.dart';
 import 'dart:async';
 
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class CompassService {
 

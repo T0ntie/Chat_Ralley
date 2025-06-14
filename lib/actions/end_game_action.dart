@@ -1,9 +1,9 @@
-import 'package:storytrail/gui/intents/credits_intent.dart';
-import 'package:storytrail/gui/intents/ui_intent.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/gui/intents/credits_intent.dart';
+import 'package:aitrailsgo/gui/intents/ui_intent.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 import 'npc_action.dart';
-import 'package:storytrail/engine/npc.dart';
+import 'package:aitrailsgo/engine/npc.dart';
 
 class EndGameAction extends NpcAction {
 

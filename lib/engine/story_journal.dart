@@ -1,6 +1,6 @@
-import 'package:storytrail/engine/conversation.dart';
-import 'package:storytrail/engine/game_element.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/engine/conversation.dart';
+import 'package:aitrailsgo/engine/game_element.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class StoryJournal with HasGameState {
   @override

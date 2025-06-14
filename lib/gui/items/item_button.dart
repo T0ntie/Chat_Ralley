@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:storytrail/gui/items/glowing_animate_wrapper.dart';
-import 'package:storytrail/services/firebase_serice.dart';
-import 'package:storytrail/app_resources.dart';
-import 'package:storytrail/engine/game_engine.dart';
-import 'package:storytrail/engine/item.dart';
+import 'package:aitrailsgo/gui/items/glowing_animate_wrapper.dart';
+import 'package:aitrailsgo/services/firebase_serice.dart';
+import 'package:aitrailsgo/app_resources.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
+import 'package:aitrailsgo/engine/item.dart';
 
 class ItemButton extends StatefulWidget {
   final Item item;

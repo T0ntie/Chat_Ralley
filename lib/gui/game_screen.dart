@@ -3,23 +3,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:storytrail/app_resources.dart';
-import 'package:storytrail/engine/game_engine.dart';
-import 'package:storytrail/engine/item.dart';
-import 'package:storytrail/gui/camera_flight.dart';
-import 'package:storytrail/gui/chat/chat_page.dart';
-import 'package:storytrail/gui/debuging_panel.dart';
-import 'package:storytrail/gui/game_map_widget.dart';
-import 'package:storytrail/gui/items/item_button.dart';
-import 'package:storytrail/gui/notification_services.dart';
-import 'package:storytrail/gui/intents/open_qr_scan_dialog_intent.dart';
-import 'package:storytrail/gui/continue_game_dialog.dart';
-import 'package:storytrail/gui/side_panel.dart';
-import 'package:storytrail/gui/intents/ui_intent.dart';
-import 'package:storytrail/main.dart';
-import 'package:storytrail/services/compass_service.dart';
-import 'package:storytrail/services/firebase_serice.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/app_resources.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
+import 'package:aitrailsgo/engine/item.dart';
+import 'package:aitrailsgo/gui/camera_flight.dart';
+import 'package:aitrailsgo/gui/chat/chat_page.dart';
+import 'package:aitrailsgo/gui/debuging_panel.dart';
+import 'package:aitrailsgo/gui/game_map_widget.dart';
+import 'package:aitrailsgo/gui/items/item_button.dart';
+import 'package:aitrailsgo/gui/notification_services.dart';
+import 'package:aitrailsgo/gui/intents/open_qr_scan_dialog_intent.dart';
+import 'package:aitrailsgo/gui/continue_game_dialog.dart';
+import 'package:aitrailsgo/gui/side_panel.dart';
+import 'package:aitrailsgo/gui/intents/ui_intent.dart';
+import 'package:aitrailsgo/main.dart';
+import 'package:aitrailsgo/services/compass_service.dart';
+import 'package:aitrailsgo/services/firebase_serice.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({
@@ -96,7 +96,7 @@ class GameScreenState extends State<GameScreen>
         error: e,
         stackTrace: stackTrace,
       );
-      widget.onFatalError?.call('❌ Laden des StoryTrails fehlgeschlagen.');
+      widget.onFatalError?.call('❌ Laden des Trails fehlgeschlagen.');
       return;
     }
 
@@ -309,14 +309,14 @@ class GameScreenState extends State<GameScreen>
               width: 40,
               height: 40,
               child: Image.asset(
-                'assets/logo/StoryTrail.png',
+                'assets/logo/aitrailsgo.png',
                 fit: BoxFit.contain,
               ),
             ),
           ),
         ),
         title: Text(
-          "StoryTrail",
+          widget.title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,

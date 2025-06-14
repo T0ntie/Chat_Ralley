@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert'; // Für JSON-Decoding und UTF-8
 // ignore_for_file: avoid_print
 // Basis-URL deines Firebase Hostings, wie in deinem FirebaseHosting Klasse
-const String firebaseHostingBaseUrl = 'https://storytrail-e3bf7.web.app/';
+const String firebaseHostingBaseUrl = 'https://aitrailsgo.web.app/';
 
 // Liste der Dateipfade zu JSON-Dateien, die du auf Firebase Hosting erwartest.
 // Wichtig: Diese Pfade sind relativ zum ROOT deines gehosteten Inhalts,

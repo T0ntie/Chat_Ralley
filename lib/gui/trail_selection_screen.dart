@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:storytrail/engine/trail.dart';
-import 'package:storytrail/services/firebase_serice.dart';
+import 'package:aitrailsgo/engine/trail.dart';
+import 'package:aitrailsgo/services/firebase_serice.dart';
 
 class TrailSelectionScreen extends StatefulWidget {
   final List<Trail> availableTrails;
@@ -82,7 +82,7 @@ class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
               width: 70,
               height: 70,
               child: Image.asset(
-                'assets/logo/StoryTrail.png',
+                'assets/logo/aitrailsgo.png',
                 fit: BoxFit.contain,
               ),
             ),
@@ -100,7 +100,7 @@ class _TrailSelectionScreenState extends State<TrailSelectionScreen> {
                   Padding(
                     padding: const EdgeInsets.all(32.0),
                     child: Text(
-                      selectedTrail?.title ?? 'Kein StoryTrail verfügbar',
+                      selectedTrail?.title ?? 'Kein Trail verfügbar',
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Times new Roman',

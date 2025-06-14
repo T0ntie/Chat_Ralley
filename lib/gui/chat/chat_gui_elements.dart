@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:storytrail/engine/conversation.dart';
+import 'package:aitrailsgo/engine/conversation.dart';
 
 class MessageBubble extends StatelessWidget {
   final ChatMessage message;

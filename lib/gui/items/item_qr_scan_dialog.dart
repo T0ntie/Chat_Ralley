@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:storytrail/gui/notification_services.dart';
+import 'package:aitrailsgo/gui/notification_services.dart';
 
 class ItemQRScanDialog extends StatefulWidget {
   final String title;

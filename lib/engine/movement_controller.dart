@@ -2,9 +2,9 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:storytrail/engine/game_engine.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class MovementUtils {
   static LatLng interpolatePosition(LatLng from, LatLng to, double distanceToTravel) {

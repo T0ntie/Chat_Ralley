@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:storytrail/app_resources.dart';
-import 'package:storytrail/engine/game_engine.dart';
-import 'package:storytrail/engine/npc.dart';
-import 'package:storytrail/gui/info_dialog.dart';
+import 'package:aitrailsgo/app_resources.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
+import 'package:aitrailsgo/engine/npc.dart';
+import 'package:aitrailsgo/gui/info_dialog.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class GameMapWidget extends StatelessWidget {
   final LatLng location;

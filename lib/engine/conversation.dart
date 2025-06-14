@@ -1,14 +1,14 @@
-import 'package:storytrail/engine/game_element.dart';
+import 'package:aitrailsgo/engine/game_element.dart';
 
-import 'package:storytrail/engine/game_engine.dart';
-import 'package:storytrail/engine/prompt.dart';
-import 'package:storytrail/engine/story_journal.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
+import 'package:aitrailsgo/engine/prompt.dart';
+import 'package:aitrailsgo/engine/story_journal.dart';
 
-import 'package:storytrail/services/chat_service.dart';
-import 'package:storytrail/engine/npc.dart';
+import 'package:aitrailsgo/services/chat_service.dart';
+import 'package:aitrailsgo/engine/npc.dart';
 import 'dart:convert';
 
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class Conversation with HasGameState {
   final Npc npc; // Der NPC, mit dem der User chattet

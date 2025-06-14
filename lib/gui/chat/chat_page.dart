@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:storytrail/services/firebase_serice.dart';
-import 'package:storytrail/engine/game_engine.dart';
-import 'package:storytrail/gui/chat/chat_gui_elements.dart';
-import 'package:storytrail/gui/notification_services.dart';
-import 'package:storytrail/engine/npc.dart';
-import 'package:storytrail/engine/conversation.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/firebase_serice.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
+import 'package:aitrailsgo/gui/chat/chat_gui_elements.dart';
+import 'package:aitrailsgo/gui/notification_services.dart';
+import 'package:aitrailsgo/engine/npc.dart';
+import 'package:aitrailsgo/engine/conversation.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class ChatPage extends StatefulWidget {
   final Npc npc;

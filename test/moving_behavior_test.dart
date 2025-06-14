@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:storytrail/engine/movement_controller.dart';
+import 'package:aitrailsgo/engine/movement_controller.dart';
 import 'package:latlong2/latlong.dart';
 
 void main() {

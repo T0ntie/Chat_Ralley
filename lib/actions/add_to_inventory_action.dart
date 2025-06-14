@@ -1,10 +1,10 @@
-import 'package:storytrail/engine/game_engine.dart';
-import 'package:storytrail/engine/item.dart';
-import 'package:storytrail/gui/intents/new_item_intent.dart';
-import 'package:storytrail/gui/intents/ui_intent.dart';
-import 'package:storytrail/services/log_service.dart';
-import 'package:storytrail/actions/npc_action.dart';
-import 'package:storytrail/engine/npc.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
+import 'package:aitrailsgo/engine/item.dart';
+import 'package:aitrailsgo/gui/intents/new_item_intent.dart';
+import 'package:aitrailsgo/gui/intents/ui_intent.dart';
+import 'package:aitrailsgo/services/log_service.dart';
+import 'package:aitrailsgo/actions/npc_action.dart';
+import 'package:aitrailsgo/engine/npc.dart';
 
 class AddToInventoryAction extends NpcAction {
   final String itemId;

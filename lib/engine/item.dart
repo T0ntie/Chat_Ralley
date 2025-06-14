@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:storytrail/engine/game_element.dart';
-import 'package:storytrail/engine/game_engine.dart';
-import 'package:storytrail/engine/npc.dart';
-import 'package:storytrail/gui/items/item_call_backs.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/engine/game_element.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
+import 'package:aitrailsgo/engine/npc.dart';
+import 'package:aitrailsgo/gui/items/item_call_backs.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class Item with HasGameState {
   @override

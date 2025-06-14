@@ -17,15 +17,15 @@ class LogService {
   ),  );
 
 
-  static void d(dynamic message) => _logger.d('[storytrail] $message');
+  static void d(dynamic message) => _logger.d('[AITrailsGO] $message');
 
-  static void i(dynamic message) => _logger.i('[storytrail] $message');
+  static void i(dynamic message) => _logger.i('[AITrailsGO] $message');
 
-  static void w(dynamic message) => _logger.w('[storytrail] $message');
+  static void w(dynamic message) => _logger.w('[AITrailsGO] $message');
 
   static void e(dynamic message, {dynamic error, StackTrace? stackTrace}) {
     _logger.e(
-      '[storytrail] $message',
+      '[AITrailsGO] $message',
       error: error,
       stackTrace: stackTrace,
     );

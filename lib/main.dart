@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:storytrail/gui/game_screen.dart';
-import 'package:storytrail/gui/credits_screen.dart';
-import 'package:storytrail/gui/location_stream_manager.dart';
-import 'package:storytrail/gui/trail_selection_screen.dart';
-import 'package:storytrail/services/gpt_utilities.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/gui/game_screen.dart';
+import 'package:aitrailsgo/gui/credits_screen.dart';
+import 'package:aitrailsgo/gui/location_stream_manager.dart';
+import 'package:aitrailsgo/gui/trail_selection_screen.dart';
+import 'package:aitrailsgo/services/gpt_utilities.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 import 'services/location_service.dart';
 import 'engine/game_engine.dart';
 import 'app_resources.dart';
@@ -98,7 +98,7 @@ Future<void> initAnonymousUser() async {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  static const String title = 'StoryTrail';
+  static const String title = 'AI Trails GO';
 
   @override
   State<MyApp> createState() => _MyAppState();

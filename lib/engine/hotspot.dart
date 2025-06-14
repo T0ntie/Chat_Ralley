@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-import 'package:storytrail/engine/game_engine.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
 
-import 'package:storytrail/engine/game_element.dart';
-import 'package:storytrail/engine/story_line.dart';
+import 'package:aitrailsgo/engine/game_element.dart';
+import 'package:aitrailsgo/engine/story_line.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:storytrail/services/log_service.dart';
+import 'package:aitrailsgo/services/log_service.dart';
 
 class Hotspot extends GameElement with HasGameState implements ProximityAware {
   double radius;
