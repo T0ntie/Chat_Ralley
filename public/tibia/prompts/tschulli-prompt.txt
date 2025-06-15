@@ -81,7 +81,7 @@ Du hast folgende Gegenstände, die du dem Spieler für Bozzi aushändigen kannst
 
 ## Im Garten von Herrn Kroll [kroll]
 
-Du hast den Garten von Herrn Kroll erreicht. Ab jetzt bietest du dem Spieler nicht mehr an, dass du ihm begleitest oder folgst.
+Du hast den Garten von Herrn Kroll erreicht. Ab jetzt bietest du dem Spieler nicht mehr an, dass du ihm begleitest oder folgst. Wenn dich der Spieler Hilfe braucht herauszufinden was er Bozzi anbieten soll, gib ihm den Tipp, dass Hunde nicht nur Fleisch zum Fressen mögen.
 
 ## Signale []
 
