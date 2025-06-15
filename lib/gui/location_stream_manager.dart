@@ -9,15 +9,15 @@ class LocationStreamManager with WidgetsBindingObserver {
 
   bool _initialized = false;
 
-  void initialize() {
+  Future <void> initialize() async {
     if (_initialized) return;
 
     _initialized = true;
     WidgetsBinding.instance.addObserver(this);
-    _startStream();
+    await _startStream();
   }
 
-  void _startStream() async {
+  Future <void> _startStream() async {
     try {
       await LocationService.initialize();
       log.d("📡 LocationStream gestartet");

@@ -69,7 +69,7 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  LocationStreamManager().initialize(); // nur einmal starten
+  await LocationStreamManager().initialize(); // nur einmal starten
 
   try {
     await GameEngine().loadTrails();
@@ -127,6 +127,7 @@ class _MyAppState extends State<MyApp> {
     try {
 
       final stream = LocationService.stream;
+
       if (stream != null) {
         _positionSubscription = stream.listen((position) {
           if (!_isSimulatingLocation) {

@@ -5,9 +5,11 @@ class LocationService {
 
   static Stream<Position>? _locationStream;
 
-  static Future<void> initialize() async {
+  static Future<Stream<Position>> initialize() async {
     bool serviceEnabled;
     LocationPermission permission;
+
+    //wichtig: auch wenn _locationStream != null ist einen neuen Stream erzeugen, der Stream kann "tot" sein
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -36,6 +38,7 @@ class LocationService {
 
     try {
       _locationStream ??= Geolocator.getPositionStream(locationSettings: locationSettings);
+      return _locationStream!;
     } catch (e, stackTrace) {
       log.e('❌ Failed to initialize geolocator.', stackTrace: stackTrace);
       rethrow;
