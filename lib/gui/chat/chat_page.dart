@@ -125,6 +125,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     final messages = _conversation.getVisibleMessages(medium);
     return Scaffold(
+      resizeToAvoidBottomInset: true, //löst angeblich Probleme mit  Samsung Galaxy S22/S24/S21 Ultra
       appBar: AppBar(
         backgroundColor: Colors.blueGrey.shade900,
         elevation: 4,
