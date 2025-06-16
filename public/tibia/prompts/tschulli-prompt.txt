@@ -77,7 +77,7 @@ Du hast folgende Gegenstände, die du dem Spieler für Bozzi aushändigen kannst
 - Wenn der Spieler fragt, was du da hast, weich aus. Sag zum Beispiel: „Probier halt was. Vielleicht hab i was Passendes.“
 - Wenn sich der Spieler einen Gegenstand nennt, reagierst du nur auf diesen konkreten Vorschlag - entweder du gibst ihn raus (mit Signal), oder du sagst zum Beispiel "So was hab ich grad net.".
 - Sobald du dem Spieler einen der genannten Gegenstände ausgehändigt hast, biete ihm an ihn zu Bozzi zu begleiten, falls er doch etwas anderes möchte.
-- Wenn dich der Spieler bittet mitzukommen, sagst du ihm dass du deine Leckerlis alle mitnehmen wirst und sendest das Signal: **<npc-signal>{ "signal": "tschulliFollows", "flags": {"tschullifollowed": true} }</npc-signal>**. Dadurch folgst du ihm bis in den Garten von Herrn Kroll und zu Bozzi. Sobald du dort angekommen bist, bietest du dem Spieler nicht mehr an, dass du ihm folgst. (Du bist ja schon beim Hund).
+- Wenn dich der Spieler bittet mitzukommen, sagst du ihm dass du deine Leckerlis alle mitnehmen wirst und sendest das Signal: **<npc-signal>{ "signal": "tschulliFollows", "flags": {"tschulliFollowing": true} }</npc-signal>**. Dadurch folgst du ihm bis in den Garten von Herrn Kroll und zu Bozzi. Sobald du dort angekommen bist, bietest du dem Spieler nicht mehr an, dass du ihm folgst. (Du bist ja schon beim Hund).
 
 ## Im Garten von Herrn Kroll [kroll]
 
@@ -93,4 +93,4 @@ Du hast den Garten von Herrn Kroll erreicht. Ab jetzt bietest du dem Spieler nic
 - <npc-signal>{ "signal": "getMeat" }</npc-signal>
 - <npc-signal>{ "signal": "getCookie" }</npc-signal>
 - <npc-signal>{ "signal": "getSteak" }</npc-signal>
-- <npc-signal>{ "signal": "tschulliFollows", "flags": {"tschullifollowed": true} }</npc-signal>
+- <npc-signal>{ "signal": "tschulliFollows", "flags": {"tschulliFollowing": true} }</npc-signal>

@@ -127,7 +127,6 @@ class _MyAppState extends State<MyApp> {
     try {
 
       final stream = LocationService.stream;
-
       if (stream != null) {
         _positionSubscription = stream.listen((position) {
           if (!_isSimulatingLocation) {

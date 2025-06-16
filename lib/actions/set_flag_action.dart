@@ -43,6 +43,6 @@ class SetFlagAction extends NpcAction {
   }
 
   static void register() {
-    NpcAction.registerAction('setflag', SetFlagAction.actionFromJson);
+    NpcAction.registerAction('setFlags', SetFlagAction.actionFromJson);
   }
 }

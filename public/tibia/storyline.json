@@ -460,7 +460,7 @@
           "notification": "Martha folgt dir jetzt.",
           "defer": true,
           "conditions": {
-            "flag:tschullifollowed": false}
+            "flag:tschulliAtKroll": false}
         },
         {
           "onHotspot": "spot_kroll",
@@ -468,7 +468,7 @@
           "position": "TschulliBeiKrollPosition",
           "defer": true,
           "conditions": {
-            "flag:tschullifollowed": true
+            "flag:tschulliFollowing": true
           }
         },
         {
@@ -476,7 +476,14 @@
           "invokeAction": "behave",
           "promptTag": "kroll",
           "conditions": {
-            "flag:tschullifollowed": true
+            "flag:tschulliFollowing": true
+          }
+        },
+        {
+          "onHotspot": "spot_kroll",
+          "invokeAction": "setFlags",
+          "flags": {
+            "tschulliAtKroll": true
           }
         }
       ]
@@ -638,7 +645,8 @@
     "unfriendlyToBozzi": false,
     "knowsKrollsAddress": false,
     "knatterbachAtPolice": false,
-    "tschullifollowed": false,
+    "tschulliAtKroll": false,
+    "tschulliFollowing": false,
     "quizPassed" : false
   }
 }
