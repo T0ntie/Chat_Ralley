@@ -596,6 +596,7 @@
       "name": "Tibia",
       "icon": "icons/tibia.svg",
       "owned": false,
+      "scannable": true,
       "useType": "show",
       "targetNpc": "npc_knoechelbein"
     },
