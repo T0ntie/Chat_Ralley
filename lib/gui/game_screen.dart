@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aitrailsgo/environment_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -278,7 +279,7 @@ class GameScreenState extends State<GameScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey.shade900,
+        backgroundColor: EnvironmentConfig.runningOnProd() ? Colors.blueGrey.shade900 : Colors.pink,
         elevation: 4,
         foregroundColor: Colors.white,
         leading: Padding(

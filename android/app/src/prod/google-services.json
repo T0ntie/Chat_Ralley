@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "291585528646",
+    "project_id": "aitrailsgo",
+    "storage_bucket": "aitrailsgo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:291585528646:android:3220503eadd8c5bcde0b47",
+        "android_client_info": {
+          "package_name": "com.aitrailsgo.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA70bDWYjqoQK8Hqe07in0WZ_FsVY8fN-A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

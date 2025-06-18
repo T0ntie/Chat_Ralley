@@ -1,3 +1,4 @@
+import 'package:aitrailsgo/environment_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:aitrailsgo/gui/game_screen.dart';
@@ -16,23 +17,39 @@ import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/foundation.dart';
-import 'firebase_options.dart';
+import 'firebase_options.dart' as prod_options;
+import 'firebase_options_dev.dart' as dev_options;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  debugPrint = (String? message, {int? wrapWidth}) {};
-
   try {
-    //await Firebase.initializeApp();
+    const flavor = String.fromEnvironment('FLAVOR', defaultValue: 'prod');
+    late FirebaseOptions firebaseOptions;
+
+    switch (flavor) {
+      case 'dev':
+        firebaseOptions = dev_options.DefaultFirebaseOptions.currentPlatform;
+        log.i("Starting in DEV Environment");
+        break;
+      case 'prod':
+        firebaseOptions = prod_options.DefaultFirebaseOptions.currentPlatform;
+        log.i("Starting in PROD Environment");
+        break;
+      default:
+        throw Exception('Unknown flavor: $flavor');
+    }
+
     await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
+      options: firebaseOptions,
     );
-    log.i("✅ Firebase erfolgreich initialisiert");
+
+    log.i("✅ Firebase erfolgreich initialisiert ($flavor)");
   } catch (e, stackTrace) {
     log.e("❌ Failed to initialize Firebase", error: e, stackTrace: stackTrace);
     rethrow;
   }
+
 
   if (kDebugMode) {
     // Wenn wir im Debug-Modus sind, aktiviere App Check mit dem Debug Provider.
@@ -102,7 +119,7 @@ Future<void> initAnonymousUser() async {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  static const String title = 'AI Trails GO';
+  static String title = EnvironmentConfig.appTitle;
 
   @override
   State<MyApp> createState() => _MyAppState();

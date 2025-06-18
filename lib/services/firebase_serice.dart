@@ -1,3 +1,4 @@
+import 'package:aitrailsgo/environment_config.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,7 +10,8 @@ import 'dart:convert';
 import 'package:aitrailsgo/services/log_service.dart';
 
 class FirebaseHosting {
-  static const fireBaseHostingURI = 'https://aitrailsgo.web.app/';
+  static final fireBaseHostingURI = EnvironmentConfig.firebaseHostingUri;
+
 
   static Widget loadImageWidget(String url, {BoxFit fit = BoxFit.cover}) {
     final fullUrl = '$fireBaseHostingURI$url';

@@ -1,1 +1,60 @@
-{"hosting":{"public":"public","ignore":["firebase.json","**/.*","**/node_modules/**"],"headers":[{"source":"**/*.svg","headers":[{"key":"Access-Control-Allow-Origin","value":"*"},{"key":"Content-Type","value":"image/svg+xml"}]}]},"functions":[{"source":"functions","codebase":"default","ignore":["node_modules",".git","firebase-debug.log","firebase-debug.*.log","*.local"],"predeploy":["npm --prefix \"$RESOURCE_DIR\" run lint","npm --prefix \"$RESOURCE_DIR\" run build"]}],"firestore":{"database":"(default)","location":"nam5","rules":"firestore.rules","indexes":"firestore.indexes.json"},"flutter":{"platforms":{"android":{"default":{"projectId":"aitrailsgo","appId":"1:291585528646:android:3220503eadd8c5bcde0b47","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"aitrailsgo","configurations":{"android":"1:291585528646:android:3220503eadd8c5bcde0b47","ios":"1:291585528646:ios:a8d7e90a7b8254e7de0b47"}}}}}}
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ],
+  "firestore": {
+    "database": "(default)",
+    "location": "nam5",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "aitrailsgo-dev",
+          "appId": "1:819408406904:android:d996a03a6c37306035a08d",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "aitrailsgo",
+          "configurations": {
+            "android": "1:291585528646:android:3220503eadd8c5bcde0b47",
+            "ios": "1:291585528646:ios:a8d7e90a7b8254e7de0b47"
+          }
+        },
+        "lib/firebase_options_dev.dart": {
+          "projectId": "aitrailsgo-dev",
+          "configurations": {
+            "android": "1:819408406904:android:d996a03a6c37306035a08d",
+            "ios": "1:819408406904:ios:bf560736519b02e435a08d"
+          }
+        }
+      }
+    }
+  }
+}
