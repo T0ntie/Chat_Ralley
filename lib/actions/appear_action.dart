@@ -10,7 +10,7 @@ class AppearAction extends NpcAction{
   Future<bool> excecute(Npc npc) async {
     log.i('🎬 ${npc.name} wird sichtbar.');
     npc.isVisible = true;
-    jlog("${npc.name} ist erschienen.");
+    jlog("${npc.name} betritt die Szene.");
     return npc.isVisible;
   }
 

@@ -8,7 +8,8 @@ class NotifyAction extends NpcAction{
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('🎬 NPC ${npc.name} wird benachrichtigt: "$notification".');
+    log.i('🎬 Spieler wird von NPC ${npc.name} benachrichtigt: "$notification".');
+    jlog('Spieler wird von NPC ${npc.name} benachrichtigt: "$notification".', credits: false);
     return true;
   }
 

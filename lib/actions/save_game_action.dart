@@ -16,6 +16,7 @@ class SaveGameAction extends NpcAction {
   @override
   Future<bool> excecute(Npc npc) async {
     log.i("🎬 Spielstand wird gespeichert.");
+    jlog("Spielstand wird gespeichert.", credits: false);
     dispatchUIIntent(SaveGameIntent());
     return true;
   }

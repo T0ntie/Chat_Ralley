@@ -1,5 +1,7 @@
 import 'package:aitrailsgo/engine/conversation.dart';
 import 'package:aitrailsgo/engine/game_element.dart';
+import 'package:aitrailsgo/engine/game_engine.dart';
+import 'package:aitrailsgo/services/firebase_serice.dart';
 import 'package:aitrailsgo/services/log_service.dart';
 
 class StoryJournal with HasGameState {
@@ -24,32 +26,67 @@ class StoryJournal with HasGameState {
     ));
   }
 
-  String _commVerb(Medium medium) {
-    if (medium == Medium.radio) {
-      return "sendet per Funk:";
-    }
-    return "sagt:";
+  static String _formatNpcMessage(String npc, String message, Medium medium) {
+    final verb = (medium == Medium.radio) ? "funkt" : "sagt";
+    return "$npc $verb: \"$message\"\n";
   }
 
+  static String _formatUserMessage(String npc, String message, Medium medium) {
+    final verb = (medium == Medium.radio) ? "funkt" : "sagt";
+    return "Der Spieler $verb zu $npc: \"$message\"\n\n";
+  }
+
+  void logMessage(ChatMessage message, String npc)
+  {
+    String? entry;
+    if (message.medium == Medium.trigger) {
+      entry = "${message.filteredText}\n\n";
+    } else if (message.chatRole == ChatRole.assistant) {
+      entry = _formatNpcMessage(npc, message.filteredText, message.medium);
+    } else if (message.chatRole == ChatRole.user) {
+      entry = _formatUserMessage(npc, message.filteredText, message.medium);
+    }
+    if (entry != null) {
+      _entries.add((DateTime.now(), entry));
+      FirestoreService.logLiveJournalEntry(
+        trailId: GameEngine().trailId!,
+        type: "message",
+        content: entry,
+      );
+    }
+  }
+
+/*
   void logMessage(Medium medium, ChatRole role, String npc, String message) {
-    String entry;
+    String? entry;
 
     if (medium == Medium.trigger) {
       entry = "- Es geschieht folgendes: $message\n\n";
+    } else if (role == ChatRole.assistant) {
+      entry = _formatNpcMessage(npc, message, medium);
+    } else if (role == ChatRole.user) {
+      entry = _formatUserMessage(npc, message, medium);
     }
-    if (role == ChatRole.assistant) {
-      entry = "- $npc ${_commVerb(medium)} $message\n\n";
-    }
-    if (role == ChatRole.user) {
-      entry = "- der Spieler ${_commVerb(medium)} $message\n\n";
-    } else {
-      return;
-    }
-    _entries.add((DateTime.now(), entry));
-  }
 
-  void logAction(String action) {
-    _entries.add((DateTime.now(), action));
+    if (entry != null) {
+      _entries.add((DateTime.now(), entry));
+      FirestoreService.logLiveJournalEntry(
+        trailId: GameEngine().trailId!,
+        content: entry,
+      );
+    }
+  }
+*/
+
+  void logAction(String action,{credits = true}) {
+    if (credits) {
+      _entries.add((DateTime.now(), action));
+    }
+    FirestoreService.logLiveJournalEntry(
+      trailId: GameEngine().trailId!,
+      type: "action",
+      content: action,
+    );
   }
 
   @override

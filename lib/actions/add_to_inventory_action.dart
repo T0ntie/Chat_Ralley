@@ -24,10 +24,10 @@ class AddToInventoryAction extends NpcAction {
       log.e('❌ no item with id "$itemId" found.', stackTrace: StackTrace.current);
       throw Exception('❌ no item with id "$itemId" found.');
     }
-    log.i('🎬 NPC "${npc.name}" hat ein neues Item: "$itemId" bekommen.');
+    log.i('🎬 NPC "${npc.name}" übergibt dem Spieler folgenden Gegenstand: "$itemId".');
     item.isOwned = true;
     item.isNew = true;
-    super.jlog("${npc.name} hat dem Spieler folgenden Gegenstand gegeben: ${item.name}");
+    super.jlog("${npc.name} übergibt dem Spieler folgenden Gegenstand: ${item.name}");
     dispatchUIIntent(NewItemIntent());
     return item.isOwned;
   }

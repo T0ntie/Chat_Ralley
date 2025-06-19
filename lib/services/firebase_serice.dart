@@ -119,7 +119,7 @@ class FirebaseHosting {
 }
 
 class FirestoreService {
-  //fixme check of das passt
+
   static Future<void> saveGameState({
     required String trailId,
     required Map<String, dynamic> jsonGameState,
@@ -161,5 +161,34 @@ class FirestoreService {
     }
 
     return snapshot.data()?['data'];
+  }
+
+  static Future<void> logLiveJournalEntry({
+    required String trailId,
+    required String type,
+    required String content,
+  }) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
+      log.e("❌ User not authenticated.", stackTrace: StackTrace.current);
+      return;
+    }
+    final String timestamp = DateTime.now().toIso8601String();
+    final logId =  "$timestamp : $type";
+
+    final logRef = FirebaseFirestore.instance
+        .collection('gameStates')
+        .doc(uid)
+        .collection('saves')
+        .doc(trailId)
+        .collection('logs')
+        .doc(logId);
+
+    await logRef.set({
+      'timestamp': timestamp,
+      'content': content,
+    });
+
+    log.d("📝 Live-Log gespeichert: $type");
   }
 }

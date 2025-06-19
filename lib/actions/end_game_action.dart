@@ -17,6 +17,7 @@ class EndGameAction extends NpcAction {
   @override
   Future<bool> excecute(Npc npc) async {
     log.i("🎬 ${npc.name} beendet das Spiel.");
+    jlog("${npc.name} beendet das Spiel.", credits: false);
     dispatchUIIntent(
       CreditsIntent(),
     );

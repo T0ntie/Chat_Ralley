@@ -19,6 +19,7 @@ class ShowHotspotAction extends NpcAction{
     if (spot != null) {
       spot.isVisible = true;
       log.i('🎬 Hotspot "${spot.name}" erscheint auf der Karte.');
+      jlog("${spot.name} erscheint auf der Karte.", credits: false);
       dispatchUIIntent(ShowHotspotIntent(hotspot: spot));
     }
     else{

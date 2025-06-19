@@ -9,6 +9,7 @@ class StopMovingAction extends NpcAction{
   @override
   Future<bool> excecute(Npc npc) async {
     log.i('🎬 NPC "${npc.name}" bleibt stehen.');
+    jlog("${npc.name} bleibt stehen.", credits: false);
     npc.stopMoving();
     return true;
   }

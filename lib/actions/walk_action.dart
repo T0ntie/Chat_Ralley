@@ -20,7 +20,8 @@ class WalkAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('🎬 NPC "${npc.name}" bewegt sich Richtung $lat, $lng');
+    log.i('🎬 NPC "${npc.name}" bewegt sich zur Position $lat, $lng');
+    jlog('${npc.name} bewegt sich zur Position $lat, $lng', credits: false);
     npc.moveTo(LatLng(lat, lng));
     return true;
   }

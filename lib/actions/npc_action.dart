@@ -173,8 +173,8 @@ abstract class NpcAction {
 
   Future<bool> excecute(Npc npc);
 
-  void jlog(String message) {
-    StoryJournal().logAction(message);
+  void jlog(String message, {credits = false}) {
+    StoryJournal().logAction(message, credits: credits);
   }
 
   static (NpcActionTrigger, Map<String, bool>, String?, bool)

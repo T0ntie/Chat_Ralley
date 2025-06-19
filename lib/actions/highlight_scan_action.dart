@@ -16,6 +16,7 @@ class HighlightScanAction extends NpcAction {
   @override
   Future<bool> excecute(Npc npc) async {
     log.i('🎬 NPC "${npc.name}" weist auf den Scanbutton hin.');
+    jlog("${npc.name} weist auf den Scanbutton hin.", credits: false);
 
     dispatchUIIntent(
       HighlightScanButtonIntent()

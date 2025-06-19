@@ -20,7 +20,8 @@ class ScanToInventoryAction extends NpcAction {
 
   @override
   Future<bool> excecute(Npc npc) async {
-    log.i('🎬 NPC "${npc.name}" hat ein Item ("$itemId") zum Scannen gefunden.');
+    log.i('🎬 Der Spieler hat durch NPC ${npc.name} ein Item ($itemId) zum Scannen gefunden...');
+    jlog("Der Spieler hat durch NPC ${npc.name} ein Item $itemId zum Scannen gefunden.", credits: false);
     Item? item = GameEngine().getItemById(itemId);
     if (item == null) {
       log.e('❌ Item with id: "$itemId" not found.');
@@ -30,10 +31,17 @@ class ScanToInventoryAction extends NpcAction {
 
     dispatchUIIntent(
       OpenScanDialogIntent(
-        title: "${npc.name} scharrt im Boden!",
+        title: "${npc.name} schnüffelt aufgeregt!",
         expectedItems: [item],
       ),
     );
+    if (item.isOwned) {
+      log.i('🎬 ...und erfolgreich eingescannt');
+      jlog("...und erfolgreich eingescannt", credits: false);
+    } else {
+      log.i('🎬 ...aber nicht eingescannt');
+      jlog("...aber eingescannt", credits: false);
+    }
     return(item.isOwned);
   }
 

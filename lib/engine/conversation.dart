@@ -213,14 +213,9 @@ class Conversation with HasGameState {
       ChatMessage cm = _messages.last;
       if (cm.isInitialPrompt) {
         StoryJournal().logPrompt(npc.name, npc.prompt.getCreditsPrompt());
+      }else {
+        StoryJournal().logMessage(cm, npc.name);
       }
-
-      StoryJournal().logMessage(
-        cm.medium,
-        cm.chatRole,
-        npc.name,
-        cm.filteredText,
-      );
     }
   }
 

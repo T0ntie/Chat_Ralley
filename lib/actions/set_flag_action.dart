@@ -18,6 +18,7 @@ class SetFlagAction extends NpcAction {
   @override
   Future<bool> excecute(Npc npc) async {
     log.i('🎬 NPC "${npc.name}" hat die folgenden Flags gesetzt: "$flags"');
+    jlog('${npc.name} hat die folgenden Flags gesetzt: $flags', credits: false);
     GameEngine().setFlags(flags);
     return true;
   }
