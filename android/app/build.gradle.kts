@@ -55,7 +55,7 @@ android {
         versionName = flutter.versionName
     }
 
-    // 🔥 Hier kommen jetzt deine Flavors
+    // Hier kommen jetzt deine Flavors
     flavorDimensions += "env"
     productFlavors {
         create("prod") {
@@ -74,8 +74,8 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
