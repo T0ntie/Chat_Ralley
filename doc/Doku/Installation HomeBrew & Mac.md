@@ -38,4 +38,16 @@ sudo xcodebuild -runFirstLaunch
 sudo gem install cocoapods (hat nicht funktioniert statt dessen mit brew)
 
 brew install cocoapods
+
+flutter devices (prüft ob handy am usb erkannt wird)
 ```
+
+```
+dart pub global activate flutterfire_cli
+export PATH="$PATH":"$HOME/.pub-cache/bin" (ins ~/.zprofile)
+
+brew install node
+
+npm install -g firebase-tools
+```
+

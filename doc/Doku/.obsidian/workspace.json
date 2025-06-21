@@ -11,32 +11,70 @@
             "id": "ab6397f854042e3d",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Firebase Hosting einrichten.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Firebase Hosting einrichten"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
             }
           },
           {
-            "id": "63792a87311482ee",
+            "id": "6742da959aa047c5",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Firebase Rules deployen.md",
+                "file": "Firebase Projekt aufsetzen.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Firebase Rules deployen"
+              "title": "Firebase Projekt aufsetzen"
+            }
+          },
+          {
+            "id": "1989ffaa59c7e50f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Installation HomeBrew & Mac.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Installation HomeBrew & Mac"
+            }
+          },
+          {
+            "id": "571837b0e055264c",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Zusammenfassung GPT Mac einrichten.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Zusammenfassung GPT Mac einrichten"
+            }
+          },
+          {
+            "id": "ecd12592a3458b7a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "App unter iOS zum Laufen bringen.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "App unter iOS zum Laufen bringen"
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -109,7 +147,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Firebase Functions einrichten.md",
+                "file": "Authentication einrichten.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -119,7 +157,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Firebase Functions einrichten"
+              "title": "Backlinks for Authentication einrichten"
             }
           },
           {
@@ -128,12 +166,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Firebase Functions einrichten.md",
+                "file": "Authentication einrichten.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Firebase Functions einrichten"
+              "title": "Outgoing links from Authentication einrichten"
             }
           },
           {
@@ -157,13 +195,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Firebase Functions einrichten.md",
+                "file": "Authentication einrichten.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Firebase Functions einrichten"
+              "title": "Outline of Authentication einrichten"
             }
           }
         ]
@@ -183,30 +221,34 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "63792a87311482ee",
+  "active": "ecd12592a3458b7a",
   "lastOpenFiles": [
-    "Firebase Storage einrichten.md",
-    "Firebase Rules deployen.md",
-    "Firebase Projekt aufsetzen.md",
-    "Firebase Hosting einrichten.md",
-    "Firebase Functions einrichten.md",
-    "Firebase DEV einrichten.md",
-    "Authentication einrichten.md",
-    "AppCheck einrichten.md",
-    "Open AI Key setzen.md",
-    "App registrieren.md",
-    "Flutter Fire CLI installieren.md",
-    "NVM Windows installieren.md",
+    "Pasted image 20250621143446.png",
+    "Pasted image 20250621143350.png",
+    "Pasted image 20250621090807.png",
+    "Pasted image 20250621090230.png",
+    "Pasted image 20250621090104.png",
+    "Pasted image 20250621085945.png",
+    "Pasted image 20250621085650.png",
+    "Pasted image 20250621084742.png",
+    "Zusammenfassung GPT Mac einrichten.md",
+    "App unter iOS zum Laufen bringen.md",
+    "Installation HomeBrew & Mac.md",
     "Pasted image 20250614221148.png",
     "Pasted image 20250614120820.png",
     "Pasted image 20250614120007.png",
-    "Pasted image 20250614115732.png",
-    "Pasted image 20250614115332.png",
-    "Pasted image 20250614115113.png",
-    "Pasted image 20250614113328.png",
-    "Pasted image 20250614112935.png",
-    "Pasted image 20250614112401.png",
-    "Pasted image 20250614112248.png",
+    "Open AI Key setzen.md",
+    "NVM Windows installieren.md",
+    "Flutter Fire CLI installieren.md",
+    "Firebase Storage einrichten.md",
+    "Firebase Rules deployen.md",
+    "Firebase Hosting einrichten.md",
+    "Firebase Functions einrichten.md",
+    "Firebase DEV einrichten.md",
+    "AppCheck einrichten.md",
+    "App registrieren.md",
+    "Authentication einrichten.md",
+    "Firebase Projekt aufsetzen.md",
     "Welcome.md"
   ]
 }
