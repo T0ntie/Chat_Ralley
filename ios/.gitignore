@@ -32,3 +32,27 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
+# 📦 Ignoriere temporäre Xcode, Flutter & CocoaPods Dateien
+
+# Xcode build system & user data
+*.xcuserstate
+*.xcscmblueprint
+*.xcscheme
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.DS_Store
+
+# CocoaPods
+**/Pods/
+
+# Flutter
+../.dart_tool/
+../build/
+Flutter/App.framework
+Flutter/Flutter.framework
+Flutter/flutter_assets/
+Flutter/ephemeral/
+Flutter/Generated.xcconfig
+Flutter/flutter_export_environment.sh
