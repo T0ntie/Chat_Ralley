@@ -20,8 +20,8 @@ class MoveAlongAction extends NpcAction {
   Future<bool> excecute(Npc npc) async {
     double lat =  path.last.latitude;
     double lng = path.last.longitude;
-    log.i('🎬 NPC ${npc.name} bewegt sich einen Pfad entlang nach ${lat}, ${lng}');
-    jlog("${npc.name} bewegt sich einen Pfad entlang nach ${lat}, ${lng}", credits: false);
+    log.i('🎬 NPC ${npc.name} bewegt sich einen Pfad entlang nach $lat, $lng');
+    jlog("${npc.name} bewegt sich einen Pfad entlang nach $lat, $lng", credits: false);
     npc.moveAlong(path);
     return true;
   }

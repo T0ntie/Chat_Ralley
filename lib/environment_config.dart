@@ -21,7 +21,6 @@ class EnvironmentConfig {
   }
 
   static String get appTitle {
-    print("getting app title");
     switch (flavor) {
       case 'dev':
         return 'AI Trails GO - DEV';

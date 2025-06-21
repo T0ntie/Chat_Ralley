@@ -20,9 +20,9 @@ class LeadAlongAction extends NpcAction {
   Future<bool> excecute(Npc npc) async {
     double lat =  path.last.latitude;
     double lng = path.last.longitude;
-    log.i('🎬 NPC ${npc.name} führt den Spieler einen Pfad entlang nach ${lat}, ${lng}');
+    log.i('🎬 NPC ${npc.name} führt den Spieler einen Pfad entlang nach $lat, $lng');
     npc.leadAlong(path);
-    jlog("${npc.name} führt den Spieler einen Pfad entlang nach ${lat}, ${lng}", credits: false);
+    jlog("${npc.name} führt den Spieler einen Pfad entlang nach $lat, $lng", credits: false);
     return true;
   }
 
